@@ -36,11 +36,23 @@ jobs:
       - name: Buat snapshot
         run: |
           MODE="${{ github.event.inputs.mode }}"
+          case "$MODE" in snapshot|full) ;; *) MODE="" ;; esac
           if [ -z "$MODE" ]; then
             if [ "${{ github.event.schedule }}" = "10 3,6,10 * * 1-5" ]; then MODE=full; else MODE=snapshot; fi
           fi
-          echo "mode=$MODE"
-          python projects/idx-terminal/idx_snapshot.py --out out --mode "$MODE"
+          SCRIPT=$(find . -type f -name idx_snapshot.py -not -path "./out/*" -not -path "./.git/*" | head -n 1)
+          if [ -z "$SCRIPT" ]; then
+            echo "::error::idx_snapshot.py TIDAK DITEMUKAN di repo. Berkas bernama idx yang ada:"
+            find . -type f -iname "*idx*" -not -path "./.git/*" -not -path "./out/*" | head -50
+            exit 1
+          fi
+          echo "skrip: $SCRIPT  | mode: $MODE"
+          ls -la "$(dirname "$SCRIPT")"
+          if [ ! -f "$(dirname "$SCRIPT")/idx_server.py" ]; then
+            echo "::error::idx_server.py TIDAK ada di folder yang sama dengan idx_snapshot.py"
+            exit 1
+          fi
+          python "$SCRIPT" --out out --mode "$MODE"
       - name: Terbitkan ke cabang idx-data (satu commit, selalu ditimpa)
         run: |
           cd out
