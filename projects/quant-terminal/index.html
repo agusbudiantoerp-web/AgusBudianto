@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quant Terminal</title>
-<script>window.QT_TOKEN='__QT_TOKEN__'</script>
+<script>window.QT_TOKEN=''</script>
+<script src="qt-shim.js"></script>
 <style>
 :root{--bg:#070d1a;--pn:#0c1427;--bd:#1b2a4a;--tx:#d6e0f5;--mu:#7384a8;--up:#22d273;--dn:#ff4d5e;--ac:#3b9cff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:12px/1.4 "Segoe UI",system-ui,sans-serif}
@@ -17,11 +18,13 @@ main{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;padding:10px 16p
 #kpi{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
 .k small{color:var(--mu)}.k div{font-size:19px;font-weight:700;margin-top:2px}
 canvas{width:100%;display:block}
+.nw td{animation:fl 1.4s ease-out}@keyframes fl{from{background:#27406e}to{background:transparent}}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 th{color:var(--mu);font-weight:500;text-align:right;padding:3px 4px;border-bottom:1px solid var(--bd)}td{padding:3px 4px;text-align:right}
 th:first-child,td:first-child{text-align:left}.up{color:var(--up)}.dn{color:var(--dn)}
 .c8{grid-column:span 8}.c4{grid-column:span 4}.c5{grid-column:span 5}.c3{grid-column:span 3}
 @media(max-width:1000px){.c8,.c4,.c5,.c3{grid-column:1/-1}}
+#zapi{display:none}
 </style></head><body>
 <header><h1><b>Q</b> QUANT TERMINAL</h1>
 <label>Aset <select id="asset" style="width:100px" onchange="pick()"></select></label>
@@ -56,7 +59,8 @@ th:first-child,td:first-child{text-align:left}.up{color:var(--up)}.dn{color:var(
 <div style="margin-top:10px"><button onclick="zTest()">Uji koneksi (≈1 request)</button> &nbsp; <button onclick="zSync('backfill')">Unduh riwayat harian LQ45</button> &nbsp; <button onclick="zSync('daily')">Perbarui harian</button> &nbsp; Saham tambahan <input id="zex" placeholder="mis. GOTO, BUKA" style="width:150px"> &nbsp; <span id="zmsg" style="color:var(--mu)"></span></div>
 <div id="zlog" style="margin-top:8px;color:var(--mu)"></div>
 <small style="color:var(--mu)"><b>Cara memakai:</b> (1) buat file <b>zapi_key.txt</b> di folder aplikasi berisi API key Anda, lalu restart server (key hanya dibaca server dan tidak pernah dikirim ke browser — jangan menempelkannya ke chat/forum); (2) <b>Uji koneksi</b>; (3) <b>Unduh riwayat</b> sekali untuk mengganti data simulasi dengan data harian riil (halaman memuat ulang sendiri); (4) <b>Perbarui harian</b> tiap hari bursa (hanya 1 request/hari). Paket gratis Zapi 600 request/bulan: hitungan di sini hanya perkiraan lokal, hitungan resmi ada di dashboard Zapi. Zapi adalah agregator pihak ketiga yang mengambil data dari sumber lain (bukan feed resmi bursa), harga tidak disesuaikan aksi korporasi (split/dividen), dan syarat penggunaannya perlu Anda baca sendiri. Bukan saran investasi.</small></div>
-<div class="p" id="flow" style="grid-column:1/-1"><h2>Order flow — order book, tape &amp; broker summary &nbsp; Saham <select id="fsym" style="width:90px" onchange="FRESET()"></select> Lot besar ≥ <input id="fbig" type="number" value="300" style="width:60px"> kecil ≤ <input id="fsm" type="number" value="20" style="width:50px"> Jendela <input id="fwin" type="number" value="300" style="width:55px"> dtk &nbsp; Sumber <select id="fsel" style="width:150px" onchange="FSEL()"><option value="auto">Lokal (file/simulasi)</option><option value="zapi">Zapi (memakai kuota)</option></select> <select id="fint" style="width:80px" title="Interval auto-segarkan (hanya mode Zapi)"><option value="30">30 dtk</option><option value="60" selected>60 dtk</option><option value="120">120 dtk</option><option value="300">300 dtk</option></select> &nbsp; <button onclick="flowPoll()">Segarkan</button> <button onclick="FB=1;flowPoll()" title="Mode Zapi: +1 request (di-cache 5 menit)">Muat broker</button> <button id="fbtn" onclick="flowToggle()">Mulai live</button> &nbsp; <span id="fsrc" style="font-weight:400"></span></h2>
+<div class="p" id="flow" style="grid-column:1/-1"><h2>Order flow — order book, tape &amp; broker summary &nbsp; Saham <select id="fsym" style="width:90px" onchange="FRESET()"></select> Lot besar ≥ <input id="fbig" type="number" value="300" style="width:60px"> kecil ≤ <input id="fsm" type="number" value="20" style="width:50px"> Jendela <input id="fwin" type="number" value="300" style="width:55px"> dtk &nbsp; Sumber <select id="fsel" style="width:150px" onchange="FSEL()"><option value="auto">Lokal (file/simulasi)</option><option value="zapi">Zapi (memakai kuota)</option></select> <select id="fint" style="width:80px" onchange="flowTick()" title="Interval live untuk mode Zapi (minimal 15 dtk karena cache sumber). Sumber lokal selalu 1 dtk."><option value="15">15 dtk</option><option value="30" selected>30 dtk</option><option value="60">60 dtk</option><option value="120">120 dtk</option><option value="300">300 dtk</option></select> &nbsp; <button onclick="flowPoll()" title="Satu kali ambil data">Segarkan</button> <button onclick="FB=1;flowPoll()" title="Mode Zapi: +1 request (di-cache 5 menit)">Muat broker</button> <button id="fbtn" onclick="flowToggle()">Mulai live</button> &nbsp; <span id="fsrc" style="font-weight:400"></span></h2>
+<div id="flive" style="margin-bottom:6px"></div>
 <div id="fwarn" style="margin-bottom:8px"></div>
 <div id="fread" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px"></div>
 <div id="fpat" style="margin:8px 0;color:var(--tx)"></div>
@@ -201,17 +205,41 @@ function cmt(){const d=LAST.cmp;if(!d)return;const H=[['name','Strategi'],['tf',
   `<tr style="color:var(--mu)"><td>Buy &amp; hold</td><td>—</td><td>—</td><td class="${cl(B.ret)}">${pc(B.ret)}</td><td>${pc(B.cagr)}</td><td>${f2(B.sharpe)}</td><td class="dn">${pc(-B.mdd)}</td><td>—</td><td>—</td><td>—</td><td></td><td></td></tr>`+
   R.map(r=>`<tr><td>${r.name}</td><td>${r.tf?'SMA '+r.tf:'—'}</td><td>${r.params}</td><td class="${cl(r.ret)}">${pc(r.ret)}</td><td>${pc(r.cagr)}</td><td class="${cl(r.sharpe)}">${f2(r.sharpe)}</td><td class="dn">${pc(-r.mdd)}</td><td>${f2(r.pf)}</td><td>${pc(r.win)}</td><td>${r.n}</td><td title="Return>B&H · Sharpe>0,5 · PF>1,3 · Trade≥30">${r.score}/4 ${r.crit.map(x=>x?'●':'○').join('')}</td><td><a href="#" style="color:var(--ac)" onclick="loadCmp('${r.key}',${r.tf});return false">muat</a></td></tr>`).join('')}
 function loadCmp(k,tf){$('strat').value=k;lab(1);$('tf').value=tf;run();window.scrollTo(0,0)}
-let FT=null;
+let FA=null,FRES=false,FL={t:0,iv:1,closed:false,q:null,z:false},FPR=null,FKEYS=null,FQ=null,FB=0;
 function flowSyms(){const a=(G.IDX||[]).filter(s=>s!='IHSG'),cur=$('fsym').value;$('fsym').innerHTML=a.map(s=>`<option>${s}</option>`).join('');$('fsym').value=a.includes(cur)?cur:(a.includes('BBCA')?'BBCA':a[0])}
-function FRESET(){if(FT)flowPoll()}
-let FB=0;
 const sfetch=(u,o={})=>fetch(u,{...o,headers:{...(o.headers||{}),'X-QT-Token':window.QT_TOKEN||''}});
-function flowStop(){if(FT){clearInterval(FT);FT=null}$('fbtn').textContent='Mulai live'}
-function FSEL(){flowStop();FB=0;$('fwarn').innerHTML=$('fsel').value=='zapi'?'<div style="background:#2a2412;border:1px solid #5c4a22;border-radius:5px;padding:6px 10px;color:#ffd98a">Mode Zapi memakai kuota API: ≈4 request pada segarkan pertama, lalu ≈2 per segarkan. Klik <b>Segarkan</b> untuk satu kali, atau <b>Mulai live</b> untuk auto-segarkan dengan interval pilihan Anda.</div>':''}
-function flowToggle(){if(FT){flowStop();return}
- const z=$('fsel').value=='zapi',ms=z?Math.max(30,+$('fint').value||60)*1000:2000;
- if(z&&!confirm(`Auto-segarkan Zapi tiap ${ms/1000} dtk memakai ≈2 request per putaran (≈${Math.round(7200/(ms/1000))} request/jam). Kuota gratis hanya 600/bulan. Lanjutkan?`))return;
- $('fbtn').textContent='Berhenti';flowPoll();FT=setInterval(flowPoll,ms)}
+const TOKMSG='<span style="color:var(--dn)">token ditolak — buka terminal lewat http://localhost:8000 (bukan file index.html) lalu muat ulang</span>';
+const cost=iv=>3600/iv*2;
+function planTxt(){if($('fsel').value!='zapi')return '';const iv=Math.max(15,+$('fint').value||30),q=FQ,rem=q?q.budget-q.used-20:null;
+ return `<span style="color:var(--mu)">Mode Zapi: interval ${iv} dtk ≈ ${Math.round(cost(iv))} request/jam${rem!=null?` · sisa kuota lokal ${q.budget-q.used}`+(rem>0?` ≈ ${f2(rem/cost(iv),1)} jam live`:''):''} · melambat saat pasar tutup, berhenti sendiri saat kuota menipis</span>`}
+function flowTick(){const e=$('flive');if(!FA){e.innerHTML=planTxt();return}
+ if(!FL.t){e.innerHTML='<span style="color:var(--mu)">menyambung…</span>';return}
+ const age=(Date.now()-FL.t)/1000,nx=Math.max(0,FL.iv-age),hrs=FL.z&&FL.q?(FL.q.budget-FL.q.used-20)/cost(FL.iv):null;
+ e.innerHTML=`<span style="color:var(--up)">● LIVE</span> <span style="color:var(--mu)">· diperbarui ${f2(age,0)} dtk lalu · interval ${f2(FL.iv,0)} dtk${FL.iv>=5?' · berikutnya ≈ '+f2(nx,0)+' dtk':''}</span>${FL.closed?' <span style="color:#ffd98a">· pasar tutup: polling diperlambat</span>':''}${hrs!=null?`<span style="color:var(--mu)"> · sisa kuota ≈ ${f2(Math.max(0,hrs),1)} jam live</span>`:''}`}
+function flowStop(keep){if(FA){FA.abort();FA=null}if(!keep)FRES=false;$('fbtn').textContent='Mulai live';flowTick()}
+function FRESET(){FPR=null;FKEYS=null;if(FA){flowStop(true);flowToggle(true)}}
+function FSEL(){flowStop();FB=0;FPR=null;FKEYS=null;$('fwarn').innerHTML=$('fsel').value=='zapi'?'<div style="background:#2a2412;border:1px solid #5c4a22;border-radius:5px;padding:6px 10px;color:#ffd98a">Mode Zapi memakai kuota API: ≈4 request pada segarkan pertama, lalu ≈2 per pembaruan. Klik <b>Segarkan</b> untuk satu kali, atau <b>Mulai live</b> agar server mendorong pembaruan tiap interval pilihan Anda (minimal 15 dtk karena cache sumber).</div>':'';flowTick()}
+function flowToggle(skip){if(FA){flowStop();return}
+ const z=$('fsel').value=='zapi',iv=Math.max(15,+$('fint').value||30);
+ if(z&&!skip&&!confirm(`Live Zapi: pembaruan tiap ${iv} dtk memakai ≈${Math.round(cost(iv))} request/jam dari kuota (paket gratis 600/bulan). Stream melambat saat pasar tutup, dijeda saat tab tidak terlihat, dan berhenti sendiri setelah 2 jam atau saat kuota menipis. Lanjutkan?`))return;
+ flowStream(z,iv)}
+async function flowStream(z,iv){
+ const ac=new AbortController();FA=ac;FL={t:0,iv:z?iv:1,closed:false,q:FQ,z};$('fbtn').textContent='Berhenti';flowTick();
+ const q=new URLSearchParams({sym:$('fsym').value||'BBCA',big:$('fbig').value,small:$('fsm').value,win:$('fwin').value,iv});if(z){q.set('src','zapi');q.set('brk',FB)}
+ try{const r=await (z?sfetch:fetch)('/api/orderflow/stream?'+q,{signal:ac.signal});
+  if(r.status==403){flowStop();$('fsrc').innerHTML=TOKMSG;return}
+  const rd=r.body.getReader(),dec=new TextDecoder();let buf='';
+  for(;;){const {value,done}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let i;
+   while((i=buf.indexOf('\n\n'))>=0){const blk=buf.slice(0,i);buf=buf.slice(i+2);const ln=blk.split('\n').filter(x=>x.startsWith('data: '));if(!ln.length)continue;
+    let d;try{d=JSON.parse(ln.map(x=>x.slice(6)).join(''))}catch(e){continue}
+    if(FA!==ac)return;
+    FL.t=Date.now();FL.iv=d.interval||FL.iv;
+    if(d.error){$('fsrc').innerHTML=`<span style="color:var(--dn)">${d.error}</span>`;if(d.final){flowStop();return}continue}
+    FL.closed=z&&d.market_open===false;if(d.quota){FQ=d.quota;FL.q=FQ}flowRender(d)}}
+  if(FA===ac){$('fsrc').innerHTML='<span style="color:var(--dn)">koneksi live terputus</span>';flowStop()}
+ }catch(e){if(FA===ac){$('fsrc').innerHTML='<span style="color:var(--dn)">stream live terputus (server tidak terjangkau?)</span>';flowStop()}}}
+if(document.addEventListener)document.addEventListener('visibilitychange',()=>{if(document.hidden){if(FA){FRES=true;flowStop(true);$('fsrc').innerHTML='<span style="color:#ffd98a">live dijeda: tab tidak terlihat (menghemat kuota)</span>'}}else if(FRES){FRES=false;flowToggle(true)}});
+setInterval(flowTick,1000);
 function drawBook(b,walls){if(!b.bids.length&&!b.asks.length){const[x]=cv('fbook');x.fillStyle='#7384a8';x.fillText('Order book kosong (pasar tutup?)',10,20);return}
  const[x,w,h]=cv('fbook'),n=Math.max(b.bids.length,b.asks.length),rh=(h-24)/(2*n),mx=Math.max(...b.bids.map(r=>r[1]),...b.asks.map(r=>r[1]),1),W=new Set(walls.map(k=>k.side+k.price)),bw=r=>r[1]/mx*(w-150);
  x.textBaseline='middle';x.textAlign='left';
@@ -221,23 +249,29 @@ function drawBook(b,walls){if(!b.bids.length&&!b.asks.length){const[x]=cv('fbook
 async function flowPoll(){
  const z=$('fsel').value=='zapi',q=new URLSearchParams({sym:$('fsym').value||'BBCA',big:$('fbig').value,small:$('fsm').value,win:$('fwin').value});
  if(z){q.set('src','zapi');q.set('brk',FB)}
- let d;try{const r=await (z?sfetch:fetch)('/api/orderflow?'+q);if(r.status==403){flowStop();$('fsrc').innerHTML='<span style="color:var(--dn)">token ditolak — buka terminal lewat http://localhost:8000 (bukan file index.html) lalu muat ulang</span>';return}d=await r.json()}catch(e){$('fsrc').textContent='server tidak terjangkau';return}
- if(d.error){if(z)flowStop();$('fsrc').innerHTML=`<span style="color:var(--dn)">${d.error}</span>`;return}
- const sim=d.src=='SIMULASI',cc=d.label=='BELI'?'up':d.label=='JUAL'?'dn':'',S=d.stats,net=k=>S[k].buy-S[k].sell;
+ let d;try{const r=await (z?sfetch:fetch)('/api/orderflow?'+q);if(r.status==403){$('fsrc').innerHTML=TOKMSG;return}d=await r.json()}catch(e){$('fsrc').textContent='server tidak terjangkau';return}
+ if(d.error){$('fsrc').innerHTML=`<span style="color:var(--dn)">${d.error}</span>`;return}
+ if(d.quota)FQ=d.quota;flowRender(d)}
+function flowRender(d){
+ const last=d.tape.length?d.tape[0].price:null,arrow=(FPR==null||last==null||last===FPR)?'':(last>FPR?' ▲':' ▼'),pcl=(FPR==null||last==null||last===FPR)?'':(last>FPR?'up':'dn'),sim=d.src=='SIMULASI',cc=d.label=='BELI'?'up':d.label=='JUAL'?'dn':'',S=d.stats,net=k=>S[k].buy-S[k].sell;
  $('fsrc').innerHTML=sim?'<span style="color:var(--dn)">● SIMULASI — bukan data pasar</span>':d.src=='ZAPI'?`<span style="color:var(--up)">● ZAPI (Pluang)</span> <span style="color:var(--mu)">transaksi terakhir ${d.last_trade||'—'} · kuota lokal ${d.quota.used}/${d.quota.budget}</span>`:`<span style="color:var(--up)">● FILE</span> <span style="color:var(--mu)">diperbarui ${f2(d.age,0)} dtk lalu</span>`;
  const WB=m=>`<div style="background:#2a2412;border:1px solid #5c4a22;border-radius:5px;padding:6px 10px;margin-top:4px;color:#ffd98a">${m}</div>`;
  $('fwarn').innerHTML=sim?'<div style="background:#2a1220;border:1px solid #5c2236;border-radius:5px;padding:6px 10px;color:#ffb3bd">Data order flow ini <b>disimulasikan</b> untuk mendemonstrasikan alat; pola akumulasi/distribusi di sini acak ('+d.phase+') dan tidak mencerminkan saham sungguhan. Untuk data riil, sediakan file feed (lihat orderflow/README.txt).</div>':(d.src=='ZAPI'?(WB('Data lewat agregator pihak ketiga: bisa tertunda belasan detik atau lebih dan tidak setara feed resmi bursa.')+(d.market_open?'':WB('Pasar kemungkinan tutup (perkiraan jam, belum memuat hari libur) — menampilkan sesi terakhir, transaksi terakhir '+(d.last_trade||'—')+'.'))+(d.gap?WB('Kemungkinan ada celah data: interval segarkan terlalu jarang dibanding laju transaksi.'):'')):(d.age>30?WB('File feed tidak diperbarui lebih dari 30 detik — data mungkin basi.'):''));
- kp('fread',[['Kecenderungan (heuristik)',d.label,cc],['Skor (−1…+1)',f2(d.score),cl(d.score)],['Imbalance buku (berbobot)',pc(d.wimb),cl(d.wimb)],['Aliran lot besar (net)',f2(net('big'),0)+' lot',cl(net('big'))],['Aliran lot kecil (net)',f2(net('small'),0)+' lot',cl(net('small'))],
-  ['Semua transaksi (net)',f2(net('big')+net('mid')+net('small'),0)+' lot',cl(net('big')+net('mid')+net('small'))],['Spread / harga tengah',f2(d.spread,0)+' / '+f2(d.mid,0),''],['VWAP jendela',d.vwap==null?'—':f2(d.vwap,0),''],['Transaksi dalam jendela',d.n+(d.unk?' (+'+d.unk+' tak terklasifikasi)':''),'']]);
+ kp('fread',[['Harga terakhir',last==null?'—':f2(last,0)+arrow,pcl],['Kecenderungan (heuristik)',d.label,cc],['Skor (−1…+1)',f2(d.score),cl(d.score)],['Imbalance buku (berbobot)',pc(d.wimb),cl(d.wimb)],['Aliran lot besar (net)',f2(net('big'),0)+' lot',cl(net('big'))],['Aliran lot kecil (net)',f2(net('small'),0)+' lot',cl(net('small'))],
+  ['Semua transaksi (net)',f2(net('big')+net('mid')+net('small'),0)+' lot',cl(net('big')+net('mid')+net('small'))],['Spread / harga tengah',f2(d.spread,0)+' / '+f2(d.mid,0),''],['VWAP jendela',d.vwap==null?'—':f2(d.vwap,0),''],['Transaksi dalam jendela',d.n+(d.unk?' (+'+d.unk+' tak terklasifikasi)':''),''],['Laju transaksi',f2(d.win?d.n/(d.win/60):0,1)+' /mnt','']]);
  $('fpat').innerHTML=`<b>Pola:</b> ${d.pattern}<br><span style="color:var(--mu)">Keyakinan: ${d.conf}${d.walls.length?' · dinding: '+d.walls.map(k=>(k.side=='B'?'bid ':'ask ')+f2(k.price,0)+' ('+f2(k.lots,0)+' lot, '+f2(k.x,1)+'× median)').join(', '):''}</span>`;
  drawBook(d.book,d.walls);
  if(d.cvd.all.length>1)lines('fcvd',[[d.cvd.all,'#3b9cff','Semua'],[d.cvd.big,'#ffb020','Besar'],[d.cvd.small,'#8a96b3','Kecil']],d.cvd.t,{});else{cv('fcvd')}
- tbl('ftape',['Waktu','Harga','Lot','Sisi'],d.tape.map(t=>[[t.t],[f2(t.price,0)],[(t.big?'◆ ':'')+f2(t.lots,0)],[t.side=='B'?'BELI':t.side=='S'?'JUAL':'?',t.side=='B'?'up':t.side=='S'?'dn':'']]));
+ const kk=t=>t.t+'|'+t.price+'|'+t.lots+'|'+t.side,isNew=FKEYS?(t=>!FKEYS.has(kk(t))):(()=>false);
+ $('ftape').innerHTML='<tr><th>Waktu</th><th>Harga</th><th>Lot</th><th>Sisi</th></tr>'+d.tape.map(t=>`<tr class="${isNew(t)?'nw':''}"><td>${t.t}</td><td>${f2(t.price,0)}</td><td>${t.big?'◆ ':''}${f2(t.lots,0)}</td><td class="${t.side=='B'?'up':t.side=='S'?'dn':''}">${t.side=='B'?'BELI':t.side=='S'?'JUAL':'?'}</td></tr>`).join('');
+ FKEYS=new Set(d.tape.map(kk));FPR=last;
  const b=d.brk;
  if(b){tbl('fgrp',['Kelompok broker'+(sim?' (kode simulasi)':b.mapped?'':' (belum dipetakan)')+(b.partial?' — hanya 10 broker net teratas per sisi; klasifikasi lokal/asing versi Pluang':''),'Beli (lot)','Jual (lot)','Net (lot)'],b.groups.map(g=>[[g.g],[f2(g.buy,0)],[f2(g.sell,0)],[f2(g.net,0),cl(g.net)]]));
   const R=Math.max(b.buyers.length,b.sellers.length);tbl('fbrk',['Net beli teratas','Net lot','Net jual teratas','Net lot'],Array.from({length:R},(_,i)=>[[b.buyers[i]?b.buyers[i].b+' ('+b.buyers[i].g+')':''],[b.buyers[i]?f2(b.buyers[i].net,0):'','up'],[b.sellers[i]?b.sellers[i].b+' ('+b.sellers[i].g+')':''],[b.sellers[i]?f2(b.sellers[i].net,0):'','dn']]).concat([[['Konsentrasi 5 pembeli teratas'],[b.conc==null?'—':pc(b.conc)],[''],['']]]))}
  else{$('fgrp').innerHTML=`<tr><td style="color:var(--mu)">${d.src=='ZAPI'?'Klik <b>Muat broker</b> untuk mengambil broker summary (1 request tambahan).':'Broker summary tidak tersedia (tulis orderflow/live/&lt;SIMBOL&gt;_broker.csv).'}</td></tr>`;$('fbrk').innerHTML=''}
+
 }
+
 let ZT=null,ZRUN=false;
 async function zStatus(){let d;try{d=await (await fetch('/api/zapi/status')).json()}catch(e){$('zmsg').textContent='server tidak terjangkau';return}
  if(!d||!d.sync)return;
@@ -271,7 +305,7 @@ function csv(rows){return rows.map(r=>r.map(v=>{v=v==null?'':String(v);return /[
 let XC=[];
 const EXPS=()=>XC;
 function SAVE(a){XC=a;try{localStorage.setItem('qt_exp',JSON.stringify(a))}catch(e){}
- fetch('/api/exps',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json()).then(j=>{$('xmsg').textContent=($('xmsg').textContent||'')+' · tersimpan di server: experiments.json ('+j.n+')'}).catch(()=>{$('xmsg').textContent=($('xmsg').textContent||'')+' · server tidak terjangkau — hanya tersimpan di browser'});return true}
+ fetch('/api/exps',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json()).then(j=>{$('xmsg').textContent=($('xmsg').textContent||'')+' · tersimpan di browser ini ('+j.n+')'}).catch(()=>{$('xmsg').textContent=($('xmsg').textContent||'')+' · server tidak terjangkau — hanya tersimpan di browser'});return true}
 async function loadExps(){let s=[],l=[];try{s=await (await fetch('/api/exps')).json();if(!Array.isArray(s))s=[]}catch(e){}
  try{l=JSON.parse(localStorage.getItem('qt_exp')||'[]')}catch(e){}
  const ids=new Set(s.map(e=>e.id)),m=s.concat(l.filter(e=>!ids.has(e.id)));XC=m;if(m.length>s.length)SAVE(m);renderExps()}

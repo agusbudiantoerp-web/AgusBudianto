@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnosa Quant Terminal</title>
+<style>
+body{margin:0;padding:20px;background:#070d1a;color:#d6e0f5;font:14px/1.6 "Segoe UI",system-ui,sans-serif}
+h1{font-size:18px;margin:0 0 12px} .r{padding:6px 10px;border:1px solid #1b2a4a;border-radius:6px;margin:6px 0;background:#0c1427}
+.ok{color:#2ecc71}.bad{color:#ff4d5e}.mu{color:#7384a8} pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0;font-size:12px;color:#ffb3ba}
+button{background:#3b9cff;color:#06101f;border:0;border-radius:6px;padding:8px 14px;font-weight:600;cursor:pointer}
+</style></head><body>
+<h1>Diagnosa Quant Terminal (v4)</h1>
+<p class="mu">Menguji persis seperti yang dilakukan terminal, termasuk memuat data CSV. Kirim screenshot hasilnya.</p>
+<button id="go">Jalankan diagnosa</button>
+<div id="out"></div>
+<script src="qt-data.js"></script>
+<script>
+const out=document.getElementById("out");
+const esc=s=>String(s).replace(/</g,'&lt;');
+const add=(ok,t,detail)=>{const d=document.createElement("div");d.className="r";d.innerHTML=`<span class="${ok?'ok':'bad'}">${ok?'✔':'✘'}</span> ${t}`+(detail?`<pre>${esc(detail)}</pre>`:'');out.appendChild(d)};
+const info=t=>{const d=document.createElement("div");d.className="r mu";d.textContent=t;out.appendChild(d)};
+const get=async(p)=>{const r=await fetch(p,{cache:"no-store"});return r.ok?await r.text():null};
+document.getElementById("go").onclick=async()=>{
+  out.innerHTML=""; info("Alamat halaman: "+location.href);
+  // 1. versi file yang sedang online
+  const chk=[["qt-worker.js","pyfile","versi baru (mencari Python di folder yang sama)"],["qt-shim.js","function banner","versi baru (kotak laporan data)"],
+             ["qt-data.js","loadAll","versi baru"],["index.html","qt-shim.js","memuat qt-shim.js (benar)"]];
+  for(const [f,k,m] of chk){try{const t=await get(f);add(!!t&&t.includes(k),`${f}: ${t===null?'TIDAK ADA':(t.includes(k)?m:'VERSI LAMA, unggah ulang dari zip')}`)}catch(e){add(false,f,e)}}
+  // 2. berkas Python
+  const src={};
+  for(const f of ["server.py","orderflow.py","zapi.py","universe.py","qt_bridge.py"]){let ok=false;
+    for(const p of ["py/"+f,f]){try{const t=await get(p);if(t){src[f]=t;ok=true;add(true,`${p} ditemukan`+(f==="qt_bridge.py"&&!t.includes('"idx"')?' — tetapi VERSI LAMA':''));break}}catch(e){}}
+    if(!ok)add(false,`${f} TIDAK ditemukan`)}
+  // 3. Pyodide
+  const LOG=[];let py;const t0=performance.now();
+  try{await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";s.onload=res;s.onerror=()=>rej(new Error("gagal memuat pyodide.js (diblokir jaringan/ekstensi?)"));document.head.appendChild(s)});
+    py=await loadPyodide({stdout:s=>LOG.push(s),stderr:s=>LOG.push(s)});add(true,`Pyodide dimuat (${((performance.now()-t0)/1000).toFixed(1)} dtk), Python ${py.runPython("import sys;sys.version.split()[0]")}`)}
+  catch(e){add(false,"Pyodide gagal dimuat",e&&e.stack||e);return}
+  py.FS.mkdirTree("/py");py.FS.mkdirTree("/data");for(const k in src)py.FS.writeFile("/py/"+k,src[k]);
+  py.runPython("import sys;sys.path.insert(0,'/py')");
+  // 4. data CSV (cara yang sama dengan terminal)
+  if(!window.QTData){add(false,"qt-data.js tidak termuat");return}
+  const lq=py.runPython("import universe;','.join(['IHSG']+universe.LQ45)").split(",");
+  let rep;
+  try{rep=await QTData.loadAll({fetch:(u,o)=>fetch(u,o),href:new URL("qt-worker.js",location.href).href,known:lq,expected:lq.map(n=>n+".JK.csv"),write:(n,t)=>py.FS.writeFile("/data/"+n,t)});
+    add(rep.count>0,`Data CSV dimuat: ${rep.count} berkas (dalam folder terminal: ${rep.byBase.term}, root data/: ${rep.byBase.root})`+(rep.missingCount?`; LQ45 tidak ditemukan: ${rep.missingCount} (mis. ${rep.missingSample.slice(0,4).join(", ")})`:""));
+    info("Pencarian di: "+rep.bases.term+"  dan  "+rep.bases.root)}
+  catch(e){add(false,"Pemuatan data gagal",e&&e.stack||e);return}
+  // 5. modul + API
+  try{py.runPython("import qt_bridge");add(true,"qt_bridge + server berhasil di-import (urutan sama dengan terminal)")}
+  catch(e){add(false,"import modul GAGAL",e.message);return}
+  try{const i=JSON.parse(py.runPython("qt_bridge.info()"));
+    add(i.src==="CSV",`Sumber data yang dipakai terminal: ${i.src==="CSV"?'CSV (data riil)':'SIMULASI'}`+(i.src==="CSV"?` — ${i.idx} saham IDX, ${i.n} bar, ${i.d0} → ${i.d1}`:""),i.src==="CSV"?(i.dropped&&i.dropped.length?"Dilewati (riwayat pendek): "+i.dropped.join(", "):""):LOG.slice(-6).join("\n")||"(tidak ada pesan dari Python)");
+    if(i.src==="CSV")info("Contoh saham: "+(i.sample||[]).join(", "))}
+  catch(e){add(false,"qt_bridge.info() gagal (qt_bridge.py versi lama?)",e.message)}
+  try{const r=py.runPython("qt_bridge.handle('/api/data','asset=BBCA&strat=sma&fast=20&slow=60&stop=3&fee=0.2&cap=100000000&mode=lo&rules=1')").toJs();
+    const d=JSON.parse(r[1]);add(r[0]==200&&!d.error,`Panggil /api/data → status ${r[0]}, sumber: ${d.src||'-'}`,d.error||"")}
+  catch(e){add(false,"Panggilan API gagal",e.message)}
+  info("Selesai.");
+};
+</script></body></html>
