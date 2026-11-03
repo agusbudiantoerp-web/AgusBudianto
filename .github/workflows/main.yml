@@ -1,0 +1,51 @@
+name: idx-data
+
+on:
+  schedule:
+    - cron: "*/20 2-9 * * 1-5"   # snapshot harga + berita pasar tiap ~20 menit saat jam bursa (UTC; WIB = UTC+7)
+    - cron: "10 3,6,10 * * 1-5"  # penuh: detail emiten + berita per emiten (3 kali sehari bursa)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "snapshot atau full"
+        default: "full"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: idx-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Ambil data lama dari cabang idx-data (jika ada)
+        run: |
+          mkdir -p out
+          if git ls-remote --exit-code --heads origin idx-data >/dev/null 2>&1; then
+            git fetch --depth=1 origin idx-data
+            git archive FETCH_HEAD | tar -x -C out
+          fi
+      - name: Buat snapshot
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then
+            if [ "${{ github.event.schedule }}" = "10 3,6,10 * * 1-5" ]; then MODE=full; else MODE=snapshot; fi
+          fi
+          echo "mode=$MODE"
+          python projects/idx-terminal/idx_snapshot.py --out out --mode "$MODE"
+      - name: Terbitkan ke cabang idx-data (satu commit, selalu ditimpa)
+        run: |
+          cd out
+          git init -q
+          git checkout -q -b idx-data
+          git add -A
+          git -c user.name="github-actions" -c user.email="actions@users.noreply.github.com" commit -q -m "data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" idx-data
