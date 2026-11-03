@@ -1,0 +1,434 @@
+[
+ {
+  "judul": "Kalkulator Lifting Crane",
+  "jenis": "Kalkulator",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Kalkulator lifting crane: load chart dan pengecekan keamanan angkat.",
+  "href": "halaman-kalkulator-lifting-crane.html",
+  "kb": 21
+ },
+ {
+  "judul": "Kalkulator Owning & Operating Cost Alat Berat",
+  "jenis": "Kalkulator",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Menghitung biaya kepemilikan dan operasi alat berat.",
+  "href": "halaman-kalkulator-oo-cost-alat-berat.html",
+  "kb": 30
+ },
+ {
+  "judul": "Dashboard Produktivitas Alat Berat",
+  "jenis": "Dashboard",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Indikator produktivitas alat berat (Heavy Equipment Productivity Indicator).",
+  "href": "halaman-dashboard-produktivitas-alat-berat.html",
+  "kb": 884
+ },
+ {
+  "judul": "IGKM Mining Financial Decision System",
+  "jenis": "Dashboard",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Dashboard keputusan keuangan untuk pertambangan.",
+  "href": "halaman-igkm-mining-financial-decision.html",
+  "kb": 288
+ },
+ {
+  "judul": "IGKM Talent Assessment Suite",
+  "jenis": "Landing page",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Rangkaian alat tes psikologi dan kemampuan.",
+  "href": "halaman-igkm-talent-assessment.html",
+  "kb": 40
+ },
+ {
+  "judul": "Roadmap Cost Control and Budget Manager Tambang",
+  "jenis": "Peta belajar",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Peta jalan belajar dari nol sampai Cost Control and Budget Manager tambang.",
+  "href": "halaman-roadmap-cost-control-budget-manager.html",
+  "kb": 15
+ },
+ {
+  "judul": "Analisis Investasi Tambang: Ringkasan Interaktif",
+  "jenis": "Modul belajar",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Ringkasan interaktif dan panduan pendekatan logis dalam usaha pertambangan.",
+  "href": "halaman-analisis-investasi-tambang-ringkasan.html",
+  "kb": 98
+ },
+ {
+  "judul": "Analisis Investasi Tambang: Interactive Learning Hub",
+  "jenis": "Modul belajar",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Pusat belajar interaktif analisis investasi tambang.",
+  "href": "halaman-analisis-investasi-tambang-learning-hub.html",
+  "kb": 106
+ },
+ {
+  "judul": "Blueprint Sistem Maintenance Manager",
+  "jenis": "Portal dokumen",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Kumpulan kebijakan, SOP, dan dokumen untuk Maintenance Manager.",
+  "href": "halaman-blueprint-maintenance-manager.html",
+  "kb": 43
+ },
+ {
+  "judul": "Buku Induk SOP Tambang Nikel & Emas",
+  "jenis": "Landing page",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Buku induk SOP untuk tambang nikel dan emas.",
+  "href": "halaman-sop-tambang-nikel-emas.html",
+  "kb": 20
+ },
+ {
+  "judul": "Data Analyst Pertambangan",
+  "jenis": "Landing page",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Program Data Analyst Pertambangan, dari permukaan ke inti.",
+  "href": "halaman-data-analyst-pertambangan.html",
+  "kb": 58
+ },
+ {
+  "judul": "Akademi Analisis Teknikal",
+  "jenis": "Modul belajar",
+  "kategori": "Keuangan & investasi",
+  "deskripsi": "Belajar membaca candlestick dan indikator pasar.",
+  "href": "halaman-akademi-analisis-teknikal.html",
+  "kb": 45
+ },
+ {
+  "judul": "Financial Modelling: Modul Interaktif",
+  "jenis": "Modul belajar",
+  "kategori": "Keuangan & investasi",
+  "deskripsi": "Buku kerja financial modelling dari teori sampai studi kasus.",
+  "href": "halaman-certified-financial-modeller.html",
+  "kb": 49
+ },
+ {
+  "judul": "Mastering Financial Statement Analysis",
+  "jenis": "Landing page",
+  "kategori": "Keuangan & investasi",
+  "deskripsi": "Modul belajar membaca neraca dan laporan keuangan.",
+  "href": "halaman-analisis-laporan-keuangan.html",
+  "kb": 30
+ },
+ {
+  "judul": "Financial Management for Small Businesses",
+  "jenis": "Modul belajar",
+  "kategori": "Keuangan & investasi",
+  "deskripsi": "Panduan interaktif manajemen keuangan untuk usaha kecil.",
+  "href": "halaman-financial-management-small-business.html",
+  "kb": 62
+ },
+ {
+  "judul": "Primavera P6 + AI untuk Planning Engineer",
+  "jenis": "Landing page",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Program belajar Primavera P6 dengan bantuan AI untuk planning engineer.",
+  "href": "halaman-kursus-p6-ai.html",
+  "kb": 86
+ },
+ {
+  "judul": "Claude Course for Construction Managers",
+  "jenis": "Modul belajar",
+  "kategori": "Data & AI",
+  "deskripsi": "Kurikulum 28 hari memakai Claude untuk manajer konstruksi.",
+  "href": "halaman-claude-course-construction-manager.html",
+  "kb": 66
+ },
+ {
+  "judul": "Belajar Dasar-Dasar Data Science",
+  "jenis": "Landing page",
+  "kategori": "Data & AI",
+  "deskripsi": "Membangun skill data science dari nol.",
+  "href": "halaman-belajar-dasar-data-science.html",
+  "kb": 75
+ },
+ {
+  "judul": "Data-Driven Business Skills Framework",
+  "jenis": "Landing page",
+  "kategori": "Data & AI",
+  "deskripsi": "Mengubah 12 fungsi bisnis menjadi panel instrumen yang bisa dihitung.",
+  "href": "halaman-data-driven-business-skills.html",
+  "kb": 17
+ },
+ {
+  "judul": "Problem Solving & Decision Making Toolkit",
+  "jenis": "Toolkit",
+  "kategori": "Data & AI",
+  "deskripsi": "29 metode berpikir sistematis untuk menyelesaikan masalah dan mengambil keputusan.",
+  "href": "halaman-toolkit-problem-solving.html",
+  "kb": 114
+ },
+ {
+  "judul": "Management & Project Management Toolkit",
+  "jenis": "Landing page",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Toolkit manajemen dan manajemen proyek.",
+  "href": "halaman-management-toolkit.html",
+  "kb": 65
+ },
+ {
+  "judul": "MPM OS: Management & Project Management Operating System",
+  "jenis": "Toolkit",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Sistem operasi manajemen dan manajemen proyek (MPM OS).",
+  "href": "halaman-mpm-os-management-toolkit.html",
+  "kb": 83
+ },
+ {
+  "judul": "Mining Financial Decision System (IGKM), Edisi Rupiah",
+  "jenis": "Dashboard",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Sistem keputusan keuangan tambang dalam rupiah.",
+  "href": "halaman-mining-financial-decision-system-idr.html",
+  "kb": 81
+ },
+ {
+  "judul": "Mining Financial Risk App",
+  "jenis": "Aplikasi",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Analisis dan simulasi risiko keuangan tambang dengan stochastic risk engine.",
+  "href": "halaman-mining-financial-risk-app.html",
+  "kb": 61
+ },
+ {
+  "judul": "MFE Analytics",
+  "jenis": "Aplikasi",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Sistem financial engineering dan analitik risiko untuk pertambangan.",
+  "href": "halaman-mfe-analytics.html",
+  "kb": 51
+ },
+ {
+  "judul": "Mining Financial Engineering & Risk Analytics System",
+  "jenis": "Landing page",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Dari operasi tambang menuju keputusan investasi.",
+  "href": "halaman-mining-financial-engineering-landing.html",
+  "kb": 117
+ },
+ {
+  "judul": "Modul Brevet Pajak AB + CFTR",
+  "jenis": "Modul belajar",
+  "kategori": "Keuangan & investasi",
+  "deskripsi": "Modul referensi dan latihan brevet pajak AB dan CFTR.",
+  "href": "halaman-modul-brevet-pajak.html",
+  "kb": 83
+ },
+ {
+  "judul": "Modul Penjadwalan & Pengendalian Biaya Proyek Konstruksi",
+  "jenis": "Modul belajar",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Jalur kritis, biaya, dan kurva-S proyek konstruksi.",
+  "href": "halaman-modul-penjadwalan.html",
+  "kb": 65
+ },
+ {
+  "judul": "Persoalan Lapangan & Skill Komunikasi",
+  "jenis": "Landing page",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Dari teori ke lapangan: persoalan proyek dan skill komunikasi.",
+  "href": "halaman-persoalan-lapangan-komunikasi.html",
+  "kb": 30
+ },
+ {
+  "judul": "PJO Tambang Batu Bara: Framework & System",
+  "jenis": "Landing page",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Kerangka dan sistem kerja PJO tambang batu bara.",
+  "href": "halaman-pjo-tambang-batu-bara.html",
+  "kb": 1139
+ },
+ {
+  "judul": "Project Control: Dari Nol Hingga Mahir",
+  "jenis": "Landing page",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Belajar project control dari garis dasar sampai simulasi risiko.",
+  "href": "halaman-project-control-dari-nol.html",
+  "kb": 52
+ },
+ {
+  "judul": "Project Control AI",
+  "jenis": "Aplikasi",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Platform kendali proyek konstruksi. Fitur AI tidak aktif di versi GitHub Pages.",
+  "href": "halaman-project-control-ai.html",
+  "kb": 77
+ },
+ {
+  "judul": "QT-Terminal: Institutional Quant Trading Toolkit",
+  "jenis": "Toolkit",
+  "kategori": "Trading & kuantitatif",
+  "deskripsi": "Toolkit quant trading bergaya institusional, dimulai dari data pasar dan universe.",
+  "href": "halaman-qt-terminal-toolkit.html",
+  "kb": 56
+ },
+ {
+  "judul": "Quant Trading Playbook",
+  "jenis": "Modul belajar",
+  "kategori": "Trading & kuantitatif",
+  "deskripsi": "16 modul dan metode LLM untuk menyusun strategi trading dari data mentah sampai eksekusi.",
+  "href": "halaman-quant-trading-playbook.html",
+  "kb": 78
+ },
+ {
+  "judul": "Framework & Sistem Manajemen Risiko",
+  "jenis": "Landing page",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Kerangka dan sistem manajemen risiko.",
+  "href": "halaman-risk-management-framework.html",
+  "kb": 131
+ },
+ {
+  "judul": "MTTR & MTBF: Reliability Dashboard",
+  "jenis": "Dashboard",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Dashboard keandalan alat berat dan conveyor.",
+  "href": "halaman-mttr-mtbf-dashboard.html",
+  "kb": 426
+ },
+ {
+  "judul": "Akademi WMI & CSA",
+  "jenis": "Modul belajar",
+  "kategori": "Keuangan & investasi",
+  "deskripsi": "Belajar mengelola uang orang lain dengan disiplin, dari nol hingga mahir.",
+  "href": "halaman-akademi-wmi-csa.html",
+  "kb": 65
+ },
+ {
+  "judul": "AMTIS: Mining Tender Intelligence System",
+  "jenis": "Aplikasi",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Sistem intelijen tender pertambangan.",
+  "href": "halaman-amtis.html",
+  "kb": 103
+ },
+ {
+  "judul": "ASORI: Kalkulator Volume Material",
+  "jenis": "Kalkulator",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Menghitung volume material.",
+  "href": "halaman-asori-kalkulator-volume-material.html",
+  "kb": 51
+ },
+ {
+  "judul": "BlastPro: Fragmentation Analysis",
+  "jenis": "Aplikasi",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Analisis fragmentasi hasil peledakan.",
+  "href": "halaman-blastpro.html",
+  "kb": 49
+ },
+ {
+  "judul": "Budianto Blast Profesional",
+  "jenis": "Aplikasi",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Analisis fragmentasi hasil peledakan.",
+  "href": "halaman-budianto-blast-profesional.html",
+  "kb": 102
+ },
+ {
+  "judul": "Buku Panduan BMC: Basic Mechanic Course",
+  "jenis": "Modul belajar",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Buku panduan mekanik alat berat untuk pemula.",
+  "href": "halaman-buku-panduan-bmc.html",
+  "kb": 53
+ },
+ {
+  "judul": "Memimpin sebagai CEO di Era AI",
+  "jenis": "Landing page",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Modul eksekutif untuk memimpin di era kecerdasan buatan.",
+  "href": "halaman-ceo-playbook-era-ai.html",
+  "kb": 32
+ },
+ {
+  "judul": "CFA Exam Simulator (Level I, II, III)",
+  "jenis": "Simulator",
+  "kategori": "Ujian & sertifikasi",
+  "deskripsi": "Simulator latihan ujian CFA. Latihan mandiri, tidak berafiliasi dengan CFA Institute.",
+  "href": "halaman-cfa-exam-simulator.html",
+  "kb": 57
+ },
+ {
+  "judul": "CFA Level I: Mock Exam Simulator",
+  "jenis": "Simulator",
+  "kategori": "Ujian & sertifikasi",
+  "deskripsi": "Simulator latihan ujian CFA Level I. Latihan mandiri, tidak berafiliasi dengan CFA Institute.",
+  "href": "halaman-cfa-level1-mock-exam.html",
+  "kb": 44
+ },
+ {
+  "judul": "Claude untuk Divisi Keuangan",
+  "jenis": "Modul belajar",
+  "kategori": "Data & AI",
+  "deskripsi": "Kurikulum AI skill untuk divisi keuangan memakai Claude.",
+  "href": "halaman-claude-untuk-keuangan.html",
+  "kb": 91
+ },
+ {
+  "judul": "EQUIP: Software Bisnis Terintegrasi",
+  "jenis": "Landing page",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Software bisnis terintegrasi untuk mengendalikan operasional.",
+  "href": "halaman-equip-software-bisnis.html",
+  "kb": 65
+ },
+ {
+  "judul": "IELTS & TOEFL Simulation Platform",
+  "jenis": "Simulator",
+  "kategori": "Ujian & sertifikasi",
+  "deskripsi": "Platform simulasi IELTS dan TOEFL iBT/ITP. Latihan mandiri, tidak berafiliasi dengan penyelenggara tes.",
+  "href": "halaman-ielts-toefl-simulation-platform.html",
+  "kb": 76
+ },
+ {
+  "judul": "Global English Assessment Portal",
+  "jenis": "Simulator",
+  "kategori": "Ujian & sertifikasi",
+  "deskripsi": "Portal asesmen diagnostik IELTS dan TOEFL. Latihan mandiri, tidak berafiliasi dengan penyelenggara tes.",
+  "href": "halaman-ielts-toefl-diagnostic.html",
+  "kb": 85
+ },
+ {
+  "judul": "IGKM Hauling Intelligent System",
+  "jenis": "Aplikasi",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Sistem hauling cerdas untuk analisis operasi pengangkutan.",
+  "href": "halaman-igkm-hauling-intelligent-system.html",
+  "kb": 41
+ },
+ {
+  "judul": "IGKM Hauling Kalkulasi v3.0",
+  "jenis": "Kalkulator",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Kalkulasi biaya dan produktivitas hauling versi 3.0.",
+  "href": "halaman-igkm-hauling-kalkulasi.html",
+  "kb": 66
+ },
+ {
+  "judul": "PM Blueprint: 6 Metodologi Project Management",
+  "jenis": "Modul belajar",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Enam metodologi project management interaktif, dari teori ke praktik.",
+  "href": "halaman-pm-blueprint-interaktif.html",
+  "kb": 109
+ },
+ {
+  "judul": "PMP Exam Simulator: 180 Soal",
+  "jenis": "Simulator",
+  "kategori": "Ujian & sertifikasi",
+  "deskripsi": "180 soal latihan ujian PMP. Latihan mandiri, tidak berafiliasi dengan PMI.",
+  "href": "halaman-pmp-exam-simulator.html",
+  "kb": 117
+ },
+ {
+  "judul": "Project Manager Jalanan",
+  "jenis": "Modul belajar",
+  "kategori": "Project control & manajemen",
+  "deskripsi": "Belajar PMBOK 7, Primavera P6, dan MS Project untuk menjadi project manager dari nol.",
+  "href": "halaman-project-manager-jalanan.html",
+  "kb": 149
+ }
+]

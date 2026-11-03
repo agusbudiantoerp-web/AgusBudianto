@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PMP® Exam Simulator — 180 Soal Latihan Ujian PMP</title>
+<meta name="description" content="Simulasi ujian PMP interaktif: 180 soal, timer, navigator soal, dan pembahasan lengkap sesuai PMI Examination Content Outline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-950:#14112B;
+  --navy-900:#1E1B45;
+  --navy-800:#2A2560;
+  --violet-600:#5B3A9E;
+  --violet-500:#7A52C4;
+  --gold-500:#C9972C;
+  --gold-300:#E4C378;
+  --cream-50:#F8F6F1;
+  --cream-100:#F1EEE5;
+  --paper:#FFFFFF;
+  --ink-900:#1C1B29;
+  --ink-600:#514F63;
+  --ink-400:#8987A0;
+  --line:#E4E1D8;
+  --green-600:#1F8A57;
+  --green-100:#E4F5EC;
+  --red-600:#C4392B;
+  --red-100:#FBE8E5;
+  --amber-500:#C9972C;
+  --amber-100:#FBF1DD;
+  --radius:14px;
+  --shadow-lg:0 20px 50px -20px rgba(20,17,43,0.35);
+  --shadow-sm:0 2px 10px rgba(20,17,43,0.08);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--cream-50);
+  color:var(--ink-900);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:'Space Grotesk',system-ui,sans-serif;}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{color:inherit;}
+::selection{background:var(--gold-300);color:var(--navy-950);}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important;}
+}
+
+/* ---------- NAV ---------- */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 32px;
+  background:rgba(20,17,43,0.92);
+  backdrop-filter:blur(10px);
+  color:#fff;
+}
+.brand{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk'; font-weight:700; font-size:17px; letter-spacing:0.2px;}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--gold-500); box-shadow:0 0 0 4px rgba(201,151,44,0.25);}
+.brand small{font-family:'JetBrains Mono'; font-weight:500; color:var(--gold-300); font-size:11px; letter-spacing:2px; text-transform:uppercase; margin-left:4px;}
+.topbar-actions{display:flex; gap:10px;}
+.btn{
+  border:none; cursor:pointer; font-family:'Inter'; font-weight:600; font-size:14px;
+  padding:10px 18px; border-radius:999px; transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn:active{transform:scale(0.97);}
+.btn-gold{background:linear-gradient(135deg,var(--gold-300),var(--gold-500)); color:var(--navy-950); box-shadow:0 8px 20px -8px rgba(201,151,44,0.6);}
+.btn-gold:hover{box-shadow:0 10px 24px -6px rgba(201,151,44,0.75);}
+.btn-ghost{background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.18);}
+.btn-ghost:hover{background:rgba(255,255,255,0.16);}
+.btn-outline-dark{background:transparent;border:1.5px solid var(--navy-900); color:var(--navy-900);}
+.btn-outline-dark:hover{background:var(--navy-900); color:#fff;}
+.btn-primary{background:var(--violet-600); color:#fff;}
+.btn-primary:hover{background:var(--violet-500);}
+.btn-sm{padding:8px 14px; font-size:13px;}
+.btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(122,82,196,0.55), transparent 60%),
+    radial-gradient(700px 400px at 10% 110%, rgba(201,151,44,0.25), transparent 60%),
+    linear-gradient(180deg, var(--navy-950), var(--navy-900) 70%);
+  color:#fff;
+  padding:88px 32px 110px;
+  overflow:hidden;
+}
+.hero::after{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:linear-gradient(180deg, black, transparent 75%);
+  pointer-events:none;
+}
+.hero-inner{max-width:1180px; margin:0 auto; position:relative; z-index:2;}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono'; font-size:12px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--gold-300); background:rgba(201,151,44,0.12); border:1px solid rgba(201,151,44,0.35);
+  padding:7px 14px; border-radius:999px; margin-bottom:28px;
+}
+.hero h1{
+  font-size:clamp(36px,5.2vw,64px); line-height:1.05; font-weight:700; letter-spacing:-0.01em;
+  max-width:820px; margin:0 0 22px;
+}
+.hero h1 em{font-style:normal; color:var(--gold-300);}
+.hero p.lede{
+  font-size:19px; line-height:1.6; color:#CFCBE6; max-width:600px; margin:0 0 40px;
+}
+.hero-ctas{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:64px;}
+.stat-row{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px; overflow:hidden; max-width:900px;
+}
+.stat{background:rgba(255,255,255,0.04); padding:22px 20px;}
+.stat .num{font-family:'Space Grotesk'; font-weight:700; font-size:30px; color:#fff;}
+.stat .lbl{font-size:12.5px; color:#B7B2D6; margin-top:4px; line-height:1.4;}
+
+/* ---------- SECTION: domain breakdown (signature element) ---------- */
+.section{padding:90px 32px; max-width:1180px; margin:0 auto;}
+.section-head{max-width:640px; margin-bottom:52px;}
+.kicker{font-family:'JetBrains Mono'; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--violet-600); font-weight:600;}
+.section-head h2{font-size:clamp(26px,3.4vw,38px); margin:10px 0 14px; font-weight:700; letter-spacing:-0.01em;}
+.section-head p{color:var(--ink-600); font-size:16px; line-height:1.65;}
+
+.eco-bar{
+  display:flex; height:56px; border-radius:12px; overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:28px; border:1px solid var(--line);
+}
+.eco-seg{display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Space Grotesk'; font-weight:600; font-size:14px; position:relative;}
+.eco-seg.people{background:linear-gradient(135deg,#5B3A9E,#7A52C4); flex:42.2;}
+.eco-seg.process{background:linear-gradient(135deg,#1E1B45,#2A2560); flex:50;}
+.eco-seg.business{background:linear-gradient(135deg,#C9972C,#E4C378); color:#2A2005; flex:7.8;}
+
+.eco-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+.eco-card{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px; box-shadow:var(--shadow-sm);}
+.eco-card .swatch{width:34px;height:6px;border-radius:4px;margin-bottom:16px;}
+.eco-card h3{font-size:17px; margin:0 0 6px;}
+.eco-card .count{font-family:'JetBrains Mono'; font-size:13px; color:var(--ink-400); margin-bottom:12px;}
+.eco-card p{font-size:14px; color:var(--ink-600); line-height:1.6; margin:0;}
+
+/* ---------- HOW IT WORKS ---------- */
+.steps{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+.step{border-top:2px solid var(--navy-900); padding-top:16px;}
+.step .idx{font-family:'JetBrains Mono'; color:var(--violet-600); font-weight:600; font-size:13px;}
+.step h4{margin:10px 0 8px; font-size:16px;}
+.step p{font-size:14px; color:var(--ink-600); line-height:1.6; margin:0;}
+
+/* ---------- EXAM APP ---------- */
+#exam-app{background:var(--navy-950); padding:0; display:none;}
+#exam-app.active{display:block;}
+.exam-shell{max-width:1280px; margin:0 auto; padding:28px 24px 60px;}
+
+.exam-topbar{
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  background:var(--navy-900); border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px; padding:16px 22px; margin-bottom:20px; color:#fff;
+  flex-wrap:wrap;
+}
+.exam-brand{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk'; font-weight:700;}
+.exam-progress-wrap{flex:1; min-width:220px;}
+.exam-progress-label{display:flex; justify-content:space-between; font-size:12px; color:#B7B2D6; margin-bottom:6px; font-family:'JetBrains Mono';}
+.exam-progress-bar{height:6px; border-radius:99px; background:rgba(255,255,255,0.12); overflow:hidden;}
+.exam-progress-fill{height:100%; background:linear-gradient(90deg,var(--gold-500),var(--gold-300)); width:0%; transition:width .3s ease;}
+.timer{
+  font-family:'JetBrains Mono'; font-weight:600; font-size:20px; color:#fff;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+  padding:9px 16px; border-radius:10px; letter-spacing:1px; min-width:110px; text-align:center;
+}
+.timer.warn{color:var(--gold-300); border-color:rgba(201,151,44,0.5);}
+.timer.danger{color:#FF8177; border-color:rgba(255,129,119,0.5);}
+
+.exam-grid{display:grid; grid-template-columns:260px 1fr; gap:20px; align-items:start;}
+@media (max-width:920px){ .exam-grid{grid-template-columns:1fr;} }
+
+.nav-panel{
+  background:var(--navy-900); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:20px;
+  position:sticky; top:20px; color:#fff;
+}
+.nav-panel h4{font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:#B7B2D6; margin:0 0 14px; font-family:'JetBrains Mono'; font-weight:600;}
+.nav-legend{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; font-size:11px; color:#B7B2D6;}
+.nav-legend span{display:inline-flex; align-items:center; gap:5px;}
+.legend-dot{width:9px;height:9px;border-radius:3px; display:inline-block;}
+.q-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px; max-height:360px; overflow-y:auto; padding-right:4px;}
+.q-grid::-webkit-scrollbar{width:6px;}
+.q-grid::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.2); border-radius:4px;}
+.q-btn{
+  aspect-ratio:1; border-radius:7px; border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.04);
+  color:#D8D5EE; font-family:'JetBrains Mono'; font-size:11.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:all .12s ease; position:relative;
+}
+.q-btn:hover{border-color:var(--gold-300);}
+.q-btn.answered{background:rgba(31,138,87,0.25); border-color:#2FAF77; color:#8DE8B9;}
+.q-btn.flagged::after{content:"⚑"; position:absolute; top:-6px; right:-4px; font-size:10px; color:var(--gold-300);}
+.q-btn.current{background:linear-gradient(135deg,var(--gold-300),var(--gold-500)); color:var(--navy-950); border-color:transparent;}
+.nav-summary{margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.1); font-size:12.5px; color:#B7B2D6; line-height:1.9;}
+.nav-summary b{color:#fff;}
+.submit-wrap{margin-top:16px;}
+
+.q-panel{background:var(--paper); border-radius:18px; box-shadow:var(--shadow-lg); overflow:hidden;}
+.q-panel-head{
+  display:flex; align-items:center; justify-content:space-between; padding:20px 28px;
+  border-bottom:1px solid var(--line); flex-wrap:wrap; gap:10px;
+}
+.q-tag{font-family:'JetBrains Mono'; font-size:11.5px; text-transform:uppercase; letter-spacing:1px; padding:5px 10px; border-radius:999px; font-weight:600;}
+.q-tag.people{background:#EFE9FA; color:var(--violet-600);}
+.q-tag.process{background:#E7E6F2; color:var(--navy-900);}
+.q-tag.business{background:var(--amber-100); color:#8A6414;}
+.q-number{font-family:'JetBrains Mono'; color:var(--ink-400); font-size:13px;}
+.flag-btn{
+  display:flex; align-items:center; gap:6px; border:1px solid var(--line); background:#fff; border-radius:999px;
+  padding:7px 14px; font-size:13px; cursor:pointer; color:var(--ink-600); font-weight:600;
+}
+.flag-btn.active{background:var(--amber-100); border-color:var(--gold-500); color:#8A6414;}
+
+.q-body{padding:32px 28px 12px;}
+.q-text{font-size:19px; line-height:1.55; font-weight:500; color:var(--ink-900); margin-bottom:26px;}
+.options{display:flex; flex-direction:column; gap:12px;}
+.option{
+  display:flex; align-items:flex-start; gap:14px; border:1.5px solid var(--line); border-radius:12px;
+  padding:15px 18px; cursor:pointer; transition:all .12s ease; background:#fff;
+}
+.option:hover{border-color:var(--violet-500); background:#FAF8FF;}
+.option.selected{border-color:var(--violet-600); background:#F3EEFC;}
+.option-letter{
+  flex:0 0 30px; height:30px; border-radius:8px; background:var(--cream-100); color:var(--ink-600);
+  display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono'; font-weight:700; font-size:13px;
+}
+.option.selected .option-letter{background:var(--violet-600); color:#fff;}
+.option-text{font-size:15.5px; line-height:1.55; padding-top:4px; color:var(--ink-900);}
+
+/* review state coloring */
+.option.correct{border-color:var(--green-600); background:var(--green-100);}
+.option.correct .option-letter{background:var(--green-600); color:#fff;}
+.option.incorrect{border-color:var(--red-600); background:var(--red-100);}
+.option.incorrect .option-letter{background:var(--red-600); color:#fff;}
+
+.explanation{
+  margin:22px 0 0; padding:18px 20px; background:var(--cream-50); border-left:3px solid var(--violet-600);
+  border-radius:0 10px 10px 0; font-size:14.5px; line-height:1.65; color:var(--ink-700, var(--ink-600)); display:none;
+}
+.explanation.show{display:block;}
+.explanation b{color:var(--navy-900); font-family:'Space Grotesk'; display:block; margin-bottom:6px; font-size:13px; text-transform:uppercase; letter-spacing:0.5px;}
+
+.q-panel-foot{
+  display:flex; align-items:center; justify-content:space-between; padding:18px 28px; border-top:1px solid var(--line); gap:12px; flex-wrap:wrap;
+}
+.foot-left, .foot-right{display:flex; gap:10px;}
+
+/* ---------- RESULTS ---------- */
+#results-app{display:none; background:var(--cream-50);}
+#results-app.active{display:block;}
+.results-shell{max-width:960px; margin:0 auto; padding:60px 24px 90px;}
+.score-hero{
+  background:linear-gradient(135deg,var(--navy-950),var(--navy-900)); color:#fff; border-radius:22px; padding:44px 40px;
+  display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; box-shadow:var(--shadow-lg); margin-bottom:32px;
+}
+.score-ring{
+  width:150px; height:150px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-direction:column;
+  background:conic-gradient(var(--gold-500) calc(var(--pct,0)*1%), rgba(255,255,255,0.12) 0);
+  position:relative;
+}
+.score-ring::before{content:""; position:absolute; inset:9px; border-radius:50%; background:var(--navy-950);}
+.score-ring .val{position:relative; font-family:'Space Grotesk'; font-size:32px; font-weight:700;}
+.score-ring .lbl{position:relative; font-size:11px; color:#B7B2D6; letter-spacing:1px;}
+.score-meta h2{margin:0 0 8px; font-size:26px;}
+.score-meta p{margin:0; color:#CFCBE6; font-size:15px; max-width:420px; line-height:1.6;}
+.verdict{display:inline-block; margin-top:14px; padding:6px 14px; border-radius:999px; font-size:12.5px; font-weight:700; font-family:'JetBrains Mono'; letter-spacing:0.5px;}
+.verdict.pass{background:rgba(31,138,87,0.2); color:#6EE0A6; border:1px solid rgba(110,224,166,0.4);}
+.verdict.fail{background:rgba(196,57,43,0.2); color:#FF9A8F; border:1px solid rgba(255,154,143,0.4);}
+
+.domain-scores{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:36px;}
+.domain-score-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow-sm);}
+.domain-score-card h4{margin:0 0 12px; font-size:14px; display:flex; align-items:center; gap:8px;}
+.ds-bar{height:8px; border-radius:99px; background:var(--cream-100); overflow:hidden; margin-bottom:8px;}
+.ds-fill{height:100%; border-radius:99px;}
+.ds-fill.people{background:var(--violet-600);}
+.ds-fill.process{background:var(--navy-900);}
+.ds-fill.business{background:var(--gold-500);}
+.ds-num{font-family:'JetBrains Mono'; font-size:13px; color:var(--ink-600);}
+
+.filter-row{display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap;}
+.chip{border:1px solid var(--line); background:#fff; padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink-600);}
+.chip.active{background:var(--navy-900); border-color:var(--navy-900); color:#fff;}
+
+.review-item{background:#fff; border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin-bottom:14px; box-shadow:var(--shadow-sm);}
+.review-item-head{display:flex; justify-content:space-between; gap:10px; margin-bottom:10px; align-items:flex-start;}
+.review-item-head .qn{font-family:'JetBrains Mono'; font-size:12.5px; color:var(--ink-400);}
+.status-pill{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; font-family:'JetBrains Mono'; letter-spacing:0.3px;}
+.status-pill.correct{background:var(--green-100); color:var(--green-600);}
+.status-pill.incorrect{background:var(--red-100); color:var(--red-600);}
+.status-pill.skipped{background:var(--amber-100); color:#8A6414;}
+.review-item .qtext{font-size:15.5px; font-weight:500; margin-bottom:14px; line-height:1.55;}
+.review-answers{display:grid; gap:8px; margin-bottom:12px;}
+.mini-opt{font-size:13.5px; padding:9px 12px; border-radius:8px; border:1px solid var(--line); display:flex; gap:8px;}
+.mini-opt.correct{background:var(--green-100); border-color:var(--green-600);}
+.mini-opt.incorrect{background:var(--red-100); border-color:var(--red-600);}
+.review-explain{font-size:13.5px; color:var(--ink-600); line-height:1.6; background:var(--cream-50); padding:12px 14px; border-radius:8px;}
+
+.results-actions{display:flex; gap:12px; justify-content:center; margin-top:36px; flex-wrap:wrap;}
+
+/* ---------- FOOTER ---------- */
+footer{background:var(--navy-950); color:#8987A0; padding:40px 32px; text-align:center; font-size:13px;}
+footer strong{color:#fff;}
+
+/* modal */
+.modal-backdrop{position:fixed; inset:0; background:rgba(20,17,43,0.6); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
+.modal-backdrop.show{display:flex;}
+.modal{background:#fff; border-radius:16px; padding:32px; max-width:420px; width:100%; box-shadow:var(--shadow-lg);}
+.modal h3{margin:0 0 10px; font-size:19px;}
+.modal p{color:var(--ink-600); font-size:14px; line-height:1.6; margin:0 0 22px;}
+.modal-actions{display:flex; gap:10px; justify-content:flex-end;}
+
+@media (max-width:640px){
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .eco-grid{grid-template-columns:1fr;}
+  .steps{grid-template-columns:repeat(2,1fr);}
+  .domain-scores{grid-template-columns:1fr;}
+  .score-hero{flex-direction:column; text-align:center; justify-content:center;}
+  .topbar{padding:14px 18px;}
+  .hero{padding:70px 18px 80px;}
+  .section{padding:60px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP NAV ============ -->
+<div class="topbar">
+  <div class="brand"><span class="dot"></span>PMP<small>Exam Simulator</small></div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost btn-sm" onclick="downloadPage()">⬇ Download Halaman Ini</button>
+    <button class="btn btn-gold btn-sm" onclick="scrollToStart()">Mulai Simulasi</button>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <div class="eyebrow">● Disusun oleh Praktisi PM bersertifikat PMP</div>
+    <h1>Simulasi Ujian <em>PMP®</em> Paling Mendekati Ujian Aslinya.</h1>
+    <p class="lede">180 soal latihan berbasis PMI Examination Content Outline (ECO) — lengkap dengan navigator soal, timer, tombol flag for review, dan pembahasan mendalam di setiap jawaban. Semua berjalan langsung di browser Anda, satu file, bisa dipakai offline.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-gold" onclick="scrollToStart()">▶ Mulai Simulasi Ujian</button>
+      <button class="btn btn-ghost" onclick="downloadPage()">⬇ Download File Ini (HTML)</button>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><div class="num">180</div><div class="lbl">Soal pilihan ganda orisinal</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">Domain ECO resmi PMI</div></div>
+      <div class="stat"><div class="num">230</div><div class="lbl">Menit simulasi waktu ujian</div></div>
+      <div class="stat"><div class="num">100%</div><div class="lbl">Disertai pembahasan jawaban</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DOMAIN BREAKDOWN ============ -->
+<section class="section" id="domains">
+  <div class="section-head">
+    <div class="kicker">Struktur Soal</div>
+    <h2>Mengikuti proporsi resmi PMI Examination Content Outline</h2>
+    <p>Sama seperti ujian PMP asli, soal-soal di simulator ini dibagi ke tiga domain kompetensi dengan proporsi yang sepadan — sehingga latihan Anda benar-benar merepresentasikan bobot ujian sesungguhnya.</p>
+  </div>
+  <div class="eco-bar">
+    <div class="eco-seg people">People — 42%</div>
+    <div class="eco-seg process">Process — 50%</div>
+    <div class="eco-seg business">Biz — 8%</div>
+  </div>
+  <div class="eco-grid">
+    <div class="eco-card">
+      <div class="swatch" style="background:var(--violet-600)"></div>
+      <h3>People</h3>
+      <div class="count">76 soal</div>
+      <p>Memimpin tim, resolusi konflik, motivasi, stakeholder engagement, komunikasi, negosiasi, hingga servant leadership.</p>
+    </div>
+    <div class="eco-card">
+      <div class="swatch" style="background:var(--navy-900)"></div>
+      <h3>Process</h3>
+      <div class="count">90 soal</div>
+      <p>Ruang lingkup, jadwal, biaya &amp; EVM, kualitas, risiko, procurement, integrasi, hingga praktik Agile/Scrum/Kanban.</p>
+    </div>
+    <div class="eco-card">
+      <div class="swatch" style="background:var(--gold-500)"></div>
+      <h3>Business Environment</h3>
+      <div class="count">14 soal</div>
+      <p>Kepatuhan &amp; regulasi, realisasi manfaat bisnis, struktur organisasi, dan Kode Etik PMI.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section" id="how" style="padding-top:0;">
+  <div class="section-head">
+    <div class="kicker">Cara Kerja</div>
+    <h2>Dirancang semirip mungkin dengan pengalaman ujian di test center</h2>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="idx">01</div><h4>Mulai &amp; timer berjalan</h4><p>Timer 230 menit otomatis berjalan, sama seperti durasi ujian PMP resmi.</p></div>
+    <div class="step"><div class="idx">02</div><h4>Jawab &amp; tandai ragu-ragu</h4><p>Gunakan navigator soal untuk melompat antar soal, dan tombol flag untuk menandai soal yang perlu ditinjau ulang.</p></div>
+    <div class="step"><div class="idx">03</div><h4>Selesaikan simulasi</h4><p>Submit kapan saja — sistem menghitung skor keseluruhan dan skor per domain ECO secara otomatis.</p></div>
+    <div class="step"><div class="idx">04</div><h4>Pelajari pembahasan</h4><p>Tinjau setiap soal lengkap dengan jawaban benar dan pembahasan mendalam untuk memperkuat pemahaman.</p></div>
+  </div>
+</section>
+
+<!-- ============ CTA STRIP ============ -->
+<section style="background:var(--navy-900); padding:60px 32px; text-align:center; color:#fff;" id="start-cta">
+  <h2 style="font-size:clamp(24px,3vw,32px); margin:0 0 14px;">Siap menguji kesiapan Anda?</h2>
+  <p style="color:#CFCBE6; max-width:520px; margin:0 auto 28px; font-size:15.5px; line-height:1.6;">Simulasi berjalan penuh di perangkat Anda — tidak ada data yang dikirim ke server mana pun.</p>
+  <button class="btn btn-gold" onclick="startExam()">▶ Mulai Simulasi 180 Soal</button>
+</section>
+
+<!-- ============ EXAM APP ============ -->
+<div id="exam-app">
+  <div class="exam-shell">
+    <div class="exam-topbar">
+      <div class="exam-brand"><span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--gold-500);display:inline-block;"></span> PMP Practice Exam</div>
+      <div class="exam-progress-wrap">
+        <div class="exam-progress-label"><span id="progress-text">Soal 1 dari 180</span><span id="answered-text">0 terjawab</span></div>
+        <div class="exam-progress-bar"><div class="exam-progress-fill" id="progress-fill"></div></div>
+      </div>
+      <div class="timer" id="timer">03:50:00</div>
+    </div>
+
+    <div class="exam-grid">
+      <!-- Navigator -->
+      <aside class="nav-panel">
+        <h4>Navigator Soal</h4>
+        <div class="nav-legend">
+          <span><i class="legend-dot" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);"></i>Belum</span>
+          <span><i class="legend-dot" style="background:#2FAF77;"></i>Terjawab</span>
+          <span><i class="legend-dot" style="background:linear-gradient(135deg,var(--gold-300),var(--gold-500));"></i>Sekarang</span>
+          <span>⚑ Ditandai</span>
+        </div>
+        <div class="q-grid" id="q-grid"></div>
+        <div class="nav-summary">
+          Terjawab: <b id="sum-answered">0</b>/180<br>
+          Ditandai: <b id="sum-flagged">0</b><br>
+          Belum dijawab: <b id="sum-unanswered">180</b>
+        </div>
+        <div class="submit-wrap">
+          <button class="btn btn-gold" style="width:100%; justify-content:center;" onclick="confirmSubmit()">Selesai &amp; Lihat Skor</button>
+        </div>
+      </aside>
+
+      <!-- Question panel -->
+      <main class="q-panel">
+        <div class="q-panel-head">
+          <span class="q-tag" id="q-tag">People</span>
+          <span class="q-number" id="q-number">SOAL 1 / 180</span>
+          <button class="flag-btn" id="flag-btn" onclick="toggleFlag()">⚑ Tandai untuk ditinjau</button>
+        </div>
+        <div class="q-body">
+          <div class="q-text" id="q-text"></div>
+          <div class="options" id="options"></div>
+          <div class="explanation" id="explanation"></div>
+        </div>
+        <div class="q-panel-foot">
+          <div class="foot-left">
+            <button class="btn btn-outline-dark btn-sm" id="btn-prev" onclick="prevQuestion()">← Sebelumnya</button>
+          </div>
+          <div class="foot-right">
+            <button class="btn btn-ghost btn-sm" style="color:var(--ink-600); background:var(--cream-100);" id="btn-check" onclick="checkAnswer()">Cek Jawaban</button>
+            <button class="btn btn-primary btn-sm" id="btn-next" onclick="nextQuestion()">Selanjutnya →</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RESULTS APP ============ -->
+<div id="results-app">
+  <div class="results-shell">
+    <div class="score-hero">
+      <div class="score-ring" id="score-ring" style="--pct:0;">
+        <div class="val" id="score-pct">0%</div>
+        <div class="lbl">SKOR AKHIR</div>
+      </div>
+      <div class="score-meta">
+        <h2 id="score-title">Hasil Simulasi Ujian</h2>
+        <p id="score-desc">Anda menjawab benar sekian dari 180 soal.</p>
+        <div class="verdict" id="verdict">—</div>
+      </div>
+    </div>
+
+    <div class="domain-scores" id="domain-scores"></div>
+
+    <div class="filter-row">
+      <button class="chip active" data-filter="all" onclick="setReviewFilter('all')">Semua Soal</button>
+      <button class="chip" data-filter="incorrect" onclick="setReviewFilter('incorrect')">Salah</button>
+      <button class="chip" data-filter="correct" onclick="setReviewFilter('correct')">Benar</button>
+      <button class="chip" data-filter="skipped" onclick="setReviewFilter('skipped')">Dilewati</button>
+      <button class="chip" data-filter="flagged" onclick="setReviewFilter('flagged')">Ditandai</button>
+    </div>
+
+    <div id="review-list"></div>
+
+    <div class="results-actions">
+      <button class="btn btn-outline-dark" onclick="restartExam()">↻ Ulangi Simulasi</button>
+      <button class="btn btn-gold" onclick="downloadPage()">⬇ Download Halaman Ini</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SUBMIT CONFIRM MODAL ============ -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <h3>Selesaikan simulasi?</h3>
+    <p id="modal-text">Anda telah menjawab beberapa soal. Setelah disubmit, jawaban tidak dapat diubah lagi dan skor akan langsung ditampilkan.</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline-dark btn-sm" onclick="closeModal()">Batal</button>
+      <button class="btn btn-gold btn-sm" onclick="submitExam()">Ya, Selesaikan</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p><strong>PMP® Exam Simulator</strong> — 180 soal latihan orisinal disusun mengikuti struktur PMI Examination Content Outline.</p>
+  <p>PMP® dan PMI® adalah merek dagang terdaftar Project Management Institute, Inc. Materi ini adalah bahan latihan independen dan tidak berafiliasi resmi dengan PMI.</p>
+</footer>
+
+<script>
+/* =========================================================
+   DATA
+========================================================= */
+// Bank Soal Simulasi Ujian PMP - 180 soal
+// d = domain (People, Process, Business Environment) sesuai PMI Examination Content Outline (ECO)
+// c = index jawaban benar (0-3)
+const QUESTIONS = [
+
+/* ============ PEOPLE (76 soal) ============ */
+
+// -- Tuckman Ladder (6) --
+{d:"People", t:"Team Development", q:"Tim proyek Anda baru saja dibentuk minggu ini. Anggota tim masih sopan, belum mengenal satu sama lain, dan menunggu arahan dari project manager. Tahap Tuckman apa yang sedang dialami tim ini?", o:["Forming","Storming","Norming","Performing"], c:0, e:"Pada tahap Forming, anggota tim baru berkumpul, bersikap formal/sopan, dan sangat bergantung pada arahan pemimpin karena peran dan ekspektasi belum jelas."},
+{d:"People", t:"Team Development", q:"Dua anggota tim mulai berdebat terbuka soal pendekatan teknis yang harus dipakai, dan mulai muncul persaingan otoritas dalam tim. Tahap apa ini?", o:["Forming","Storming","Norming","Adjourning"], c:1, e:"Storming ditandai konflik, perebutan peran/otoritas, dan perbedaan pendapat saat tim mulai berani menyuarakan opini masing-masing."},
+{d:"People", t:"Team Development", q:"Tim mulai menyepakati cara kerja bersama, saling percaya, dan konflik antar anggota mulai mereda. Tahap apa ini?", o:["Storming","Norming","Performing","Adjourning"], c:1, e:"Norming adalah tahap tim mulai membangun kebiasaan kerja, aturan main, dan kepercayaan sehingga kolaborasi menjadi lebih lancar."},
+{d:"People", t:"Team Development", q:"Tim bekerja sangat efisien, saling mengandalkan tanpa perlu banyak supervisi, dan mampu menyelesaikan masalah secara mandiri. Tahap apa ini?", o:["Norming","Performing","Storming","Forming"], c:1, e:"Performing adalah tahap tim mencapai kematangan tinggi: produktif, mandiri, dan project manager bisa lebih banyak mendelegasikan."},
+{d:"People", t:"Team Development", q:"Proyek telah selesai dan tim dibubarkan, anggota tim dipindahkan ke proyek lain. Tahap Tuckman apa ini?", o:["Performing","Adjourning","Norming","Storming"], c:1, e:"Adjourning terjadi saat pekerjaan selesai dan tim dibubarkan; tahap ini penting untuk closure, pengakuan kontribusi, dan lessons learned."},
+{d:"People", t:"Team Development", q:"Sebuah tim yang sebelumnya sudah performing kedatangan tiga anggota baru sekaligus. Apa yang paling mungkin terjadi pada dinamika tim?", o:["Tim langsung kembali performing tanpa gangguan","Tim kemungkinan kembali ke tahap forming/storming sementara","Tim otomatis bubar","Tim tidak terpengaruh sama sekali"], c:1, e:"Perubahan komposisi tim yang signifikan biasanya membuat tim mundur ke tahap forming atau storming sebelum kembali stabil, karena norma dan kepercayaan perlu dibangun ulang."},
+
+// -- Conflict Management (8) --
+{d:"People", t:"Conflict Management", q:"Dua anggota tim berselisih soal desain fitur. Project manager memutuskan untuk sementara tidak membahas isu ini karena keduanya sedang emosi. Teknik resolusi konflik apa ini?", o:["Collaborate/Problem Solve","Withdraw/Avoid","Force/Direct","Compromise"], c:1, e:"Withdraw/Avoid berarti menunda atau menghindari isu untuk sementara, biasa dipakai saat emosi sedang tinggi agar diskusi bisa lebih produktif nanti."},
+{d:"People", t:"Conflict Management", q:"Project manager menekankan kesamaan pandangan kedua pihak dan meredam perbedaan demi menjaga hubungan baik, meski masalah inti belum benar-benar selesai. Teknik apa ini?", o:["Smooth/Accommodate","Force/Direct","Withdraw/Avoid","Collaborate"], c:0, e:"Smooth/Accommodate menonjolkan kesamaan dan mengalah demi menjaga hubungan, namun tidak selalu menyelesaikan akar masalah secara tuntas."},
+{d:"People", t:"Conflict Management", q:"Sponsor proyek menggunakan otoritasnya untuk langsung memutuskan solusi tanpa berdiskusi lebih lanjut dengan tim. Teknik resolusi konflik apa ini?", o:["Compromise","Collaborate","Force/Direct","Withdraw"], c:2, e:"Force/Direct adalah solusi win-lose yang dipaksakan menggunakan otoritas atau kekuasaan; cepat namun bisa merusak hubungan jangka panjang."},
+{d:"People", t:"Conflict Management", q:"Kedua pihak yang berkonflik sama-sama mengalah sebagian dari tuntutannya agar tercapai kesepakatan yang bisa diterima bersama. Teknik apa ini?", o:["Compromise/Reconcile","Force/Direct","Collaborate","Smooth"], c:0, e:"Compromise menghasilkan solusi lose-lose/moderat di mana kedua pihak sama-sama memberi konsesi; cukup cepat tapi tidak selalu solusi terbaik."},
+{d:"People", t:"Conflict Management", q:"Project manager mengajak kedua pihak duduk bersama, menggali kepentingan masing-masing, dan mencari solusi yang benar-benar memuaskan semua pihak (win-win). Teknik apa ini?", o:["Collaborate/Problem Solve","Compromise","Withdraw","Force"], c:0, e:"Collaborate/Problem Solve dianggap teknik resolusi konflik paling efektif karena menghasilkan solusi win-win melalui penggalian akar masalah bersama."},
+{d:"People", t:"Conflict Management", q:"Menurut penelitian umum dalam manajemen proyek, sumber konflik yang paling sering muncul dalam tim proyek adalah?", o:["Perbedaan kepribadian","Jadwal proyek (schedule)","Warna kulit anggota tim","Lokasi kantor"], c:1, e:"Studi klasik manajemen proyek menunjukkan konflik jadwal (schedule) adalah sumber konflik paling umum, diikuti prioritas proyek dan sumber daya, sedangkan perbedaan kepribadian justru sumber konflik yang relatif jarang."},
+{d:"People", t:"Conflict Management", q:"Konflik dalam tim proyek sebaiknya ditangani oleh?", o:["Hanya sponsor proyek","Hanya sumber daya manusia (HR)","Anggota tim yang terlibat langsung, dibantu PM bila perlu","Selalu dieskalasi ke manajemen atas"], c:2, e:"Praktik terbaik adalah menyelesaikan konflik di tingkat terendah/sedini mungkin oleh pihak yang terlibat; project manager memfasilitasi dan baru eskalasi bila tidak terselesaikan."},
+{d:"People", t:"Conflict Management", q:"Konflik yang tidak dikelola dengan baik dalam proyek paling berisiko menyebabkan?", o:["Peningkatan moral tim","Penurunan produktivitas dan risiko keterlambatan","Penurunan biaya proyek","Peningkatan kepuasan stakeholder"], c:1, e:"Konflik yang dibiarkan berlarut dapat menurunkan kolaborasi dan produktivitas tim, meningkatkan risiko keterlambatan dan turunnya kualitas kerja."},
+
+// -- Leadership (8) --
+{d:"People", t:"Leadership", q:"Seorang project manager lebih berfokus melayani kebutuhan tim, menghilangkan hambatan (impediments), dan memberdayakan anggota tim untuk mengambil keputusan. Gaya kepemimpinan apa ini?", o:["Autocratic","Servant Leadership","Laissez-faire","Transactional"], c:1, e:"Servant leadership menempatkan kebutuhan tim di atas kepentingan pribadi pemimpin: melayani, memberdayakan, dan menghilangkan hambatan bagi tim — sangat ditekankan pada PMBOK edisi terbaru dan Agile."},
+{d:"People", t:"Leadership", q:"Project manager menyesuaikan gaya kepemimpinannya tergantung tingkat kematangan dan kompetensi anggota tim yang berbeda-beda. Pendekatan ini disebut?", o:["Situational Leadership","Transactional Leadership","Laissez-faire","Autocratic Leadership"], c:0, e:"Situational leadership menekankan penyesuaian gaya kepemimpinan (directing, coaching, supporting, delegating) berdasarkan kesiapan dan kompetensi individu/tim."},
+{d:"People", t:"Leadership", q:"Pemimpin yang menginspirasi tim dengan visi besar, mendorong inovasi, dan menciptakan perubahan positif melebihi ekspektasi normal disebut pemimpin?", o:["Transactional","Transformational","Bureaucratic","Charismatic saja tanpa arah"], c:1, e:"Transformational leadership berfokus menginspirasi dan memotivasi tim mencapai visi bersama serta mendorong pertumbuhan melampaui target dasar."},
+{d:"People", t:"Leadership", q:"Pemimpin yang memberikan reward/punishment berdasarkan pencapaian target kerja yang jelas dan terstruktur disebut gaya kepemimpinan?", o:["Transformational","Transactional","Servant","Laissez-faire"], c:1, e:"Transactional leadership berbasis pertukaran: kinerja tertentu diikuti imbalan atau konsekuensi yang jelas dan terukur."},
+{d:"People", t:"Leadership", q:"Dalam struktur organisasi fungsional (functional organization), otoritas project manager terhadap sumber daya proyek umumnya?", o:["Sangat tinggi/penuh","Rendah, keputusan ada di functional manager","Sama besar dengan CEO","Tidak relevan"], c:1, e:"Pada organisasi fungsional, otoritas ada pada functional manager; project manager sering hanya berperan sebagai koordinator dengan otoritas terbatas."},
+{d:"People", t:"Leadership", q:"Dalam struktur organisasi projectized, siapa yang biasanya memiliki otoritas penuh atas sumber daya proyek?", o:["Functional manager","Project manager","Steering committee saja","Tidak ada yang punya otoritas"], c:1, e:"Pada organisasi projectized, project manager memiliki otoritas tinggi hingga penuh atas tim dan sumber daya karena struktur organisasi dibentuk berdasarkan proyek."},
+{d:"People", t:"Leadership", q:"Project manager membiarkan tim yang sangat berpengalaman bekerja dengan minim intervensi karena mereka sudah sangat kompeten dan mandiri. Ini contoh gaya?", o:["Autocratic","Laissez-faire","Directive","Coercive"], c:1, e:"Laissez-faire cocok diterapkan pada tim yang matang dan sangat kompeten karena minim pengawasan; namun bisa berisiko bila diterapkan pada tim yang belum matang."},
+{d:"People", t:"Leadership", q:"Sumber kekuasaan (power) project manager yang berasal dari keahlian teknis atau pengalaman mendalam disebut?", o:["Legitimate power","Expert power","Reward power","Coercive power"], c:1, e:"Expert power berasal dari pengakuan atas keahlian atau pengetahuan seseorang, dan umumnya paling efektif serta paling tahan lama dibanding power lain seperti coercive."},
+
+// -- Motivation Theories (8) --
+{d:"People", t:"Motivation Theory", q:"Menurut Maslow, kebutuhan yang harus dipenuhi terlebih dahulu sebelum kebutuhan aktualisasi diri adalah?", o:["Kebutuhan fisiologis dan keamanan","Kebutuhan aktualisasi diri lebih dulu","Semua kebutuhan setara","Kebutuhan sosial tidak relevan"], c:0, e:"Hierarki kebutuhan Maslow bersifat bertingkat: kebutuhan dasar (fisiologis, keamanan) harus terpenuhi lebih dulu sebelum individu termotivasi oleh kebutuhan sosial, penghargaan, hingga aktualisasi diri."},
+{d:"People", t:"Motivation Theory", q:"Menurut teori dua faktor Herzberg, gaji dan kondisi kerja termasuk kategori faktor apa?", o:["Motivator","Hygiene factor","Growth factor","Achievement factor"], c:1, e:"Herzberg membagi faktor menjadi hygiene (gaji, kondisi kerja, kebijakan) yang mencegah ketidakpuasan tapi tidak memotivasi, dan motivator (pengakuan, tanggung jawab, pertumbuhan) yang benar-benar mendorong kepuasan kerja."},
+{d:"People", t:"Motivation Theory", q:"Manajer yang percaya bahwa karyawan pada dasarnya malas dan perlu diawasi ketat menganut asumsi McGregor tipe?", o:["Teori X","Teori Y","Teori Z","Teori Ekspektansi"], c:0, e:"Teori X berasumsi karyawan tidak menyukai kerja dan perlu diawasi/dikontrol ketat, sementara Teori Y berasumsi karyawan bertanggung jawab dan self-motivated."},
+{d:"People", t:"Motivation Theory", q:"Seorang anggota tim akan lebih termotivasi bekerja keras jika ia yakin usahanya akan menghasilkan kinerja baik yang kemudian dihargai secara berarti. Teori apa yang paling menjelaskan ini?", o:["Teori Ekspektansi (Vroom)","Teori X","Hierarki Maslow","Hygiene Herzberg"], c:0, e:"Expectancy Theory Vroom menyatakan motivasi dipengaruhi keyakinan bahwa usaha akan menghasilkan performa, dan performa akan menghasilkan reward yang bernilai bagi individu."},
+{d:"People", t:"Motivation Theory", q:"Memberi bonus finansial kepada anggota tim hanya akan menghilangkan ketidakpuasan sementara, tapi belum tentu meningkatkan motivasi jangka panjang. Ini sejalan dengan teori?", o:["Herzberg (hygiene vs motivator)","Maslow saja","McGregor Y","Vroom"], c:0, e:"Menurut Herzberg, gaji/bonus adalah hygiene factor — mencegah ketidakpuasan namun bukan pendorong motivasi sejati; motivator sejati datang dari pengakuan, tanggung jawab, dan pertumbuhan."},
+{d:"People", t:"Motivation Theory", q:"Project manager memberi anggota tim otonomi penuh memilih cara kerja karena percaya mereka kompeten dan bertanggung jawab. Ini mencerminkan asumsi?", o:["Teori X McGregor","Teori Y McGregor","Teori hygiene","Teori ekspektansi negatif"], c:1, e:"Teori Y McGregor berasumsi karyawan menyukai tanggung jawab, mampu mengarahkan diri sendiri, dan termotivasi secara intrinsik — sehingga otonomi dapat diberikan."},
+{d:"People", t:"Motivation Theory", q:"Kebutuhan akan pencapaian (achievement), afiliasi (affiliation), dan kekuasaan (power) sebagai pendorong motivasi individu adalah inti dari teori?", o:["McClelland's Theory of Needs","Herzberg","Maslow","Expectancy Theory"], c:0, e:"Teori kebutuhan McClelland menyatakan setiap individu memiliki dominasi kebutuhan berbeda: achievement, affiliation, atau power, yang memengaruhi apa yang memotivasi mereka."},
+{d:"People", t:"Motivation Theory", q:"Memberikan tantangan kerja yang bermakna dan pengakuan atas hasil kerja termasuk contoh dari?", o:["Hygiene factor","Motivator menurut Herzberg","Kebutuhan fisiologis","Coercive power"], c:1, e:"Pengakuan, tanggung jawab, dan pekerjaan bermakna adalah motivator sejati menurut Herzberg yang secara langsung meningkatkan kepuasan dan motivasi kerja."},
+
+// -- Stakeholder Engagement (8) --
+{d:"People", t:"Stakeholder Engagement", q:"Stakeholder dengan kekuasaan tinggi namun minat/kepentingan rendah terhadap proyek sebaiknya dikelola dengan strategi?", o:["Keep Satisfied","Manage Closely","Monitor","Keep Informed"], c:0, e:"Pada Power/Interest Grid, stakeholder power tinggi-interest rendah dikelola dengan 'Keep Satisfied' agar mereka tetap puas tanpa perlu melibatkan mereka terlalu detail."},
+{d:"People", t:"Stakeholder Engagement", q:"Stakeholder dengan power tinggi dan interest tinggi terhadap proyek sebaiknya dikelola dengan strategi?", o:["Monitor","Keep Informed","Manage Closely","Keep Satisfied"], c:2, e:"Stakeholder power tinggi-interest tinggi adalah kelompok kunci yang harus 'Manage Closely' — dilibatkan aktif dan dikelola secara intensif."},
+{d:"People", t:"Stakeholder Engagement", q:"Tingkat keterlibatan stakeholder pada Stakeholder Engagement Assessment Matrix yang menunjukkan stakeholder aktif menentang perubahan hasil proyek disebut?", o:["Unaware","Resistant","Leading","Neutral"], c:1, e:"Kategori 'Resistant' berarti stakeholder mengetahui proyek dan dampaknya, namun secara aktif menentang perubahan yang dibawa proyek."},
+{d:"People", t:"Stakeholder Engagement", q:"Stakeholder yang sudah mengetahui proyek, mendukung perubahan, dan aktif membantu memastikan keberhasilan proyek berada di level engagement?", o:["Supportive","Leading","Neutral","Unaware"], c:1, e:"Level 'Leading' adalah level engagement tertinggi: stakeholder tidak hanya mendukung tapi juga aktif terlibat memastikan keberhasilan proyek."},
+{d:"People", t:"Stakeholder Engagement", q:"Dokumen yang mencatat identifikasi, penilaian, dan strategi pengelolaan seluruh stakeholder proyek disebut?", o:["Stakeholder Register","RACI Chart","Risk Register","Issue Log"], c:0, e:"Stakeholder Register mendokumentasikan identitas, penilaian (power/interest, engagement level), dan klasifikasi stakeholder sebagai dasar strategi engagement."},
+{d:"People", t:"Stakeholder Engagement", q:"Model yang menilai stakeholder berdasarkan tiga dimensi power, urgency, dan legitimacy disebut?", o:["Salience Model","Power/Interest Grid","RACI Model","Stakeholder Cube"], c:0, e:"Salience Model mengelompokkan stakeholder berdasarkan kombinasi power (kekuasaan), urgency (urgensi), dan legitimacy (legitimasi klaim) untuk menentukan prioritas engagement."},
+{d:"People", t:"Stakeholder Engagement", q:"Ketika Anda menemukan stakeholder baru yang belum teridentifikasi di tengah eksekusi proyek, langkah pertama yang tepat adalah?", o:["Mengabaikannya karena sudah masuk fase eksekusi","Mengidentifikasi, menilai, dan memperbarui stakeholder register","Langsung mengeskalasi ke sponsor","Menunda hingga proyek selesai"], c:1, e:"Stakeholder engagement bersifat iteratif sepanjang siklus proyek; stakeholder baru harus segera diidentifikasi, dinilai, dan dicatat/diperbarui pada stakeholder register beserta strategi engagement-nya."},
+{d:"People", t:"Stakeholder Engagement", q:"Manakah contoh strategi paling tepat untuk stakeholder dengan power rendah dan interest rendah?", o:["Manage Closely","Monitor (Minimal Effort)","Keep Satisfied","Keep Informed secara intensif"], c:1, e:"Stakeholder power rendah-interest rendah cukup dipantau (Monitor) dengan usaha minimal, karena dampak dan keterlibatan mereka terhadap proyek relatif kecil."},
+
+// -- Communication (8) --
+{d:"People", t:"Communication", q:"Sebuah tim proyek memiliki 10 anggota. Berapa jumlah saluran komunikasi (communication channels) yang ada?", o:["45","55","90","20"], c:0, e:"Rumus jumlah saluran komunikasi adalah n(n-1)/2. Untuk n=10: 10x9/2 = 45 saluran komunikasi."},
+{d:"People", t:"Communication", q:"Jumlah saluran komunikasi dalam tim bertambah dari 21 menjadi 45 setelah penambahan anggota baru. Berapa jumlah anggota tim sekarang?", o:["9","10","11","12"], c:1, e:"n(n-1)/2=45 menghasilkan n=10 (10x9/2=45). Sebelumnya n(n-1)/2=21 menghasilkan n=7 (7x6/2=21), jadi tim bertambah dari 7 menjadi 10 anggota."},
+{d:"People", t:"Communication", q:"Mengirim email pengumuman ke seluruh anggota proyek tanpa memastikan mereka membacanya termasuk metode komunikasi?", o:["Interactive communication","Push communication","Pull communication","Formal verbal communication"], c:1, e:"Push communication mengirimkan informasi ke penerima tanpa jaminan diterima/dipahami (misalnya email, memo, laporan), berbeda dengan pull yang butuh penerima mengakses sendiri (portal/repository)."},
+{d:"People", t:"Communication", q:"Meletakkan dokumen proyek di portal/repository bersama agar stakeholder mengakses sendiri saat dibutuhkan termasuk metode komunikasi?", o:["Push communication","Pull communication","Interactive communication","Informal communication"], c:1, e:"Pull communication digunakan untuk audiens besar atau informasi kompleks yang diakses sendiri oleh penerima, seperti intranet, knowledge repository, atau e-learning."},
+{d:"People", t:"Communication", q:"Rapat tatap muka atau video call antara dua pihak yang saling bertukar informasi secara real-time termasuk metode komunikasi?", o:["Push communication","Pull communication","Interactive communication","Passive communication"], c:2, e:"Interactive communication melibatkan pertukaran informasi dua arah secara real-time (meeting, panggilan telepon, video conference) dan dianggap metode paling efektif untuk memastikan pemahaman bersama."},
+{d:"People", t:"Communication", q:"Sebagian besar waktu project manager, menurut riset umum manajemen proyek, dihabiskan untuk?", o:["Menulis laporan teknis","Berkomunikasi","Melakukan pekerjaan teknis langsung","Mengisi dokumen administrasi"], c:1, e:"Studi menunjukkan project manager menghabiskan sekitar 90% waktunya untuk berkomunikasi dalam berbagai bentuk, menjadikan komunikasi sebagai kompetensi inti seorang PM."},
+{d:"People", t:"Communication", q:"Prinsip 5C dalam komunikasi tertulis proyek yang efektif meliputi correct, concise, clear, coherent, dan?", o:["Complete","Casual","Colorful","Complicated"], c:0, e:"5C komunikasi tertulis: Correct (benar), Concise (ringkas), Clear (jelas), Coherent (runtut), dan Complete (lengkap) agar pesan tersampaikan tanpa ambiguitas."},
+{d:"People", t:"Communication", q:"Anggota tim melaporkan masalah teknis namun project manager sibuk dan hanya mendengar sepintas tanpa mengonfirmasi pemahaman. Keterampilan apa yang kurang diterapkan PM di sini?", o:["Active listening","Push communication","Formal written communication","Negotiation"], c:0, e:"Active listening mencakup memberi perhatian penuh, mengonfirmasi pemahaman (parafrase/klarifikasi), dan memberi umpan balik — yang tidak dilakukan PM dalam skenario ini."},
+
+// -- Negotiation (6) --
+{d:"People", t:"Negotiation", q:"Sebelum bernegosiasi dengan vendor, PM menyiapkan opsi terbaik yang bisa diambil jika negosiasi gagal mencapai kesepakatan. Konsep ini disebut?", o:["ZOPA","BATNA","Win-win strategy","Force strategy"], c:1, e:"BATNA (Best Alternative to a Negotiated Agreement) adalah alternatif terbaik yang dimiliki jika negosiasi tidak mencapai kesepakatan, penting sebagai pijakan tawar-menawar."},
+{d:"People", t:"Negotiation", q:"Negosiasi di mana kedua pihak berusaha mencari solusi yang menguntungkan bersama dengan fokus pada kepentingan, bukan posisi, disebut?", o:["Distributive negotiation","Integrative/principled negotiation","Competitive negotiation","Positional bargaining"], c:1, e:"Integrative/principled negotiation berfokus pada kepentingan bersama (interest-based) untuk mencapai solusi win-win, berbeda dari distributive negotiation yang bersifat win-lose atas sumber daya tetap."},
+{d:"People", t:"Negotiation", q:"Negosiasi kontrak di mana satu pihak menang berarti pihak lain kalah (fixed pie) disebut?", o:["Integrative negotiation","Distributive negotiation","Collaborative problem solving","Principled negotiation"], c:1, e:"Distributive negotiation bersifat win-lose karena membagi sumber daya yang tetap/terbatas — semakin besar bagian satu pihak, semakin kecil bagian pihak lain."},
+{d:"People", t:"Negotiation", q:"Dalam negosiasi kontrak, memisahkan orang dari masalah dan fokus pada kepentingan bukan posisi adalah prinsip dari pendekatan?", o:["Principled negotiation (Fisher & Ury)","Hard bargaining","Force/direct","Avoidance"], c:0, e:"Principled negotiation dari Fisher & Ury menekankan: pisahkan orang dari masalah, fokus pada kepentingan bukan posisi, ciptakan opsi saling menguntungkan, dan gunakan kriteria objektif."},
+{d:"People", t:"Negotiation", q:"PM bernegosiasi dengan functional manager untuk mendapatkan sumber daya terbaik bagi proyeknya. Ini termasuk contoh negosiasi?", o:["Kontrak eksternal","Negosiasi internal terkait sumber daya","Negosiasi vendor","Klaim kontraktual"], c:1, e:"Negosiasi dengan functional manager untuk resource assignment adalah bentuk negosiasi internal organisasi, bukan negosiasi kontrak/procurement dengan pihak eksternal."},
+{d:"People", t:"Negotiation", q:"Titik temu di mana rentang penawaran kedua pihak dalam negosiasi saling tumpang tindih disebut?", o:["BATNA","ZOPA (Zone of Possible Agreement)","Anchor point","Reservation price"], c:1, e:"ZOPA adalah area/rentang di mana kesepakatan yang bisa diterima kedua pihak saling beririsan, sehingga negosiasi berpotensi menghasilkan kesepakatan."},
+
+// -- Virtual Teams (4) --
+{d:"People", t:"Virtual Teams", q:"Tantangan utama yang paling sering dihadapi tim proyek yang bekerja secara virtual/tersebar lintas zona waktu adalah?", o:["Kelebihan anggaran","Komunikasi dan rasa keterhubungan tim","Kurangnya risiko proyek","Kelebihan sumber daya"], c:1, e:"Tim virtual sering menghadapi tantangan komunikasi (miskomunikasi, kurang isyarat non-verbal) dan membangun rasa kebersamaan/trust karena minim interaksi tatap muka."},
+{d:"People", t:"Virtual Teams", q:"Strategi paling efektif untuk mengurangi miskomunikasi pada tim virtual lintas budaya adalah?", o:["Mengandalkan email saja","Menetapkan ground rules komunikasi dan menggunakan video call rutin","Mengurangi frekuensi rapat","Menghindari dokumentasi tertulis"], c:1, e:"Menetapkan ground rules komunikasi yang jelas serta memanfaatkan video call (interactive communication) membantu mengurangi ambiguitas dan membangun kepercayaan pada tim virtual."},
+{d:"People", t:"Virtual Teams", q:"Pada tim virtual, dokumen kesepakatan tertulis mengenai jam kerja bersama, tools kolaborasi, dan norma komunikasi disebut?", o:["Risk Register","Team Charter/Ground Rules","Stakeholder Register","RACI Chart"], c:1, e:"Team Charter memuat nilai-nilai tim, ground rules, dan kesepakatan kerja bersama termasuk protokol komunikasi — sangat penting bagi tim virtual/tersebar."},
+{d:"People", t:"Virtual Teams", q:"Salah satu risiko tim virtual yang jarang terjadi pada tim kolokasi adalah?", o:["Overwork akibat kedekatan fisik berlebihan","Isolasi sosial dan kurangnya rasa memiliki (belonging)","Konflik jadwal yang lebih sedikit","Biaya kantor yang lebih tinggi"], c:1, e:"Anggota tim virtual berisiko mengalami isolasi sosial dan berkurangnya rasa memiliki terhadap tim karena minimnya interaksi informal dibanding tim yang bekerja satu lokasi."},
+
+// -- Emotional Intelligence (4) --
+{d:"People", t:"Emotional Intelligence", q:"Kemampuan seorang project manager mengenali emosinya sendiri dan bagaimana emosi tersebut memengaruhi keputusan disebut?", o:["Empathy","Self-awareness","Social skill","Motivation eksternal"], c:1, e:"Self-awareness adalah komponen dasar kecerdasan emosional: kemampuan mengenali dan memahami emosi diri sendiri serta dampaknya terhadap perilaku dan keputusan."},
+{d:"People", t:"Emotional Intelligence", q:"PM mampu memahami perasaan dan sudut pandang anggota tim yang sedang stres akibat tenggat ketat, lalu merespons dengan tepat. Ini menunjukkan?", o:["Empathy","Coercive power","Force strategy","Avoidance"], c:0, e:"Empathy adalah kemampuan memahami dan merasakan perspektif emosional orang lain, membantu PM merespons kebutuhan tim secara tepat."},
+{d:"People", t:"Emotional Intelligence", q:"Project manager yang tetap tenang dan tidak meledak emosinya saat menghadapi krisis proyek menunjukkan kompetensi EQ berupa?", o:["Self-regulation","Social awareness saja","Reward power","Positional bargaining"], c:0, e:"Self-regulation adalah kemampuan mengendalikan atau mengarahkan emosi secara konstruktif, penting agar keputusan tetap rasional saat tekanan tinggi."},
+{d:"People", t:"Emotional Intelligence", q:"Kecerdasan emosional yang tinggi pada seorang project manager terbukti paling berkontribusi pada?", o:["Penurunan kualitas produk","Peningkatan kepercayaan dan kolaborasi tim","Penurunan produktivitas tim","Konflik yang lebih sering terjadi"], c:1, e:"EQ yang tinggi membantu PM membangun kepercayaan, meningkatkan kolaborasi, dan mengelola konflik secara konstruktif, sehingga berdampak positif pada kinerja tim."},
+
+// -- Empowerment/Delegation (4) --
+{d:"People", t:"Empowerment", q:"Dalam tim Scrum yang self-organizing, siapa yang menentukan bagaimana pekerjaan pada sprint akan diselesaikan?", o:["Product Owner","Scrum Master","Tim pengembang itu sendiri","Sponsor proyek"], c:2, e:"Tim self-organizing/self-managing menentukan sendiri cara terbaik menyelesaikan pekerjaan; Scrum Master memfasilitasi, Product Owner menentukan prioritas, bukan cara eksekusi teknis."},
+{d:"People", t:"Empowerment", q:"Mendelegasikan wewenang pengambilan keputusan kepada anggota tim yang kompeten bertujuan utama untuk?", o:["Mengurangi tanggung jawab PM sepenuhnya","Meningkatkan rasa memiliki, kecepatan keputusan, dan pengembangan tim","Menghindari akuntabilitas PM","Mengurangi kualitas keputusan"], c:1, e:"Pemberdayaan (empowerment) meningkatkan rasa memiliki, mempercepat pengambilan keputusan di lini depan, dan mengembangkan kapabilitas anggota tim, meski akuntabilitas akhir tetap ada pada PM."},
+{d:"People", t:"Empowerment", q:"Servant leader mendorong pemberdayaan tim namun tetap harus memastikan?", o:["Tim bekerja tanpa arah sama sekali","Tujuan proyek dan batasan (constraints) tetap jelas","PM tidak terlibat sama sekali","Tim tidak diberi akses informasi apapun"], c:1, e:"Pemberdayaan efektif tetap membutuhkan kejelasan tujuan, batasan, dan konteks agar tim dapat mengambil keputusan yang selaras dengan sasaran proyek."},
+{d:"People", t:"Empowerment", q:"Ketika anggota tim baru belum memiliki cukup kompetensi, gaya kepemimpinan situasional yang paling tepat adalah?", o:["Delegating penuh","Directing/coaching lebih intensif","Laissez-faire penuh","Mengabaikan anggota tersebut"], c:1, e:"Situational leadership menyarankan gaya directing atau coaching yang lebih intensif untuk anggota dengan kompetensi/kepercayaan diri rendah, baru bergeser ke delegating seiring kematangan meningkat."},
+
+// -- Training / Mentoring (4) --
+{d:"People", t:"Training & Mentoring", q:"Perbedaan utama antara coaching dan mentoring dalam pengembangan anggota tim adalah?", o:["Coaching fokus performa jangka pendek/spesifik, mentoring fokus pengembangan jangka panjang","Keduanya identik tanpa perbedaan","Mentoring hanya untuk masalah teknis","Coaching selalu dilakukan sponsor"], c:0, e:"Coaching umumnya berfokus pada peningkatan kinerja/keterampilan spesifik jangka pendek, sementara mentoring lebih pada pengembangan karier dan pertumbuhan jangka panjang melalui hubungan berkelanjutan."},
+{d:"People", t:"Training & Mentoring", q:"Anggota tim baru bergabung di tengah proyek. Langkah terbaik PM untuk mempercepat produktivitasnya adalah?", o:["Membiarkannya belajar sendiri tanpa bimbingan","Memberikan onboarding, akses dokumentasi, dan mentor pendamping","Langsung memberi tugas kritikal tanpa konteks","Menunda keterlibatannya hingga akhir proyek"], c:1, e:"Onboarding terstruktur, akses ke dokumentasi proyek, dan pendampingan mentor membantu anggota baru memahami konteks proyek dan menjadi produktif lebih cepat."},
+{d:"People", t:"Training & Mentoring", q:"Investasi pelatihan (training) bagi anggota tim sebaiknya direncanakan pada proses?", o:["Close Project","Develop Team (dalam Resource Management)","Control Quality","Close Procurements"], c:1, e:"Proses Develop Team dalam Resource Management mencakup peningkatan kompetensi, interaksi tim, dan lingkungan kerja, termasuk pelatihan/training bagi anggota tim."},
+{d:"People", t:"Training & Mentoring", q:"Manfaat utama program mentoring formal dalam organisasi berbasis proyek adalah?", o:["Menghambat transfer pengetahuan","Mempercepat transfer pengetahuan dan pengembangan talenta masa depan","Meningkatkan turnover karyawan","Mengurangi engagement tim"], c:1, e:"Mentoring formal mempercepat transfer pengetahuan (tacit knowledge) dari senior ke junior serta membangun jalur pengembangan talenta bagi organisasi ke depan."},
+
+// -- Diversity & Inclusion (4) --
+{d:"People", t:"Diversity & Inclusion", q:"Tim proyek multikultural memiliki perbedaan gaya komunikasi dan norma kerja. Langkah tepat PM untuk mengelola hal ini adalah?", o:["Memaksakan satu gaya komunikasi dominan","Membangun ground rules yang menghargai perbedaan dan meningkatkan awareness budaya","Mengabaikan perbedaan tersebut","Memisahkan anggota berdasarkan latar belakang"], c:1, e:"Mengelola tim multikultural memerlukan ground rules yang inklusif dan peningkatan cultural awareness agar perbedaan menjadi kekuatan kolaborasi, bukan sumber konflik."},
+{d:"People", t:"Diversity & Inclusion", q:"Manfaat utama keberagaman (diversity) dalam tim proyek adalah?", o:["Mengurangi variasi sudut pandang","Meningkatkan kreativitas dan kualitas pengambilan keputusan","Selalu memperlambat proyek","Menghilangkan kebutuhan komunikasi"], c:1, e:"Tim yang beragam cenderung menghasilkan lebih banyak perspektif, meningkatkan kreativitas, inovasi, dan kualitas pengambilan keputusan bila dikelola secara inklusif."},
+{d:"People", t:"Diversity & Inclusion", q:"Ground rules tim sebaiknya dibuat dengan cara?", o:["Ditetapkan sepihak oleh PM tanpa diskusi","Disepakati bersama seluruh anggota tim","Ditentukan oleh sponsor saja","Tidak perlu didokumentasikan"], c:1, e:"Ground rules paling efektif ketika disusun dan disepakati bersama seluruh anggota tim sehingga ada rasa kepemilikan dan komitmen untuk mematuhinya."},
+{d:"People", t:"Diversity & Inclusion", q:"Inclusive leadership dalam tim proyek berarti PM harus?", o:["Memberi kesempatan bicara hanya pada anggota senior","Memastikan semua suara didengar termasuk anggota junior/minoritas","Mengabaikan pendapat yang berbeda","Membatasi partisipasi anggota tertentu"], c:1, e:"Inclusive leadership memastikan semua anggota tim, terlepas dari latar belakang atau senioritas, memiliki kesempatan setara untuk menyuarakan pendapat dan berkontribusi."},
+
+// -- Removing Impediments (4) --
+{d:"People", t:"Servant Leadership / Impediments", q:"Dalam tim Scrum, siapa yang bertanggung jawab menghilangkan hambatan (impediments) yang menghalangi tim mencapai sprint goal?", o:["Product Owner","Scrum Master","Sponsor","Stakeholder eksternal"], c:1, e:"Scrum Master berperan sebagai servant leader yang bertanggung jawab mengidentifikasi dan menghilangkan impediments agar tim dapat bekerja secara optimal."},
+{d:"People", t:"Servant Leadership / Impediments", q:"Anggota tim melaporkan bahwa akses ke server testing terblokir sehingga pekerjaan tertunda. Langkah pertama Scrum Master yang tepat adalah?", o:["Mengabaikan laporan tersebut","Membantu menghilangkan hambatan tersebut secepatnya","Menunda hingga sprint review","Menyalahkan anggota tim"], c:1, e:"Menghilangkan impediment secara cepat adalah tanggung jawab utama Scrum Master/servant leader agar tim tidak kehilangan momentum dan sprint goal tetap tercapai."},
+{d:"People", t:"Servant Leadership / Impediments", q:"Impediment yang tidak bisa diselesaikan oleh Scrum Master sendiri karena melibatkan kebijakan organisasi sebaiknya?", o:["Dibiarkan saja","Dieskalasi ke pihak yang berwenang di organisasi","Disembunyikan dari tim","Ditangani oleh anggota tim junior"], c:1, e:"Jika impediment berada di luar kendali tim (kebijakan organisasi), Scrum Master perlu mengeskalasi ke manajemen/pihak berwenang yang relevan agar segera terselesaikan."},
+{d:"People", t:"Servant Leadership / Impediments", q:"Konsep 'servant leadership' menekankan bahwa peran utama pemimpin proyek adalah?", o:["Memerintah tim tanpa negosiasi","Melayani dan memberdayakan tim agar tim bisa berkembang dan berhasil","Mengontrol seluruh keputusan teknis","Menjaga jarak dengan tim"], c:1, e:"Servant leadership menempatkan pemimpin sebagai pelayan bagi tim: memfasilitasi, melayani kebutuhan tim, menghilangkan hambatan, dan memberdayakan agar tim tumbuh dan proyek berhasil."},
+
+/* ============ PROCESS (90 soal) ============ */
+
+// -- Charter & Business Case (5) --
+{d:"Process", t:"Charter & Business Case", q:"Dokumen yang secara resmi mengesahkan keberadaan proyek dan memberi otoritas kepada project manager untuk menggunakan sumber daya organisasi disebut?", o:["Project Management Plan","Project Charter","Business Case","Scope Statement"], c:1, e:"Project Charter adalah dokumen yang secara formal mengesahkan proyek dan memberikan otoritas project manager untuk menggunakan sumber daya organisasi bagi aktivitas proyek."},
+{d:"Process", t:"Charter & Business Case", q:"Dokumen yang menjelaskan justifikasi bisnis, analisis kebutuhan, dan manfaat yang diharapkan sebelum proyek disetujui adalah?", o:["Business Case","Project Charter","Risk Register","Stakeholder Register"], c:0, e:"Business Case menyediakan justifikasi bisnis (kebutuhan, analisis biaya-manfaat, opsi) yang menjadi dasar keputusan otorisasi proyek, biasanya dibuat sebelum charter."},
+{d:"Process", t:"Charter & Business Case", q:"Siapa yang secara umum memiliki otoritas menandatangani dan mengesahkan project charter?", o:["Project Manager","Sponsor atau inisiator proyek dengan otoritas memadai","Tim proyek","Vendor"], c:1, e:"Project charter disahkan oleh sponsor atau inisiator proyek yang memiliki otoritas memberi pendanaan dan sumber daya, bukan oleh project manager sendiri."},
+{d:"Process", t:"Charter & Business Case", q:"Proyek tanpa project charter yang jelas berisiko mengalami?", o:["Kejelasan otoritas yang lebih baik","Ambiguitas tujuan dan kurangnya otoritas formal PM","Peningkatan efisiensi tim","Pengurangan risiko proyek"], c:1, e:"Tanpa charter yang jelas, tujuan proyek bisa ambigu dan project manager tidak memiliki otoritas formal untuk mengalokasikan sumber daya organisasi."},
+{d:"Process", t:"Charter & Business Case", q:"Analisis biaya-manfaat (cost-benefit analysis) dalam business case digunakan untuk?", o:["Menentukan jadwal detail proyek","Membandingkan manfaat yang diharapkan dengan biaya investasi","Menentukan struktur tim","Menyusun risk register"], c:1, e:"Cost-benefit analysis membandingkan estimasi manfaat (financial/non-financial) dengan biaya yang dikeluarkan untuk menentukan kelayakan investasi proyek."},
+
+// -- Scope (8) --
+{d:"Process", t:"Scope Management", q:"Struktur hierarkis yang memecah total ruang lingkup pekerjaan proyek menjadi paket-paket kerja yang lebih kecil dan mudah dikelola disebut?", o:["Gantt Chart","Work Breakdown Structure (WBS)","RACI Chart","Network Diagram"], c:1, e:"WBS adalah dekomposisi hierarkis dari total lingkup pekerjaan proyek menjadi work package yang lebih kecil, dapat diestimasi, dan dapat dikelola."},
+{d:"Process", t:"Scope Management", q:"Level terkecil/terendah dalam WBS yang dapat diestimasi biaya dan durasinya disebut?", o:["Control Account","Work Package","Milestone","Deliverable"], c:1, e:"Work Package adalah level terendah WBS yang cukup rinci untuk diestimasi biaya, durasi, dan sumber dayanya, serta ditugaskan kepada individu/tim tertentu."},
+{d:"Process", t:"Scope Management", q:"Penambahan fitur di luar scope yang disetujui tanpa melalui proses change control disebut?", o:["Gold plating","Scope creep","Value engineering","Progressive elaboration"], c:1, e:"Scope creep adalah penambahan/perluasan lingkup proyek tanpa persetujuan formal melalui proses perubahan (change control), sering menyebabkan pembengkakan biaya dan jadwal."},
+{d:"Process", t:"Scope Management", q:"Tim proyek menambahkan fitur ekstra pada produk yang tidak diminta klien karena ingin memberi 'nilai lebih'. Ini disebut?", o:["Scope creep","Gold plating","Value-added change","Approved change request"], c:1, e:"Gold plating adalah penambahan fitur/pekerjaan di luar spesifikasi yang diminta secara sepihak oleh tim, meski berniat baik, tetap dianggap praktik buruk karena tidak melalui proses persetujuan dan bisa menambah risiko/biaya."},
+{d:"Process", t:"Scope Management", q:"Dokumen yang menghubungkan setiap requirement dengan tujuan bisnis dan deliverable proyek untuk memastikan tidak ada requirement yang hilang disebut?", o:["Requirements Traceability Matrix","WBS Dictionary","Scope Statement","Change Log"], c:0, e:"Requirements Traceability Matrix (RTM) menghubungkan requirement dengan asal-usulnya dan deliverable terkait, memastikan setiap requirement dapat dilacak sepanjang siklus proyek."},
+{d:"Process", t:"Scope Management", q:"Proses formal menerima deliverable yang telah selesai dari pelanggan atau sponsor disebut?", o:["Control Scope","Validate Scope","Define Scope","Plan Scope Management"], c:1, e:"Validate Scope adalah proses memformalkan penerimaan deliverable yang telah selesai oleh pelanggan/sponsor, berbeda dengan Control Quality yang memeriksa kebenaran/kesesuaian standar teknis."},
+{d:"Process", t:"Scope Management", q:"Proses memantau status lingkup proyek dan mengelola perubahan terhadap scope baseline disebut?", o:["Validate Scope","Control Scope","Define Scope","Collect Requirements"], c:1, e:"Control Scope memantau status ruang lingkup proyek/produk dan mengelola perubahan terhadap scope baseline melalui proses integrated change control."},
+{d:"Process", t:"Scope Management", q:"Kombinasi dari project scope statement, WBS, dan WBS dictionary yang telah disetujui disebut?", o:["Scope Baseline","Requirements Documentation","Project Charter","Quality Baseline"], c:0, e:"Scope Baseline terdiri dari scope statement, WBS, dan WBS dictionary yang telah disetujui, menjadi acuan pembanding untuk mengukur perubahan dan kinerja lingkup."},
+
+// -- Schedule (10) --
+{d:"Process", t:"Schedule Management", q:"Jalur terpanjang dalam network diagram yang menentukan durasi minimum penyelesaian proyek disebut?", o:["Critical Path","Free Float","Lag","Fast Tracking"], c:0, e:"Critical Path adalah rangkaian aktivitas dengan total durasi terpanjang dari awal hingga akhir proyek dan menentukan durasi minimum proyek; keterlambatan aktivitas pada jalur ini langsung memperlambat proyek."},
+{d:"Process", t:"Schedule Management", q:"Sebuah aktivitas memiliki Early Start=5, Early Finish=10, Late Start=7, Late Finish=12. Berapa total float aktivitas tersebut?", o:["0 hari","2 hari","5 hari","7 hari"], c:1, e:"Total float = Late Start - Early Start (atau Late Finish - Early Finish) = 7-5 = 2 hari, artinya aktivitas dapat tertunda 2 hari tanpa memengaruhi tanggal selesai proyek."},
+{d:"Process", t:"Schedule Management", q:"Aktivitas pada critical path memiliki total float sebesar?", o:["Selalu positif besar","Nol (0)","Selalu negatif","Tidak dapat dihitung"], c:1, e:"Aktivitas pada jalur kritis memiliki total float nol, artinya tidak ada keleluasaan waktu — keterlambatan sedikit saja akan memperlambat keseluruhan proyek."},
+{d:"Process", t:"Schedule Management", q:"Menggunakan estimasi Optimistic (O)=4, Most Likely (M)=6, Pessimistic (P)=8 hari, berapa estimasi PERT (Beta distribution)?", o:["6 hari","5 hari","6.5 hari","7 hari"], c:0, e:"Rumus PERT: (O + 4M + P) / 6 = (4 + 24 + 8) / 6 = 36/6 = 6 hari."},
+{d:"Process", t:"Schedule Management", q:"Menjalankan beberapa aktivitas yang biasanya berurutan secara paralel/bersamaan untuk mempercepat jadwal, dengan risiko rework meningkat, disebut?", o:["Crashing","Fast Tracking","Resource Leveling","Critical Chain"], c:1, e:"Fast tracking mempercepat jadwal dengan menjalankan aktivitas secara paralel yang normalnya berurutan; berisiko meningkatkan rework karena ketergantungan antar aktivitas belum sepenuhnya selesai."},
+{d:"Process", t:"Schedule Management", q:"Menambah sumber daya pada aktivitas kritis untuk mempercepat jadwal, biasanya dengan konsekuensi kenaikan biaya, disebut?", o:["Fast Tracking","Crashing","Leveling","Smoothing"], c:1, e:"Crashing mempercepat jadwal dengan menambah sumber daya (biaya) pada aktivitas kritis; dipilih berdasarkan rasio biaya tambahan terkecil per unit waktu yang dihemat."},
+{d:"Process", t:"Schedule Management", q:"Teknik diagram jaringan yang menunjukkan aktivitas sebagai node dan panah menunjukkan hubungan ketergantungan disebut?", o:["Precedence Diagramming Method (PDM)","Gantt Chart","RACI Matrix","Fishbone Diagram"], c:0, e:"Precedence Diagramming Method (PDM) menggambarkan aktivitas sebagai node/kotak yang dihubungkan panah menunjukkan jenis dependency (FS, SS, FF, SF)."},
+{d:"Process", t:"Schedule Management", q:"Waktu tunggu tambahan antara dua aktivitas yang sengaja ditambahkan (misalnya menunggu beton mengering) disebut?", o:["Lead","Lag","Float","Slack"], c:1, e:"Lag adalah keterlambatan/jeda yang sengaja ditambahkan setelah dependency, misalnya menunggu waktu curing beton sebelum aktivitas berikutnya dimulai."},
+{d:"Process", t:"Schedule Management", q:"Mempercepat mulainya aktivitas penerus sebelum aktivitas pendahulunya benar-benar selesai (tumpang tindih) disebut?", o:["Lag","Lead","Float","Buffer"], c:1, e:"Lead adalah percepatan aktivitas penerus untuk dimulai sebelum aktivitas pendahulu selesai sepenuhnya (overlap), umum digunakan pada dependency finish-to-start."},
+{d:"Process", t:"Schedule Management", q:"Jenis dependency yang paling umum di mana aktivitas penerus tidak bisa mulai sebelum aktivitas pendahulu selesai disebut?", o:["Start-to-Start","Finish-to-Start","Finish-to-Finish","Start-to-Finish"], c:1, e:"Finish-to-Start (FS) adalah tipe dependency paling umum: aktivitas berikutnya baru bisa dimulai setelah aktivitas sebelumnya selesai."},
+
+// -- Cost / EVM (12) --
+{d:"Process", t:"Earned Value Management", q:"Sebuah proyek memiliki PV=100 juta, EV=90 juta, AC=110 juta. Berapa Cost Variance (CV)?", o:["-20 juta","-10 juta","10 juta","20 juta"], c:1, e:"CV = EV - AC = 90 - 110 = -10 juta. Nilai negatif menunjukkan proyek over budget (biaya aktual melebihi nilai pekerjaan yang diselesaikan)."},
+{d:"Process", t:"Earned Value Management", q:"Dari data PV=100 juta, EV=90 juta, AC=110 juta, berapa Schedule Variance (SV)?", o:["-10 juta","10 juta","-20 juta","0"], c:0, e:"SV = EV - PV = 90 - 100 = -10 juta. Nilai negatif menunjukkan proyek tertinggal dari jadwal (pekerjaan yang selesai lebih sedikit dari yang direncanakan)."},
+{d:"Process", t:"Earned Value Management", q:"Dengan EV=90 juta dan AC=110 juta, berapa Cost Performance Index (CPI)?", o:["0.82","1.22","0.9","1.0"], c:0, e:"CPI = EV/AC = 90/110 ≈ 0.82. CPI di bawah 1 menunjukkan efisiensi biaya buruk — setiap 1 rupiah yang dikeluarkan hanya menghasilkan sekitar 0.82 rupiah nilai pekerjaan."},
+{d:"Process", t:"Earned Value Management", q:"Dengan EV=90 juta dan PV=100 juta, berapa Schedule Performance Index (SPI)?", o:["1.11","0.9","1.0","0.82"], c:1, e:"SPI = EV/PV = 90/100 = 0.9. SPI di bawah 1 menunjukkan proyek berjalan lebih lambat dari jadwal yang direncanakan."},
+{d:"Process", t:"Earned Value Management", q:"Sebuah proyek memiliki BAC=500 juta dan CPI=0.8, serta diasumsikan kinerja biaya akan berlanjut sama hingga akhir. Berapa estimasi EAC?", o:["400 juta","500 juta","625 juta","450 juta"], c:2, e:"EAC = BAC/CPI = 500/0.8 = 625 juta. Rumus ini dipakai ketika varians biaya saat ini diasumsikan akan berlanjut sepanjang sisa proyek."},
+{d:"Process", t:"Earned Value Management", q:"Jika EAC diketahui 625 juta dan AC saat ini adalah 200 juta, berapa Estimate to Complete (ETC)?", o:["425 juta","825 juta","400 juta","625 juta"], c:0, e:"ETC = EAC - AC = 625 - 200 = 425 juta, yaitu perkiraan biaya yang masih dibutuhkan untuk menyelesaikan sisa pekerjaan proyek."},
+{d:"Process", t:"Earned Value Management", q:"Manakah rumus To-Complete Performance Index (TCPI) berbasis BAC yang benar?", o:["(BAC-EV)/(BAC-AC)","EV/AC","(BAC-AC)/(BAC-EV)","AC/EV"], c:0, e:"TCPI (berbasis BAC) = (BAC - EV) / (BAC - AC), menunjukkan efisiensi biaya yang dibutuhkan pada sisa pekerjaan agar proyek tetap selesai sesuai anggaran awal (BAC)."},
+{d:"Process", t:"Earned Value Management", q:"Proyek dengan CPI=1.15 menunjukkan bahwa?", o:["Proyek over budget","Proyek under budget/lebih efisien dari rencana","Proyek tepat sesuai anggaran","Data tidak cukup untuk disimpulkan"], c:1, e:"CPI di atas 1 (1.15) menunjukkan efisiensi biaya lebih baik dari rencana — nilai pekerjaan yang dihasilkan lebih besar dari biaya aktual yang dikeluarkan."},
+{d:"Process", t:"Earned Value Management", q:"Proyek dengan SPI=0.75 menunjukkan bahwa?", o:["Proyek berjalan lebih cepat dari jadwal","Proyek tertinggal 25% dari jadwal yang direncanakan","Proyek over budget","Proyek sudah selesai"], c:1, e:"SPI 0.75 menunjukkan pekerjaan yang telah diselesaikan (EV) hanya 75% dari yang direncanakan (PV) pada titik waktu tersebut, artinya proyek tertinggal jadwal."},
+{d:"Process", t:"Earned Value Management", q:"Manakah rumus Estimate at Completion (EAC) yang digunakan bila estimasi awal (BAC) dianggap sudah tidak realistis dan perlu estimasi baru sepenuhnya (bottom-up)?", o:["EAC = BAC/CPI","EAC = AC + Bottom-up ETC","EAC = AC + (BAC-EV)","EAC = BAC x CPI"], c:1, e:"Ketika asumsi awal proyek dianggap tidak lagi berlaku, EAC dihitung dengan re-estimasi bottom-up penuh untuk sisa pekerjaan: EAC = AC + Bottom-up ETC."},
+{d:"Process", t:"Earned Value Management", q:"Manakah rumus EAC yang tepat digunakan jika varian biaya dianggap tidak akan berulang (atypical) pada sisa proyek?", o:["EAC = AC + (BAC-EV)","EAC = BAC/CPI","EAC = AC/EV x BAC","EAC = BAC x SPI"], c:0, e:"EAC = AC + (BAC-EV) digunakan bila varians saat ini dianggap kasus khusus/tidak akan terulang, sehingga sisa pekerjaan diasumsikan berjalan sesuai rencana awal (tanpa efisiensi/inefisiensi lanjutan)."},
+{d:"Process", t:"Earned Value Management", q:"Percent Complete suatu proyek dihitung dengan rumus?", o:["AC/BAC","EV/BAC","PV/BAC","EV/AC"], c:1, e:"Percent complete = EV/BAC, menunjukkan persentase nilai pekerjaan yang telah diselesaikan dibandingkan total anggaran yang direncanakan (Budget at Completion)."},
+
+// -- Quality (8) --
+{d:"Process", t:"Quality Management", q:"Biaya yang dikeluarkan untuk mencegah cacat sebelum terjadi, seperti pelatihan dan perencanaan kualitas, termasuk kategori?", o:["Cost of Nonconformance","Prevention Cost (Cost of Conformance)","Internal Failure Cost","External Failure Cost"], c:1, e:"Prevention cost adalah bagian dari Cost of Conformance — biaya untuk mencegah cacat terjadi sejak awal (pelatihan, perencanaan kualitas, dokumentasi proses)."},
+{d:"Process", t:"Quality Management", q:"Biaya penggantian produk yang cacat setelah diterima pelanggan, termasuk klaim garansi, termasuk kategori?", o:["Prevention Cost","Appraisal Cost","Internal Failure Cost","External Failure Cost"], c:3, e:"External failure cost adalah biaya akibat cacat yang ditemukan setelah produk sampai ke pelanggan (klaim garansi, retur, kehilangan reputasi) — termasuk Cost of Nonconformance yang paling mahal."},
+{d:"Process", t:"Quality Management", q:"Sebuah control chart menunjukkan 7 titik data berturut-turut berada di satu sisi garis tengah (mean), meski masih dalam batas kontrol. Aturan apa yang terlanggar?", o:["Rule of Seven","Pareto Rule","Six Sigma Rule","Cost of Quality Rule"], c:0, e:"Rule of Seven menyatakan bahwa 7 titik data berturut-turut di satu sisi garis tengah mengindikasikan proses tidak lagi acak/random dan perlu diselidiki meski masih dalam batas kontrol."},
+{d:"Process", t:"Quality Management", q:"Diagram yang mengurutkan penyebab masalah berdasarkan frekuensi kemunculannya untuk mengidentifikasi 'vital few' penyebab utama disebut?", o:["Fishbone Diagram","Pareto Chart","Control Chart","Scatter Diagram"], c:1, e:"Pareto Chart (berdasarkan prinsip 80/20) mengurutkan penyebab masalah dari yang paling sering terjadi, membantu tim fokus pada 'vital few' penyebab yang berdampak paling besar."},
+{d:"Process", t:"Quality Management", q:"Diagram yang membantu mengidentifikasi akar penyebab masalah dengan mengelompokkan kategori penyebab (manusia, mesin, metode, material, dll) disebut?", o:["Ishikawa/Fishbone Diagram","Pareto Chart","Run Chart","Histogram"], c:0, e:"Fishbone/Ishikawa diagram (cause-and-effect diagram) mengelompokkan kemungkinan akar penyebab masalah ke dalam kategori untuk analisis root cause secara sistematis."},
+{d:"Process", t:"Quality Management", q:"Membandingkan praktik dan kinerja proyek dengan proyek serupa dari organisasi lain (termasuk kompetitor) untuk mengidentifikasi best practice disebut?", o:["Benchmarking","Control Chart","Design of Experiments","Cost of Quality"], c:0, e:"Benchmarking membandingkan praktik aktual/rencana proyek dengan proyek sebanding lain untuk mengidentifikasi best practice, menghasilkan ide perbaikan, dan dasar pengukuran kinerja."},
+{d:"Process", t:"Quality Management", q:"Proses memastikan bahwa proses dan standar kualitas yang tepat digunakan dalam proyek (fokus pada proses) disebut?", o:["Manage Quality (Quality Assurance)","Control Quality","Validate Scope","Plan Risk Management"], c:0, e:"Manage Quality (sebelumnya disebut Quality Assurance) berfokus pada proses — memastikan proses kerja dan standar kualitas yang tepat digunakan agar deliverable memenuhi requirement."},
+{d:"Process", t:"Quality Management", q:"Proses memeriksa hasil kerja/deliverable untuk memastikan sesuai standar kualitas yang ditetapkan (fokus pada hasil) disebut?", o:["Manage Quality","Control Quality","Plan Quality Management","Close Project"], c:1, e:"Control Quality berfokus pada hasil/output — memonitor dan mencatat hasil eksekusi aktivitas kualitas untuk memastikan deliverable sesuai standar dan mengidentifikasi penyebab kinerja yang buruk."},
+
+// -- Resource (6) --
+{d:"Process", t:"Resource Management", q:"Matriks yang menunjukkan peran dan tanggung jawab tiap anggota tim dalam suatu aktivitas (Responsible, Accountable, Consulted, Informed) disebut?", o:["WBS Dictionary","RACI Chart","Risk Register","Resource Calendar"], c:1, e:"RACI Chart adalah jenis Responsibility Assignment Matrix yang menjelaskan peran: Responsible (mengerjakan), Accountable (bertanggung jawab akhir), Consulted (dimintai pendapat), Informed (diberi info)."},
+{d:"Process", t:"Resource Management", q:"Teknik penjadwalan yang menunda beberapa aktivitas untuk mengatasi keterbatasan sumber daya, berpotensi mengubah critical path, disebut?", o:["Resource Leveling","Resource Smoothing","Crashing","Fast Tracking"], c:0, e:"Resource leveling menyesuaikan jadwal untuk mengatasi over-allocation sumber daya, dan dapat mengubah critical path karena beberapa aktivitas mungkin harus ditunda."},
+{d:"Process", t:"Resource Management", q:"Teknik penjadwalan yang menyesuaikan aktivitas hanya dalam batas float yang tersedia sehingga tidak mengubah critical path disebut?", o:["Resource Leveling","Resource Smoothing","Crashing","Monte Carlo"], c:1, e:"Resource smoothing hanya menyesuaikan aktivitas dalam batas free/total float yang tersedia, sehingga critical path dan tanggal selesai proyek tidak berubah, namun tidak selalu bisa mengatasi semua over-allocation."},
+{d:"Process", t:"Resource Management", q:"Dokumen yang menunjukkan ketersediaan sumber daya (hari kerja, shift, hari libur) selama periode proyek disebut?", o:["Resource Calendar","RACI Chart","Resource Breakdown Structure","Cost Baseline"], c:0, e:"Resource Calendar mendokumentasikan periode kerja dan ketersediaan tiap sumber daya (manusia, peralatan, material) yang relevan bagi penjadwalan proyek."},
+{d:"Process", t:"Resource Management", q:"Struktur hierarkis yang mengelompokkan sumber daya proyek berdasarkan kategori dan jenisnya disebut?", o:["Resource Breakdown Structure (RBS)","Organization Breakdown Structure (OBS)","WBS","RACI Chart"], c:0, e:"Resource Breakdown Structure (RBS) adalah struktur hierarkis sumber daya berdasarkan kategori (manusia, material, peralatan) dan jenisnya, digunakan untuk perencanaan dan pengendalian sumber daya."},
+{d:"Process", t:"Resource Management", q:"Ketika terjadi over-allocation seorang anggota tim yang ditugaskan di dua proyek sekaligus pada waktu yang sama, tindakan pertama PM sebaiknya?", o:["Membiarkan saja karena akan selesai sendiri","Melakukan resource leveling/negosiasi ulang alokasi dengan PM proyek lain","Memecat anggota tim tersebut","Mengabaikan dampak pada jadwal"], c:1, e:"PM perlu melakukan resource leveling dan/atau bernegosiasi dengan functional manager/PM proyek lain untuk menyelesaikan konflik alokasi sumber daya secara proporsional."},
+
+// -- Risk (10) --
+{d:"Process", t:"Risk Management", q:"Dokumen yang mencatat identifikasi risiko, hasil analisis, dan strategi respons terhadap setiap risiko proyek disebut?", o:["Risk Register","Issue Log","Risk Report","Assumption Log"], c:0, e:"Risk Register mencatat seluruh risiko teridentifikasi beserta karakteristiknya (kategori, probabilitas, dampak), pemilik risiko, dan strategi respons yang direncanakan."},
+{d:"Process", t:"Risk Management", q:"Teknik yang menilai risiko berdasarkan probabilitas dan dampak secara kualitatif menggunakan matriks disebut?", o:["Quantitative Risk Analysis","Qualitative Risk Analysis (Probability-Impact Matrix)","Monte Carlo Simulation","Decision Tree Analysis"], c:1, e:"Qualitative Risk Analysis menilai dan memprioritaskan risiko berdasarkan probabilitas dan dampaknya secara relatif (rendah-sedang-tinggi) menggunakan Probability-Impact Matrix."},
+{d:"Process", t:"Risk Management", q:"Teknik simulasi yang menjalankan ribuan iterasi model proyek untuk menghasilkan distribusi probabilitas hasil biaya/jadwal proyek disebut?", o:["Monte Carlo Simulation","SWOT Analysis","Probability-Impact Matrix","Delphi Technique"], c:0, e:"Monte Carlo Simulation adalah teknik quantitative risk analysis yang menjalankan model proyek berulang kali dengan variasi input acak untuk menghasilkan distribusi probabilitas hasil (misalnya rentang kemungkinan total biaya)."},
+{d:"Process", t:"Risk Management", q:"Sebuah risiko ancaman memiliki probabilitas 30% dengan potensi kerugian 100 juta. Berapa Expected Monetary Value (EMV) risiko tersebut?", o:["-30 juta","-70 juta","30 juta","100 juta"], c:0, e:"EMV = Probabilitas x Dampak = 0.3 x (-100 juta) = -30 juta. Nilai negatif menandakan risiko berupa ancaman (kerugian)."},
+{d:"Process", t:"Risk Management", q:"Strategi respons risiko di mana PM mengubah rencana proyek untuk menghilangkan ancaman sepenuhnya disebut?", o:["Mitigate","Avoid","Transfer","Accept"], c:1, e:"Avoid adalah strategi menghilangkan ancaman sepenuhnya dengan mengubah rencana proyek, misalnya mengganti pendekatan teknis atau memperpanjang jadwal untuk menghindari risiko."},
+{d:"Process", t:"Risk Management", q:"Membeli asuransi atau melakukan outsourcing pekerjaan berisiko tinggi ke pihak ketiga adalah contoh strategi respons risiko?", o:["Mitigate","Avoid","Transfer","Escalate"], c:2, e:"Transfer memindahkan dampak risiko (dan tanggung jawab pengelolaannya) ke pihak ketiga, misalnya melalui asuransi atau kontrak dengan vendor, meski risiko itu sendiri tidak hilang."},
+{d:"Process", t:"Risk Management", q:"Melakukan pengujian tambahan untuk mengurangi probabilitas cacat produk merupakan contoh strategi respons risiko?", o:["Mitigate","Transfer","Avoid","Accept"], c:0, e:"Mitigate berusaha mengurangi probabilitas dan/atau dampak risiko ke tingkat yang dapat diterima, misalnya melalui pengujian tambahan atau prototyping."},
+{d:"Process", t:"Risk Management", q:"Tidak mengambil tindakan apapun terhadap risiko kecil karena dampaknya dianggap dapat diterima adalah strategi?", o:["Accept (Passive Acceptance)","Avoid","Exploit","Transfer"], c:0, e:"Passive acceptance berarti tidak ada tindakan proaktif diambil terhadap risiko; tim hanya menerima konsekuensinya jika risiko terjadi, cocok untuk risiko berdampak rendah."},
+{d:"Process", t:"Risk Management", q:"Strategi respons risiko untuk peluang (opportunity) yang memastikan peluang tersebut benar-benar terjadi disebut?", o:["Exploit","Avoid","Mitigate","Transfer"], c:0, e:"Exploit adalah strategi respons untuk peluang (opportunity) yang berusaha memastikan peluang tersebut benar-benar terwujud, kebalikan dari avoid pada ancaman."},
+{d:"Process", t:"Risk Management", q:"Dana cadangan yang dialokasikan untuk risiko yang sudah teridentifikasi (known-unknowns) dan menjadi bagian dari cost baseline disebut?", o:["Management Reserve","Contingency Reserve","Profit Margin","Fixed Fee"], c:1, e:"Contingency reserve dialokasikan untuk known-unknowns (risiko yang sudah teridentifikasi) dan merupakan bagian dari cost baseline, berbeda dengan management reserve untuk unknown-unknowns yang berada di luar baseline dan memerlukan otorisasi perubahan."},
+
+// -- Procurement (8) --
+{d:"Process", t:"Procurement Management", q:"Jenis kontrak di mana harga total pekerjaan sudah tetap disepakati sejak awal terlepas dari biaya aktual yang dikeluarkan penjual disebut?", o:["Cost Plus Fixed Fee (CPFF)","Firm Fixed Price (FFP)","Time & Material (T&M)","Cost Plus Incentive Fee (CPIF)"], c:1, e:"Firm Fixed Price (FFP) menetapkan harga tetap di awal; risiko biaya berlebih sepenuhnya ditanggung penjual (seller), sehingga cocok untuk pekerjaan dengan spesifikasi jelas."},
+{d:"Process", t:"Procurement Management", q:"Jenis kontrak di mana pembeli mengganti seluruh biaya aktual penjual ditambah fee tetap yang tidak berubah, cocok untuk proyek dengan scope belum jelas, disebut?", o:["Firm Fixed Price","Cost Plus Fixed Fee (CPFF)","Time & Material","Fixed Price Incentive Fee"], c:1, e:"CPFF mengganti biaya aktual seller ditambah fee tetap yang disepakati di awal; risiko biaya lebih banyak ditanggung buyer, cocok untuk proyek dengan scope belum sepenuhnya jelas."},
+{d:"Process", t:"Procurement Management", q:"Jenis kontrak yang paling berisiko bagi pembeli (buyer) karena biaya aktual sepenuhnya ditanggung pembeli tanpa batas atas adalah?", o:["Firm Fixed Price","Cost Reimbursable tanpa batas (Cost Plus Percentage of Cost)","Time & Material dengan cap yang jelas","Fixed Price with Economic Price Adjustment"], c:1, e:"Cost Plus Percentage of Cost (CPPC) sangat berisiko bagi buyer karena fee seller meningkat seiring biaya yang dikeluarkan, sehingga seller tidak memiliki insentif menekan biaya."},
+{d:"Process", t:"Procurement Management", q:"Jenis kontrak yang cocok untuk pekerjaan kecil/jangka pendek dengan scope belum jelas, dibayar berdasarkan jam kerja dan material yang digunakan, disebut?", o:["Time & Material (T&M)","Firm Fixed Price","Cost Plus Incentive Fee","Fixed Price Incentive Fee"], c:0, e:"Time & Material (T&M) menggabungkan elemen fixed price (tarif per jam) dan cost reimbursable (total biaya tergantung waktu/material terpakai), cocok untuk pekerjaan kecil yang scope-nya belum sepenuhnya jelas."},
+{d:"Process", t:"Procurement Management", q:"Dokumen yang dikirim ke vendor untuk meminta proposal harga dan pendekatan teknis lengkap atas suatu kebutuhan disebut?", o:["Request for Information (RFI)","Request for Proposal (RFP)","Request for Quotation (RFQ)","Statement of Work (SOW)"], c:1, e:"RFP (Request for Proposal) digunakan ketika masalah kompleks dan buyer membutuhkan proposal lengkap termasuk pendekatan teknis serta harga, berbeda dengan RFQ yang lebih fokus pada harga untuk item standar."},
+{d:"Process", t:"Procurement Management", q:"Dokumen sederhana yang dikirim ke vendor untuk sekadar meminta harga suatu barang/jasa yang spesifikasinya sudah jelas dan standar disebut?", o:["RFP","RFQ (Request for Quotation)","RFI","SOW"], c:1, e:"RFQ digunakan saat kebutuhan sudah jelas dan standar (biasanya barang), sehingga buyer hanya perlu meminta penawaran harga dari beberapa vendor."},
+{d:"Process", t:"Procurement Management", q:"Keputusan untuk mengerjakan sendiri suatu pekerjaan secara internal dibanding membeli/outsourcing ke pihak ketiga disebut analisis?", o:["Make-or-Buy Analysis","Cost-Benefit Analysis saja","SWOT Analysis","Root Cause Analysis"], c:0, e:"Make-or-buy analysis membandingkan biaya dan manfaat mengerjakan sendiri (make) versus membeli/outsourcing (buy) untuk menentukan pendekatan pengadaan terbaik."},
+{d:"Process", t:"Procurement Management", q:"Dokumen yang mendefinisikan secara rinci pekerjaan yang harus dilakukan oleh vendor dalam kontrak pengadaan disebut?", o:["Statement of Work (SOW)","Procurement Management Plan","Source Selection Criteria","Bid Documents"], c:0, e:"Statement of Work (SOW) menjelaskan secara rinci deliverable, aktivitas, dan spesifikasi pekerjaan yang harus dilaksanakan vendor dalam kontrak."},
+
+// -- Integration (6) --
+{d:"Process", t:"Integration Management", q:"Badan formal yang bertugas meninjau, menyetujui, menunda, atau menolak permintaan perubahan (change request) pada proyek disebut?", o:["Change Control Board (CCB)","Steering Committee saja","Quality Assurance Team","Risk Committee"], c:0, e:"Change Control Board (CCB) adalah kelompok formal yang berwenang meninjau dan memutuskan status setiap permintaan perubahan terhadap baseline proyek melalui proses Perform Integrated Change Control."},
+{d:"Process", t:"Integration Management", q:"Sistem yang mengumpulkan, menyimpan, dan mendistribusikan informasi proyek termasuk tools untuk penjadwalan, pelaporan, dan kolaborasi disebut?", o:["Project Management Information System (PMIS)","Configuration Management System","Change Control System","Enterprise Environmental Factors"], c:0, e:"PMIS adalah sistem informasi (perangkat lunak dan tools) yang digunakan untuk mengelola dan mengintegrasikan proses proyek, termasuk penjadwalan, pelaporan, dan pelacakan status."},
+{d:"Process", t:"Integration Management", q:"Sistem yang mengelola dan mendokumentasikan karakteristik produk/deliverable serta perubahan terhadap versi/baseline-nya disebut?", o:["Configuration Management System","Risk Management Plan","Resource Calendar","Stakeholder Register"], c:0, e:"Configuration management system mendokumentasikan atribut produk (versi, spesifikasi) dan mengontrol perubahan terhadap karakteristik tersebut secara sistematis."},
+{d:"Process", t:"Integration Management", q:"Dokumentasi pengalaman yang diperoleh selama proyek untuk dijadikan referensi perbaikan proyek di masa depan disebut?", o:["Lessons Learned Register","Issue Log","Risk Register","Change Log"], c:0, e:"Lessons Learned Register mencatat pengetahuan yang diperoleh selama proyek (apa yang berjalan baik/buruk) sebagai aset organisasi untuk perbaikan proyek berikutnya."},
+{d:"Process", t:"Integration Management", q:"Setiap permintaan perubahan terhadap scope, jadwal, atau biaya proyek yang sudah dibaseline harus melalui proses?", o:["Diabaikan jika kecil","Perform Integrated Change Control","Langsung dieksekusi tanpa review","Ditolak otomatis"], c:1, e:"Semua permintaan perubahan terhadap baseline proyek, sekecil apapun, harus melalui proses formal Perform Integrated Change Control agar dampaknya dinilai dan disetujui secara terkendali."},
+{d:"Process", t:"Integration Management", q:"Dokumen yang mengintegrasikan seluruh subsidiary plan (scope, jadwal, biaya, kualitas, dll) menjadi satu rencana induk proyek disebut?", o:["Project Charter","Project Management Plan","Business Case","Project Scope Statement"], c:1, e:"Project Management Plan adalah dokumen induk yang mengintegrasikan seluruh rencana manajemen subsider (scope, schedule, cost, quality, risk, dll) menjadi satu kesatuan panduan eksekusi proyek."},
+
+// -- Agile / Scrum / Kanban (10) --
+{d:"Process", t:"Agile Practices", q:"Pada Scrum, event yang dilakukan setiap hari selama maksimal 15 menit untuk sinkronisasi progres tim disebut?", o:["Sprint Planning","Daily Scrum/Stand-up","Sprint Review","Sprint Retrospective"], c:1, e:"Daily Scrum (daily stand-up) adalah event timeboxed maksimal 15 menit setiap hari bagi tim pengembang untuk menyinkronkan aktivitas dan merencanakan pekerjaan 24 jam ke depan."},
+{d:"Process", t:"Agile Practices", q:"Event Scrum di mana tim mendemonstrasikan hasil sprint kepada stakeholder untuk mendapatkan feedback disebut?", o:["Sprint Retrospective","Sprint Review","Daily Scrum","Backlog Refinement"], c:1, e:"Sprint Review dilakukan di akhir sprint untuk mendemonstrasikan increment yang selesai kepada stakeholder dan mengumpulkan feedback guna menyesuaikan product backlog."},
+{d:"Process", t:"Agile Practices", q:"Event Scrum di mana tim merefleksikan proses kerja mereka sendiri dan menyusun rencana perbaikan untuk sprint berikutnya disebut?", o:["Sprint Review","Sprint Retrospective","Sprint Planning","Product Backlog Refinement"], c:1, e:"Sprint Retrospective berfokus pada introspeksi tim terhadap proses, alat, dan kolaborasi kerja mereka untuk mengidentifikasi perbaikan berkelanjutan (continuous improvement) di sprint berikutnya."},
+{d:"Process", t:"Agile Practices", q:"Ukuran kapasitas tim dalam menyelesaikan story point per sprint, digunakan untuk prediksi kapasitas sprint berikutnya, disebut?", o:["Velocity","Burndown","Cycle Time","WIP Limit"], c:0, e:"Velocity adalah rata-rata jumlah story point yang berhasil diselesaikan tim per sprint, digunakan sebagai dasar perencanaan kapasitas sprint mendatang."},
+{d:"Process", t:"Agile Practices", q:"Estimasi relatif ukuran/kompleksitas pekerjaan dalam Scrum, sering menggunakan skala Fibonacci, disebut?", o:["Story Points","Man-days","Function Points","Critical Path Duration"], c:0, e:"Story points adalah unit estimasi relatif yang mempertimbangkan kompleksitas, usaha, dan ketidakpastian pekerjaan, sering menggunakan skala Fibonacci (1,2,3,5,8...) dibanding estimasi waktu absolut."},
+{d:"Process", t:"Agile Practices", q:"Pada metode Kanban, batasan jumlah maksimum item kerja yang boleh berada di satu kolom/tahap pada satu waktu disebut?", o:["Sprint Backlog","WIP Limit (Work In Progress Limit)","Velocity","Definition of Done"], c:1, e:"WIP Limit membatasi jumlah pekerjaan yang boleh berjalan bersamaan pada satu tahap workflow Kanban, bertujuan mengurangi multitasking dan mempercepat cycle time."},
+{d:"Process", t:"Agile Practices", q:"Grafik yang menunjukkan sisa pekerjaan (remaining work) dari waktu ke waktu selama sprint berlangsung disebut?", o:["Burndown Chart","Burnup Chart","Gantt Chart","Control Chart"], c:0, e:"Burndown chart menunjukkan tren penurunan sisa pekerjaan (remaining effort/story points) sepanjang sprint, membantu tim memantau apakah mereka on-track menyelesaikan sprint goal."},
+{d:"Process", t:"Agile Practices", q:"Kriteria kesepakatan bersama yang menentukan kapan sebuah item pekerjaan dianggap benar-benar 'selesai' dalam Scrum disebut?", o:["Definition of Ready","Definition of Done","Acceptance Criteria saja","Sprint Goal"], c:1, e:"Definition of Done (DoD) adalah kesepakatan bersama tim tentang kriteria yang harus dipenuhi agar suatu item backlog dianggap selesai sepenuhnya (misalnya: coding selesai, teruji, terdokumentasi)."},
+{d:"Process", t:"Agile Practices", q:"Aktivitas berkelanjutan untuk memperjelas dan memperkirakan item pada product backlog agar siap dikerjakan pada sprint mendatang disebut?", o:["Sprint Planning","Product Backlog Refinement (Grooming)","Daily Scrum","Retrospective"], c:1, e:"Backlog refinement (grooming) adalah aktivitas berkelanjutan menambah detail, estimasi, dan urutan pada item product backlog agar siap diambil pada sprint planning berikutnya."},
+{d:"Process", t:"Agile Practices", q:"Dalam Scrum, siapa yang bertanggung jawab memaksimalkan nilai produk dan mengelola urutan prioritas product backlog?", o:["Scrum Master","Product Owner","Development Team","Sponsor"], c:1, e:"Product Owner bertanggung jawab memaksimalkan nilai produk dengan mengelola dan memprioritaskan product backlog berdasarkan kebutuhan bisnis dan stakeholder."},
+
+// -- Closing (4) --
+{d:"Process", t:"Closing", q:"Proses formal menutup seluruh aktivitas project management setelah semua deliverable diterima disebut?", o:["Close Project or Phase","Validate Scope","Control Quality","Monitor and Control Project Work"], c:0, e:"Close Project or Phase adalah proses menyelesaikan seluruh aktivitas di semua Process Group untuk secara formal menyelesaikan proyek atau fase, termasuk arsip dokumen dan pelepasan sumber daya."},
+{d:"Process", t:"Closing", q:"Aktivitas formal menyelesaikan kontrak pengadaan, termasuk verifikasi seluruh deliverable telah diterima, disebut?", o:["Close Procurements","Plan Procurement Management","Conduct Procurements","Control Procurements"], c:0, e:"Close Procurements memverifikasi bahwa seluruh pekerjaan dan deliverable dalam kontrak telah diterima secara resmi dan menutup kontrak procurement secara formal."},
+{d:"Process", t:"Closing", q:"Dokumen ringkasan kinerja proyek yang disusun di akhir proyek/fase untuk memberikan gambaran menyeluruh kepada sponsor disebut?", o:["Final Report","Business Case","Project Charter","Lessons Learned Register"], c:0, e:"Final Report merangkum kinerja proyek secara keseluruhan (pencapaian tujuan, kriteria kualitas, ringkasan biaya/jadwal, ringkasan risiko) yang disampaikan pada penutupan proyek."},
+{d:"Process", t:"Closing", q:"Jika sebuah proyek dihentikan sebelum selesai (terminated early), langkah penting yang tetap harus dilakukan PM adalah?", o:["Mengabaikan proses closing sepenuhnya","Tetap melakukan closing formal termasuk dokumentasi lessons learned dan pelepasan sumber daya","Menyembunyikan alasan penghentian","Melanjutkan pekerjaan tanpa arahan sponsor"], c:1, e:"Meski proyek dihentikan lebih awal, proses closing formal tetap harus dilakukan: mendokumentasikan alasan penghentian, lessons learned, dan melepaskan sumber daya secara tertib."},
+
+// -- Monitoring / Variance (3) --
+{d:"Process", t:"Monitoring & Controlling", q:"Teknik yang membandingkan kinerja aktual proyek terhadap baseline untuk mengidentifikasi dan memahami penyebab penyimpangan disebut?", o:["Variance Analysis","Trend Analysis","Root Cause Analysis saja","Benchmarking"], c:0, e:"Variance analysis membandingkan kinerja aktual (biaya, jadwal, scope) terhadap baseline yang direncanakan untuk mengukur besaran dan penyebab penyimpangan."},
+{d:"Process", t:"Monitoring & Controlling", q:"Teknik yang menganalisis kinerja proyek dari waktu ke waktu untuk memprediksi apakah kinerja membaik atau memburuk disebut?", o:["Trend Analysis","Variance Analysis saja","Pareto Analysis","SWOT Analysis"], c:0, e:"Trend analysis menganalisis data kinerja proyek dari waktu ke waktu untuk mengidentifikasi pola dan memproyeksikan kinerja/hasil di masa depan."},
+{d:"Process", t:"Monitoring & Controlling", q:"Ketika CPI dan SPI proyek konsisten menurun dalam beberapa periode laporan, tindakan paling tepat bagi PM adalah?", o:["Mengabaikan tren karena masih dalam toleransi","Menyelidiki akar penyebab dan mempertimbangkan tindakan korektif/perubahan","Langsung menghentikan proyek","Menunggu hingga proyek selesai untuk dievaluasi"], c:1, e:"Tren penurunan kinerja yang konsisten adalah sinyal peringatan dini; PM perlu menyelidiki akar penyebab melalui variance/trend analysis dan mengambil tindakan korektif secepatnya."},
+
+/* ============ BUSINESS ENVIRONMENT (14 soal) ============ */
+
+{d:"Business", t:"Compliance", q:"Sebuah proyek konstruksi harus mematuhi regulasi keselamatan kerja yang ditetapkan pemerintah. Jenis faktor apa ini bagi proyek?", o:["Enterprise Environmental Factor (external constraint/compliance)","Organizational Process Asset","Risk yang bisa diabaikan","Stakeholder minor"], c:0, e:"Regulasi pemerintah adalah bagian dari Enterprise Environmental Factors (EEF) eksternal yang bersifat wajib dipatuhi (compliance) dan menjadi batasan/constraint bagi perencanaan proyek."},
+{d:"Business", t:"Compliance", q:"Jika ditemukan bahwa proyek berpotensi melanggar regulasi keselamatan yang berlaku, tindakan tepat PM adalah?", o:["Melanjutkan proyek tanpa perubahan demi jadwal","Menghentikan pekerjaan terkait dan mengeskalasi isu kepatuhan segera","Menyembunyikan temuan dari sponsor","Menunda pelaporan hingga akhir proyek"], c:1, e:"Pelanggaran regulasi keselamatan harus segera dihentikan dan dieskalasi; keselamatan dan kepatuhan hukum selalu menjadi prioritas di atas jadwal maupun biaya proyek."},
+{d:"Business", t:"Compliance", q:"Audit kepatuhan (compliance audit) pada proyek bertujuan utama untuk?", o:["Meningkatkan profit proyek semata","Memverifikasi proyek berjalan sesuai kebijakan, standar, dan regulasi yang berlaku","Mengganti seluruh tim proyek","Menambah scope proyek"], c:1, e:"Compliance audit memverifikasi bahwa proses dan hasil proyek telah sesuai dengan kebijakan internal organisasi maupun regulasi eksternal yang berlaku."},
+
+{d:"Business", t:"Benefits Realization", q:"Proses memastikan bahwa manfaat bisnis yang direncanakan dari sebuah proyek benar-benar tercapai setelah proyek selesai disebut?", o:["Benefits Realization Management","Risk Management","Change Management saja","Procurement Management"], c:0, e:"Benefits Realization Management adalah proses berkelanjutan (bahkan setelah proyek selesai) untuk mendefinisikan, melacak, dan memastikan manfaat bisnis yang direncanakan benar-benar tercapai."},
+{d:"Business", t:"Benefits Realization", q:"Manfaat proyek yang baru dapat diukur beberapa waktu setelah produk proyek digunakan secara operasional disebut?", o:["Immediate benefit","Realized benefit pasca-implementasi","Sunk cost","Contingency benefit"], c:1, e:"Banyak manfaat proyek (misalnya peningkatan revenue atau efisiensi) baru dapat diukur dan direalisasikan beberapa waktu setelah deliverable proyek digunakan secara operasional oleh organisasi."},
+{d:"Business", t:"Benefits Realization", q:"Siapa yang biasanya bertanggung jawab memantau realisasi manfaat proyek setelah proyek resmi ditutup?", o:["Project Manager selalu","Sponsor atau pemilik bisnis (business owner)","Tim proyek yang sudah dibubarkan","Vendor eksternal"], c:1, e:"Setelah proyek ditutup, tanggung jawab memantau realisasi manfaat bisnis umumnya beralih ke sponsor atau business owner karena project manager dan tim proyek sudah tidak lagi terlibat."},
+
+{d:"Business", t:"Organizational Structure", q:"Pada struktur organisasi matriks kuat (strong matrix), otoritas project manager terhadap sumber daya cenderung?", o:["Rendah, mirip fungsional","Tinggi, mendekati organisasi projectized","Tidak ada otoritas sama sekali","Sama seperti weak matrix"], c:1, e:"Pada strong matrix, otoritas project manager relatif tinggi dan mendekati organisasi projectized, meskipun anggota tim tetap melapor secara administratif ke functional manager."},
+{d:"Business", t:"Organizational Structure", q:"Pada struktur organisasi matriks lemah (weak matrix), peran project manager cenderung lebih mirip?", o:["Manajer penuh dengan otoritas tinggi","Koordinator/expeditor dengan otoritas terbatas","Pemilik seluruh sumber daya proyek","CEO organisasi"], c:1, e:"Pada weak matrix, project manager berperan lebih sebagai koordinator atau expeditor dengan otoritas terbatas, sementara otoritas utama tetap berada pada functional manager."},
+{d:"Business", t:"Organizational Structure", q:"Struktur organisasi yang menggabungkan elemen fungsional dan projectized, di mana sumber daya melapor ke dua manajer sekaligus, disebut?", o:["Organisasi Fungsional","Organisasi Matriks","Organisasi Projectized","Organisasi Virtual"], c:1, e:"Organisasi matriks menggabungkan elemen fungsional dan projectized; anggota tim melapor baik ke functional manager maupun project manager sekaligus, dengan tingkat kekuatan (weak/balanced/strong) yang bervariasi."},
+{d:"Business", t:"Organizational Structure", q:"Organisasi yang dibentuk sepenuhnya berdasarkan proyek, di mana tim dibubarkan setelah proyek selesai, disebut struktur?", o:["Fungsional","Matriks Seimbang","Projectized","Hybrid"], c:2, e:"Pada organisasi projectized, seluruh organisasi disusun berdasarkan proyek, project manager memiliki otoritas tinggi, dan tim project umumnya dibubarkan (adjourning) setelah proyek selesai."},
+
+{d:"Business", t:"PMI Code of Ethics", q:"Seorang PM menemukan bahwa rekan kerjanya memalsukan laporan status proyek kepada sponsor. Sesuai PMI Code of Ethics and Professional Conduct, tindakan yang tepat adalah?", o:["Mengabaikannya karena bukan urusan pribadi","Melaporkan pelanggaran tersebut melalui saluran yang sesuai","Ikut memalsukan laporan agar konsisten","Membicarakannya hanya sebagai gosip"], c:1, e:"PMI Code of Ethics menekankan nilai honesty dan responsibility; PM wajib melaporkan pelanggaran etika/fraud yang diketahui melalui saluran yang tepat, bukan mengabaikan atau ikut terlibat."},
+{d:"Business", t:"PMI Code of Ethics", q:"Seorang vendor menawarkan hadiah pribadi bernilai besar kepada PM agar dipilih dalam proses tender. Sesuai kode etik PMI, PM sebaiknya?", o:["Menerima hadiah secara diam-diam","Menolak hadiah dan melaporkan sesuai kebijakan organisasi (menjaga fairness)","Menerima hadiah lalu tetap objektif","Meminta hadiah lebih besar"], c:1, e:"Nilai fairness dalam PMI Code of Ethics mengharuskan PM menghindari konflik kepentingan; menerima hadiah dari vendor selama proses tender dapat memengaruhi objektivitas dan harus ditolak serta dilaporkan sesuai kebijakan organisasi."},
+{d:"Business", t:"PMI Code of Ethics", q:"PM menyadari dirinya tidak memiliki kompetensi teknis yang cukup untuk suatu aspek proyek. Sikap yang sesuai kode etik PMI adalah?", o:["Menyembunyikan kekurangan tersebut demi menjaga reputasi","Secara jujur mengungkapkan keterbatasan dan mencari bantuan/pelatihan yang diperlukan","Melanjutkan tanpa mencari bantuan","Mendelegasikan seluruh tanggung jawab tanpa penjelasan"], c:1, e:"Nilai honesty dan responsibility PMI mengharuskan PM mengakui keterbatasan kompetensi secara jujur dan proaktif mencari dukungan (pelatihan, mentor, ahli lain) demi keberhasilan proyek."},
+{d:"Business", t:"PMI Code of Ethics", q:"Empat nilai inti yang menjadi dasar PMI Code of Ethics and Professional Conduct adalah?", o:["Responsibility, Respect, Fairness, Honesty","Speed, Cost, Quality, Scope","Leadership, Power, Authority, Control","Profit, Growth, Risk, Reward"], c:0, e:"PMI Code of Ethics and Professional Conduct dibangun di atas empat nilai inti: Responsibility (tanggung jawab), Respect (hormat), Fairness (keadilan), dan Honesty (kejujuran)."},
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+let state = {
+  order: [],          // shuffled indices into QUESTIONS
+  current: 0,
+  answers: {},         // qIndex -> selected option index
+  flagged: {},          // qIndex -> bool
+  checked: {},          // qIndex -> bool (answer revealed)
+  startTime: null,
+  duration: 230*60,      // seconds
+  timerInterval: null,
+  remaining: 230*60,
+};
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function initState(){
+  state.order = QUESTIONS.map((_,i)=>i);
+  state.current = 0;
+  state.answers = {};
+  state.flagged = {};
+  state.checked = {};
+  state.remaining = state.duration;
+}
+
+/* =========================================================
+   NAVIGATION / SCROLL
+========================================================= */
+function scrollToStart(){
+  document.getElementById('start-cta').scrollIntoView({behavior:'smooth'});
+}
+
+function startExam(){
+  initState();
+  document.getElementById('exam-app').classList.add('active');
+  document.getElementById('results-app').classList.remove('active');
+  buildNavGrid();
+  renderQuestion();
+  startTimer();
+  document.getElementById('exam-app').scrollIntoView({behavior:'smooth'});
+}
+
+function restartExam(){
+  document.getElementById('results-app').classList.remove('active');
+  startExam();
+}
+
+/* =========================================================
+   TIMER
+========================================================= */
+function startTimer(){
+  clearInterval(state.timerInterval);
+  updateTimerDisplay();
+  state.timerInterval = setInterval(()=>{
+    state.remaining--;
+    if(state.remaining<=0){
+      state.remaining = 0;
+      clearInterval(state.timerInterval);
+      submitExam();
+    }
+    updateTimerDisplay();
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const t = state.remaining;
+  const h = Math.floor(t/3600);
+  const m = Math.floor((t%3600)/60);
+  const s = t%60;
+  const el = document.getElementById('timer');
+  el.textContent = [h,m,s].map(v=>String(v).padStart(2,'0')).join(':');
+  el.classList.toggle('warn', t<1800 && t>=300);
+  el.classList.toggle('danger', t<300);
+}
+
+/* =========================================================
+   RENDER QUESTION NAVIGATOR
+========================================================= */
+function buildNavGrid(){
+  const grid = document.getElementById('q-grid');
+  grid.innerHTML = '';
+  state.order.forEach((qi, idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'q-btn';
+    btn.textContent = idx+1;
+    btn.id = 'navbtn-'+idx;
+    btn.onclick = ()=>{ state.current = idx; renderQuestion(); };
+    grid.appendChild(btn);
+  });
+  refreshNavGrid();
+}
+
+function refreshNavGrid(){
+  state.order.forEach((qi, idx)=>{
+    const btn = document.getElementById('navbtn-'+idx);
+    if(!btn) return;
+    btn.classList.toggle('answered', state.answers[qi]!==undefined);
+    btn.classList.toggle('flagged', !!state.flagged[qi]);
+    btn.classList.toggle('current', idx===state.current);
+  });
+  const answeredCount = Object.keys(state.answers).length;
+  const flaggedCount = Object.values(state.flagged).filter(Boolean).length;
+  document.getElementById('sum-answered').textContent = answeredCount;
+  document.getElementById('sum-flagged').textContent = flaggedCount;
+  document.getElementById('sum-unanswered').textContent = 180 - answeredCount;
+  document.getElementById('answered-text').textContent = answeredCount + ' terjawab';
+  document.getElementById('progress-fill').style.width = (answeredCount/180*100)+'%';
+}
+
+/* =========================================================
+   RENDER QUESTION
+========================================================= */
+function renderQuestion(){
+  const idx = state.current;
+  const qi = state.order[idx];
+  const q = QUESTIONS[qi];
+
+  document.getElementById('progress-text').textContent = `Soal ${idx+1} dari 180`;
+  document.getElementById('q-number').textContent = `SOAL ${idx+1} / 180`;
+  const tagEl = document.getElementById('q-tag');
+  tagEl.textContent = q.d === 'Business' ? 'Business Environment' : q.d;
+  tagEl.className = 'q-tag ' + q.d.toLowerCase();
+  document.getElementById('q-text').textContent = q.q;
+
+  const flagBtn = document.getElementById('flag-btn');
+  flagBtn.classList.toggle('active', !!state.flagged[qi]);
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  const isChecked = !!state.checked[qi];
+  const selected = state.answers[qi];
+
+  q.o.forEach((optText, i)=>{
+    const div = document.createElement('div');
+    div.className = 'option';
+    if(selected===i) div.classList.add('selected');
+    if(isChecked){
+      if(i===q.c) div.classList.add('correct');
+      else if(i===selected && selected!==q.c) div.classList.add('incorrect');
+    }
+    div.innerHTML = `<span class="option-letter">${letters[i]}</span><span class="option-text">${optText}</span>`;
+    div.onclick = ()=>{ selectAnswer(qi, i); };
+    optionsEl.appendChild(div);
+  });
+
+  const expEl = document.getElementById('explanation');
+  if(isChecked){
+    expEl.classList.add('show');
+    expEl.innerHTML = `<b>Pembahasan</b>${q.e}`;
+  } else {
+    expEl.classList.remove('show');
+    expEl.innerHTML = '';
+  }
+
+  document.getElementById('btn-prev').disabled = idx===0;
+  document.getElementById('btn-next').textContent = idx===179 ? 'Selesai →' : 'Selanjutnya →';
+  document.getElementById('btn-check').disabled = selected===undefined;
+
+  refreshNavGrid();
+}
+
+function selectAnswer(qi, i){
+  if(state.checked[qi]) return; // locked after checking
+  state.answers[qi] = i;
+  renderQuestion();
+}
+
+function checkAnswer(){
+  const qi = state.order[state.current];
+  if(state.answers[qi]===undefined) return;
+  state.checked[qi] = true;
+  renderQuestion();
+}
+
+function toggleFlag(){
+  const qi = state.order[state.current];
+  state.flagged[qi] = !state.flagged[qi];
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(state.current < 179){
+    state.current++;
+    renderQuestion();
+  } else {
+    confirmSubmit();
+  }
+}
+function prevQuestion(){
+  if(state.current>0){
+    state.current--;
+    renderQuestion();
+  }
+}
+
+/* =========================================================
+   SUBMIT / RESULTS
+========================================================= */
+function confirmSubmit(){
+  const answered = Object.keys(state.answers).length;
+  document.getElementById('modal-text').textContent =
+    `Anda telah menjawab ${answered} dari 180 soal. Setelah disubmit, skor akan langsung dihitung dan ditampilkan.`;
+  document.getElementById('modal-backdrop').classList.add('show');
+}
+function closeModal(){
+  document.getElementById('modal-backdrop').classList.remove('show');
+}
+
+function submitExam(){
+  clearInterval(state.timerInterval);
+  closeModal();
+  document.getElementById('exam-app').classList.remove('active');
+  document.getElementById('results-app').classList.add('active');
+  renderResults();
+  document.getElementById('results-app').scrollIntoView({behavior:'smooth'});
+}
+
+let reviewFilter = 'all';
+function setReviewFilter(f){
+  reviewFilter = f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset.filter===f));
+  renderReviewList();
+}
+
+function renderResults(){
+  const total = 180;
+  let correct=0, incorrect=0, skipped=0;
+  const domainStats = {People:{c:0,t:0}, Process:{c:0,t:0}, Business:{c:0,t:0}};
+
+  state.order.forEach(qi=>{
+    const q = QUESTIONS[qi];
+    domainStats[q.d].t++;
+    const ans = state.answers[qi];
+    if(ans===undefined){ skipped++; }
+    else if(ans===q.c){ correct++; domainStats[q.d].c++; }
+    else { incorrect++; }
+  });
+
+  const pct = Math.round(correct/total*100);
+  document.getElementById('score-ring').style.setProperty('--pct', pct);
+  document.getElementById('score-pct').textContent = pct+'%';
+  document.getElementById('score-desc').textContent =
+    `Anda menjawab benar ${correct} dari ${total} soal (${incorrect} salah, ${skipped} dilewati).`;
+
+  const verdictEl = document.getElementById('verdict');
+  if(pct>=61){
+    verdictEl.textContent = 'DI ATAS AMBANG LATIHAN (≥61%)';
+    verdictEl.className = 'verdict pass';
+  } else {
+    verdictEl.textContent = 'PERLU LATIHAN LEBIH LANJUT (<61%)';
+    verdictEl.className = 'verdict fail';
+  }
+
+  const domainNames = {People:'People', Process:'Process', Business:'Business Environment'};
+  const domainClass = {People:'people', Process:'process', Business:'business'};
+  const dsEl = document.getElementById('domain-scores');
+  dsEl.innerHTML = '';
+  Object.keys(domainStats).forEach(d=>{
+    const s = domainStats[d];
+    const p = s.t? Math.round(s.c/s.t*100):0;
+    const card = document.createElement('div');
+    card.className = 'domain-score-card';
+    card.innerHTML = `
+      <h4>${domainNames[d]}</h4>
+      <div class="ds-bar"><div class="ds-fill ${domainClass[d]}" style="width:${p}%"></div></div>
+      <div class="ds-num">${s.c}/${s.t} benar &middot; ${p}%</div>
+    `;
+    dsEl.appendChild(card);
+  });
+
+  renderReviewList();
+}
+
+function renderReviewList(){
+  const listEl = document.getElementById('review-list');
+  listEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  state.order.forEach((qi, idx)=>{
+    const q = QUESTIONS[qi];
+    const ans = state.answers[qi];
+    const isSkipped = ans===undefined;
+    const isCorrect = !isSkipped && ans===q.c;
+    const status = isSkipped ? 'skipped' : (isCorrect ? 'correct' : 'incorrect');
+
+    if(reviewFilter==='incorrect' && status!=='incorrect') return;
+    if(reviewFilter==='correct' && status!=='correct') return;
+    if(reviewFilter==='skipped' && status!=='skipped') return;
+    if(reviewFilter==='flagged' && !state.flagged[qi]) return;
+
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    const statusLabel = status==='correct' ? 'BENAR' : status==='incorrect' ? 'SALAH' : 'DILEWATI';
+
+    let answersHTML = '';
+    q.o.forEach((opt,i)=>{
+      let cls = '';
+      if(i===q.c) cls='correct';
+      else if(i===ans && ans!==q.c) cls='incorrect';
+      if(i===q.c || i===ans){
+        answersHTML += `<div class="mini-opt ${cls}"><b>${letters[i]}.</b> ${opt}</div>`;
+      }
+    });
+
+    item.innerHTML = `
+      <div class="review-item-head">
+        <span class="qn">SOAL ${idx+1} &middot; ${q.d==='Business'?'Business Environment':q.d}${state.flagged[qi]?' &middot; ⚑ ditandai':''}</span>
+        <span class="status-pill ${status}">${statusLabel}</span>
+      </div>
+      <div class="qtext">${q.q}</div>
+      <div class="review-answers">${answersHTML}</div>
+      <div class="review-explain"><b>Pembahasan:</b> ${q.e}</div>
+    `;
+    listEl.appendChild(item);
+  });
+
+  if(listEl.innerHTML===''){
+    listEl.innerHTML = '<p style="text-align:center;color:var(--ink-400);padding:40px 0;">Tidak ada soal pada kategori ini.</p>';
+  }
+}
+
+/* =========================================================
+   DOWNLOAD SELF
+========================================================= */
+function downloadPage(){
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'PMP-Exam-Simulator-180-Soal.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGKM Hauling Kalkulasi v3.0</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&display=swap');
+
+:root {
+  --bg:#0a0e1a; --bg2:#0f1528; --bg3:#141c35;
+  --panel:#111827; --panel2:#1a2540;
+  --accent:#f59e0b; --accent2:#fbbf24; --accent3:#d97706;
+  --blue:#3b82f6; --green:#10b981; --red:#ef4444;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#64748b;
+  --border:#1e2d4a; --border2:#253352;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(245,158,11,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.wrapper{position:relative;z-index:1;}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#0c1220,#111827,#0a1525);border-bottom:2px solid var(--accent);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:70px;box-shadow:0 0 40px rgba(245,158,11,.18);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 20px rgba(245,158,11,.4);}
+.logo-text h1{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--accent);letter-spacing:2px;line-height:1;text-shadow:0 0 20px rgba(245,158,11,.4);}
+.logo-text p{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;}
+.badge{font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 10px;border-radius:4px;letter-spacing:1px;}
+.badge-green{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+.badge-amber{background:rgba(245,158,11,.15);color:var(--accent);border:1px solid rgba(245,158,11,.3);}
+
+/* TABS */
+.tab-bar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;padding:0 28px;overflow-x:auto;}
+.tab{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:14px 22px;color:var(--text3);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab:hover{color:var(--text2);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* LAYOUT */
+.container{max-width:1380px;margin:0 auto;padding:24px 20px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* SECTION TITLE */
+.section-title{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
+
+/* PANELS */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:18px;}
+.panel-header{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.panel-header span{color:var(--accent);}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+
+/* FORM */
+.form-group{margin-bottom:12px;}
+label{display:block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);margin-bottom:5px;}
+select,input[type=number],input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;padding:9px 13px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(245,158,11,.1);}
+select option{background:var(--bg3);}
+.hint{font-size:10px;color:var(--text3);margin-top:3px;font-family:'Share Tech Mono',monospace;}
+.hint.accent{color:var(--accent);}
+
+input[readonly]{background:rgba(245,158,11,.06);color:var(--accent);font-family:'Share Tech Mono',monospace;border-color:rgba(245,158,11,.2);cursor:default;}
+
+/* FORMULA DISPLAY BOX */
+.formula-inline{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 14px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent2);margin-top:8px;line-height:1.8;}
+
+/* RANGE */
+input[type=range]{width:100%;-webkit-appearance:none;height:4px;background:var(--border2);border-radius:2px;outline:none;margin:8px 0;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--accent);border-radius:50%;cursor:pointer;box-shadow:0 0 8px rgba(245,158,11,.5);}
+.range-row{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);font-family:'Share Tech Mono',monospace;}
+
+/* BUTTONS */
+.btn{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:11px 26px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#000;box-shadow:0 4px 20px rgba(245,158,11,.3);}
+.btn-primary:hover{box-shadow:0 4px 30px rgba(245,158,11,.5);transform:translateY(-1px);}
+.btn-secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border2);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 18px rgba(16,185,129,.3);}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+
+/* RESULT CARDS */
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin-bottom:22px;}
+.result-card{background:var(--panel2);border:1px solid var(--border2);border-radius:12px;padding:16px;text-align:center;transition:transform .2s;}
+.result-card:hover{transform:translateY(-2px);}
+.result-card.hl-gold {border-color:var(--accent); box-shadow:0 0 18px rgba(245,158,11,.15);}
+.result-card.hl-green{border-color:var(--green);  box-shadow:0 0 18px rgba(16,185,129,.12);}
+.result-card.hl-red  {border-color:var(--red);    box-shadow:0 0 18px rgba(239,68,68,.12);}
+.result-card.hl-blue {border-color:var(--blue);   box-shadow:0 0 18px rgba(59,130,246,.12);}
+.result-label{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;font-family:'Share Tech Mono',monospace;}
+.result-value{font-family:'Share Tech Mono',monospace;font-size:26px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:4px;}
+.rv-g{color:var(--green)!important;}
+.rv-r{color:var(--red)!important;}
+.rv-b{color:var(--blue)!important;}
+.result-unit{font-size:11px;color:var(--text2);}
+
+/* MF STATUS */
+.mf-bar{display:flex;align-items:center;justify-content:center;gap:12px;padding:15px 22px;border-radius:12px;margin-bottom:18px;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1.5px;}
+.mf-ideal{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--green);}
+.mf-over {background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:var(--blue);}
+.mf-under{background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:var(--red);}
+.mf-ok   {background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--accent);}
+
+/* TABLE */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+.data-table th{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--bg3);}
+.data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);}
+.data-table tr:hover td{background:rgba(245,158,11,.03);color:var(--text);}
+.td-gold{color:var(--accent)!important;font-family:'Share Tech Mono',monospace;font-weight:600;}
+.td-green{color:var(--green)!important;font-weight:600;}
+.td-red{color:var(--red)!important;font-weight:600;}
+.td-blue{color:var(--blue)!important;font-weight:600;}
+.td-bold{font-weight:700;}
+
+/* ALERT */
+.alert{border-radius:8px;padding:12px 16px;font-size:13px;margin-bottom:14px;line-height:1.6;}
+.alert-amber{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fcd34d;}
+.alert-blue {background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);color:#93c5fd;}
+.alert-green{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#6ee7b7;}
+
+/* RECO */
+.reco-box{background:linear-gradient(135deg,rgba(245,158,11,.04),rgba(59,130,246,.04));border:1px solid var(--border2);border-radius:12px;padding:18px;margin-top:18px;}
+.reco-title{font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;}
+.reco-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;color:var(--text2);line-height:1.5;}
+.reco-item:last-child{border-bottom:none;}
+.reco-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:6px;}
+
+/* CODE BOX */
+.formula-box{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:16px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--green);line-height:2.2;margin-bottom:18px;overflow-x:auto;}
+
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);margin:22px 0;}
+
+footer{border-top:1px solid var(--border);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;margin-top:36px;}
+.footer-left{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);line-height:1.6;}
+.footer-left span{color:var(--accent);}
+
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent3);}
+
+#results-section{display:none;}
+#cost-results{display:none;}
+
+/* LIVE PREVIEW BOX */
+.live-box{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:12px 16px;margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--green);line-height:1.9;}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">⛏</div>
+    <div class="logo-text">
+      <h1>IGKM HAULING KALKULASI</h1>
+      <p>Mining Fleet Match Factor Calculator · v3.0</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span class="badge badge-green">● ONLINE</span>
+    <span class="badge badge-amber">IDX MINING</span>
+  </div>
+</header>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('calc')">⚙ Kalkulator</button>
+  <button class="tab" onclick="switchTab('cost')">💰 Estimasi Biaya</button>
+  <button class="tab" onclick="switchTab('ref')">📋 Referensi Data</button>
+  <button class="tab" onclick="switchTab('guide')">📖 Panduan & Rumus</button>
+</div>
+
+<!-- ══════════ TAB 1: KALKULATOR ══════════ -->
+<div id="tab-calc" class="tab-content active">
+<div class="container">
+
+  <!-- INFO PROYEK -->
+  <div class="panel">
+    <div class="panel-header">🏗 <span>Informasi Proyek</span></div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Nama Proyek / Pit</label>
+        <input type="text" id="project_name" placeholder="e.g. Pit North – Blok A3">
+      </div>
+      <div class="form-group">
+        <label>Jenis Material</label>
+        <select id="material_type" onchange="onMaterialChange()">
+          <option value="tanah_merah">🟫 Tanah Merah (Overburden)</option>
+          <option value="clay">🟤 Clay / Lempung</option>
+          <option value="batubara">⚫ Batubara (Coal)</option>
+          <option value="nikel">🟩 Nikel Laterit (Limonit)</option>
+          <option value="nikel_sap">🟩 Nikel Laterit (Saprolit)</option>
+          <option value="limestone">⬜ Batu Kapur (Limestone)</option>
+          <option value="granite">🪨 Granit / Andesit</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Kondisi Material</label>
+        <select id="material_cond">
+          <option value="1.0">Loose / Sudah Diledak</option>
+          <option value="1.1" selected>Normal (Gali Langsung)</option>
+          <option value="1.2">Padat / Semi-Kompak</option>
+          <option value="1.35">Keras / Kompak</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- ════ EXCAVATOR ════ -->
+    <div class="panel">
+      <div class="panel-header">🦾 <span>Excavator (Alat Gali-Muat)</span></div>
+
+      <div class="form-group">
+        <label>Model Excavator</label>
+        <select id="exca_model" onchange="onExcaChange()">
+          <optgroup label="─ Mini (<20 ton) ─">
+            <option value="PC200">PC200 / CAT320 — 0.9 m³</option>
+            <option value="PC210">PC210 / ZX210 — 1.0 m³</option>
+          </optgroup>
+          <optgroup label="─ Medium (20–50 ton) ─">
+            <option value="PC300">PC300 / CAT330 — 1.5 m³</option>
+            <option value="PC360">PC360 / ZX350 — 1.7 m³</option>
+            <option value="PC400" selected>PC400 / CAT340 — 2.2 m³</option>
+          </optgroup>
+          <optgroup label="─ Large (50–150 ton) ─">
+            <option value="PC600">PC600 / CAT390 — 3.5 m³</option>
+            <option value="PC800">PC800 / CAT395 — 4.6 m³</option>
+            <option value="PC1000">PC1000 / ZX890 — 5.5 m³</option>
+            <option value="PC1250">PC1250 / CAT6015B — 7.0 m³</option>
+          </optgroup>
+          <optgroup label="─ Ultra Large (>150 ton) ─">
+            <option value="PC2000">PC2000 / CAT6030 — 11.0 m³</option>
+            <option value="PC3000">PC3000 / R9200 — 16.0 m³</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Kapasitas Bucket (m³)</label>
+          <input type="number" id="exca_bucket" value="2.2" step="0.1" min="0.3" max="25" oninput="updateLiveExca()">
+        </div>
+        <div class="form-group">
+          <label>Fill Factor (%)</label>
+          <input type="number" id="fill_factor" value="87" step="1" min="60" max="110" oninput="updateLiveExca()">
+          <div class="hint">OB: 85–95% | Batubara: 90–105%</div>
+        </div>
+      </div>
+
+      <!-- CT per 1 SWING -->
+      <div class="form-group">
+        <label>⏱ CT per 1 Swing/Bucket (detik)</label>
+        <input type="number" id="ct_swing_sec" value="28" step="1" min="15" max="120" oninput="updateLiveExca()">
+        <div class="hint accent">Waktu 1 siklus: Gali → Swing → Dump → Swing balik (dalam DETIK)</div>
+      </div>
+
+      <!-- Pass count & CT loading -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Kapasitas Vessel DT (m³) — untuk hitung pass</label>
+          <input type="number" id="vessel_for_pass" value="18" step="1" min="5" max="250" oninput="updateLiveExca()">
+        </div>
+        <div class="form-group">
+          <label>Swell Factor (%)</label>
+          <input type="number" id="swell_factor" value="25" step="1" min="10" max="55" oninput="updateLiveExca()">
+        </div>
+      </div>
+
+      <!-- LIVE PREVIEW CT EXCA -->
+      <div class="live-box" id="live-exca">
+        Isi data di atas untuk melihat preview…
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="form-group">
+          <label>Jumlah Excavator (unit)</label>
+          <input type="number" id="num_exca" value="1" step="1" min="1" max="20">
+        </div>
+        <div class="form-group">
+          <label>Efisiensi Kerja Exca (%)</label>
+          <input type="range" id="exca_eff" min="50" max="95" value="83" oninput="document.getElementById('exca_eff_val').textContent=this.value+'%'">
+          <div class="range-row"><span>50%</span><span id="exca_eff_val">83%</span><span>95%</span></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Fuel Consumption Exca (L/jam)</label>
+        <input type="number" id="exca_fuel" value="38" step="1" min="10" max="300">
+      </div>
+    </div>
+
+    <!-- ════ DUMP TRUCK ════ -->
+    <div class="panel">
+      <div class="panel-header">🚛 <span>Dump Truck (Alat Angkut)</span></div>
+
+      <div class="form-group">
+        <label>Model / Kapasitas Dump Truck</label>
+        <select id="dt_model" onchange="onDTChange()">
+          <optgroup label="─ Rigid Kecil ─">
+            <option value="30T">HD205 / CAT730 — 30 Ton (20 m³)</option>
+            <option value="40T">HD325 / A40 — 40 Ton (27 m³)</option>
+          </optgroup>
+          <optgroup label="─ Rigid Sedang ─">
+            <option value="55T" selected>HD465 / CAT773 — 55 Ton (32 m³)</option>
+            <option value="60T">HD465-7 / CAT773E — 60 Ton (38 m³)</option>
+            <option value="77T">HD785 / CAT775 — 77 Ton (48 m³)</option>
+          </optgroup>
+          <optgroup label="─ Rigid Besar ─">
+            <option value="100T">HD1500 / CAT785 — 100 Ton (62 m³)</option>
+            <option value="120T">HD2000 / CAT789 — 120 Ton (76 m³)</option>
+          </optgroup>
+          <optgroup label="─ Ultra Large ─">
+            <option value="150T">830E / CAT793 — 150 Ton (95 m³)</option>
+            <option value="200T">860E / CAT797 — 200 Ton (130 m³)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Kapasitas Payload (ton)</label>
+          <input type="number" id="dt_payload" value="55" step="1" min="20" max="400">
+        </div>
+        <div class="form-group">
+          <label>Kapasitas Vessel (m³)</label>
+          <input type="number" id="dt_vessel" value="32" step="1" min="10" max="250" oninput="onVesselChange()">
+        </div>
+      </div>
+
+      <!-- CT DT MODE -->
+      <div class="form-group">
+        <label>Mode Input Cycle Time DT</label>
+        <select id="ct_mode" onchange="onCTModeChange()">
+          <option value="manual">✏ Manual — masukkan CT DT total (menit)</option>
+          <option value="auto">⚙ Otomatis — hitung dari komponen waktu</option>
+        </select>
+      </div>
+
+      <!-- MANUAL -->
+      <div id="ct_manual_block">
+        <div class="form-group">
+          <label>⏱ Cycle Time DT Total (menit) — Manual</label>
+          <input type="number" id="ct_dt_manual" value="10" step="0.1" min="1" max="500" oninput="updateLiveDT()">
+          <div class="hint accent">★ Masukkan total waktu edar DT dalam MENIT</div>
+        </div>
+        <div class="live-box" id="live-dt-manual">—</div>
+      </div>
+
+      <!-- AUTO -->
+      <div id="ct_auto_block" style="display:none;">
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Kecepatan Bermuatan (km/h)</label>
+            <input type="number" id="speed_loaded" value="18" step="1" min="3" max="60" oninput="updateLiveDT()">
+          </div>
+          <div class="form-group">
+            <label>Kecepatan Kosong (km/h)</label>
+            <input type="number" id="speed_empty" value="30" step="1" min="3" max="80" oninput="updateLiveDT()">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Jarak Hauling 1 Arah (meter)</label>
+            <input type="number" id="haul_distance" value="1500" step="50" min="100" max="25000" oninput="updateLiveDT()">
+          </div>
+          <div class="form-group">
+            <label>Waktu Spot + Dump (menit)</label>
+            <input type="number" id="spot_dump_time" value="3.5" step="0.5" min="0.5" max="30" oninput="updateLiveDT()">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Waktu Antri + Manuver (menit)</label>
+            <input type="number" id="queue_time" value="1.5" step="0.5" min="0" max="30" oninput="updateLiveDT()">
+          </div>
+          <div class="form-group">
+            <label>Grade Jalan (%)</label>
+            <input type="number" id="road_grade" value="5" step="0.5" min="0" max="25" oninput="updateLiveDT();onGradeChange()">
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Kondisi Permukaan Jalan</label>
+            <select id="road_cond" onchange="updateLiveDT()">
+              <option value="1.00">Excellent (Aspal/Beton)</option>
+              <option value="0.92" selected>Good (Gravel compacted)</option>
+              <option value="0.82">Fair (Tanah keras)</option>
+              <option value="0.72">Poor (Tanah lunak)</option>
+              <option value="0.58">Very Poor (Off-road ekstrem)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rolling Resistance (%)</label>
+            <input type="number" id="rolling_resist" value="3" step="0.5" min="1" max="10" oninput="updateLiveDT()">
+          </div>
+        </div>
+        <div id="grade-alert" class="alert alert-amber" style="display:none;">
+          ⚠️ <b>Grade &gt;8%!</b> Kecepatan DT berkurang signifikan dan fuel naik. Faktor koreksi diterapkan otomatis.
+        </div>
+        <!-- LIVE PREVIEW CT DT AUTO -->
+        <div class="live-box" id="live-dt-auto">Isi data untuk melihat preview…</div>
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="form-group">
+          <label>Jumlah Dump Truck (unit)</label>
+          <input type="number" id="num_dt" value="2" step="1" min="1" max="50">
+        </div>
+        <div class="form-group">
+          <label>Efisiensi Kerja DT (%)</label>
+          <input type="range" id="dt_eff" min="50" max="95" value="83" oninput="document.getElementById('dt_eff_val').textContent=this.value+'%'">
+          <div class="range-row"><span>50%</span><span id="dt_eff_val">83%</span><span>95%</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Fuel Consumption DT (L/jam)</label>
+        <input type="number" id="dt_fuel" value="60" step="1" min="10" max="400">
+      </div>
+    </div>
+  </div><!-- /grid-2 -->
+
+  <!-- TOMBOL HITUNG -->
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="calculate()">⚡ HITUNG MATCH FACTOR</button>
+    <button class="btn btn-secondary" onclick="resetAll()">↺ Reset</button>
+    <button class="btn btn-secondary" onclick="loadPreset('p_manual')">📥 Preset: Manual (Contoh 2DT/1Exca)</button>
+    <button class="btn btn-secondary" onclick="loadPreset('p_coal')">📥 Preset: Coal Auto</button>
+    <button class="btn btn-secondary" onclick="loadPreset('p_nickel')">📥 Preset: Nikel Auto</button>
+  </div>
+
+  <!-- HASIL -->
+  <div id="results-section">
+    <div class="divider"></div>
+    <div class="section-title">📊 Hasil Kalkulasi Match Factor</div>
+    <div id="mf-bar-el"></div>
+    <div class="result-grid" id="main-results"></div>
+    <div class="grid-2">
+      <div>
+        <div class="section-title">⏱ Breakdown Waktu Edar DT</div>
+        <div class="panel" style="padding:0;overflow:hidden;"><table class="data-table" id="cycle-table"></table></div>
+      </div>
+      <div>
+        <div class="section-title">🏭 Produktivitas Fleet</div>
+        <div class="panel" style="padding:0;overflow:hidden;"><table class="data-table" id="prod-table"></table></div>
+      </div>
+    </div>
+    <div id="reco-section"></div>
+    <div class="btn-row" style="margin-top:18px;">
+      <button class="btn btn-primary" onclick="switchTab('cost');calculateCost()">💰 Hitung Estimasi Biaya</button>
+      <button class="btn btn-green" onclick="window.print()">🖨 Cetak / PDF</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════ TAB 2: BIAYA ══════════ -->
+<div id="tab-cost" class="tab-content">
+<div class="container">
+  <div class="panel">
+    <div class="panel-header">💰 <span>Parameter Biaya Operasional</span></div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Harga Solar / HSD (Rp/liter)</label>
+        <input type="number" id="fuel_price" value="10500" step="100">
+        <div class="hint">Non-subsidi industri 2024–2025</div>
+      </div>
+      <div class="form-group">
+        <label>Jam Produktif / Shift (jam)</label>
+        <input type="number" id="hours_shift" value="7" step="0.5" min="4" max="12">
+      </div>
+      <div class="form-group">
+        <label>Jumlah Shift / Hari</label>
+        <select id="shifts_day">
+          <option value="1">1 Shift</option>
+          <option value="2" selected>2 Shift</option>
+          <option value="3">3 Shift</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Hari Operasi / Bulan</label>
+        <input type="number" id="days_month" value="25" step="1" min="15" max="31">
+      </div>
+      <div class="form-group">
+        <label>Upah Operator Exca (Rp/jam)</label>
+        <input type="number" id="exca_labor" value="75000" step="5000">
+      </div>
+      <div class="form-group">
+        <label>Upah Operator DT (Rp/jam)</label>
+        <input type="number" id="dt_labor" value="65000" step="5000">
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Pemeliharaan Exca (Rp/jam)</label>
+        <input type="number" id="exca_maintain" value="350000" step="10000">
+      </div>
+      <div class="form-group">
+        <label>Pemeliharaan DT (Rp/jam)</label>
+        <input type="number" id="dt_maintain" value="280000" step="10000">
+      </div>
+      <div class="form-group">
+        <label>Overhead per Unit per Jam (Rp)</label>
+        <input type="number" id="overhead" value="50000" step="5000">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="calculateCost()">💰 HITUNG ESTIMASI BIAYA</button>
+    </div>
+  </div>
+  <div id="cost-results">
+    <div class="section-title">💹 Hasil Estimasi Biaya</div>
+    <div class="result-grid" id="cost-cards"></div>
+    <div class="grid-2">
+      <div>
+        <div class="section-title">📋 Breakdown Biaya / Jam</div>
+        <div class="panel" style="padding:0;overflow:hidden;"><table class="data-table" id="cost-break-table"></table></div>
+      </div>
+      <div>
+        <div class="section-title">⛽ Analisis Fuel Ratio</div>
+        <div class="panel" style="padding:0;overflow:hidden;"><table class="data-table" id="fuel-table"></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ TAB 3: REFERENSI ══════════ -->
+<div id="tab-ref" class="tab-content">
+<div class="container">
+  <div class="section-title">🚜 Spesifikasi Excavator</div>
+  <div class="panel" style="padding:0;overflow:hidden;margin-bottom:22px;">
+    <table class="data-table">
+      <thead><tr><th>Model</th><th>Bucket (m³)</th><th>Berat Op. (ton)</th><th>CT Swing Khas (dtk)</th><th>Fuel (L/jam)</th><th>Prod Est. (BCM/jam)</th></tr></thead>
+      <tbody>
+        <tr><td>PC200/CAT320</td><td class="td-gold">0.9</td><td>20</td><td>25</td><td class="td-blue">18</td><td>85–110</td></tr>
+        <tr><td>PC210/ZX210</td><td class="td-gold">1.0</td><td>21</td><td>26</td><td class="td-blue">20</td><td>95–125</td></tr>
+        <tr><td>PC300/CAT330</td><td class="td-gold">1.5</td><td>30</td><td>27</td><td class="td-blue">28</td><td>145–190</td></tr>
+        <tr><td>PC360/ZX350</td><td class="td-gold">1.7</td><td>36</td><td>28</td><td class="td-blue">32</td><td>165–215</td></tr>
+        <tr><td class="td-gold">PC400/CAT340</td><td class="td-gold">2.2</td><td>41</td><td>28</td><td class="td-blue">38</td><td>215–280</td></tr>
+        <tr><td>PC600/CAT390</td><td class="td-gold">3.5</td><td>62</td><td>28</td><td class="td-blue">52</td><td>345–430</td></tr>
+        <tr><td>PC800/CAT395</td><td class="td-gold">4.6</td><td>79</td><td>30</td><td class="td-blue">65</td><td>440–560</td></tr>
+        <tr><td>PC1000/ZX890</td><td class="td-gold">5.5</td><td>100</td><td>32</td><td class="td-blue">72</td><td>510–650</td></tr>
+        <tr><td>PC1250/CAT6015B</td><td class="td-gold">7.0</td><td>125</td><td>33</td><td class="td-blue">90</td><td>645–810</td></tr>
+        <tr><td>PC2000/CAT6030</td><td class="td-gold">11.0</td><td>204</td><td>35</td><td class="td-blue">145</td><td>970–1200</td></tr>
+        <tr><td>PC3000/R9200</td><td class="td-gold">16.0</td><td>290</td><td>38</td><td class="td-blue">210</td><td>1350–1700</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="section-title">🚛 Spesifikasi Dump Truck</div>
+  <div class="panel" style="padding:0;overflow:hidden;margin-bottom:22px;">
+    <table class="data-table">
+      <thead><tr><th>Model</th><th>Payload (ton)</th><th>Vessel (m³)</th><th>Speed Isi (km/h)</th><th>Speed Kosong (km/h)</th><th>Fuel (L/jam)</th></tr></thead>
+      <tbody>
+        <tr><td>HD205/CAT730</td><td class="td-gold">30</td><td>20</td><td>22</td><td>38</td><td class="td-blue">35</td></tr>
+        <tr><td>HD325/A40</td><td class="td-gold">40</td><td>27</td><td>20</td><td>35</td><td class="td-blue">45</td></tr>
+        <tr><td class="td-gold">HD465/CAT773</td><td class="td-gold">55</td><td>32</td><td>18</td><td>30</td><td class="td-blue">60</td></tr>
+        <tr><td>HD465-7/CAT773E</td><td class="td-gold">60</td><td>38</td><td>18</td><td>30</td><td class="td-blue">62</td></tr>
+        <tr><td>HD785/CAT775</td><td class="td-gold">77</td><td>48</td><td>17</td><td>28</td><td class="td-blue">75</td></tr>
+        <tr><td>HD1500/CAT785</td><td class="td-gold">100</td><td>62</td><td>16</td><td>26</td><td class="td-blue">98</td></tr>
+        <tr><td>HD2000/CAT789</td><td class="td-gold">120</td><td>76</td><td>15</td><td>25</td><td class="td-blue">120</td></tr>
+        <tr><td>830E/CAT793</td><td class="td-gold">150</td><td>95</td><td>14</td><td>24</td><td class="td-blue">155</td></tr>
+        <tr><td>860E/CAT797</td><td class="td-gold">200</td><td>130</td><td>13</td><td>22</td><td class="td-blue">220</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="grid-2">
+    <div>
+      <div class="section-title">🧱 Density & Swell Material</div>
+      <div class="panel" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+          <thead><tr><th>Material</th><th>Density BCM (t/m³)</th><th>Density LCM (t/m³)</th><th>Swell</th></tr></thead>
+          <tbody>
+            <tr><td>Tanah Merah</td><td>1.80</td><td>1.44</td><td class="td-gold">25%</td></tr>
+            <tr><td>Clay/Lempung</td><td>1.85</td><td>1.46</td><td class="td-gold">27%</td></tr>
+            <tr><td>Batubara</td><td>1.30</td><td>1.10</td><td class="td-gold">18%</td></tr>
+            <tr><td>Nikel (Limonit)</td><td>1.65</td><td>1.32</td><td class="td-gold">25%</td></tr>
+            <tr><td>Nikel (Saprolit)</td><td>1.75</td><td>1.38</td><td class="td-gold">27%</td></tr>
+            <tr><td>Batu Kapur</td><td>2.50</td><td>1.79</td><td class="td-gold">40%</td></tr>
+            <tr><td>Granit/Andesit</td><td>2.70</td><td>1.89</td><td class="td-gold">43%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">📐 Koreksi Grade Jalan (mode Auto)</div>
+      <div class="panel" style="padding:0;overflow:hidden;">
+        <table class="data-table">
+          <thead><tr><th>Grade</th><th>Koreksi Speed</th><th>Fuel Penalty</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>0 – 3%</td><td class="td-green">−3%</td><td class="td-green">+0%</td><td class="td-green">Ideal</td></tr>
+            <tr><td>4 – 5%</td><td class="td-gold">−9%</td><td class="td-gold">+8%</td><td class="td-gold">Baik</td></tr>
+            <tr><td>6 – 7%</td><td class="td-gold">−18%</td><td class="td-gold">+18%</td><td class="td-gold">Perhatikan</td></tr>
+            <tr><td>8 – 10%</td><td class="td-red">−30%</td><td class="td-red">+30%</td><td class="td-red">Batas Aman</td></tr>
+            <tr><td>&gt;10%</td><td class="td-red">−45%</td><td class="td-red">+50%</td><td class="td-red">Berbahaya</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ TAB 4: PANDUAN ══════════ -->
+<div id="tab-guide" class="tab-content">
+<div class="container">
+  <div class="panel">
+    <div class="panel-header">📐 <span>Rumus Lengkap — IGKM v3.0</span></div>
+    <div class="alert alert-blue" style="margin-bottom:18px;">
+      ℹ️ Semua rumus menggunakan satuan <b>MENIT</b> secara konsisten. CT per swing diinput dalam <b>DETIK</b> dan dikonversi otomatis.
+    </div>
+
+    <div class="section-title">1 · CT Excavator (Waktu Loading per DT)</div>
+    <div class="formula-box">
+<b style="color:var(--accent);">STEP 1 — Hitung Jumlah Bucket (Pass Count)</b>
+  Volume LCM per bucket  = Bucket_m3 × Fill_factor
+  Pass Count             = CEILING( Vessel_DT_m3 / Volume_LCM_per_bucket )
+
+<b style="color:var(--accent);">STEP 2 — Hitung Total Waktu Loading (CT_Loading)</b>
+  CT_swing_mnt           = CT_swing_detik / 60
+  CT_Loading_mnt         = Pass_Count × CT_swing_mnt
+
+Contoh: Bucket=2.2m³, FF=87%, Vessel=18m³, CT_swing=28dtk
+  LCM/bucket  = 2.2 × 0.87 = 1.914 m³
+  Pass Count  = CEILING(18 / 1.914) = CEILING(9.41) = <b style="color:var(--accent);">10 pass</b>
+  CT_Loading  = 10 × (28/60) = 10 × 0.467 = <b style="color:var(--accent);">4.67 menit</b>
+    </div>
+
+    <div class="section-title">2 · CT Dump Truck — Mode Otomatis</div>
+    <div class="formula-box">
+CT_DT = CT_Loading + T_haul_isi + T_spot_dump + T_haul_kosong + T_antri
+
+  CT_Loading    = Pass_Count × CT_swing_mnt          [menit]
+  T_haul_isi    = (Jarak_m / 1000) / V_loaded_eff × 60  [menit]
+  T_haul_kosong = (Jarak_m / 1000) / V_empty_eff  × 60  [menit]
+
+  V_loaded_eff  = V_loaded_km/h × Grade_factor × Road_cond_factor
+  V_empty_eff   = V_empty_km/h  × Road_cond_factor   ← grade membantu kembali
+    </div>
+
+    <div class="section-title">3 · Match Factor</div>
+    <div class="formula-box">
+<b style="color:var(--accent);">MF = (N_DT × CT_Loading) / (N_Exca × CT_DT)</b>
+
+  N_DT       = Jumlah Dump Truck
+  CT_Loading = Waktu loading 1 DT oleh 1 Exca (menit)  ← bukan CT_swing!
+  N_Exca     = Jumlah Excavator
+  CT_DT      = Total cycle time DT (menit)
+
+Contoh (data user): CT_Loading=5.2mnt, CT_DT=10mnt, N_DT=2, N_Exca=1
+  MF = (2 × 5.2) / (1 × 10) = 10.4 / 10 = <b style="color:var(--accent);">1.04 ✅</b>
+    </div>
+
+    <div class="section-title">4 · Produktivitas Fleet per Jam ★ KUNCI</div>
+    <div class="formula-box">
+<b style="color:var(--accent);">Produktivitas = trips/jam × BCM_per_trip × N_DT × Efisiensi</b>
+
+  trips_per_jam    = 60 / CT_DT                    ← siklus per jam per unit DT
+  BCM_per_trip     = (Pass_Count × Bucket_m3 × FF) / (1 + Swell)
+  Prod_BCM_jam     = trips_per_jam × BCM_per_trip × N_DT × Eff_DT
+  Prod_ton_jam     = Prod_BCM_jam × Density_BCM
+
+Contoh verifikasi (BCM=10/trip, CT_DT=10mnt, N_DT=2, Eff=83%):
+  trips/jam     = 60 / 10 = 6 trips/jam per DT
+  BCM/jam/DT    = 6 × 10 = 60 BCM/jam
+  Fleet BCM/jam = 60 × 2 DT × 0.83 = <b style="color:var(--accent);">99.6 BCM/jam ✅</b>
+
+Tanpa efisiensi (Eff=100%): 6 × 10 × 2 = <b style="color:var(--accent);">120 BCM/jam ✅</b>
+    </div>
+
+    <div class="section-title">5 · Interpretasi MF</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div class="panel" style="text-align:center;border-color:var(--red);padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--red);margin-bottom:6px;">MF &lt; 0.85</div>
+        <div style="font-size:12px;color:var(--text2);">Under-trucked. DT kurang, Exca idle menunggu DT.</div>
+      </div>
+      <div class="panel" style="text-align:center;border-color:var(--accent);padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--accent);margin-bottom:6px;">0.85–0.95</div>
+        <div style="font-size:12px;color:var(--text2);">Mendekati optimal. Exca sedikit idle. Masih produktif.</div>
+      </div>
+      <div class="panel" style="text-align:center;border-color:var(--green);padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--green);margin-bottom:6px;">0.95–1.10</div>
+        <div style="font-size:12px;color:var(--text2);">OPTIMAL. Fleet balance. Target operasi tambang.</div>
+      </div>
+      <div class="panel" style="text-align:center;border-color:var(--blue);padding:14px;">
+        <div style="font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--blue);margin-bottom:6px;">MF &gt; 1.10</div>
+        <div style="font-size:12px;color:var(--text2);">Over-trucked. DT mengantri di loading point.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <span>IGKM HAULING KALKULASI</span> v3.0 · Mining Fleet Optimization Tool<br>
+    © 2025 · Ref: CAT Performance Handbook Ed.48 · Komatsu Spec & Application Handbook
+  </div>
+  <button class="btn btn-secondary" onclick="downloadApp()">⬇ Download HTML</button>
+</footer>
+
+</div><!-- /wrapper -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  REFERENCE DATA
+// ═══════════════════════════════════════════════════════
+const EXCA_REF = {
+  PC200:{bucket:0.9, fill:90, swing_sec:25, fuel:18},
+  PC210:{bucket:1.0, fill:90, swing_sec:26, fuel:20},
+  PC300:{bucket:1.5, fill:88, swing_sec:27, fuel:28},
+  PC360:{bucket:1.7, fill:87, swing_sec:28, fuel:32},
+  PC400:{bucket:2.2, fill:87, swing_sec:28, fuel:38},
+  PC600:{bucket:3.5, fill:85, swing_sec:28, fuel:52},
+  PC800:{bucket:4.6, fill:85, swing_sec:30, fuel:65},
+  PC1000:{bucket:5.5,fill:84, swing_sec:32, fuel:72},
+  PC1250:{bucket:7.0,fill:83, swing_sec:33, fuel:90},
+  PC2000:{bucket:11.0,fill:82,swing_sec:35, fuel:145},
+  PC3000:{bucket:16.0,fill:80,swing_sec:38, fuel:210},
+};
+
+const DT_REF = {
+  '30T':{payload:30, vessel:20, vl:22, ve:38, fuel:35},
+  '40T':{payload:40, vessel:27, vl:20, ve:35, fuel:45},
+  '55T':{payload:55, vessel:32, vl:18, ve:30, fuel:60},
+  '60T':{payload:60, vessel:38, vl:18, ve:30, fuel:62},
+  '77T':{payload:77, vessel:48, vl:17, ve:28, fuel:75},
+  '100T':{payload:100,vessel:62, vl:16, ve:26, fuel:98},
+  '120T':{payload:120,vessel:76, vl:15, ve:25, fuel:120},
+  '150T':{payload:150,vessel:95, vl:14, ve:24, fuel:155},
+  '200T':{payload:200,vessel:130,vl:13, ve:22, fuel:220},
+};
+
+const MAT_REF = {
+  tanah_merah:{density:1.80, swell:25, fill_adj:0,  label:'Tanah Merah'},
+  clay:       {density:1.85, swell:27, fill_adj:-2, label:'Clay/Lempung'},
+  batubara:   {density:1.30, swell:18, fill_adj:5,  label:'Batubara'},
+  nikel:      {density:1.65, swell:25, fill_adj:2,  label:'Nikel (Limonit)'},
+  nikel_sap:  {density:1.75, swell:27, fill_adj:2,  label:'Nikel (Saprolit)'},
+  limestone:  {density:2.50, swell:40, fill_adj:-5, label:'Batu Kapur'},
+  granite:    {density:2.70, swell:43, fill_adj:-8, label:'Granit/Andesit'},
+};
+
+// ── helpers ──────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const gv = id => parseFloat($(id).value) || 0;
+const gs = id => $(id).value;
+const sv = (id,v) => { $(id).value = v; };
+
+function gradeFactor(g){
+  if(g<=3) return 0.97; if(g<=5) return 0.91;
+  if(g<=7) return 0.82; if(g<=10) return 0.70; return 0.55;
+}
+function fuelPenalty(g){
+  if(g<=3) return 1.00; if(g<=5) return 1.08;
+  if(g<=7) return 1.18; if(g<=10) return 1.30; return 1.50;
+}
+
+// ── Core exca calc (returns object) ─────────────────
+function calcExca(){
+  const bucket     = gv('exca_bucket');
+  const ff         = gv('fill_factor') / 100;
+  const swing_sec  = gv('ct_swing_sec');
+  const swing_min  = swing_sec / 60;          // CT 1 swing dalam menit
+  const vessel     = gv('vessel_for_pass');   // vessel DT (sync dengan vessel_for_pass)
+  const swell      = gv('swell_factor') / 100;
+
+  const lcm_per_bucket = bucket * ff;         // m³ LCM per bucket
+  const pass_count     = Math.ceil(vessel / lcm_per_bucket);  // jumlah swing
+  const ct_loading_min = pass_count * swing_min;              // total waktu loading DT
+
+  // BCM per trip DT
+  const bcm_per_trip   = (pass_count * lcm_per_bucket) / (1 + swell);
+
+  return { bucket, ff, swing_sec, swing_min, vessel, swell,
+           lcm_per_bucket, pass_count, ct_loading_min, bcm_per_trip };
+}
+
+// ── Core DT auto calc ────────────────────────────────
+function calcDTAuto(exca){
+  const vl_raw    = gv('speed_loaded');
+  const ve_raw    = gv('speed_empty');
+  const dist_km   = gv('haul_distance') / 1000;
+  const T_spot    = gv('spot_dump_time');
+  const T_antri   = gv('queue_time');
+  const grade     = gv('road_grade');
+  const road_cond = gv('road_cond');
+
+  const gf = gradeFactor(grade);
+  const fp = fuelPenalty(grade);
+  const vl_eff = vl_raw * gf * road_cond;
+  const ve_eff = ve_raw * road_cond;           // kosong: grade membantu
+
+  const T_haul_isi    = (dist_km / vl_eff) * 60;
+  const T_haul_kosong = (dist_km / ve_eff) * 60;
+  const CT_DT = exca.ct_loading_min + T_haul_isi + T_spot + T_haul_kosong + T_antri;
+
+  return { vl_raw, ve_raw, dist_km, T_spot, T_antri, grade, road_cond,
+           gf, fp, vl_eff, ve_eff, T_haul_isi, T_haul_kosong, CT_DT };
+}
+
+// ═══════════════════════════════════════════════════════
+//  LIVE PREVIEW
+// ═══════════════════════════════════════════════════════
+function updateLiveExca(){
+  try {
+    const e = calcExca();
+    $('vessel_for_pass').value = gv('vessel_for_pass'); // sync
+    $('live-exca').innerHTML =
+      `Pass Count (swing)  : ${e.pass_count} kali  (LCM/bucket = ${e.lcm_per_bucket.toFixed(2)} m³)\n`+
+      `CT per 1 swing      : ${e.swing_sec} dtk = ${e.swing_min.toFixed(4)} mnt\n`+
+      `<b style="color:#fbbf24;">CT Loading DT total : ${e.pass_count} × ${e.swing_min.toFixed(4)} = ${e.ct_loading_min.toFixed(3)} menit</b>\n`+
+      `BCM per trip DT     : ${e.bcm_per_trip.toFixed(2)} BCM`;
+  } catch(err){ $('live-exca').innerHTML = 'Error: '+err.message; }
+}
+
+function updateLiveDT(){
+  const mode = gs('ct_mode');
+  if(mode === 'manual'){
+    const ct_dt = gv('ct_dt_manual');
+    const e     = calcExca();
+    const matD  = MAT_REF[gs('material_type')];
+    const trips = 60 / ct_dt;
+    const effDT = gv('dt_eff')/100;
+    const N_dt  = gv('num_dt');
+    const N_ex  = gv('num_exca');
+    const MF    = (N_dt * e.ct_loading_min) / (N_ex * ct_dt);
+    $('live-dt-manual').innerHTML =
+      `CT DT (input)  : ${ct_dt} menit\n`+
+      `Trips / jam    : 60 / ${ct_dt} = ${trips.toFixed(3)} trip/jam per DT\n`+
+      `BCM per trip   : ${e.bcm_per_trip.toFixed(2)} BCM\n`+
+      `Prod/jam/DT    : ${trips.toFixed(3)} × ${e.bcm_per_trip.toFixed(2)} = ${(trips*e.bcm_per_trip).toFixed(2)} BCM\n`+
+      `<b style="color:#fbbf24;">Fleet BCM/jam   : × ${N_dt} DT × ${(effDT*100).toFixed(0)}% = ${(trips*e.bcm_per_trip*N_dt*effDT).toFixed(1)} BCM/jam\n`+
+      `Match Factor    : (${N_dt}×${e.ct_loading_min.toFixed(2)}) / (${N_ex}×${ct_dt}) = ${MF.toFixed(3)}</b>`;
+  } else {
+    try {
+      const e  = calcExca();
+      const dt = calcDTAuto(e);
+      const N_dt = gv('num_dt'); const N_ex = gv('num_exca');
+      const trips = 60 / dt.CT_DT;
+      const effDT = gv('dt_eff')/100;
+      const MF = (N_dt * e.ct_loading_min) / (N_ex * dt.CT_DT);
+      $('live-dt-auto').innerHTML =
+        `T_loading      : ${e.pass_count} × ${e.swing_min.toFixed(3)} = ${e.ct_loading_min.toFixed(3)} mnt\n`+
+        `T_haul_isi     : (${(dt.dist_km).toFixed(3)} km / ${dt.vl_eff.toFixed(2)} km/h) × 60 = ${dt.T_haul_isi.toFixed(3)} mnt\n`+
+        `T_spot_dump    : ${dt.T_spot} mnt\n`+
+        `T_haul_kosong  : (${(dt.dist_km).toFixed(3)} km / ${dt.ve_eff.toFixed(2)} km/h) × 60 = ${dt.T_haul_kosong.toFixed(3)} mnt\n`+
+        `T_antri        : ${dt.T_antri} mnt\n`+
+        `<b style="color:#fbbf24;">CT_DT total    : ${dt.CT_DT.toFixed(3)} menit</b>\n`+
+        `Trips/jam/DT   : 60/${dt.CT_DT.toFixed(3)} = ${trips.toFixed(3)}\n`+
+        `<b style="color:#fbbf24;">Fleet BCM/jam   : ${trips.toFixed(3)} × ${e.bcm_per_trip.toFixed(2)} × ${N_dt} DT × ${(effDT*100).toFixed(0)}% = ${(trips*e.bcm_per_trip*N_dt*effDT).toFixed(1)}\n`+
+        `Match Factor    : (${N_dt}×${e.ct_loading_min.toFixed(2)}) / (${N_ex}×${dt.CT_DT.toFixed(3)}) = ${MF.toFixed(3)}</b>`;
+    } catch(err){ $('live-dt-auto').innerHTML = 'Error: '+err.message; }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  ON-CHANGE HANDLERS
+// ═══════════════════════════════════════════════════════
+function switchTab(id){
+  ['calc','cost','ref','guide'].forEach((t,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',t===id);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  $('tab-'+id).classList.add('active');
+}
+
+function onExcaChange(){
+  const d = EXCA_REF[gs('exca_model')]; if(!d) return;
+  sv('exca_bucket', d.bucket);
+  sv('ct_swing_sec', d.swing_sec);
+  sv('exca_fuel', d.fuel);
+  updateFillFactor();
+  updateLiveExca();
+  updateLiveDT();
+}
+
+function onDTChange(){
+  const d = DT_REF[gs('dt_model')]; if(!d) return;
+  sv('dt_payload', d.payload);
+  sv('dt_vessel', d.vessel);
+  sv('vessel_for_pass', d.vessel); // sync
+  if($('speed_loaded')) sv('speed_loaded', d.vl);
+  if($('speed_empty'))  sv('speed_empty',  d.ve);
+  sv('dt_fuel', d.fuel);
+  updateLiveExca();
+  updateLiveDT();
+}
+
+function onVesselChange(){
+  sv('vessel_for_pass', gv('dt_vessel')); // keep in sync
+  updateLiveExca();
+  updateLiveDT();
+}
+
+function onMaterialChange(){
+  const m = MAT_REF[gs('material_type')]; if(!m) return;
+  sv('swell_factor', m.swell);
+  updateFillFactor();
+  updateLiveExca();
+  updateLiveDT();
+}
+
+function updateFillFactor(){
+  const em = gs('exca_model'), mm = gs('material_type');
+  const ed = EXCA_REF[em], md = MAT_REF[mm]; if(!ed||!md) return;
+  sv('fill_factor', Math.min(110, Math.max(60, ed.fill + md.fill_adj)));
+}
+
+function onGradeChange(){
+  const g = gv('road_grade');
+  $('grade-alert').style.display = g>8 ? 'block':'none';
+}
+
+function onCTModeChange(){
+  const mode = gs('ct_mode');
+  $('ct_manual_block').style.display = mode==='manual' ? 'block':'none';
+  $('ct_auto_block').style.display   = mode==='auto'   ? 'block':'none';
+  updateLiveDT();
+}
+
+// ═══════════════════════════════════════════════════════
+//  MAIN CALCULATE
+// ═══════════════════════════════════════════════════════
+let R = null;
+
+function calculate(){
+  const e    = calcExca();
+  const N_ex = gv('num_exca');
+  const N_dt = gv('num_dt');
+  const effExca = gv('exca_eff')/100;
+  const effDT   = gv('dt_eff')/100;
+  const matD    = MAT_REF[gs('material_type')];
+  const density = matD.density;
+
+  // ── CT DT ───────────────────────────────────────────
+  let CT_DT, dtDetail = null, fp = 1.0;
+  const mode = gs('ct_mode');
+
+  if(mode === 'manual'){
+    CT_DT    = gv('ct_dt_manual');
+  } else {
+    const dt  = calcDTAuto(e);
+    CT_DT     = dt.CT_DT;
+    fp        = dt.fp;
+    dtDetail  = dt;
+  }
+
+  // ── MATCH FACTOR ────────────────────────────────────
+  // MF = (N_DT × CT_Loading) / (N_Exca × CT_DT)
+  // CT_Loading = waktu loading DT oleh Exca = pass_count × CT_swing_mnt
+  const MF = (N_dt * e.ct_loading_min) / (N_ex * CT_DT);
+
+  // ── Optimal DT ──────────────────────────────────────
+  const optDT = Math.ceil(N_ex * CT_DT / e.ct_loading_min);
+
+  // ── PRODUKTIVITAS PER JAM ──────────────────────────
+  // trips per jam per unit DT = 60 / CT_DT
+  const trips_per_hr_per_DT = 60 / CT_DT;
+
+  // BCM per trip = (pass_count × bucket × FF) / (1 + swell)
+  const bcm_per_trip = e.bcm_per_trip;
+  const ton_per_trip = bcm_per_trip * density;
+
+  // Fleet production per jam (semua DT)
+  const fleet_bcm_hr  = trips_per_hr_per_DT * bcm_per_trip * N_dt * effDT;
+  const fleet_ton_hr  = fleet_bcm_hr * density;
+
+  // Kapasitas exca per jam (untuk referensi)
+  // Exca bisa loading: 60/CT_loading trips per jam
+  const trips_exca_hr = 60 / e.ct_loading_min;          // DT yang bisa diloading exca per jam
+  const exca_cap_bcm  = trips_exca_hr * bcm_per_trip * N_ex * effExca;
+
+  // Effective production = min(exca cap, DT cap)
+  const eff_bcm_hr = Math.min(exca_cap_bcm, fleet_bcm_hr);
+  const eff_ton_hr = eff_bcm_hr * density;
+
+  R = { MF, N_ex, N_dt, CT_DT, optDT, fp,
+        ct_loading_min: e.ct_loading_min,
+        pass_count: e.pass_count, swing_sec: e.swing_sec, swing_min: e.swing_min,
+        bcm_per_trip, ton_per_trip, trips_per_hr_per_DT,
+        fleet_bcm_hr, fleet_ton_hr, exca_cap_bcm,
+        eff_bcm_hr, eff_ton_hr,
+        density, swell: e.swell, effDT, effExca,
+        mode, dtDetail,
+        exca_fuel: gv('exca_fuel'), dt_fuel: gv('dt_fuel'),
+        num_exca: N_ex, num_dt: N_dt };
+
+  renderResults();
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════════════════════
+function renderResults(){
+  const r  = R;
+  const MF = r.MF;
+  const f3 = n => n.toFixed(3);
+  const f1 = n => n.toFixed(1);
+  const f0 = n => Math.round(n).toLocaleString('id-ID');
+
+  // Status bar
+  let barCls, icon, msg;
+  if(MF>=0.95&&MF<=1.10){ barCls='mf-ideal'; icon='✅'; msg=`OPTIMAL — Fleet seimbang sempurna. MF = ${f3(MF)}`; }
+  else if(MF>1.10)       { barCls='mf-over';  icon='🔵'; msg=`OVER-TRUCKED — DT berlebih, terjadi antrian di loading. MF = ${f3(MF)}`; }
+  else if(MF>=0.85)      { barCls='mf-ok';    icon='🟡'; msg=`MENDEKATI OPTIMAL — Exca sedikit idle. MF = ${f3(MF)}`; }
+  else                   { barCls='mf-under'; icon='🔴'; msg=`UNDER-TRUCKED — DT kurang, Exca banyak idle. MF = ${f3(MF)}`; }
+  $('mf-bar-el').innerHTML = `<div class="mf-bar ${barCls}">${icon} &nbsp; ${msg}</div>`;
+
+  // MF colour
+  const mfCls   = MF>=0.95&&MF<=1.10?'rv-g': MF>1.1?'rv-b':'rv-r';
+  const mfHlCls = MF>=0.95&&MF<=1.10?'hl-green': MF>1.1?'hl-blue':'hl-red';
+
+  $('main-results').innerHTML = `
+    <div class="result-card ${mfHlCls}">
+      <div class="result-label">Match Factor</div>
+      <div class="result-value ${mfCls}">${f3(MF)}</div>
+      <div class="result-unit">Target: 0.95 – 1.10</div>
+    </div>
+    <div class="result-card hl-gold">
+      <div class="result-label">CT Loading (Exca→DT)</div>
+      <div class="result-value">${r.ct_loading_min.toFixed(3)}</div>
+      <div class="result-unit">menit (${r.pass_count} pass × ${r.swing_sec} dtk)</div>
+    </div>
+    <div class="result-card hl-gold">
+      <div class="result-label">CT Dump Truck</div>
+      <div class="result-value">${r.CT_DT.toFixed(3)}</div>
+      <div class="result-unit">menit per siklus</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Pass Count</div>
+      <div class="result-value">${r.pass_count}</div>
+      <div class="result-unit">bucket / trip DT</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">DT Optimal</div>
+      <div class="result-value">${r.optDT}</div>
+      <div class="result-unit">unit (untuk ${r.N_ex} Exca)</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Trips / Jam / DT</div>
+      <div class="result-value">${r.trips_per_hr_per_DT.toFixed(2)}</div>
+      <div class="result-unit">siklus/jam (60 ÷ CT_DT)</div>
+    </div>
+    <div class="result-card hl-green">
+      <div class="result-label">Fleet BCM / Jam</div>
+      <div class="result-value rv-g">${r.eff_bcm_hr.toFixed(1)}</div>
+      <div class="result-unit">BCM/jam efektif</div>
+    </div>
+    <div class="result-card hl-blue">
+      <div class="result-label">Fleet Ton / Jam</div>
+      <div class="result-value rv-b">${r.eff_ton_hr.toFixed(1)}</div>
+      <div class="result-unit">ton/jam efektif</div>
+    </div>
+  `;
+
+  // Cycle table
+  let ctRows = '';
+  if(r.mode==='manual'){
+    ctRows = `
+      <tr><td>CT Loading (${r.pass_count} pass × ${r.swing_sec} dtk)</td><td class="td-gold">${r.ct_loading_min.toFixed(3)} mnt</td><td>—</td></tr>
+      <tr><td>Komponen lain (input manual)</td><td colspan="2" style="color:var(--text3);">CT DT diinput langsung: ${r.CT_DT.toFixed(3)} mnt</td></tr>
+      <tr class="td-bold"><td>TOTAL CT DT</td><td class="td-gold">${r.CT_DT.toFixed(3)} mnt</td><td>100%</td></tr>`;
+  } else {
+    const dt = r.dtDetail;
+    const cx = r.CT_DT;
+    ctRows = `
+      <tr><td>⏳ Loading (${r.pass_count} × ${r.swing_sec} dtk)</td><td class="td-gold">${r.ct_loading_min.toFixed(3)}</td><td>${(r.ct_loading_min/cx*100).toFixed(1)}%</td></tr>
+      <tr><td>🚛 Haul Bermuatan (${dt.vl_eff.toFixed(1)} km/h eff)</td><td class="td-gold">${dt.T_haul_isi.toFixed(3)}</td><td>${(dt.T_haul_isi/cx*100).toFixed(1)}%</td></tr>
+      <tr><td>🔄 Spot + Dump + Tipping</td><td class="td-gold">${dt.T_spot.toFixed(2)}</td><td>${(dt.T_spot/cx*100).toFixed(1)}%</td></tr>
+      <tr><td>↩ Return Kosong (${dt.ve_eff.toFixed(1)} km/h eff)</td><td class="td-gold">${dt.T_haul_kosong.toFixed(3)}</td><td>${(dt.T_haul_kosong/cx*100).toFixed(1)}%</td></tr>
+      <tr><td>⏸ Antri + Manuver Loading</td><td class="td-gold">${dt.T_antri.toFixed(2)}</td><td>${(dt.T_antri/cx*100).toFixed(1)}%</td></tr>
+      <tr class="td-bold"><td>TOTAL CT DT</td><td class="td-gold">${cx.toFixed(3)} mnt</td><td>100%</td></tr>`;
+  }
+
+  $('cycle-table').innerHTML = `
+    <thead><tr><th>Komponen Waktu</th><th>Menit</th><th>%</th></tr></thead>
+    <tbody>${ctRows}</tbody>`;
+
+  // Prod table — verifikasi formula lengkap
+  const ep = r.eff_bcm_hr;
+  $('prod-table').innerHTML = `
+    <thead><tr><th>Parameter / Periode</th><th>BCM</th><th>Ton</th></tr></thead>
+    <tbody>
+      <tr><td>BCM per trip DT</td><td class="td-gold">${r.bcm_per_trip.toFixed(2)}</td><td>${r.ton_per_trip.toFixed(2)}</td></tr>
+      <tr><td>Trips/jam per unit DT (60÷${r.CT_DT.toFixed(2)})</td><td class="td-gold">${r.trips_per_hr_per_DT.toFixed(3)}</td><td>—</td></tr>
+      <tr><td>Produksi / jam / DT (tanpa eff)</td><td class="td-gold">${(r.trips_per_hr_per_DT*r.bcm_per_trip).toFixed(1)}</td><td>${(r.trips_per_hr_per_DT*r.ton_per_trip).toFixed(1)}</td></tr>
+      <tr><td>Fleet DT kapasitas (×${r.N_dt} DT × ${(r.effDT*100).toFixed(0)}% eff)</td><td class="td-blue">${r.fleet_bcm_hr.toFixed(1)}</td><td>${r.fleet_ton_hr.toFixed(1)}</td></tr>
+      <tr><td>Kapasitas Exca (×${r.N_ex} Exca × ${(r.effExca*100).toFixed(0)}% eff)</td><td class="td-gold">${r.exca_cap_bcm.toFixed(1)}</td><td>${(r.exca_cap_bcm*r.density).toFixed(1)}</td></tr>
+      <tr><td><b>Produksi Efektif / Jam</b></td><td class="td-green">${ep.toFixed(1)}</td><td class="td-green">${r.eff_ton_hr.toFixed(1)}</td></tr>
+      <tr><td>Per Shift (7 jam)</td><td class="td-green">${(ep*7).toFixed(0)}</td><td>${(r.eff_ton_hr*7).toFixed(0)}</td></tr>
+      <tr><td>Per Hari (2 shift)</td><td class="td-green">${(ep*14).toFixed(0)}</td><td>${(r.eff_ton_hr*14).toFixed(0)}</td></tr>
+      <tr><td>Per Bulan (25 hari)</td><td class="td-green">${(ep*14*25/1000).toFixed(1)}k</td><td>${(r.eff_ton_hr*14*25/1000).toFixed(1)}k</td></tr>
+    </tbody>`;
+
+  // Rekomendasi
+  const recos = [];
+  if(MF<0.85)        recos.push(`Tambahkan ${r.optDT-r.N_dt} unit DT (${r.N_dt} → ${r.optDT} unit) untuk mencapai MF optimal. Saat ini Exca sering idle.`);
+  else if(MF>1.20)   recos.push(`Kurangi ${r.N_dt-r.optDT} unit DT (${r.N_dt} → ${r.optDT} unit). Kelebihan DT menyebabkan antrian dan biaya tidak perlu.`);
+  else if(MF>=0.95&&MF<=1.10) recos.push('Konfigurasi fleet sudah optimal ✅. Pertahankan kombinasi ini dan lakukan monitoring cycle time rutin.');
+  else recos.push(`MF ${f3(MF)} mendekati optimal. DT optimal = ${r.optDT} unit.`);
+  if(r.pass_count>8)  recos.push(`Pass count ${r.pass_count}x terlalu tinggi — pertimbangkan excavator bucket lebih besar, atau turunkan kapasitas vessel DT.`);
+  if(r.pass_count<3)  recos.push(`Pass count ${r.pass_count}x terlalu rendah — DT underloaded, pertimbangkan DT kapasitas lebih besar.`);
+
+  $('reco-section').innerHTML = `
+    <div class="reco-box">
+      <div class="reco-title">💡 Rekomendasi Optimasi Fleet</div>
+      ${recos.map(t=>`<div class="reco-item"><div class="reco-dot"></div><div>${t}</div></div>`).join('')}
+    </div>`;
+
+  $('results-section').style.display = 'block';
+  $('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════════════════════════════════════════════════
+//  COST
+// ═══════════════════════════════════════════════════════
+function calculateCost(){
+  if(!R){ alert('Hitung Match Factor terlebih dahulu!'); return; }
+  const r = R;
+  const fuelPrice   = gv('fuel_price');
+  const hoursShift  = gv('hours_shift');
+  const shiftsDay   = gv('shifts_day');
+  const daysMonth   = gv('days_month');
+  const excaLabor   = gv('exca_labor');
+  const dtLabor     = gv('dt_labor');
+  const excaMaint   = gv('exca_maintain');
+  const dtMaint     = gv('dt_maintain');
+  const overhead    = gv('overhead');
+
+  const hrsPerMonth = hoursShift * shiftsDay * daysMonth;
+
+  const excaFuelEff = r.exca_fuel * r.fp;
+  const dtFuelEff   = r.dt_fuel   * r.fp;
+
+  const fuelCostHr  = (excaFuelEff*r.num_exca + dtFuelEff*r.num_dt) * fuelPrice;
+  const laborCostHr = excaLabor*r.num_exca + dtLabor*r.num_dt;
+  const maintCostHr = excaMaint*r.num_exca + dtMaint*r.num_dt;
+  const overheadHr  = overhead*(r.num_exca+r.num_dt);
+  const totalHr     = fuelCostHr + laborCostHr + maintCostHr + overheadHr;
+
+  const prodBCM   = r.eff_bcm_hr || 1;
+  const prodTon   = r.eff_ton_hr || 1;
+  const cPerBCM   = totalHr / prodBCM;
+  const cPerTon   = totalHr / prodTon;
+  const cMonth    = totalHr * hrsPerMonth;
+
+  const totalFuelL  = excaFuelEff*r.num_exca + dtFuelEff*r.num_dt;
+  const fuelPerBCM  = totalFuelL / prodBCM;
+  const fuelPerTon  = totalFuelL / prodTon;
+
+  const fmt = n => Math.round(n).toLocaleString('id-ID');
+
+  $('cost-cards').innerHTML = `
+    <div class="result-card hl-gold">
+      <div class="result-label">Biaya / BCM</div>
+      <div class="result-value" style="font-size:20px;">Rp ${fmt(cPerBCM)}</div>
+      <div class="result-unit">total cost per BCM</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Biaya / Ton</div>
+      <div class="result-value" style="font-size:20px;">Rp ${fmt(cPerTon)}</div>
+      <div class="result-unit">total cost per ton</div>
+    </div>
+    <div class="result-card hl-blue">
+      <div class="result-label">Total Cost / Jam</div>
+      <div class="result-value rv-b" style="font-size:20px;">Rp ${fmt(totalHr)}</div>
+      <div class="result-unit">seluruh fleet</div>
+    </div>
+    <div class="result-card hl-green">
+      <div class="result-label">Total Cost / Bulan</div>
+      <div class="result-value rv-g" style="font-size:18px;">Rp ${(cMonth/1e9).toFixed(2)}M</div>
+      <div class="result-unit">${hrsPerMonth} jam operasi</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Fuel Ratio (L/BCM)</div>
+      <div class="result-value">${fuelPerBCM.toFixed(2)}</div>
+      <div class="result-unit">liter per BCM</div>
+    </div>
+    <div class="result-card">
+      <div class="result-label">Fuel Ratio (L/ton)</div>
+      <div class="result-value">${fuelPerTon.toFixed(2)}</div>
+      <div class="result-unit">liter per ton</div>
+    </div>
+  `;
+
+  $('cost-break-table').innerHTML = `
+    <thead><tr><th>Komponen</th><th>Exca/jam</th><th>DT/jam</th><th>Fleet/jam</th><th>%</th></tr></thead>
+    <tbody>
+      <tr><td>⛽ Bahan Bakar</td>
+        <td>Rp ${fmt(excaFuelEff*r.num_exca*fuelPrice)}</td>
+        <td>Rp ${fmt(dtFuelEff*r.num_dt*fuelPrice)}</td>
+        <td class="td-gold">Rp ${fmt(fuelCostHr)}</td>
+        <td>${(fuelCostHr/totalHr*100).toFixed(1)}%</td></tr>
+      <tr><td>👷 Upah Operator</td>
+        <td>Rp ${fmt(excaLabor*r.num_exca)}</td>
+        <td>Rp ${fmt(dtLabor*r.num_dt)}</td>
+        <td class="td-gold">Rp ${fmt(laborCostHr)}</td>
+        <td>${(laborCostHr/totalHr*100).toFixed(1)}%</td></tr>
+      <tr><td>🔧 Pemeliharaan</td>
+        <td>Rp ${fmt(excaMaint*r.num_exca)}</td>
+        <td>Rp ${fmt(dtMaint*r.num_dt)}</td>
+        <td class="td-gold">Rp ${fmt(maintCostHr)}</td>
+        <td>${(maintCostHr/totalHr*100).toFixed(1)}%</td></tr>
+      <tr><td>🏢 Overhead</td>
+        <td colspan="2">—</td>
+        <td class="td-gold">Rp ${fmt(overheadHr)}</td>
+        <td>${(overheadHr/totalHr*100).toFixed(1)}%</td></tr>
+      <tr><td class="td-bold">TOTAL / JAM</td>
+        <td colspan="2">—</td>
+        <td class="td-green">Rp ${fmt(totalHr)}</td><td>100%</td></tr>
+    </tbody>`;
+
+  $('fuel-table').innerHTML = `
+    <thead><tr><th>Metrik</th><th>Exca</th><th>DT</th><th>Fleet Total</th></tr></thead>
+    <tbody>
+      <tr><td>Konsumsi Nominal (L/jam/unit)</td><td>${r.exca_fuel}</td><td>${r.dt_fuel}</td><td>—</td></tr>
+      <tr><td>Fuel Penalty Grade</td><td colspan="2" style="text-align:center">×${r.fp.toFixed(2)}</td><td>—</td></tr>
+      <tr><td>Konsumsi Efektif (L/jam/unit)</td><td class="td-gold">${excaFuelEff.toFixed(1)}</td><td class="td-gold">${dtFuelEff.toFixed(1)}</td><td>—</td></tr>
+      <tr><td>Fleet Total (L/jam)</td><td>${(excaFuelEff*r.num_exca).toFixed(0)}</td><td>${(dtFuelEff*r.num_dt).toFixed(0)}</td><td class="td-green">${totalFuelL.toFixed(0)} L</td></tr>
+      <tr><td>Fuel Ratio (L/BCM)</td><td colspan="2">—</td><td class="td-gold">${fuelPerBCM.toFixed(2)}</td></tr>
+      <tr><td>Fuel Ratio (L/ton)</td><td colspan="2">—</td><td class="td-gold">${fuelPerTon.toFixed(2)}</td></tr>
+    </tbody>`;
+
+  $('cost-results').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════
+//  PRESETS
+// ═══════════════════════════════════════════════════════
+function loadPreset(p){
+  const presets = {
+    // Contoh persis dari user: 2DT, 1Exca, CT_Loading=5.2mnt, CT_DT=10mnt
+    p_manual:{
+      exca_model:'PC400', material_type:'tanah_merah', dt_model:'55T',
+      num_exca:1, num_dt:2, ct_mode:'manual', ct_dt_manual:10,
+      // CT loading 5.2 mnt → back-calculate: vessel=18m³, bucket=2.2×0.87=1.914→10pass×0.467=4.67
+      // Kita set ct_swing_sec supaya = 31.2 dtk agar 10pass×31.2s/60=5.2mnt
+      // Atau set manual swing dan vessel agar pas
+      ct_swing_sec: 31.2, vessel_for_pass:18,
+      exca_eff:83, dt_eff:83,
+    },
+    p_coal:{
+      exca_model:'PC800', material_type:'batubara', dt_model:'55T',
+      num_exca:1, num_dt:4, ct_mode:'auto',
+      speed_loaded:18, speed_empty:30, haul_distance:2000,
+      spot_dump_time:3.5, queue_time:1.5, road_grade:5, road_cond:'0.92',
+      exca_eff:83, dt_eff:83,
+    },
+    p_nickel:{
+      exca_model:'PC1250', material_type:'nikel', dt_model:'100T',
+      num_exca:1, num_dt:5, ct_mode:'auto',
+      speed_loaded:15, speed_empty:26, haul_distance:3500,
+      spot_dump_time:4, queue_time:2, road_grade:7, road_cond:'0.82',
+      exca_eff:80, dt_eff:78,
+    }
+  };
+  const d = presets[p]; if(!d) return;
+
+  sv('exca_model', d.exca_model);
+  sv('material_type', d.material_type);
+  sv('dt_model', d.dt_model);
+  sv('num_exca', d.num_exca);
+  sv('num_dt', d.num_dt);
+  sv('ct_mode', d.ct_mode);
+  sv('ct_swing_sec', d.ct_swing_sec || EXCA_REF[d.exca_model].swing_sec);
+
+  if(d.vessel_for_pass) sv('vessel_for_pass', d.vessel_for_pass);
+  if(d.ct_dt_manual)    sv('ct_dt_manual', d.ct_dt_manual);
+  if(d.speed_loaded)    sv('speed_loaded', d.speed_loaded);
+  if(d.speed_empty)     sv('speed_empty', d.speed_empty);
+  if(d.haul_distance)   sv('haul_distance', d.haul_distance);
+  if(d.spot_dump_time)  sv('spot_dump_time', d.spot_dump_time);
+  if(d.queue_time)      sv('queue_time', d.queue_time);
+  if(d.road_grade!==undefined) sv('road_grade', d.road_grade);
+  if(d.road_cond)       sv('road_cond', d.road_cond);
+
+  $('exca_eff').value = d.exca_eff;
+  $('dt_eff').value   = d.dt_eff;
+  $('exca_eff_val').textContent = d.exca_eff+'%';
+  $('dt_eff_val').textContent   = d.dt_eff+'%';
+
+  onCTModeChange();
+  onExcaChange();
+  onDTChange();
+  onMaterialChange();
+  onGradeChange();
+  updateLiveExca();
+  updateLiveDT();
+}
+
+function resetAll(){
+  $('results-section').style.display = 'none';
+  $('cost-results').style.display    = 'none';
+  R = null;
+  loadPreset('p_manual');
+}
+
+function downloadApp(){
+  const blob = new Blob([document.documentElement.outerHTML],{type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'IGKM_Hauling_Kalkulasi_v3.0.html';
+  a.click();
+}
+
+// ── INIT ──────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadPreset('p_manual');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IGKM Talent Assessment Suite — Alat Tes Psikologi & Kemampuan Rekrutmen</title>
+<style>
+:root{
+  --navy:#0b1f3a; --navy2:#122b4d; --gold:#c9a227; --gold2:#e0bf4f;
+  --bg:#f4f6f9; --card:#ffffff; --ink:#1c2530; --muted:#5b6675;
+  --green:#1e8a5f; --red:#c23b3b; --blue:#2563a8; --border:#e2e6ec;
+  --radius:14px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);}
+header.top{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;padding:28px 5vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+header.top .brand{display:flex;align-items:center;gap:14px;}
+header.top .logo{width:52px;height:52px;border-radius:12px;background:var(--gold);color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;}
+header.top h1{margin:0;font-size:20px;letter-spacing:.3px;}
+header.top p{margin:2px 0 0;font-size:12.5px;color:#cfd9ea;}
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;background:#fff;padding:12px 5vw;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;box-shadow:0 2px 6px rgba(0,0,0,.03);}
+nav.tabs button{border:1px solid var(--border);background:#fff;color:var(--navy);padding:9px 14px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;}
+nav.tabs button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+nav.tabs button:disabled{opacity:.4;cursor:not-allowed;}
+main{max-width:980px;margin:26px auto 80px;padding:0 5vw;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 28px;margin-bottom:22px;box-shadow:0 1px 3px rgba(20,30,50,.05);}
+.card h2{margin-top:0;color:var(--navy);font-size:19px;}
+.card h3{color:var(--navy);font-size:15px;margin-bottom:6px;}
+.small{color:var(--muted);font-size:12.5px;line-height:1.6;}
+.badge{display:inline-block;background:#eef2f9;color:var(--navy);font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-right:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+label{display:block;font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+input[type=text],input[type=date],select{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;margin-bottom:14px;}
+.btn{background:var(--navy);color:#fff;border:none;padding:11px 22px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;}
+.btn.gold{background:var(--gold);color:var(--navy);}
+.btn.outline{background:#fff;color:var(--navy);border:1px solid var(--navy);}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.q{padding:14px 0;border-bottom:1px solid var(--border);}
+.q:last-child{border-bottom:none;}
+.qtext{font-size:13.5px;margin-bottom:8px;font-weight:600;}
+.likert{display:flex;gap:6px;flex-wrap:wrap;}
+.likert label{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;background:#f6f8fb;border:1px solid var(--border);padding:6px 10px;border-radius:8px;cursor:pointer;margin:0;}
+.likert input{margin:0;}
+.mcq label{display:block;background:#f6f8fb;border:1px solid var(--border);padding:9px 12px;border-radius:8px;margin-bottom:6px;font-size:13px;cursor:pointer;}
+.pairs .pair{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#f6f8fb;border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:8px;}
+.pairs .pair span{font-size:12.5px;font-weight:600;}
+.pairs .pair label{display:flex;gap:6px;align-items:center;font-size:11px;margin:0;cursor:pointer;}
+.progress{height:8px;background:#eef2f9;border-radius:8px;overflow:hidden;margin:10px 0 18px;}
+.progress > div{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));width:0%;transition:.3s;}
+.timerbox{display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:#fff;padding:14px 18px;border-radius:10px;margin-bottom:16px;}
+.timerbox .t{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;}
+.kgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+.kcol{background:#f6f8fb;border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center;font-family:monospace;}
+.kcol .num{font-size:18px;font-weight:700;color:var(--navy);}
+.kcol input{width:44px;text-align:center;padding:5px;margin-top:6px;border-radius:6px;border:1px solid var(--border);}
+.result-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.result-bar .label{width:170px;font-size:12.5px;font-weight:700;color:var(--navy);}
+.result-bar .track{flex:1;height:14px;background:#eef2f9;border-radius:8px;overflow:hidden;}
+.result-bar .fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold2));}
+.result-bar .val{width:42px;text-align:right;font-size:12px;font-weight:700;}
+.summary-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:10px;}
+.summary-table th,.summary-table td{border:1px solid var(--border);padding:8px 10px;text-align:left;}
+.summary-table th{background:#f6f8fb;color:var(--navy);}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;}
+.pill.green{background:#e5f6ee;color:var(--green);}
+.pill.red{background:#fbe9e9;color:var(--red);}
+.pill.blue{background:#e8f0fa;color:var(--blue);}
+.hidden{display:none !important;}
+footer{text-align:center;color:var(--muted);font-size:11.5px;padding:30px 5vw 50px;}
+.disclaimer{background:#fff8e6;border:1px solid #f0dfa8;border-radius:10px;padding:12px 16px;font-size:11.5px;color:#6b5813;margin-bottom:16px;}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+@media print{
+  nav.tabs,.actions,.disclaimer,.no-print{display:none !important;}
+  header.top{background:var(--navy) !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .card{break-inside:avoid;box-shadow:none;}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">IG</div>
+    <div>
+      <h1>IGKM Talent Assessment Suite</h1>
+      <p>Perangkat Tes Psikologi, Karakter &amp; Kemampuan Akademik untuk Rekrutmen — Offline &amp; Self-Contained</p>
+    </div>
+  </div>
+  <div class="small" style="color:#e6ecf7">Versi 1.0 · PT Indo Global Karya Mulia (IGKM)</div>
+</header>
+
+<nav class="tabs" id="tabbar">
+  <button class="active" data-tab="intro">0. Info Kandidat</button>
+  <button data-tab="kraepelin" disabled>1. Tes Pauline/Kraepelin</button>
+  <button data-tab="bigfive" disabled>2. Big Five (OCEAN)</button>
+  <button data-tab="disc" disabled>3. DISC</button>
+  <button data-tab="mbti" disabled>4. Tipe Kepribadian Jung</button>
+  <button data-tab="workstyle" disabled>5. Gaya Kerja (Kostick-Inspired)</button>
+  <button data-tab="aptitude" disabled>6. Kemampuan Akademik (TPA)</button>
+  <button data-tab="report" disabled>7. Laporan Hasil</button>
+</nav>
+
+<main>
+
+<!-- ===================== 0. INTRO ===================== -->
+<section id="tab-intro">
+  <div class="card">
+    <h2>Selamat Datang di IGKM Talent Assessment Suite</h2>
+    <p class="small">Rangkaian tes ini menggabungkan 6 modul yang lazim digunakan HRD perusahaan asing dan BUMN dalam proses rekrutmen: tes kecepatan &amp; ketelitian kerja (gaya Pauline/Kraepelin), tes kepribadian Big Five (OCEAN), tes gaya perilaku kerja (gaya DISC), indikator preferensi tipe kepribadian (berbasis teori Jung — bukan instrumen resmi MBTI®), inventori gaya kerja (terinspirasi dimensi PAPI Kostick, dengan item orisinal), dan tes kemampuan akademik/penalaran (TPA: numerik, verbal, logika).</p>
+    <div class="disclaimer">
+      <b>Catatan penting:</b> Alat ini adalah instrumen skrining internal yang disusun secara orisinal berbasis teori psikologi ranah publik (Big Five/IPIP, model perilaku 4 kuadran, tipologi Jung, tes kecepatan Kraepelin). Alat ini <b>bukan</b> merupakan produk berlisensi resmi dari penerbit MBTI®, Hogan Assessment Systems®, atau PAPI®/Cubiks — nama-nama tersebut disebut hanya sebagai referensi kategori tes yang setara. Untuk kebutuhan sertifikasi psikologi formal/legal (mis. seleksi CPNS/BUMN tingkat akhir), gunakan tes resmi melalui psikolog berlisensi.
+    </div>
+    <div class="grid2">
+      <div>
+        <label>Nama Lengkap Kandidat</label>
+        <input type="text" id="cName" placeholder="Nama sesuai KTP">
+        <label>Posisi yang Dilamar</label>
+        <input type="text" id="cPos" placeholder="Contoh: Site Supervisor Hauling">
+      </div>
+      <div>
+        <label>Nama Perusahaan / Panitia Tes</label>
+        <input type="text" id="cCo" placeholder="Contoh: PT Indo Global Karya Mulia">
+        <label>Tanggal Tes</label>
+        <input type="date" id="cDate">
+      </div>
+    </div>
+    <button class="btn gold" onclick="startTest()">Mulai Rangkaian Tes →</button>
+  </div>
+</section>
+
+<!-- ===================== 1. KRAEPELIN ===================== -->
+<section id="tab-kraepelin" class="hidden">
+  <div class="card">
+    <h2>1. Tes Kecepatan &amp; Ketelitian Kerja (gaya Pauline/Kraepelin)</h2>
+    <p class="small">Jumlahkan dua angka yang bersebelahan (dari bawah ke atas) pada tiap kolom, tulis hanya <b>angka satuannya</b>. Kerjakan secepat dan seteliti mungkin. Setiap sesi berdurasi 30 detik, terdiri dari 6 sesi (kolom berganti otomatis setiap sesi berakhir).</p>
+    <div class="timerbox">
+      <div>Sesi <span id="kSession">1</span> / 6</div>
+      <div class="t" id="kTimer">00:30</div>
+      <div><button class="btn gold" id="kStartBtn" onclick="kraepelinStart()">Mulai</button></div>
+    </div>
+    <div class="progress"><div id="kProg"></div></div>
+    <div class="kgrid" id="kGrid"></div>
+    <div class="actions">
+      <button class="btn outline" onclick="kraepelinScore()" id="kScoreBtn" disabled>Hitung Skor &amp; Lanjut →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 2. BIG FIVE ===================== -->
+<section id="tab-bigfive" class="hidden">
+  <div class="card">
+    <h2>2. Tes Kepribadian Big Five (OCEAN)</h2>
+    <p class="small">Nyatakan seberapa sesuai setiap pernyataan dengan diri Anda: 1 = Sangat Tidak Sesuai, 5 = Sangat Sesuai.</p>
+    <div class="progress"><div id="bfProg"></div></div>
+    <div id="bfList"></div>
+    <div class="actions"><button class="btn outline" onclick="scoreBigFive()">Hitung Skor &amp; Lanjut →</button></div>
+  </div>
+</section>
+
+<!-- ===================== 3. DISC ===================== -->
+<section id="tab-disc" class="hidden">
+  <div class="card">
+    <h2>3. Tes Gaya Perilaku Kerja (model DISC)</h2>
+    <p class="small">Nyatakan seberapa sesuai setiap pernyataan dengan cara Anda bekerja sehari-hari: 1 = Sangat Tidak Sesuai, 5 = Sangat Sesuai.</p>
+    <div class="progress"><div id="discProg"></div></div>
+    <div id="discList"></div>
+    <div class="actions"><button class="btn outline" onclick="scoreDisc()">Hitung Skor &amp; Lanjut →</button></div>
+  </div>
+</section>
+
+<!-- ===================== 4. JUNG TYPE ===================== -->
+<section id="tab-mbti" class="hidden">
+  <div class="card">
+    <h2>4. Indikator Preferensi Kepribadian (berbasis Tipologi Jung)</h2>
+    <p class="small">Pilih pernyataan (A atau B) yang paling menggambarkan diri Anda pada setiap pasangan. Tidak ada jawaban benar/salah.</p>
+    <div class="progress"><div id="mbtiProg"></div></div>
+    <div class="pairs" id="mbtiList"></div>
+    <div class="actions"><button class="btn outline" onclick="scoreMbti()">Hitung Skor &amp; Lanjut →</button></div>
+  </div>
+</section>
+
+<!-- ===================== 5. WORK STYLE ===================== -->
+<section id="tab-workstyle" class="hidden">
+  <div class="card">
+    <h2>5. Inventori Gaya &amp; Kebutuhan Kerja (terinspirasi dimensi Kostick)</h2>
+    <p class="small">Nyatakan seberapa sesuai setiap pernyataan dengan diri Anda dalam konteks pekerjaan: 1 = Sangat Tidak Sesuai, 5 = Sangat Sesuai.</p>
+    <div class="progress"><div id="wsProg"></div></div>
+    <div id="wsList"></div>
+    <div class="actions"><button class="btn outline" onclick="scoreWorkstyle()">Hitung Skor &amp; Lanjut →</button></div>
+  </div>
+</section>
+
+<!-- ===================== 6. APTITUDE ===================== -->
+<section id="tab-aptitude" class="hidden">
+  <div class="card">
+    <h2>6. Tes Kemampuan Akademik (Numerik · Verbal · Logika)</h2>
+    <p class="small">Pilih satu jawaban yang paling tepat untuk setiap soal. Waktu pengerjaan disarankan 20 menit.</p>
+    <div class="timerbox">
+      <div>Waktu Pengerjaan</div>
+      <div class="t" id="apTimer">20:00</div>
+      <div><button class="btn gold" id="apStartBtn" onclick="aptitudeStart()">Mulai</button></div>
+    </div>
+    <div class="progress"><div id="apProg"></div></div>
+    <div id="apList"></div>
+    <div class="actions"><button class="btn outline" onclick="scoreAptitude()">Hitung Skor &amp; Lihat Laporan →</button></div>
+  </div>
+</section>
+
+<!-- ===================== 7. REPORT ===================== -->
+<section id="tab-report" class="hidden">
+  <div class="card">
+    <h2>Laporan Hasil Asesmen</h2>
+    <div id="repHeader" class="small"></div>
+    <table class="summary-table" id="repSummary"></table>
+  </div>
+
+  <div class="card">
+    <h3>1. Kecepatan &amp; Ketelitian Kerja</h3>
+    <div id="repKraepelin"></div>
+  </div>
+  <div class="card">
+    <h3>2. Profil Big Five (OCEAN)</h3>
+    <div id="repBigFive"></div>
+  </div>
+  <div class="card">
+    <h3>3. Profil DISC</h3>
+    <div id="repDisc"></div>
+  </div>
+  <div class="card">
+    <h3>4. Preferensi Tipe Kepribadian</h3>
+    <div id="repMbti"></div>
+  </div>
+  <div class="card">
+    <h3>5. Gaya &amp; Kebutuhan Kerja</h3>
+    <div id="repWorkstyle"></div>
+  </div>
+  <div class="card">
+    <h3>6. Kemampuan Akademik</h3>
+    <div id="repAptitude"></div>
+  </div>
+
+  <div class="card no-print">
+    <h3>Ekspor</h3>
+    <div class="actions">
+      <button class="btn gold" onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF</button>
+      <button class="btn outline" onclick="exportCSV()">⬇️ Unduh Data Mentah (.csv)</button>
+    </div>
+    <p class="small">Gunakan file .csv ini sebagai input pada modul "Input Skor Kandidat" di workbook Excel pendamping untuk rekap multi-kandidat dan interpretasi otomatis HRD.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>IGKM Talent Assessment Suite — disusun untuk kebutuhan internal PT Indo Global Karya Mulia. Seluruh data diproses lokal di perangkat Anda, tidak dikirim ke server manapun.</footer>
+
+<script>
+/* ============ STATE ============ */
+const state = { candidate:{}, kraepelin:{}, bigfive:{}, disc:{}, mbti:{}, workstyle:{}, aptitude:{} };
+const tabs = ['intro','kraepelin','bigfive','disc','mbti','workstyle','aptitude','report'];
+
+function showTab(t){
+  tabs.forEach(x=>document.getElementById('tab-'+x).classList.add('hidden'));
+  document.getElementById('tab-'+t).classList.remove('hidden');
+  document.querySelectorAll('#tabbar button').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`#tabbar button[data-tab="${t}"]`).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('#tabbar button').forEach(b=>{
+  b.addEventListener('click',()=>{ if(!b.disabled) showTab(b.dataset.tab); });
+});
+function unlock(t){ document.querySelector(`#tabbar button[data-tab="${t}"]`).disabled=false; }
+
+function startTest(){
+  state.candidate = {
+    name: document.getElementById('cName').value || '-',
+    pos: document.getElementById('cPos').value || '-',
+    co: document.getElementById('cCo').value || '-',
+    date: document.getElementById('cDate').value || new Date().toISOString().slice(0,10)
+  };
+  unlock('kraepelin'); showTab('kraepelin');
+}
+
+/* ============ 1. KRAEPELIN ============ */
+let kTimerInt=null, kSession=1, kSeconds=30, kCols=[];
+function genKCol(){
+  const nums=[]; for(let i=0;i<16;i++) nums.push(Math.floor(Math.random()*9)+1);
+  return nums;
+}
+function renderKGrid(){
+  const grid=document.getElementById('kGrid'); grid.innerHTML='';
+  kCols=[]; 
+  for(let c=0;c<5;c++){
+    const nums=genKCol(); kCols.push(nums);
+    const div=document.createElement('div'); div.className='kcol';
+    let html = nums.slice().reverse().map(n=>`<div class="num">${n}</div>`).join('');
+    html += `<input type="text" maxlength="2" data-col="${c}" placeholder="?">`;
+    div.innerHTML = html;
+    grid.appendChild(div);
+  }
+}
+function kraepelinStart(){
+  document.getElementById('kStartBtn').disabled=true;
+  kSession=1; state.kraepelin={sessions:[]};
+  renderKGrid();
+  runKSession();
+}
+function runKSession(){
+  document.getElementById('kSession').textContent=kSession;
+  document.getElementById('kProg').style.width=((kSession-1)/6*100)+'%';
+  kSeconds=30;
+  updateKTimer();
+  kTimerInt=setInterval(()=>{
+    kSeconds--; updateKTimer();
+    if(kSeconds<=0){
+      clearInterval(kTimerInt);
+      // record how many inputs filled as proxy for "worked" count this session
+      const inputs=document.querySelectorAll('#kGrid input');
+      let filled=0; inputs.forEach(i=>{ if(i.value.trim()!=='') filled++; });
+      state.kraepelin.sessions.push(filled);
+      kSession++;
+      if(kSession<=6){ renderKGrid(); runKSession(); }
+      else { document.getElementById('kScoreBtn').disabled=false; document.getElementById('kProg').style.width='100%'; }
+    }
+  },1000);
+}
+function updateKTimer(){
+  const m=String(Math.floor(kSeconds/60)).padStart(2,'0');
+  const s=String(kSeconds%60).padStart(2,'0');
+  document.getElementById('kTimer').textContent=m+':'+s;
+}
+function kraepelinScore(){
+  const s = state.kraepelin.sessions;
+  const total = s.reduce((a,b)=>a+b,0);
+  const avg = total/s.length;
+  const variance = s.reduce((a,b)=>a+Math.pow(b-avg,2),0)/s.length;
+  const stdev = Math.sqrt(variance);
+  const consistency = stdev<1.5?'Tinggi':(stdev<3?'Sedang':'Rendah');
+  // simple trend: compare first half vs second half average (indicator of daya tahan/kelelahan)
+  const first = s.slice(0,3).reduce((a,b)=>a+b,0)/3;
+  const second = s.slice(3,6).reduce((a,b)=>a+b,0)/3;
+  const endurance = second>=first*0.9 ? 'Stabil/Baik' : 'Menurun';
+  state.kraepelin.result = {total, avg:avg.toFixed(1), stdev:stdev.toFixed(2), consistency, endurance};
+  unlock('bigfive'); showTab('bigfive');
+}
+
+/* ============ 2. BIG FIVE (IPIP-style, orisinal) ============ */
+const bfItems = [
+ ["O","Saya senang mempelajari hal-hal baru yang belum saya kuasai.",1],
+ ["O","Saya cenderung mengikuti cara-cara lama yang sudah terbukti, dibanding mencoba pendekatan baru.",-1],
+ ["O","Saya tertarik pada ide-ide abstrak dan konsep yang kompleks.",1],
+ ["O","Saya lebih nyaman dengan rutinitas yang jelas dibanding hal yang belum pasti.",-1],
+ ["O","Saya senang berdiskusi tentang topik yang belum pernah saya pikirkan sebelumnya.",1],
+ ["O","Saya jarang tertarik pada seni, musik, atau sastra.",-1],
+ ["O","Saya suka mencari solusi kreatif untuk masalah di pekerjaan.",1],
+ ["O","Saya lebih suka instruksi yang sangat rinci daripada kebebasan berimprovisasi.",-1],
+ ["C","Saya menyelesaikan pekerjaan sesuai jadwal yang telah saya tetapkan.",1],
+ ["C","Saya sering menunda pekerjaan hingga mendekati tenggat waktu.",-1],
+ ["C","Saya memperhatikan detail kecil agar pekerjaan saya akurat.",1],
+ ["C","Meja kerja/berkas saya sering berantakan dan sulit ditemukan.",-1],
+ ["C","Saya membuat rencana sebelum memulai pekerjaan besar.",1],
+ ["C","Saya mudah kehilangan fokus saat mengerjakan tugas yang panjang.",-1],
+ ["C","Saya dapat diandalkan untuk menepati janji dan komitmen.",1],
+ ["C","Saya cenderung ceroboh dalam memeriksa hasil kerja saya.",-1],
+ ["E","Saya merasa berenergi ketika berada di tengah banyak orang.",1],
+ ["E","Saya lebih memilih bekerja sendiri daripada dalam kelompok besar.",-1],
+ ["E","Saya mudah memulai percakapan dengan orang yang baru saya kenal.",1],
+ ["E","Saya cenderung diam dan menunggu orang lain memulai pembicaraan.",-1],
+ ["E","Saya senang menjadi pusat perhatian dalam suatu acara.",1],
+ ["E","Saya butuh waktu sendiri yang cukup lama untuk memulihkan energi setelah bersosialisasi.",-1],
+ ["E","Saya tegas dalam menyampaikan pendapat di rapat.",1],
+ ["E","Saya cenderung menghindari situasi yang ramai dan bising.",-1],
+ ["A","Saya berusaha memahami perasaan orang lain sebelum menilai mereka.",1],
+ ["A","Saya cenderung curiga terhadap niat baik orang lain.",-1],
+ ["A","Saya senang membantu rekan kerja meskipun tidak diminta.",1],
+ ["A","Saya sering berdebat/berselisih dengan orang di sekitar saya.",-1],
+ ["A","Saya mudah memaafkan kesalahan orang lain.",1],
+ ["A","Saya cenderung bersikap dingin terhadap orang yang baru saya kenal.",-1],
+ ["A","Saya percaya sebagian besar orang pada dasarnya jujur.",1],
+ ["A","Saya lebih mengutamakan kepentingan saya sendiri di atas kepentingan tim.",-1],
+ ["N","Saya mudah merasa cemas ketika menghadapi tekanan pekerjaan.",1],
+ ["N","Saya tetap tenang meskipun menghadapi situasi yang mendesak.",-1],
+ ["N","Suasana hati saya mudah berubah-ubah dalam sehari.",1],
+ ["N","Saya jarang merasa khawatir berlebihan tentang suatu masalah.",-1],
+ ["N","Saya mudah merasa tertekan saat dikritik oleh atasan.",1],
+ ["N","Saya dapat pulih dengan cepat setelah mengalami kegagalan.",-1],
+ ["N","Saya sering memikirkan ulang kesalahan yang telah saya lakukan.",1],
+ ["N","Saya jarang merasa gugup dalam situasi baru.",-1],
+];
+function renderLikert(containerId, items, prefix){
+  const cont=document.getElementById(containerId); cont.innerHTML='';
+  items.forEach((it,idx)=>{
+    const text = it.length===3? it[1] : it[1];
+    const div=document.createElement('div'); div.className='q';
+    div.innerHTML = `<div class="qtext">${idx+1}. ${text}</div>
+      <div class="likert">
+        ${[1,2,3,4,5].map(v=>`<label><input type="radio" name="${prefix}${idx}" value="${v}" onchange="updateProg('${prefix}')">${v}</label>`).join('')}
+      </div>`;
+    cont.appendChild(div);
+  });
+}
+function updateProg(prefix){
+  let total, barId;
+  if(prefix==='bf'){total=bfItems.length; barId='bfProg';}
+  if(prefix==='disc'){total=discItems.length; barId='discProg';}
+  if(prefix==='ws'){total=wsItems.length; barId='wsProg';}
+  const answered = document.querySelectorAll(`input[name^="${prefix}"]:checked`).length;
+  document.getElementById(barId).style.width=(answered/total*100)+'%';
+}
+renderLikert('bfList', bfItems, 'bf');
+
+function scoreBigFive(){
+  const traits={O:[],C:[],E:[],A:[],N:[]};
+  bfItems.forEach((it,idx)=>{
+    const sel=document.querySelector(`input[name="bf${idx}"]:checked`);
+    const v = sel? parseInt(sel.value):3;
+    const scored = it[2]===1? v : (6-v);
+    traits[it[0]].push(scored);
+  });
+  const result={};
+  Object.keys(traits).forEach(k=>{
+    const arr=traits[k]; const sum=arr.reduce((a,b)=>a+b,0);
+    result[k]=Math.round(sum/arr.length/5*100);
+  });
+  state.bigfive.result=result;
+  unlock('disc'); showTab('disc');
+}
+
+/* ============ 3. DISC ============ */
+const discItems = [
+ ["D","Saya suka mengambil keputusan cepat meski dengan informasi terbatas."],
+ ["D","Saya senang menghadapi tantangan dan persaingan."],
+ ["D","Saya cenderung langsung ke inti masalah tanpa banyak basa-basi."],
+ ["D","Saya suka memegang kendali atas suatu situasi."],
+ ["D","Saya tidak segan menegur bawahan/rekan yang bekerja di bawah standar."],
+ ["D","Saya berorientasi pada hasil akhir, bukan proses."],
+ ["D","Saya cepat bosan dengan pekerjaan rutin yang lambat."],
+ ["I","Saya mudah membangun relasi baru dengan orang lain."],
+ ["I","Saya senang memotivasi dan menginspirasi tim."],
+ ["I","Saya suka menyampaikan ide di depan banyak orang."],
+ ["I","Saya optimis bahwa segala sesuatu akan berjalan baik."],
+ ["I","Saya lebih suka bekerja dalam suasana yang ceria dan interaktif."],
+ ["I","Saya mudah membuat orang lain merasa nyaman."],
+ ["I","Saya senang menjadi penghubung antar berbagai pihak."],
+ ["S","Saya lebih menyukai lingkungan kerja yang stabil dan dapat diprediksi."],
+ ["S","Saya sabar mendengarkan keluhan rekan kerja."],
+ ["S","Saya lebih suka bekerja dengan pace yang stabil dan konsisten."],
+ ["S","Saya setia dan loyal terhadap tim/perusahaan tempat saya bekerja."],
+ ["S","Saya menghindari konflik terbuka di tempat kerja."],
+ ["S","Saya senang membantu tim mencapai keharmonisan."],
+ ["S","Saya butuh waktu untuk beradaptasi dengan perubahan mendadak."],
+ ["C","Saya selalu memeriksa ulang data sebelum menyerahkan laporan."],
+ ["C","Saya mengikuti prosedur dan standar kerja secara disiplin."],
+ ["C","Saya lebih percaya pada data dan fakta dibanding intuisi semata."],
+ ["C","Saya berhati-hati sebelum mengambil keputusan penting."],
+ ["C","Saya menyukai pekerjaan yang membutuhkan analisis mendalam."],
+ ["C","Saya cenderung perfeksionis dalam menyelesaikan tugas."],
+ ["C","Saya nyaman bekerja dengan aturan dan regulasi yang ketat."],
+];
+renderLikert('discList', discItems, 'disc');
+function scoreDisc(){
+  const dims={D:[],I:[],S:[],C:[]};
+  discItems.forEach((it,idx)=>{
+    const sel=document.querySelector(`input[name="disc${idx}"]:checked`);
+    dims[it[0]].push(sel?parseInt(sel.value):3);
+  });
+  const result={};
+  Object.keys(dims).forEach(k=>{
+    const arr=dims[k]; result[k]=Math.round(arr.reduce((a,b)=>a+b,0)/arr.length/5*100);
+  });
+  state.disc.result=result;
+  unlock('mbti'); showTab('mbti');
+}
+
+/* ============ 4. JUNG TYPE ============ */
+const mbtiPairs = [
+ ["E","I","Saya mendapat energi dari berinteraksi dengan banyak orang.","Saya mendapat energi dari waktu menyendiri merenung."],
+ ["E","I","Saya berpikir sambil berbicara.","Saya berpikir dalam hati sebelum berbicara."],
+ ["E","I","Saya senang berada di lingkungan yang ramai dan dinamis.","Saya senang berada di lingkungan yang tenang dan minim gangguan."],
+ ["E","I","Saya lebih cepat akrab dengan orang baru.","Saya butuh waktu lebih lama untuk merasa nyaman dengan orang baru."],
+ ["S","N","Saya lebih percaya pada fakta dan pengalaman konkret.","Saya lebih percaya pada intuisi dan kemungkinan di masa depan."],
+ ["S","N","Saya fokus pada detail praktis saat ini.","Saya fokus pada gambaran besar dan pola jangka panjang."],
+ ["S","N","Saya lebih suka instruksi kerja yang jelas dan langkah demi langkah.","Saya lebih suka kebebasan bereksperimen dengan pendekatan baru."],
+ ["S","N","Saya belajar paling baik dari praktik langsung.","Saya belajar paling baik dari memahami konsep terlebih dahulu."],
+ ["T","F","Saya mengambil keputusan berdasarkan logika dan data.","Saya mengambil keputusan berdasarkan nilai dan dampak pada orang."],
+ ["T","F","Saya cenderung objektif meski keputusan itu tidak populer.","Saya mempertimbangkan perasaan tim sebelum memutuskan."],
+ ["T","F","Saya nyaman memberi kritik langsung bila diperlukan.","Saya berhati-hati agar kritik tidak menyakiti perasaan orang."],
+ ["T","F","Saya menilai suatu argumen dari konsistensi logisnya.","Saya menilai suatu argumen dari nilai-nilai yang mendasarinya."],
+ ["J","P","Saya lebih suka rencana yang jelas dan terjadwal.","Saya lebih suka fleksibilitas dan keterbukaan terhadap perubahan."],
+ ["J","P","Saya merasa lega setelah keputusan diambil.","Saya suka membuka opsi selama mungkin sebelum memutuskan."],
+ ["J","P","Saya menyelesaikan tugas jauh sebelum tenggat waktu.","Saya bekerja optimal mendekati tenggat waktu."],
+ ["J","P","Saya suka daftar tugas (to-do list) yang terstruktur.","Saya lebih suka mengalir sesuai situasi yang berkembang."],
+];
+function renderMbti(){
+  const cont=document.getElementById('mbtiList'); cont.innerHTML='';
+  mbtiPairs.forEach((p,idx)=>{
+    const div=document.createElement('div'); div.className='pair';
+    div.innerHTML=`<span style="flex:1">${idx+1}. ${p[2]}</span>
+      <label><input type="radio" name="mb${idx}" value="A" onchange="mbtiProg()"> A</label>
+      <label><input type="radio" name="mb${idx}" value="B" onchange="mbtiProg()"> B</label>
+      <span style="flex:1;text-align:right">${p[3]}</span>`;
+    cont.appendChild(div);
+  });
+}
+renderMbti();
+function mbtiProg(){
+  const answered=document.querySelectorAll('input[name^="mb"]:checked').length;
+  document.getElementById('mbtiProg').style.width=(answered/mbtiPairs.length*100)+'%';
+}
+function scoreMbti(){
+  const count={E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  mbtiPairs.forEach((p,idx)=>{
+    const sel=document.querySelector(`input[name="mb${idx}"]:checked`);
+    const choice = sel? sel.value : 'A';
+    const letter = choice==='A'? p[0] : p[1];
+    count[letter]++;
+  });
+  const type = (count.E>=count.I?'E':'I')+(count.S>=count.N?'S':'N')+(count.T>=count.F?'T':'F')+(count.J>=count.P?'J':'P');
+  state.mbti.result={count, type};
+  unlock('workstyle'); showTab('workstyle');
+}
+
+/* ============ 5. WORK STYLE (Kostick-inspired) ============ */
+const wsItems = [
+ ["Kepemimpinan","Saya nyaman mengambil peran memimpin dalam kelompok kerja."],
+ ["Kepemimpinan","Saya sering ditunjuk sebagai koordinator dalam tim proyek."],
+ ["Extraversion Sosial","Saya lebih memilih bekerja dalam tim daripada sendirian."],
+ ["Extraversion Sosial","Saya senang membangun jaringan relasi kerja yang luas."],
+ ["Ketahanan Kerja","Saya sanggup bekerja dengan tekanan waktu yang ketat."],
+ ["Ketahanan Kerja","Saya tetap produktif meskipun lembur atau di lapangan yang berat."],
+ ["Orientasi Detail","Saya teliti memeriksa dokumen/laporan sebelum diserahkan."],
+ ["Orientasi Detail","Saya memperhatikan standar kualitas hingga hal kecil."],
+ ["Orientasi Teoritis","Saya senang mempelajari teori/konsep baru terkait bidang kerja saya."],
+ ["Orientasi Teoritis","Saya suka menganalisis akar masalah sebelum bertindak."],
+ ["Kebutuhan Berprestasi","Saya menetapkan target pribadi yang menantang."],
+ ["Kebutuhan Berprestasi","Saya merasa tidak puas jika hasil kerja saya biasa-biasa saja."],
+ ["Ketergantungan/Kemandirian","Saya lebih suka bekerja dengan arahan yang jelas dari atasan."],
+ ["Ketergantungan/Kemandirian","Saya nyaman bekerja mandiri tanpa pengawasan ketat."],
+ ["Pengendalian Emosi","Saya tetap tenang saat menghadapi keluhan/komplain pelanggan."],
+ ["Pengendalian Emosi","Saya jarang menunjukkan emosi negatif secara terbuka di tempat kerja."],
+ ["Fleksibilitas","Saya mudah menyesuaikan diri dengan perubahan kebijakan perusahaan."],
+ ["Fleksibilitas","Saya terbuka mengerjakan tugas di luar deskripsi kerja saya bila diperlukan."],
+ ["Orientasi Aturan","Saya patuh terhadap SOP dan regulasi K3 di lapangan."],
+ ["Orientasi Aturan","Saya percaya aturan yang jelas membuat pekerjaan lebih efisien."],
+];
+renderLikert('wsList', wsItems, 'ws');
+function scoreWorkstyle(){
+  const dims={};
+  wsItems.forEach((it,idx)=>{
+    const sel=document.querySelector(`input[name="ws${idx}"]:checked`);
+    const v = sel?parseInt(sel.value):3;
+    if(!dims[it[0]]) dims[it[0]]=[];
+    dims[it[0]].push(v);
+  });
+  const result={};
+  Object.keys(dims).forEach(k=>{
+    const arr=dims[k]; result[k]=Math.round(arr.reduce((a,b)=>a+b,0)/arr.length/5*100);
+  });
+  state.workstyle.result=result;
+  unlock('aptitude'); showTab('aptitude');
+}
+
+/* ============ 6. APTITUDE (Numerik, Verbal, Logika) ============ */
+const apItems = [
+ ["Numerik","Deret berikutnya: 2, 6, 12, 20, 30, ...?",["40","42","44","36"],1],
+ ["Numerik","Jika harga barang naik 20% menjadi Rp 120.000, harga awal barang tersebut adalah?",["Rp 96.000","Rp 100.000","Rp 104.000","Rp 90.000"],1],
+ ["Numerik","8, 11, 15, 20, 26, ...?",["32","33","31","30"],1],
+ ["Numerik","Sebuah truk mengangkut 24 ton dalam 3 rit. Berapa ton rata-rata per rit?",["6 ton","7 ton","8 ton","9 ton"],2],
+ ["Numerik","40% dari 250 adalah?",["90","100","110","120"],1],
+ ["Numerik","Jika 3x + 5 = 20, maka nilai x adalah?",["5","6","4","7"],0],
+ ["Numerik","Kecepatan rata-rata kendaraan yang menempuh 150 km dalam 3 jam adalah?",["40 km/jam","45 km/jam","50 km/jam","55 km/jam"],2],
+ ["Numerik","Deret: 1, 4, 9, 16, 25, ...? (pola kuadrat)",["30","36","32","34"],1],
+ ["Verbal","Sinonim kata 'EFISIEN' adalah?",["Boros","Hemat/tepat guna","Lambat","Rumit"],1],
+ ["Verbal","Antonim kata 'SENTRALISASI' adalah?",["Konsentrasi","Desentralisasi","Fokus","Integrasi"],1],
+ ["Verbal","'DOKTER : PASIEN' setara dengan 'GURU : ...'",["Sekolah","Murid","Buku","Kelas"],1],
+ ["Verbal","Sinonim kata 'AKURAT' adalah?",["Tepat","Cepat","Mahal","Lambat"],0],
+ ["Verbal","'HAULING : PENGANGKUTAN' setara dengan 'EXCAVATION : ...'",["Pemuatan","Penggalian","Peledakan","Pengeboran"],1],
+ ["Verbal","Kata yang tidak sekelompok: Komatsu, Caterpillar, Volvo, Hitachi, Astra",["Komatsu","Astra","Volvo","Hitachi"],1],
+ ["Verbal","Antonim kata 'SURPLUS' adalah?",["Defisit","Untung","Cadangan","Kelebihan"],0],
+ ["Verbal","Sinonim kata 'KOMPETEN' adalah?",["Cakap/mampu","Malas","Baru","Junior"],0],
+ ["Logika","Semua pengawas tambang wajib memakai APD. Budi seorang pengawas tambang. Maka...",["Budi wajib memakai APD","Budi tidak wajib memakai APD","Budi bukan pengawas","Tidak dapat disimpulkan"],0],
+ ["Logika","Jika hari hujan maka jalan tambang licin. Hari ini jalan tidak licin. Maka...",["Hari ini hujan","Hari ini tidak hujan","Tidak dapat disimpulkan","Jalan tambang rusak"],1],
+ ["Logika","A lebih tua dari B. C lebih muda dari B. Maka urutan termuda ke tertua adalah...",["C, B, A","A, B, C","B, C, A","A, C, B"],0],
+ ["Logika","Jika semua alat berat butuh perawatan berkala, dan excavator adalah alat berat, maka...",["Excavator butuh perawatan berkala","Excavator tidak butuh perawatan","Excavator bukan alat berat","Tidak dapat disimpulkan"],0],
+ ["Logika","Pola bentuk: Lingkaran, Segitiga, Lingkaran, Segitiga, ...? (bentuk ke-5)",["Lingkaran","Segitiga","Persegi","Oval"],0],
+ ["Logika","Jika P maka Q. Q salah. Maka...",["P benar","P salah","Tidak dapat disimpulkan","Q benar"],1],
+ ["Logika","3 dari 5 operator sudah tersertifikasi. Jika ada 20 operator, berapa yang diperkirakan belum tersertifikasi?",["8","10","12","6"],1],
+ ["Logika","Mana yang tidak termasuk kelompok: Truk, Excavator, Bulldozer, Sepeda",["Truk","Excavator","Bulldozer","Sepeda"],3],
+];
+let apTimerInt=null, apSeconds=1200;
+function renderAptitude(){
+  const cont=document.getElementById('apList'); cont.innerHTML='';
+  apItems.forEach((it,idx)=>{
+    const div=document.createElement('div'); div.className='q';
+    div.innerHTML=`<div class="qtext"><span class="badge">${it[0]}</span>${idx+1}. ${it[1]}</div>
+      <div class="mcq">${it[2].map((opt,oi)=>`<label><input type="radio" name="ap${idx}" value="${oi}" onchange="apProg()"> ${String.fromCharCode(65+oi)}. ${opt}</label>`).join('')}</div>`;
+    cont.appendChild(div);
+  });
+}
+renderAptitude();
+function apProg(){
+  const answered=document.querySelectorAll('input[name^="ap"]:checked').length;
+  document.getElementById('apProg').style.width=(answered/apItems.length*100)+'%';
+}
+function aptitudeStart(){
+  document.getElementById('apStartBtn').disabled=true;
+  apSeconds=1200; updateApTimer();
+  apTimerInt=setInterval(()=>{
+    apSeconds--; updateApTimer();
+    if(apSeconds<=0){ clearInterval(apTimerInt); scoreAptitude(); }
+  },1000);
+}
+function updateApTimer(){
+  const m=String(Math.floor(apSeconds/60)).padStart(2,'0');
+  const s=String(apSeconds%60).padStart(2,'0');
+  document.getElementById('apTimer').textContent=m+':'+s;
+}
+function scoreAptitude(){
+  if(apTimerInt) clearInterval(apTimerInt);
+  let correct=0; const byCat={Numerik:[0,0],Verbal:[0,0],Logika:[0,0]};
+  apItems.forEach((it,idx)=>{
+    const sel=document.querySelector(`input[name="ap${idx}"]:checked`);
+    byCat[it[0]][1]++;
+    if(sel && parseInt(sel.value)===it[3]){ correct++; byCat[it[0]][0]++; }
+  });
+  state.aptitude.result={correct,total:apItems.length,byCat, pct:Math.round(correct/apItems.length*100)};
+  unlock('report'); buildReport(); showTab('report');
+}
+
+/* ============ REPORT ============ */
+function bar(label,val,max=100){
+  return `<div class="result-bar"><div class="label">${label}</div><div class="track"><div class="fill" style="width:${Math.min(val,max)/max*100}%"></div></div><div class="val">${val}</div></div>`;
+}
+function buildReport(){
+  const c=state.candidate;
+  document.getElementById('repHeader').innerHTML = `<b>${c.name}</b> — ${c.pos} · ${c.co} · ${c.date}`;
+
+  // summary table
+  const bf=state.bigfive.result, disc=state.disc.result, mb=state.mbti.result, ws=state.workstyle.result, ap=state.aptitude.result, kr=state.kraepelin.result;
+  document.getElementById('repSummary').innerHTML = `
+    <tr><th>Modul</th><th>Ringkasan Hasil</th></tr>
+    <tr><td>Kecepatan &amp; Ketelitian Kerja</td><td>Total dikerjakan: ${kr.total} · Rata-rata/sesi: ${kr.avg} · Konsistensi: ${kr.consistency} · Daya tahan: ${kr.endurance}</td></tr>
+    <tr><td>Big Five</td><td>O:${bf.O} C:${bf.C} E:${bf.E} A:${bf.A} N:${bf.N}</td></tr>
+    <tr><td>DISC</td><td>D:${disc.D} I:${disc.I} S:${disc.S} C:${disc.C}</td></tr>
+    <tr><td>Tipe Kepribadian (Jung)</td><td>Kode: <b>${mb.type}</b></td></tr>
+    <tr><td>Kemampuan Akademik</td><td>Benar ${ap.correct}/${ap.total} (${ap.pct}%)</td></tr>
+  `;
+
+  document.getElementById('repKraepelin').innerHTML = `
+    <table class="summary-table">
+      <tr><th>Total Soal Dikerjakan</th><td>${kr.total}</td></tr>
+      <tr><th>Rata-rata per Sesi (30 detik)</th><td>${kr.avg}</td></tr>
+      <tr><th>Standar Deviasi (Ketelitian/Kestabilan)</th><td>${kr.stdev}</td></tr>
+      <tr><th>Kategori Konsistensi</th><td><span class="pill ${kr.consistency==='Tinggi'?'green':(kr.consistency==='Sedang'?'blue':'red')}">${kr.consistency}</span></td></tr>
+      <tr><th>Daya Tahan Kerja (sesi awal vs akhir)</th><td><span class="pill ${kr.endurance==='Stabil/Baik'?'green':'red'}">${kr.endurance}</span></td></tr>
+    </table>
+    <p class="small">Interpretasi HRD: skor tinggi &amp; konsisten mengindikasikan kecepatan kerja stabil dan tahan tekanan; penurunan tajam di sesi akhir dapat mengindikasikan cepat lelah/kurang fokus dalam durasi panjang.</p>`;
+
+  document.getElementById('repBigFive').innerHTML =
+    bar('Openness (Keterbukaan)', bf.O) + bar('Conscientiousness (Kehati-hatian)', bf.C) +
+    bar('Extraversion (Ekstraversi)', bf.E) + bar('Agreeableness (Keramahan)', bf.A) +
+    bar('Neuroticism (Stabilitas Emosi*)', bf.N) +
+    `<p class="small">*Skor Neuroticism tinggi = kecenderungan lebih mudah cemas/stres; skor rendah = stabilitas emosi lebih baik.</p>`;
+
+  document.getElementById('repDisc').innerHTML =
+    bar('D — Dominance', disc.D) + bar('I — Influence', disc.I) + bar('S — Steadiness', disc.S) + bar('C — Compliance', disc.C) +
+    `<p class="small">Gaya dominan: <b>${Object.entries(disc).sort((a,b)=>b[1]-a[1])[0][0]}</b></p>`;
+
+  document.getElementById('repMbti').innerHTML = `
+    <p style="font-size:22px;font-weight:800;color:var(--navy)">${mb.type}</p>
+    <table class="summary-table">
+      <tr><th>Extraversion (E)</th><td>${mb.count.E}</td><th>Introversion (I)</th><td>${mb.count.I}</td></tr>
+      <tr><th>Sensing (S)</th><td>${mb.count.S}</td><th>Intuition (N)</th><td>${mb.count.N}</td></tr>
+      <tr><th>Thinking (T)</th><td>${mb.count.T}</td><th>Feeling (F)</th><td>${mb.count.F}</td></tr>
+      <tr><th>Judging (J)</th><td>${mb.count.J}</td><th>Perceiving (P)</th><td>${mb.count.P}</td></tr>
+    </table>
+    <p class="small">Indikator ini berbasis teori preferensi kepribadian Jung secara umum, digunakan sebagai bahan diskusi gaya kerja &amp; komunikasi — bukan instrumen berlisensi resmi MBTI®.</p>`;
+
+  let wsHtml=''; Object.keys(ws).forEach(k=> wsHtml+= bar(k, ws[k]));
+  document.getElementById('repWorkstyle').innerHTML = wsHtml;
+
+  document.getElementById('repAptitude').innerHTML = `
+    <table class="summary-table">
+      <tr><th>Kategori</th><th>Benar</th><th>Total</th><th>%</th></tr>
+      ${Object.entries(ap.byCat).map(([k,v])=>`<tr><td>${k}</td><td>${v[0]}</td><td>${v[1]}</td><td>${Math.round(v[0]/v[1]*100)}%</td></tr>`).join('')}
+      <tr><th>Total</th><th>${ap.correct}</th><th>${ap.total}</th><th>${ap.pct}%</th></tr>
+    </table>`;
+}
+
+function exportCSV(){
+  const c=state.candidate, bf=state.bigfive.result, disc=state.disc.result, mb=state.mbti.result, ws=state.workstyle.result, ap=state.aptitude.result, kr=state.kraepelin.result;
+  let rows=[["Field","Value"]];
+  rows.push(["Nama",c.name],["Posisi",c.pos],["Perusahaan",c.co],["Tanggal",c.date]);
+  rows.push(["Kraepelin_Total",kr.total],["Kraepelin_Avg",kr.avg],["Kraepelin_Stdev",kr.stdev],["Kraepelin_Konsistensi",kr.consistency],["Kraepelin_DayaTahan",kr.endurance]);
+  Object.keys(bf).forEach(k=>rows.push(["BigFive_"+k,bf[k]]));
+  Object.keys(disc).forEach(k=>rows.push(["DISC_"+k,disc[k]]));
+  rows.push(["JungType",mb.type]);
+  Object.keys(ws).forEach(k=>rows.push(["WorkStyle_"+k,ws[k]]));
+  rows.push(["Aptitude_Correct",ap.correct],["Aptitude_Total",ap.total],["Aptitude_Pct",ap.pct]);
+  const csv=rows.map(r=>r.map(x=>`"${x}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`Hasil_Tes_${(c.name||'Kandidat').replace(/\s+/g,'_')}.csv`; a.click();
+}
+</script>
+</body>
+</html>

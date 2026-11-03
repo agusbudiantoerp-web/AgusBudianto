@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memimpin sebagai CEO di Era AI — Modul Eksekutif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#101C34;
+  --navy-2:#1B2A4A;
+  --ivory:#F4F1E9;
+  --paper:#FBF9F4;
+  --gold:#B8862E;
+  --gold-light:#E4C77E;
+  --slate:#5B6B84;
+  --line:#D9D2BE;
+  --coral:#7A3B2E;
+  --maxw:1120px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Source Sans 3', sans-serif;
+  background:var(--ivory);
+  color:var(--navy);
+  line-height:1.6;
+}
+img,svg{display:block;max-width:100%;}
+h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em;}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 32px;}
+a{color:inherit;}
+
+/* ---------- NAV ---------- */
+.nav{
+  position:sticky; top:0; z-index:50;
+  background:rgba(244,241,233,0.92); backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);
+}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; height:72px;}
+.brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:600; font-size:18px;}
+.brand .mark{
+  width:30px;height:30px;border-radius:3px;background:var(--navy);
+  display:flex;align-items:center;justify-content:center;color:var(--gold-light);
+  font-family:'Fraunces',serif; font-size:14px; font-weight:700;
+}
+.navlinks{display:flex; gap:28px; font-size:14px; font-weight:600; color:var(--slate);}
+.navlinks a{text-decoration:none; transition:color .15s;}
+.navlinks a:hover{color:var(--navy);}
+.nav-cta{
+  background:var(--navy); color:var(--ivory); border:none; padding:10px 20px;
+  font-family:'Source Sans 3',sans-serif; font-weight:600; font-size:13.5px;
+  border-radius:2px; cursor:pointer; letter-spacing:.02em;
+}
+.nav-cta:hover{background:var(--navy-2);}
+
+/* ---------- HERO ---------- */
+.hero{
+  padding:96px 0 72px; position:relative; overflow:hidden;
+  background:
+    radial-gradient(600px 340px at 88% -10%, rgba(184,134,46,0.14), transparent 60%),
+    var(--ivory);
+}
+.hero .wrap{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;}
+.eyebrow{
+  font-family:'JetBrains Mono', monospace; font-size:12.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--coral); margin-bottom:18px; font-weight:500;
+}
+.hero h1{
+  font-size:clamp(38px, 4.4vw, 58px); line-height:1.06; color:var(--navy); margin-bottom:22px;
+}
+.hero h1 em{font-style:italic; color:var(--coral);}
+.hero p.lede{font-size:18px; color:var(--slate); max-width:52ch; margin-bottom:32px;}
+.hero-ctas{display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
+.btn-primary{
+  background:var(--coral); color:var(--paper); border:none; padding:15px 26px;
+  font-weight:700; font-size:15px; border-radius:2px; cursor:pointer;
+  display:inline-flex; align-items:center; gap:10px; transition:transform .15s, background .15s;
+}
+.btn-primary:hover{background:#5f2e24; transform:translateY(-1px);}
+.btn-ghost{
+  background:transparent; border:1px solid var(--navy); color:var(--navy); padding:14px 24px;
+  font-weight:600; font-size:15px; border-radius:2px; cursor:pointer;
+}
+.btn-ghost:hover{background:var(--navy); color:var(--ivory);}
+.hero-meta{margin-top:26px; font-size:13.5px; color:var(--slate); font-family:'JetBrains Mono',monospace;}
+
+.hero-card{
+  background:var(--navy); border-radius:4px; padding:34px 30px; color:var(--ivory);
+  position:relative;
+}
+.hero-card .label{font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.12em; color:var(--gold-light); text-transform:uppercase; margin-bottom:16px;}
+.hero-card h3{font-size:22px; color:var(--ivory); margin-bottom:14px; font-weight:500;}
+.hero-card p{font-size:14.5px; color:#B9C2D4; margin-bottom:18px;}
+.hero-stats{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:22px; border-top:1px solid rgba(255,255,255,0.15); padding-top:20px;}
+.hero-stat .num{font-family:'Fraunces',serif; font-size:30px; color:var(--gold-light); font-weight:600;}
+.hero-stat .lab{font-size:12.5px; color:#9BA7BE; margin-top:2px;}
+
+/* ---------- SECTION HEADERS ---------- */
+.section{padding:88px 0;}
+.section.alt{background:var(--paper); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+.sec-head{max-width:640px; margin-bottom:52px;}
+.sec-eyebrow{font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:12px;}
+.sec-head h2{font-size:clamp(28px,3vw,38px); color:var(--navy); margin-bottom:14px;}
+.sec-head p{color:var(--slate); font-size:16.5px;}
+
+/* ---------- COMPETENCY GRID (interactive) ---------- */
+.comp-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.comp-card{
+  background:var(--paper); padding:30px 26px; cursor:pointer; transition:background .15s;
+  position:relative;
+}
+.comp-card:hover{background:#fff;}
+.comp-card .idx{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--gold); margin-bottom:14px;}
+.comp-card h3{font-size:19px; color:var(--navy); margin-bottom:8px; font-weight:600;}
+.comp-card .teaser{font-size:14px; color:var(--slate); margin-bottom:14px;}
+.comp-card .toggle{font-size:13px; font-weight:600; color:var(--coral); display:flex; align-items:center; gap:6px;}
+.comp-card .detail{
+  display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--line);
+  font-size:14px; color:var(--navy-2);
+}
+.comp-card.open .detail{display:block;}
+.comp-card.open .toggle .arrow{transform:rotate(90deg);}
+.toggle .arrow{transition:transform .15s; display:inline-block;}
+.detail ul{padding-left:18px; margin-top:8px;}
+.detail li{margin-bottom:6px;}
+
+/* ---------- MATRIX (signature interactive) ---------- */
+.matrix-wrap{display:grid; grid-template-columns:0.9fr 1.1fr; gap:48px; align-items:start;}
+.matrix{
+  display:grid; grid-template-columns:auto 1fr 1fr; grid-template-rows:auto 1fr 1fr;
+  gap:2px; background:var(--line); border:1px solid var(--line); user-select:none;
+}
+.matrix .axis-label{
+  display:flex; align-items:center; justify-content:center; background:var(--ivory);
+  font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--slate); text-align:center; padding:10px;
+}
+.matrix .yaxis{writing-mode:vertical-rl; transform:rotate(180deg);}
+.matrix-cell{
+  background:var(--paper); padding:20px; cursor:pointer; transition:background .15s, color .15s;
+  min-height:120px; display:flex; flex-direction:column; justify-content:space-between;
+}
+.matrix-cell:hover{background:var(--navy); color:var(--ivory);}
+.matrix-cell:hover .mc-tag{color:var(--gold-light);}
+.matrix-cell .mc-tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--gold); margin-bottom:8px;}
+.matrix-cell .mc-title{font-size:15px; font-weight:600; font-family:'Fraunces',serif;}
+.matrix-cell.active{background:var(--navy); color:var(--ivory);}
+.matrix-cell.active .mc-tag{color:var(--gold-light);}
+.matrix-detail{
+  background:var(--navy); color:var(--ivory); border-radius:4px; padding:28px; min-height:280px;
+  display:flex; flex-direction:column; justify-content:center;
+}
+.matrix-detail .md-tag{font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-light); margin-bottom:12px;}
+.matrix-detail h4{font-size:21px; color:var(--ivory); margin-bottom:12px; font-weight:500;}
+.matrix-detail p{font-size:14.5px; color:#B9C2D4;}
+
+/* ---------- CASE STUDIES (tabs) ---------- */
+.case-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; border-bottom:1px solid var(--line); padding-bottom:0;}
+.case-tab{
+  background:transparent; border:none; padding:12px 4px; margin-right:22px; font-size:14.5px; font-weight:600;
+  color:var(--slate); cursor:pointer; border-bottom:2px solid transparent; font-family:'Source Sans 3',sans-serif;
+}
+.case-tab.active{color:var(--navy); border-bottom-color:var(--coral);}
+.case-panel{display:none; grid-template-columns:0.9fr 1.4fr; gap:40px;}
+.case-panel.active{display:grid;}
+.case-side{background:var(--navy); color:var(--ivory); border-radius:4px; padding:28px; height:fit-content;}
+.case-side .tag{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-light); margin-bottom:10px;}
+.case-side h3{font-size:21px; color:var(--ivory); margin-bottom:8px; font-weight:500;}
+.case-side .industry{font-size:13px; color:#9BA7BE; font-style:italic;}
+.case-body dt{font-family:'JetBrains Mono',monospace; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-top:18px; margin-bottom:6px;}
+.case-body dt:first-child{margin-top:0;}
+.case-body dd{font-size:15px; color:var(--navy-2); line-height:1.65;}
+
+/* ---------- SELF-CHECK QUIZ ---------- */
+.quiz{background:var(--navy); border-radius:6px; padding:48px; color:var(--ivory);}
+.quiz-inner{max-width:640px; margin:0 auto; text-align:center;}
+.quiz .sec-eyebrow{color:var(--gold-light);}
+.quiz h2{color:var(--ivory); margin-bottom:10px;}
+.quiz p{color:#B9C2D4; margin-bottom:30px;}
+.quiz-q{display:none;}
+.quiz-q.active{display:block;}
+.quiz-q p.qtext{font-size:18px; color:var(--ivory); margin-bottom:22px; font-family:'Fraunces',serif;}
+.quiz-opts{display:flex; flex-direction:column; gap:10px; margin-bottom:20px;}
+.quiz-opt{
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.18); color:var(--ivory);
+  padding:14px 18px; text-align:left; border-radius:3px; cursor:pointer; font-size:14.5px;
+  font-family:'Source Sans 3',sans-serif; transition:background .15s, border-color .15s;
+}
+.quiz-opt:hover{background:rgba(255,255,255,0.1);}
+.quiz-opt.correct{background:rgba(184,134,46,0.25); border-color:var(--gold-light);}
+.quiz-opt.wrong{background:rgba(122,59,46,0.4); border-color:var(--coral);}
+.quiz-feedback{font-size:14px; color:var(--gold-light); min-height:20px; margin-bottom:14px;}
+.quiz-progress{display:flex; gap:6px; justify-content:center; margin-bottom:28px;}
+.quiz-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.quiz-dot.done{background:var(--gold-light);}
+.quiz-result{display:none;}
+.quiz-result.active{display:block;}
+.quiz-result .score{font-family:'Fraunces',serif; font-size:44px; color:var(--gold-light); margin-bottom:8px;}
+
+/* ---------- DOWNLOAD SECTION ---------- */
+.download{background:var(--ivory); padding:96px 0;}
+.dl-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:6px;
+  padding:52px; display:grid; grid-template-columns:1.3fr 1fr; gap:48px; align-items:center;
+}
+.dl-card h2{font-size:30px; color:var(--navy); margin-bottom:14px;}
+.dl-card p{color:var(--slate); font-size:15.5px; margin-bottom:24px;}
+.dl-list{list-style:none; margin-bottom:28px;}
+.dl-list li{
+  display:flex; gap:10px; align-items:flex-start; font-size:14.5px; color:var(--navy-2);
+  margin-bottom:10px;
+}
+.dl-list li::before{content:"—"; color:var(--gold); font-weight:700; flex-shrink:0;}
+.dl-visual{
+  background:var(--navy); border-radius:4px; aspect-ratio:3/4; display:flex; flex-direction:column;
+  justify-content:space-between; padding:30px; color:var(--ivory);
+}
+.dl-visual .tag{font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.1em; color:var(--gold-light); text-transform:uppercase;}
+.dl-visual .title{font-family:'Fraunces',serif; font-size:22px; line-height:1.15; margin:16px 0;}
+.dl-visual .pages{font-family:'JetBrains Mono',monospace; font-size:34px; color:var(--gold-light);}
+.dl-visual .pages-lab{font-size:11.5px; color:#9BA7BE;}
+
+/* ---------- FOOTER ---------- */
+footer{background:var(--navy); color:#8C97AE; padding:44px 0; font-size:13.5px;}
+footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+footer strong{color:var(--ivory); font-family:'Fraunces',serif; font-weight:500;}
+
+@media(max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;}
+  .comp-grid{grid-template-columns:1fr;}
+  .matrix-wrap{grid-template-columns:1fr;}
+  .case-panel.active{grid-template-columns:1fr;}
+  .dl-card{grid-template-columns:1fr;}
+  .navlinks{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="brand"><span class="mark">CE</span>CEO Playbook — Era AI</div>
+    <div class="navlinks">
+      <a href="#kompetensi">Kompetensi</a>
+      <a href="#matriks">Matriks Keputusan</a>
+      <a href="#kasus">Studi Kasus</a>
+      <a href="#kuis">Uji Diri</a>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('unduh').scrollIntoView({behavior:'smooth'})">Unduh modul</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Program pengembangan eksekutif</div>
+      <h1>Memimpin sebagai CEO<br>di era <em>kecerdasan buatan</em></h1>
+      <p class="lede">Kerangka berpikir, studi kasus lintas industri, dan perangkat kerja praktis agar organisasi Anda tetap bertahan dan bertumbuh saat kecepatan perubahan pasar dipercepat oleh AI.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="document.getElementById('unduh').scrollIntoView({behavior:'smooth'})">
+          Unduh modul lengkap (.docx)
+        </button>
+        <button class="btn-ghost" onclick="document.getElementById('kasus').scrollIntoView({behavior:'smooth'})">Lihat studi kasus</button>
+      </div>
+      <div class="hero-meta">19 HALAMAN · 6 KERANGKA KERJA · 8 STUDI KASUS · GRATIS</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Inti modul</div>
+      <h3>Enam kompetensi yang menentukan siapa yang bertahan</h3>
+      <p>Problem solving, critical thinking, komunikasi, decision making, financing, dan supply chain — disusun ulang untuk konteks di mana AI mempercepat setiap siklus keputusan.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">90</div><div class="lab">hari rencana aksi</div></div>
+        <div class="hero-stat"><div class="num">4</div><div class="lab">kuadran keputusan</div></div>
+        <div class="hero-stat"><div class="num">3</div><div class="lab">perangkat checklist</div></div>
+        <div class="hero-stat"><div class="num">8</div><div class="lab">kasus perusahaan</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="kompetensi">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Bagian 1 — 6 area inti</div>
+      <h2>Kompetensi yang dibahas dalam modul</h2>
+      <p>Klik tiap kartu untuk melihat ringkasan kerangka kerja yang diajarkan.</p>
+    </div>
+    <div class="comp-grid" id="compGrid"></div>
+  </div>
+</section>
+
+<section class="section alt" id="matriks">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Bagian 5 — Decision making</div>
+      <h2>Matriks kecepatan vs reversibilitas</h2>
+      <p>Tidak semua keputusan layak diperlakukan sama. Klik setiap kuadran untuk melihat pendekatan yang disarankan.</p>
+    </div>
+    <div class="matrix-wrap">
+      <div class="matrix" id="matrixGrid"></div>
+      <div class="matrix-detail" id="matrixDetail"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="kasus">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Bagian 8 — Delapan studi kasus</div>
+      <h2>Belajar dari perusahaan yang menghadapi disrupsi</h2>
+      <p>Pilih satu kasus untuk melihat situasi, masalah inti, keputusan, hasil, dan pelajarannya secara ringkas. Versi lengkap tersedia di modul unduhan.</p>
+    </div>
+    <div class="case-tabs" id="caseTabs"></div>
+    <div id="casePanels"></div>
+  </div>
+</section>
+
+<section class="section alt" id="kuis">
+  <div class="wrap">
+    <div class="quiz">
+      <div class="quiz-inner">
+        <div class="sec-eyebrow">Uji cepat</div>
+        <h2>Sudah siap menerapkan kerangka ini?</h2>
+        <p>Tiga pertanyaan singkat berdasarkan isi modul.</p>
+        <div class="quiz-progress" id="quizProgress"></div>
+        <div id="quizQuestions"></div>
+        <div class="quiz-result" id="quizResult">
+          <div class="score" id="quizScore">0/3</div>
+          <p id="quizResultText">Terima kasih sudah mencoba.</p>
+          <button class="btn-primary" style="margin-top:8px;" onclick="document.getElementById('unduh').scrollIntoView({behavior:'smooth'})">Unduh modul lengkap</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="download" id="unduh">
+  <div class="wrap">
+    <div class="dl-card">
+      <div>
+        <div class="sec-eyebrow">Materi belajar lengkap</div>
+        <h2>Modul CEO Era AI — 19 halaman</h2>
+        <p>Dokumen Word berisi seluruh kerangka kerja, delapan studi kasus rinci, serta perangkat kerja siap pakai untuk tim eksekutif Anda.</p>
+        <ul class="dl-list">
+          <li>Kerangka 5D untuk problem solving dan diagnosis akar masalah</li>
+          <li>Kerangka SBAR untuk komunikasi krisis dan perubahan</li>
+          <li>Matriks kecepatan vs reversibilitas untuk decision making</li>
+          <li>Checklist kesiapan finansial dan kesiapan AI organisasi</li>
+          <li>Rencana aksi 90 hari yang bisa langsung dijalankan</li>
+        </ul>
+        <button class="btn-primary" onclick="sendPromptSafe('Tolong siapkan file modul CEO Era AI untuk saya unduh.')">
+          Unduh modul (.docx)
+        </button>
+      </div>
+      <div class="dl-visual">
+        <div>
+          <div class="tag">Modul eksekutif</div>
+          <div class="title">Memimpin sebagai CEO di Era Kecerdasan Buatan</div>
+        </div>
+        <div>
+          <div class="pages">19</div>
+          <div class="pages-lab">halaman · format .docx</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><strong>CEO Playbook — Era AI</strong> · Modul pembelajaran eksekutif</div>
+    <div>Dirancang untuk didiskusikan bersama tim kepemimpinan senior Anda</div>
+  </div>
+</footer>
+
+<script>
+function sendPromptSafe(text){
+  if (window.sendPrompt) { window.sendPrompt(text); }
+}
+
+const competencies = [
+  {tag:"01", title:"Problem solving", teaser:"Mendiagnosis akar masalah sebelum melompat ke solusi.",
+   detail:["Kerangka 5D: Define, Diagnose, Design, Decide, Deliver.","AI mempercepat tahap diagnosis dan simulasi opsi.","Keputusan trade-off strategis tetap milik manusia."]},
+  {tag:"02", title:"Critical thinking", teaser:"Menyaring sinyal dari kebisingan data dan output AI.",
+   detail:["Empat pertanyaan wajib: sumber, asumsi, alternatif, konsekuensi.","Tunjuk 'penantang resmi' di setiap rapat keputusan besar.","Verifikasi klaim penting dari AI generatif sebelum digunakan."]},
+  {tag:"03", title:"Komunikasi", teaser:"Menyelaraskan organisasi besar dalam waktu singkat.",
+   detail:["Kerangka SBAR: Situation, Background, Assessment, Recommendation.","Kejujuran membangun kepercayaan lebih baik dari optimisme dipaksakan.","Manajer lini pertama perlu dibekali jawaban sebelum pengumuman meluas."]},
+  {tag:"04", title:"Decision making", teaser:"Memilih kapan mengandalkan data dan kapan penilaian manusia.",
+   detail:["Matriks kecepatan vs reversibilitas menentukan proses yang tepat.","Percaya AI lebih besar pada pola berulang dan risiko rendah.","Waspadai bias dari data historis pada situasi tanpa preseden."]},
+  {tag:"05", title:"Financing", teaser:"Menjaga fleksibilitas modal untuk berinvestasi cepat.",
+   detail:["Empat pilar: likuiditas, struktur modal, investasi bertahap, diversifikasi.","Hitung ROI investasi AI dengan biaya integrasi penuh, bukan hanya lisensi.","Disiplin mengukur hasil lebih penting dari agresivitas investasi."]},
+  {tag:"06", title:"Supply chain", teaser:"Merancang rantai pasok yang tangguh terhadap kejutan.",
+   detail:["Visibilitas ujung ke ujung hingga pemasok tingkat dua dan tiga.","Redundansi terukur untuk komponen kritis.","Peramalan permintaan berbasis AI dan simulasi skenario gangguan."]},
+];
+
+const grid = document.getElementById('compGrid');
+competencies.forEach((c,i)=>{
+  const card = document.createElement('div');
+  card.className = 'comp-card';
+  card.innerHTML = `
+    <div class="idx">${c.tag}</div>
+    <h3>${c.title}</h3>
+    <div class="teaser">${c.teaser}</div>
+    <div class="toggle"><span class="arrow">›</span> Lihat kerangka kerja</div>
+    <div class="detail"><ul>${c.detail.map(d=>`<li>${d}</li>`).join('')}</ul></div>
+  `;
+  card.addEventListener('click', ()=> card.classList.toggle('open'));
+  grid.appendChild(card);
+});
+
+const quadrants = [
+  {row:1,col:2,tag:"Delegasikan",title:"Reversibel · dampak kecil",text:"Serahkan ke tim, gunakan otomatisasi dan aturan berbasis data. Kecepatan lebih penting daripada kesempurnaan."},
+  {row:1,col:3,tag:"Uji coba",title:"Reversibel · dampak besar",text:"Jalankan eksperimen skala kecil (pilot) sebelum digulirkan penuh, manfaatkan simulasi AI untuk memperkirakan hasil."},
+  {row:2,col:2,tag:"Checklist",title:"Tidak reversibel · dampak kecil",text:"Gunakan daftar periksa standar dan persetujuan cepat satu level di atas."},
+  {row:2,col:3,tag:"Dewan direksi",title:"Tidak reversibel · dampak besar",text:"Libatkan diskusi dewan direksi, uji asumsi kritis secara eksplisit, siapkan rencana kontingensi sebelum eksekusi."},
+];
+const mgrid = document.getElementById('matrixGrid');
+const mdetail = document.getElementById('matrixDetail');
+function renderMatrix(){
+  mgrid.innerHTML = `
+    <div></div>
+    <div class="axis-label">Dampak kecil</div>
+    <div class="axis-label">Dampak besar</div>
+    <div class="axis-label yaxis">Reversibel</div>
+    <div class="matrix-cell" data-i="0"><div class="mc-tag">Delegasikan</div><div class="mc-title">Rutin & otomatis</div></div>
+    <div class="matrix-cell" data-i="1"><div class="mc-tag">Uji coba</div><div class="mc-title">Pilot terarah</div></div>
+    <div class="axis-label yaxis">Tidak reversibel</div>
+    <div class="matrix-cell" data-i="2"><div class="mc-tag">Checklist</div><div class="mc-title">Prosedur standar</div></div>
+    <div class="matrix-cell" data-i="3"><div class="mc-tag">Dewan direksi</div><div class="mc-title">Kajian mendalam</div></div>
+  `;
+  mgrid.querySelectorAll('.matrix-cell').forEach(cell=>{
+    cell.addEventListener('click', ()=>{
+      mgrid.querySelectorAll('.matrix-cell').forEach(c=>c.classList.remove('active'));
+      cell.classList.add('active');
+      const q = quadrants[cell.dataset.i];
+      mdetail.innerHTML = `<div class="md-tag">${q.tag}</div><h4>${q.title}</h4><p>${q.text}</p>`;
+    });
+  });
+  mgrid.querySelector('.matrix-cell').click();
+}
+renderMatrix();
+
+const cases = [
+  {label:"Kodak", tag:"Manufaktur & teknologi konsumen", title:"Disrupsi fotografi digital", industry:"Produsen film fotografi",
+   situasi:"Menciptakan sendiri teknologi kamera digital pertama di dunia, namun memilih tidak mengomersialkannya secara agresif karena khawatir mengkanibalisasi bisnis film cetak.",
+   masalah:"Mendiagnosis ancaman sebagai risiko terhadap lini produk yang ada, bukan sebagai peluang membentuk kategori baru.",
+   keputusan:"Memperlambat peluncuran produk digital dan tetap fokus pada margin tinggi bisnis film konvensional selama lebih dari satu dekade.",
+   hasil:"Kehilangan posisi dominan dan mengajukan perlindungan kepailitan pada 2012.",
+   pelajaran:"Kanibalisasi diri yang terkendali lebih baik daripada dikanibalisasi pesaing."},
+  {label:"Sewa video vs streaming", tag:"Hiburan & ritel", title:"Menolak akuisisi pesaing digital", industry:"Jaringan penyewaan video fisik",
+   situasi:"Menolak dua kali kesempatan mengakuisisi perusahaan rintisan streaming digital dengan harga relatif rendah.",
+   masalah:"Terlalu mengandalkan data historis positif tanpa memperhitungkan laju adopsi teknologi baru.",
+   keputusan:"Memperkuat jaringan gerai fisik dan denda keterlambatan sebagai sumber pendapatan.",
+   hasil:"Pesaing yang ditolak akuisisinya tumbuh menjadi platform hiburan terbesar dunia; perusahaan ini pailit pada 2010.",
+   pelajaran:"Model pendapatan yang bergantung pada friksi pelanggan adalah tanda peringatan struktural."},
+  {label:"Telepon pintar", tag:"Telekomunikasi", title:"Kehilangan momentum pasar", industry:"Produsen telepon genggam global",
+   situasi:"Lambat merespons kemunculan telepon pintar berlayar sentuh penuh dengan ekosistem aplikasi terbuka.",
+   masalah:"Kegagalan komunikasi internal antara tim riset yang sudah melihat tren dan manajemen puncak yang bertahan pada desain lama.",
+   keputusan:"Meluncurkan pembaruan bertahap pada platform lama alih-alih merombak total sistem operasinya.",
+   hasil:"Pangsa pasar anjlok dari lebih 40% menjadi kurang dari 5% dalam sekitar lima tahun.",
+   pelajaran:"Bangun jalur eskalasi agar sinyal peringatan dini sampai ke manajemen puncak tanpa disaring berlebihan."},
+  {label:"Mode cepat", tag:"Ritel & fesyen", title:"Ketangkasan rantai pasok", industry:"Peritel pakaian global",
+   situasi:"Membangun rantai pasok yang memindahkan desain dari sketsa ke rak toko dalam hitungan minggu.",
+   masalah:"Merancang sistem produksi yang cukup fleksibel merespons tren tanpa membebani biaya persediaan berlebih.",
+   keputusan:"Mempertahankan sebagian produksi dekat pasar utama meski biayanya lebih tinggi.",
+   hasil:"Menjadi salah satu rujukan model rantai pasok tercepat di industri ritel global.",
+   pelajaran:"Kecepatan rantai pasok bisa jadi keunggulan lebih tahan lama dibanding efisiensi biaya semata."},
+  {label:"Toko mainan", tag:"Ritel mainan", title:"Beban utang di tengah tekanan e-commerce", industry:"Jaringan toko mainan besar",
+   situasi:"Menanggung beban utang besar peninggalan akuisisi bertahun-tahun sebelumnya saat belanja bergeser ke daring.",
+   masalah:"Struktur modal yang bergantung pada utang mengurangi fleksibilitas investasi digital.",
+   keputusan:"Memprioritaskan pembayaran utang, investasi digital relatif terbatas dan terlambat.",
+   hasil:"Mengajukan kepailitan pada 2017 dan menutup seluruh gerai AS setahun kemudian.",
+   pelajaran:"Struktur modal yang rapuh bisa jadi penghalang transformasi meski permintaan pasar masih ada."},
+  {label:"Reinvensi teknologi", tag:"Teknologi perusahaan", title:"Dari perangkat keras ke layanan dan AI", industry:"Perusahaan teknologi besar",
+   situasi:"Menghadapi tekanan margin ketika bisnis perangkat kerasnya menjadi komoditas bermargin rendah.",
+   masalah:"Perlu melepas sebagian bisnis inti historis demi fokus pada layanan dan AI korporat.",
+   keputusan:"Secara bertahap melepas unit perangkat keras komoditas, mengalihkan investasi ke layanan dan riset AI.",
+   hasil:"Butuh lebih dari satu dekade dan penurunan pendapatan jangka pendek, namun margin jadi lebih sehat.",
+   pelajaran:"Transformasi struktural besar memerlukan kesabaran melewati tekanan hasil kuartalan."},
+  {label:"Ritel Indonesia", tag:"Ritel nasional (ilustratif)", title:"Peramalan permintaan berbasis AI", industry:"Jaringan ritel 300+ gerai",
+   situasi:"Kelebihan stok musiman di sejumlah wilayah, sementara wilayah lain kehabisan produk populer bersamaan.",
+   masalah:"Sistem peramalan lama hanya memakai rata-rata nasional, tanpa mempertimbangkan pola tiap wilayah.",
+   keputusan:"Menerapkan model peramalan AI per klaster gerai, diuji coba di 20 gerai lebih dulu.",
+   hasil:"Kekosongan stok produk populer turun signifikan, model diperluas ke seluruh jaringan.",
+   pelajaran:"Uji coba skala kecil dengan indikator jelas mengurangi risiko sebelum investasi nasional."},
+  {label:"Krisis data", tag:"Teknologi finansial (ilustratif)", title:"Komunikasi saat insiden keamanan", industry:"Perusahaan teknologi finansial",
+   situasi:"Menemukan celah keamanan yang berpotensi mengekspos data ribuan pengguna, investigasi penuh butuh 48 jam.",
+   masalah:"Trade-off antara mengumumkan cepat dengan info belum lengkap, atau menunggu hingga berisiko dianggap menutupi.",
+   keputusan:"Mengeluarkan pernyataan awal dalam 12 jam pertama dan berkomitmen pembaruan tiap 24 jam.",
+   hasil:"Transparansi bertahap dinilai lebih baik oleh media dan regulator, menjaga kepercayaan pengguna.",
+   pelajaran:"Kesiapan komunikasi krisis sebaiknya disiapkan sebagai protokol sebelum insiden terjadi."},
+];
+
+const tabsEl = document.getElementById('caseTabs');
+const panelsEl = document.getElementById('casePanels');
+cases.forEach((c,i)=>{
+  const tab = document.createElement('button');
+  tab.className = 'case-tab' + (i===0?' active':'');
+  tab.textContent = `${String(i+1).padStart(2,'0')} — ${c.label}`;
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.case-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.case-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-'+i).classList.add('active');
+  });
+  tabsEl.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'case-panel' + (i===0?' active':'');
+  panel.id = 'panel-'+i;
+  panel.innerHTML = `
+    <div class="case-side">
+      <div class="tag">${c.tag}</div>
+      <h3>${c.title}</h3>
+      <div class="industry">${c.industry}</div>
+    </div>
+    <dl class="case-body">
+      <dt>Situasi</dt><dd>${c.situasi}</dd>
+      <dt>Masalah inti</dt><dd>${c.masalah}</dd>
+      <dt>Keputusan</dt><dd>${c.keputusan}</dd>
+      <dt>Hasil</dt><dd>${c.hasil}</dd>
+      <dt>Pelajaran</dt><dd>${c.pelajaran}</dd>
+    </dl>
+  `;
+  panelsEl.appendChild(panel);
+});
+
+const quizData = [
+  {q:"Menurut kerangka 5D, apa yang harus dilakukan sebelum mencari solusi?",
+   opts:["Langsung memilih vendor teknologi AI","Merumuskan masalah dalam satu kalimat terukur","Mengumumkan perubahan ke seluruh organisasi"], correct:1},
+  {q:"Keputusan yang tidak reversibel dan berdampak besar sebaiknya melalui apa?",
+   opts:["Delegasi penuh ke tim operasional","Diskusi dewan direksi dan pengujian asumsi kritis","Otomatisasi berbasis aturan sederhana"], correct:1},
+  {q:"Dalam komunikasi krisis, pendekatan apa yang paling disarankan?",
+   opts:["Menunggu hingga investigasi 100% tuntas","Diam sampai media bertanya langsung","Pernyataan awal jujur, diikuti pembaruan berkala"], correct:2},
+];
+let quizIdx = 0, quizScore = 0, quizAnswered = false;
+const qWrap = document.getElementById('quizQuestions');
+const qProgress = document.getElementById('quizProgress');
+quizData.forEach((_,i)=>{
+  const dot = document.createElement('div');
+  dot.className = 'quiz-dot';
+  dot.id = 'dot-'+i;
+  qProgress.appendChild(dot);
+});
+function renderQuiz(){
+  qWrap.innerHTML = '';
+  quizData.forEach((item,i)=>{
+    const block = document.createElement('div');
+    block.className = 'quiz-q' + (i===quizIdx?' active':'');
+    block.id = 'q-'+i;
+    block.innerHTML = `
+      <p class="qtext">${item.q}</p>
+      <div class="quiz-opts">${item.opts.map((o,oi)=>`<button class="quiz-opt" data-oi="${oi}">${o}</button>`).join('')}</div>
+      <div class="quiz-feedback" id="fb-${i}"></div>
+    `;
+    qWrap.appendChild(block);
+  });
+  attachQuizHandlers();
+}
+function attachQuizHandlers(){
+  const block = document.getElementById('q-'+quizIdx);
+  const item = quizData[quizIdx];
+  block.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const oi = parseInt(btn.dataset.oi);
+      const fb = document.getElementById('fb-'+quizIdx);
+      if (oi === item.correct){
+        btn.classList.add('correct');
+        fb.textContent = 'Tepat.';
+        quizScore++;
+      } else {
+        btn.classList.add('wrong');
+        block.querySelectorAll('.quiz-opt')[item.correct].classList.add('correct');
+        fb.textContent = 'Jawaban yang lebih tepat sudah ditandai.';
+      }
+      document.getElementById('dot-'+quizIdx).classList.add('done');
+      setTimeout(()=>{
+        quizIdx++;
+        quizAnswered = false;
+        if (quizIdx < quizData.length){
+          renderQuiz();
+        } else {
+          qWrap.style.display = 'none';
+          const res = document.getElementById('quizResult');
+          res.classList.add('active');
+          document.getElementById('quizScore').textContent = quizScore + '/' + quizData.length;
+          document.getElementById('quizResultText').textContent =
+            quizScore === quizData.length ? 'Sempurna. Anda siap menerapkan kerangka kerja ini.' :
+            quizScore >= 1 ? 'Bagus. Modul lengkap membahas tiap kerangka secara rinci.' :
+            'Modul lengkap akan membantu memahami tiap kerangka lebih dalam.';
+        }
+      }, 1000);
+    });
+  });
+}
+renderQuiz();
+</script>
+</body>
+</html>

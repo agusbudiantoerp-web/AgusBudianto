@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademi Analisis Teknikal — Candlestick, Indikator &amp; Sinyal Trading</title>
+<style>
+  :root{
+    --bg:#0A0E16; --panel:#10151F; --panel2:#151C2B; --line:#232C42;
+    --green:#1FAE6B; --green-bright:#34D399;
+    --red:#C6392F; --red-bright:#EF4444;
+    --gold:#D4A72C; --gold-bright:#EAC65A;
+    --text:#E7EAF0; --dim:#8E99B0;
+    --mono:"SFMono-Regular",Consolas,"Roboto Mono",Menlo,monospace;
+    --sans:"Segoe UI",Inter,system-ui,-apple-system,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:
+      radial-gradient(ellipse 1100px 600px at 50% -8%, rgba(212,167,44,0.08), transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:var(--sans); line-height:1.6;}
+  a{color:var(--gold-bright);}
+
+  header.topbar{position:sticky; top:0; z-index:60; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 26px; background:rgba(10,14,22,0.9); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:700; letter-spacing:.04em;}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--green-bright); box-shadow:0 0 8px var(--green-bright);}
+  nav.chapters{display:flex; gap:20px; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;}
+  nav.chapters a{color:var(--dim); text-decoration:none; border-bottom:1px solid transparent; padding-bottom:3px;}
+  nav.chapters a:hover{color:var(--gold-bright); border-color:var(--gold);}
+  @media(max-width:900px){nav.chapters{display:none;}}
+
+  /* ticker */
+  .ticker{overflow:hidden; white-space:nowrap; border-bottom:1px solid var(--line); background:var(--panel);}
+  .ticker div{display:inline-block; padding:7px 0; font-family:var(--mono); font-size:11.5px; color:var(--dim); animation:scroll 32s linear infinite;}
+  .ticker span{margin:0 22px;}
+  .ticker .up{color:var(--green-bright);} .ticker .down{color:var(--red-bright);}
+  @keyframes scroll{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  .hero{padding:80px 24px 60px; text-align:center; position:relative;}
+  .eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold);}
+  .hero h1{font-family:var(--sans); font-weight:800; font-size:clamp(30px,5vw,56px); margin:14px 0 10px; letter-spacing:-0.01em;}
+  .hero h1 .g{color:var(--green-bright);} .hero h1 .r{color:var(--red-bright);}
+  .hero p.sub{max-width:640px; margin:0 auto; color:var(--dim); font-size:15.5px;}
+  .hero-chips{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:34px;}
+  .chip{font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--gold);
+    border:1px solid #4a3d16; background:rgba(212,167,44,0.06); padding:8px 14px; border-radius:3px;}
+
+  .chapter{padding:70px 22px 30px; max-width:1180px; margin:0 auto;}
+  .chapter-head{text-align:center; margin-bottom:44px;}
+  .chapter-num{font-family:var(--mono); font-size:12px; letter-spacing:.3em; color:var(--gold); text-transform:uppercase; display:block; margin-bottom:8px;}
+  .chapter-title{font-size:clamp(24px,3.2vw,36px); font-weight:800; margin:0 0 12px;}
+  .chapter-desc{color:var(--dim); max-width:640px; margin:0 auto; font-size:14.5px;}
+
+  /* ---- Bab 1 anatomy ---- */
+  .anatomy{display:flex; gap:48px; justify-content:center; flex-wrap:wrap; align-items:flex-start;}
+  .anatomy-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:28px 34px; text-align:center;}
+  .anatomy-card h4{margin:14px 0 4px; font-size:15px;}
+  .anatomy-card p{color:var(--dim); font-size:12.5px; margin:0; max-width:200px;}
+
+  /* ---- Bab 2 candlestick grid ---- */
+  .grid-candles{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;}
+  .cndl-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:18px 18px 16px; text-align:center;}
+  .cndl-card svg{width:100px; height:66px;}
+  .cndl-badge{display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:3px 9px; border-radius:10px; margin-bottom:8px;}
+  .cndl-badge.bull{background:rgba(31,174,107,0.14); color:var(--green-bright); border:1px solid #1d5c42;}
+  .cndl-badge.bear{background:rgba(198,57,47,0.14); color:var(--red-bright); border:1px solid #6b2320;}
+  .cndl-badge.neu{background:rgba(212,167,44,0.14); color:var(--gold-bright); border:1px solid #6b551c;}
+  .cndl-card h4{margin:6px 0 8px; font-size:15px;}
+  .cndl-card p{color:var(--dim); font-size:12.3px; margin:0 0 8px; text-align:left;}
+  .stars{color:var(--gold); font-size:12px; letter-spacing:2px;}
+  .stars .off{color:#3a3f52;}
+
+  /* ---- Bab 3 chart patterns ---- */
+  .pattern-group{margin-bottom:34px;}
+  .pattern-group h3{font-family:var(--mono); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-bright); border-bottom:1px solid var(--line); padding-bottom:10px; margin-bottom:16px;}
+  .grid-patterns{display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:16px;}
+  .pat-card{background:var(--panel); border:1px solid var(--line); border-top:3px solid var(--gold-dim,#6b551c); border-radius:6px; padding:14px 16px 16px; overflow:hidden;}
+  .pat-card .pat-visual{background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:6px 4px 2px; margin-bottom:10px;}
+  .pat-card .pat-visual svg{width:100%; height:64px; display:block;}
+  .pat-card .pat-head{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+  .pat-arrow{font-size:15px; flex:none;}
+  .pat-arrow.up{color:var(--green-bright);} .pat-arrow.down{color:var(--red-bright);} .pat-arrow.side{color:var(--gold);}
+  .pat-card h5{margin:0; font-size:14px;}
+  .pat-card p{margin:0; color:var(--dim); font-size:12px;}
+
+  /* ---- Bab 4 indicators ---- */
+  .grid-indicators{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;}
+  .ind-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:16px 18px 18px;}
+  .ind-card .ind-visual{background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:6px 4px 2px; margin-bottom:12px;}
+  .ind-card .ind-visual svg{width:100%; height:62px; display:block;}
+  .ind-card .ind-head{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .ind-num{width:26px; height:26px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; font-size:12px; background:var(--panel2); border:1px solid var(--line); color:var(--gold);}
+  .ind-card h4{margin:0; font-size:15px;}
+  .ind-tag{font-family:var(--mono); font-size:10px; letter-spacing:.05em; color:var(--gold-bright); text-transform:uppercase; margin-left:auto;}
+  .ind-card p.ind-desc{margin:0 0 10px; color:var(--dim); font-size:12.4px;}
+  .ind-signals{display:flex; flex-direction:column; gap:5px; border-top:1px dashed var(--line); padding-top:10px;}
+  .ind-signals div{font-size:11.6px; display:flex; gap:6px;}
+  .ind-signals b{font-family:var(--mono); font-size:9.5px; letter-spacing:.05em; text-transform:uppercase; flex:none; width:74px;}
+  .ind-signals .buy b{color:var(--green-bright);} .ind-signals .sell b{color:var(--red-bright);}
+  .ind-signals span{color:var(--dim);}
+
+  /* ---- Bab 5 signal combos ---- */
+  .signal-cols{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media(max-width:760px){.signal-cols{grid-template-columns:1fr;}}
+  .signal-col{border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .signal-col .col-head{padding:16px 20px; font-family:var(--mono); font-weight:700; letter-spacing:.08em; font-size:14px; text-transform:uppercase;}
+  .signal-col.buy .col-head{background:rgba(31,174,107,0.14); color:var(--green-bright); border-bottom:1px solid #1d5c42;}
+  .signal-col.sell .col-head{background:rgba(198,57,47,0.14); color:var(--red-bright); border-bottom:1px solid #6b2320;}
+  .sig-row{display:flex; justify-content:space-between; gap:10px; align-items:center; padding:13px 20px; border-bottom:1px solid var(--line); font-size:12.8px;}
+  .sig-row:last-child{border-bottom:none;}
+  .sig-row .combo{color:var(--text);}
+  .sig-row .combo b{color:var(--gold-bright); font-weight:600;}
+
+  /* ---- Bab 6 trend ---- */
+  .trend-wrap{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media(max-width:760px){.trend-wrap{grid-template-columns:1fr;}}
+  .trend-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:24px;}
+  .trend-card h4{margin:0 0 10px; font-size:16px;}
+  .trend-card svg{width:100%; height:130px; margin-bottom:12px;}
+  .trend-card ul{margin:0; padding-left:18px; color:var(--dim); font-size:13px;}
+  .trend-card li{margin-bottom:5px;}
+
+  /* ---- Bab 7 risk ---- */
+  .risk-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px;}
+  .risk-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:22px;}
+  .risk-card .eyebrow{display:block; margin-bottom:8px;}
+  .risk-card h4{margin:0 0 10px; font-size:16px;}
+  .risk-formula{font-family:var(--mono); font-size:12.5px; background:var(--panel2); border:1px solid var(--line); border-radius:4px; padding:10px 12px; color:var(--gold-bright); margin-bottom:10px;}
+  .risk-card p{margin:0; color:var(--dim); font-size:12.8px;}
+
+  footer{margin-top:60px; padding:44px 24px 40px; text-align:center; border-top:1px solid var(--line);}
+  footer p{color:var(--dim); font-size:12px; max-width:600px; margin:6px auto;}
+  footer .disclaimer{border:1px solid var(--line); background:var(--panel); padding:14px 18px; border-radius:6px; max-width:640px; margin:18px auto 10px; color:var(--dim); font-size:11.6px;}
+  footer .print-btn{margin-top:16px; display:inline-block; font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold); border:1px solid #6b551c; padding:10px 20px; border-radius:3px; background:transparent; cursor:pointer;}
+  footer .print-btn:hover{background:rgba(212,167,44,0.08);}
+
+  @media print{ header.topbar,.ticker,footer .print-btn{display:none;} body{background:#fff;color:#111;} .chapter{page-break-inside:avoid;} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span>TA // AKADEMI</div>
+  <nav class="chapters">
+    <a href="#bab1">Anatomi</a><a href="#bab2">Candlestick</a><a href="#bab3">Chart Pattern</a>
+    <a href="#bab4">Indikator</a><a href="#bab5">Sinyal</a><a href="#bab6">Tren</a><a href="#bab7">Risiko</a>
+  </nav>
+</header>
+
+<div class="ticker"><div>
+  <span class="up">▲ BOLLINGER BAND — Volatilitas</span><span class="down">▼ RSI — Overbought/Oversold</span>
+  <span class="up">▲ MACD — Sinyal Beli/Jual</span><span class="down">▼ EMA 200 — Tren Jangka Panjang</span>
+  <span class="up">▲ EMA 50 — Area Stop Loss</span><span class="down">▼ EMA 9/21 — Tren Jangka Pendek</span>
+  <span class="up">▲ VOLUME — Konfirmasi Breakout</span><span class="down">▼ FIBONACCI — Area Retracement</span>
+  <span class="up">▲ BOLLINGER BAND — Volatilitas</span><span class="down">▼ RSI — Overbought/Oversold</span>
+  <span class="up">▲ MACD — Sinyal Beli/Jual</span><span class="down">▼ EMA 200 — Tren Jangka Panjang</span>
+  <span class="up">▲ EMA 50 — Area Stop Loss</span><span class="down">▼ EMA 9/21 — Tren Jangka Pendek</span>
+  <span class="up">▲ VOLUME — Konfirmasi Breakout</span><span class="down">▼ FIBONACCI — Area Retracement</span>
+</div></div>
+
+<section class="hero">
+  <span class="eyebrow">PANDUAN ANALISIS TEKNIKAL UNTUK TRADER</span>
+  <h1>Baca <span class="g">Candle</span>, Baca <span class="r">Pasar</span></h1>
+  <p class="sub">Tutorial praktis membaca candlestick, indikator teknikal utama, struktur tren bullish/bearish, hingga kombinasi sinyal buy &amp; sell yang umum dipakai trader profesional — disusun sebagai referensi belajar, bukan rekomendasi transaksi.</p>
+  <div class="hero-chips">
+    <span class="chip">14 Pola Candlestick</span><span class="chip">20 Pola Chart</span>
+    <span class="chip">8 Indikator Utama</span><span class="chip">Kombinasi Sinyal Buy/Sell</span>
+    <span class="chip">Manajemen Risiko</span>
+  </div>
+</section>
+
+<!-- ===== BAB 1 — ANATOMI ===== -->
+<section class="chapter" id="bab1">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 1</span>
+    <h2 class="chapter-title">Anatomi Sebuah Candlestick</h2>
+    <p class="chapter-desc">Setiap candle merekam pertarungan antara pembeli dan penjual dalam satu periode waktu — memahami bagian-bagiannya adalah fondasi sebelum membaca pola apa pun.</p>
+  </div>
+  <div class="anatomy">
+    <div class="anatomy-card">
+      <svg viewBox="0 0 120 140" width="120" height="140">
+        <line x1="60" y1="10" x2="60" y2="35" stroke="#34D399" stroke-width="3"/>
+        <rect x="42" y="35" width="36" height="60" fill="#1FAE6B" stroke="#34D399" stroke-width="1.5"/>
+        <line x1="60" y1="95" x2="60" y2="126" stroke="#34D399" stroke-width="3"/>
+        <text x="86" y="14" fill="#8E99B0" font-size="10" font-family="monospace">High</text>
+        <text x="82" y="40" fill="#8E99B0" font-size="10" font-family="monospace">Close</text>
+        <text x="82" y="94" fill="#8E99B0" font-size="10" font-family="monospace">Open</text>
+        <text x="86" y="130" fill="#8E99B0" font-size="10" font-family="monospace">Low</text>
+      </svg>
+      <h4 style="color:#34D399">Candle Bullish</h4>
+      <p>Harga penutupan (close) lebih tinggi dari pembukaan (open) — tekanan beli lebih kuat dalam periode tersebut.</p>
+    </div>
+    <div class="anatomy-card">
+      <svg viewBox="0 0 120 140" width="120" height="140">
+        <line x1="60" y1="10" x2="60" y2="35" stroke="#EF4444" stroke-width="3"/>
+        <rect x="42" y="35" width="36" height="60" fill="#C6392F" stroke="#EF4444" stroke-width="1.5"/>
+        <line x1="60" y1="95" x2="60" y2="126" stroke="#EF4444" stroke-width="3"/>
+        <text x="86" y="14" fill="#8E99B0" font-size="10" font-family="monospace">High</text>
+        <text x="82" y="40" fill="#8E99B0" font-size="10" font-family="monospace">Open</text>
+        <text x="82" y="94" fill="#8E99B0" font-size="10" font-family="monospace">Close</text>
+        <text x="86" y="130" fill="#8E99B0" font-size="10" font-family="monospace">Low</text>
+      </svg>
+      <h4 style="color:#EF4444">Candle Bearish</h4>
+      <p>Harga penutupan (close) lebih rendah dari pembukaan (open) — tekanan jual lebih dominan dalam periode tersebut.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BAB 2 — CANDLESTICK PATTERNS ===== -->
+<section class="chapter" id="bab2">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 2</span>
+    <h2 class="chapter-title">14 Pola Candlestick yang Paling Sering Dipakai</h2>
+    <p class="chapter-desc">Pola candlestick memberi petunjuk awal soal potensi pembalikan (reversal) atau kelanjutan (continuation) arah harga — selalu dikonfirmasi dengan konteks tren dan volume.</p>
+  </div>
+  <div class="grid-candles" id="candleGrid"></div>
+</section>
+
+<!-- ===== BAB 3 — CHART PATTERNS ===== -->
+<section class="chapter" id="bab3">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 3</span>
+    <h2 class="chapter-title">Pola Chart: Reversal, Continuation &amp; Bilateral</h2>
+    <p class="chapter-desc">Terbentuk dari kumpulan candle sepanjang waktu, pola chart menggambarkan psikologi pasar dalam skala lebih besar dibanding satu-dua candle saja.</p>
+  </div>
+
+  <div class="pattern-group">
+    <h3>Reversal Patterns — Perubahan Tren</h3>
+    <div class="grid-patterns" id="revGrid"></div>
+  </div>
+  <div class="pattern-group">
+    <h3>Continuation Patterns — Jeda Tren</h3>
+    <div class="grid-patterns" id="contGrid"></div>
+  </div>
+  <div class="pattern-group">
+    <h3>Bilateral / Neutral Patterns — Breakout Dua Arah</h3>
+    <div class="grid-patterns" id="bilGrid"></div>
+  </div>
+</section>
+
+<!-- ===== BAB 4 — INDICATORS ===== -->
+<section class="chapter" id="bab4">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 4</span>
+    <h2 class="chapter-title">8 Indikator Teknikal yang Wajib Dikuasai</h2>
+    <p class="chapter-desc">Indikator tidak memprediksi masa depan — indikator membantu membaca kondisi pasar saat ini secara lebih objektif.</p>
+  </div>
+  <div class="grid-indicators" id="indList"></div>
+</section>
+
+<!-- ===== BAB 5 — SIGNAL COMBOS ===== -->
+<section class="chapter" id="bab5">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 5</span>
+    <h2 class="chapter-title">Kombinasi Sinyal Buy &amp; Sell</h2>
+    <p class="chapter-desc">Sinyal tunggal jarang cukup diandalkan — trader profesional mengombinasikan pola candle, pola chart, dan waktu sesi pasar untuk menaikkan tingkat keyakinan (confidence).</p>
+  </div>
+  <div class="signal-cols">
+    <div class="signal-col buy">
+      <div class="col-head">▲ Sinyal Beli (Buy)</div>
+      <div id="buyList"></div>
+    </div>
+    <div class="signal-col sell">
+      <div class="col-head">▼ Sinyal Jual (Sell)</div>
+      <div id="sellList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BAB 6 — TREND ===== -->
+<section class="chapter" id="bab6">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 6</span>
+    <h2 class="chapter-title">Membaca Struktur Tren Bullish vs Bearish</h2>
+    <p class="chapter-desc">Sebelum melihat indikator apa pun, struktur harga itu sendiri (higher high/low atau lower high/low) adalah bahasa pasar yang paling mendasar.</p>
+  </div>
+  <div class="trend-wrap">
+    <div class="trend-card">
+      <h4 style="color:#34D399">Struktur Bullish (Uptrend)</h4>
+      <svg viewBox="0 0 300 130"><polyline points="10,110 60,60 90,80 150,30 180,50 260,10" fill="none" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="60" r="3.5" fill="#34D399"/><circle cx="150" cy="30" r="3.5" fill="#34D399"/><circle cx="260" cy="10" r="3.5" fill="#34D399"/><circle cx="90" cy="80" r="3.5" fill="#8E99B0"/><circle cx="180" cy="50" r="3.5" fill="#8E99B0"/></svg>
+      <ul>
+        <li>Puncak makin tinggi (Higher High) &amp; lembah makin tinggi (Higher Low).</li>
+        <li>Harga bertahan di atas EMA jangka menengah (mis. EMA 50).</li>
+        <li>Volume cenderung naik saat harga naik, mengecil saat koreksi.</li>
+      </ul>
+    </div>
+    <div class="trend-card">
+      <h4 style="color:#EF4444">Struktur Bearish (Downtrend)</h4>
+      <svg viewBox="0 0 300 130"><polyline points="10,10 60,50 90,30 150,80 180,60 260,110" fill="none" stroke="#EF4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="50" r="3.5" fill="#EF4444"/><circle cx="150" cy="80" r="3.5" fill="#EF4444"/><circle cx="260" cy="110" r="3.5" fill="#EF4444"/><circle cx="90" cy="30" r="3.5" fill="#8E99B0"/><circle cx="180" cy="60" r="3.5" fill="#8E99B0"/></svg>
+      <ul>
+        <li>Puncak makin rendah (Lower High) &amp; lembah makin rendah (Lower Low).</li>
+        <li>Harga tertahan di bawah EMA jangka menengah (mis. EMA 50).</li>
+        <li>Volume cenderung naik saat harga turun — tekanan jual mendominasi.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BAB 7 — RISK MANAGEMENT ===== -->
+<section class="chapter" id="bab7">
+  <div class="chapter-head">
+    <span class="chapter-num">Bab 7</span>
+    <h2 class="chapter-title">Manajemen Risiko — Fondasi yang Sering Diabaikan</h2>
+    <p class="chapter-desc">Analisis teknikal sebaik apa pun tidak akan menyelamatkan akun trading tanpa aturan risiko yang disiplin.</p>
+  </div>
+  <div class="risk-grid">
+    <div class="risk-card">
+      <span class="eyebrow">Aturan Dasar</span>
+      <h4>Risiko 1–2% per Transaksi</h4>
+      <div class="risk-formula">Risiko (Rp) = Modal × 1–2%</div>
+      <p>Batasi potensi kerugian per transaksi agar satu kesalahan tidak menghancurkan akun secara keseluruhan.</p>
+    </div>
+    <div class="risk-card">
+      <span class="eyebrow">Ukuran Posisi</span>
+      <h4>Position Sizing</h4>
+      <div class="risk-formula">Jumlah Lot = Risiko (Rp) ÷ Jarak Stop Loss</div>
+      <p>Ukuran posisi dihitung mundur dari jarak stop loss — bukan ditentukan lebih dulu secara sembarang.</p>
+    </div>
+    <div class="risk-card">
+      <span class="eyebrow">Rasio</span>
+      <h4>Risk : Reward Ratio</h4>
+      <div class="risk-formula">R:R = (Target − Entry) ÷ (Entry − Stop Loss)</div>
+      <p>Cari setup dengan potensi keuntungan minimal 1.5–2× dari potensi kerugian sebelum entry.</p>
+    </div>
+    <div class="risk-card">
+      <span class="eyebrow">Penempatan</span>
+      <h4>Lokasi Stop Loss</h4>
+      <div class="risk-formula">SL di luar area struktur, bukan angka bulat</div>
+      <p>Tempatkan stop loss di balik level support/resistance atau swing terakhir — bukan di angka psikologis yang mudah tersapu noise pasar.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Akademi Analisis Teknikal merangkum pola candlestick, pola chart, indikator, dan kombinasi sinyal yang umum dipakai dalam praktik trading — sebagai materi edukasi yang dapat dibuka tanpa koneksi internet.</p>
+  <div class="disclaimer">⚠ Materi ini bersifat edukasi umum tentang analisis teknikal dan bukan nasihat atau rekomendasi investasi/transaksi yang dipersonalisasi. Kinerja masa lalu suatu pola tidak menjamin hasil di masa depan. Selalu terapkan manajemen risiko dan pertimbangkan kondisi keuangan pribadi sebelum bertransaksi.</div>
+  <button class="print-btn" onclick="window.print()">Cetak / Simpan sebagai PDF</button>
+</footer>
+
+<script>
+/* ---------- helper: draw mini candlestick SVG from candle specs ---------- */
+function candleSVG(candles){
+  const bars = candles.map(c=>{
+    const col = c.color==='green' ? '#1FAE6B' : c.color==='red' ? '#C6392F' : '#D4A72C';
+    const strokeCol = c.color==='green' ? '#34D399' : c.color==='red' ? '#EF4444' : '#EAC65A';
+    const bw=12;
+    return `<line x1="${c.x}" y1="${c.wickTop}" x2="${c.x}" y2="${c.wickBottom}" stroke="${strokeCol}" stroke-width="2"/>
+    <rect x="${c.x-bw/2}" y="${c.bodyTop}" width="${bw}" height="${Math.max(2,c.bodyBottom-c.bodyTop)}" fill="${col}" stroke="${strokeCol}" stroke-width="1"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 90 60" xmlns="http://www.w3.org/2000/svg">${bars}</svg>`;
+}
+
+const CANDLES = [
+ {name:"Hammer", type:"bull", stars:4, desc:"Body kecil di atas, sumbu bawah panjang. Muncul di akhir downtrend — tekanan jual ditolak balik oleh pembeli.",
+  c:[{x:45,color:'green',bodyTop:6,bodyBottom:16,wickTop:6,wickBottom:54}]},
+ {name:"Inverted Hammer", type:"bull", stars:3, desc:"Body kecil di bawah, sumbu atas panjang. Muncul di akhir downtrend, mengindikasikan percobaan pembeli mulai muncul.",
+  c:[{x:45,color:'green',bodyTop:44,bodyBottom:54,wickTop:6,wickBottom:54}]},
+ {name:"Shooting Star", type:"bear", stars:4, desc:"Bentuk mirip inverted hammer tapi muncul di akhir uptrend — penjual menolak kenaikan lebih lanjut.",
+  c:[{x:45,color:'red',bodyTop:44,bodyBottom:54,wickTop:6,wickBottom:54}]},
+ {name:"Hanging Man", type:"bear", stars:3, desc:"Bentuk mirip hammer tapi muncul di akhir uptrend — sinyal awal potensi pembalikan turun.",
+  c:[{x:45,color:'red',bodyTop:6,bodyBottom:16,wickTop:6,wickBottom:54}]},
+ {name:"Bullish Engulfing", type:"bull", stars:5, desc:"Candle hijau besar menelan penuh body candle merah sebelumnya — pembeli mengambil alih kendali secara tegas.",
+  c:[{x:30,color:'red',bodyTop:22,bodyBottom:34,wickTop:18,wickBottom:38},{x:60,color:'green',bodyTop:10,bodyBottom:50,wickTop:6,wickBottom:54}]},
+ {name:"Bearish Engulfing", type:"bear", stars:5, desc:"Candle merah besar menelan penuh body candle hijau sebelumnya — penjual mengambil alih kendali secara tegas.",
+  c:[{x:30,color:'green',bodyTop:22,bodyBottom:34,wickTop:18,wickBottom:38},{x:60,color:'red',bodyTop:10,bodyBottom:50,wickTop:6,wickBottom:54}]},
+ {name:"Doji", type:"neu", stars:3, desc:"Open dan close hampir sama, sumbu di kedua sisi — pasar dalam keraguan penuh, sering jadi titik balik.",
+  c:[{x:45,color:'gold',bodyTop:29,bodyBottom:31,wickTop:8,wickBottom:52}]},
+ {name:"Morning Star", type:"bull", stars:5, desc:"Tiga candle: merah besar, candle kecil ragu-ragu, lalu hijau besar — pembalikan naik yang cukup kuat.",
+  c:[{x:15,color:'red',bodyTop:10,bodyBottom:40,wickTop:6,wickBottom:44},{x:45,color:'gold',bodyTop:46,bodyBottom:52,wickTop:42,wickBottom:56},{x:75,color:'green',bodyTop:14,bodyBottom:44,wickTop:8,wickBottom:48}]},
+ {name:"Evening Star", type:"bear", stars:5, desc:"Tiga candle: hijau besar, candle kecil ragu-ragu, lalu merah besar — pembalikan turun yang cukup kuat.",
+  c:[{x:15,color:'green',bodyTop:14,bodyBottom:44,wickTop:8,wickBottom:48},{x:45,color:'gold',bodyTop:6,bodyBottom:12,wickTop:4,wickBottom:16},{x:75,color:'red',bodyTop:10,bodyBottom:40,wickTop:6,wickBottom:44}]},
+ {name:"Three White Soldiers", type:"bull", stars:4, desc:"Tiga candle hijau berturut-turut dengan body membesar/naik bertahap — momentum beli yang solid.",
+  c:[{x:15,color:'green',bodyTop:40,bodyBottom:54,wickTop:38,wickBottom:56},{x:45,color:'green',bodyTop:26,bodyBottom:42,wickTop:24,wickBottom:44},{x:75,color:'green',bodyTop:10,bodyBottom:28,wickTop:8,wickBottom:30}]},
+ {name:"Three Black Crows", type:"bear", stars:4, desc:"Tiga candle merah berturut-turut dengan body membesar/turun bertahap — momentum jual yang solid.",
+  c:[{x:15,color:'red',bodyTop:10,bodyBottom:28,wickTop:8,wickBottom:30},{x:45,color:'red',bodyTop:26,bodyBottom:42,wickTop:24,wickBottom:44},{x:75,color:'red',bodyTop:40,bodyBottom:54,wickTop:38,wickBottom:56}]},
+ {name:"Piercing Line", type:"bull", stars:3, desc:"Candle hijau dibuka di bawah low candle merah sebelumnya lalu ditutup di atas titik tengah body-nya — awal tekanan beli.",
+  c:[{x:30,color:'red',bodyTop:10,bodyBottom:40,wickTop:6,wickBottom:44},{x:60,color:'green',bodyTop:22,bodyBottom:50,wickTop:18,wickBottom:54}]},
+ {name:"Dark Cloud Cover", type:"bear", stars:3, desc:"Candle merah dibuka di atas high candle hijau sebelumnya lalu ditutup di bawah titik tengah body-nya — awal tekanan jual.",
+  c:[{x:30,color:'green',bodyTop:10,bodyBottom:40,wickTop:6,wickBottom:44},{x:60,color:'red',bodyTop:22,bodyBottom:50,wickTop:18,wickBottom:54}]},
+ {name:"Spinning Top", type:"neu", stars:2, desc:"Body kecil dengan sumbu seimbang di kedua sisi — tanda keseimbangan sesaat antara pembeli dan penjual.",
+  c:[{x:45,color:'gold',bodyTop:26,bodyBottom:34,wickTop:8,wickBottom:52}]},
+];
+
+const candleGrid = document.getElementById('candleGrid');
+CANDLES.forEach(p=>{
+  const badgeClass = p.type==='bull'?'bull':p.type==='bear'?'bear':'neu';
+  const badgeText = p.type==='bull'?'Bullish':p.type==='bear'?'Bearish':'Netral / Ragu';
+  const starsHtml = '★'.repeat(p.stars) + `<span class="off">${'★'.repeat(5-p.stars)}</span>`;
+  const el = document.createElement('div');
+  el.className = 'cndl-card';
+  el.innerHTML = `${candleSVG(p.c)}<div class="cndl-badge ${badgeClass}">${badgeText}</div>
+    <h4>${p.name}</h4><p>${p.desc}</p><div class="stars">${starsHtml}</div>`;
+  candleGrid.appendChild(el);
+});
+
+/* ---------- chart patterns ---------- */
+const REV = [
+ ["Head & Shoulders","down","Tiga puncak, puncak tengah paling tinggi — sinyal pembalikan dari naik ke turun."],
+ ["Inverse Head & Shoulders","up","Kebalikan H&S, tiga lembah dengan lembah tengah paling dalam — pembalikan dari turun ke naik."],
+ ["Double Top","down","Dua puncak sejajar gagal menembus resistance yang sama — momentum naik melemah."],
+ ["Double Bottom","up","Dua lembah sejajar gagal menembus support yang sama — momentum turun melemah."],
+ ["Triple Top","down","Tiga puncak sejajar di level resistance yang sama — tekanan jual semakin kuat setiap percobaan naik."],
+ ["Triple Bottom","up","Tiga lembah sejajar di level support yang sama — tekanan beli semakin kuat setiap percobaan turun."],
+ ["Rounding Top","down","Puncak melengkung bertahap — pelemahan tren naik terjadi secara perlahan, bukan mendadak."],
+ ["Rounding Bottom","up","Lembah melengkung bertahap — akumulasi beli terjadi perlahan sebelum tren naik dimulai."],
+];
+const CONT = [
+ ["Ascending Triangle","up","Resistance datar, support naik — tekanan beli meningkat, biasanya breakout ke atas."],
+ ["Descending Triangle","down","Support datar, resistance turun — tekanan jual meningkat, biasanya breakout ke bawah."],
+ ["Symmetrical Triangle","side","Garis atas turun & garis bawah naik bertemu — konsolidasi sebelum breakout, arah mengikuti tren sebelumnya."],
+ ["Rising Wedge","down","Kedua garis naik namun menyempit — meski terlihat bullish, sering berakhir breakdown."],
+ ["Falling Wedge","up","Kedua garis turun namun menyempit — meski terlihat bearish, sering berakhir breakout naik."],
+ ["Bull Flag","up","Konsolidasi menurun ringan setelah lonjakan naik tajam (tiang bendera) — lanjutan tren naik."],
+ ["Bear Flag","down","Konsolidasi naik ringan setelah penurunan tajam (tiang bendera) — lanjutan tren turun."],
+ ["Rectangle (Range)","side","Harga bergerak di antara support & resistance horizontal — breakout menentukan arah lanjutan."],
+];
+const BIL = [
+ ["Symmetrical Triangle (Netral)","side","Bisa breakout ke dua arah — konfirmasi arah dari breakout disertai volume."],
+ ["Pennant","side","Konsolidasi kecil segitiga setelah pergerakan tajam — arah lanjutan mengikuti breakout."],
+ ["Diamond","side","Pola melebar lalu menyempit membentuk berlian — sering muncul di titik balik utama, dua arah mungkin."],
+ ["Rectangle","side","Sama seperti pola continuation, tapi tanpa tren jelas sebelumnya — breakout menentukan arah."],
+];
+function arrowHTML(dir){ return dir==='up' ? '<span class="pat-arrow up">▲</span>' : dir==='down' ? '<span class="pat-arrow down">▼</span>' : '<span class="pat-arrow side">↔</span>'; }
+
+/* ---------- mini diagram per chart pattern, viewBox 0 0 130 78 ---------- */
+function patternIcon(name){
+  const G='#34D399', R='#EF4444', GO='#EAC65A', L='#D4A72C';
+  const icons = {
+    "Head & Shoulders": `<line x1="5" y1="50" x2="125" y2="50" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,65 25,25 45,50 65,10 85,50 105,25 125,65" fill="none" stroke="${R}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Inverse Head & Shoulders": `<line x1="5" y1="30" x2="125" y2="30" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,15 25,55 45,30 65,70 85,30 105,55 125,15" fill="none" stroke="${G}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Double Top": `<line x1="5" y1="45" x2="125" y2="45" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,55 30,15 55,45 80,15 105,45 125,70" fill="none" stroke="${R}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Double Bottom": `<line x1="5" y1="33" x2="125" y2="33" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,23 30,63 55,33 80,63 105,33 125,8" fill="none" stroke="${G}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Triple Top": `<line x1="5" y1="45" x2="125" y2="45" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,55 20,15 35,45 50,15 65,45 80,15 95,45 115,70" fill="none" stroke="${R}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Triple Bottom": `<line x1="5" y1="30" x2="125" y2="30" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,20 20,60 35,30 50,60 65,30 80,60 95,30 115,8" fill="none" stroke="${G}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Rounding Top": `<path d="M5,58 Q65,5 125,62" fill="none" stroke="${R}" stroke-width="2.2" stroke-linecap="round"/><line x1="5" y1="62" x2="125" y2="62" stroke="${L}" stroke-dasharray="4,3" stroke-width="1"/>`,
+    "Rounding Bottom": `<path d="M5,18 Q65,72 125,15" fill="none" stroke="${G}" stroke-width="2.2" stroke-linecap="round"/><line x1="5" y1="18" x2="125" y2="18" stroke="${L}" stroke-dasharray="4,3" stroke-width="1"/>`,
+    "Ascending Triangle": `<line x1="5" y1="15" x2="125" y2="15" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><line x1="5" y1="68" x2="125" y2="25" stroke="${L}" stroke-width="1.2"/><polyline points="5,50 25,15 40,45 60,15 80,32 100,15 120,20" fill="none" stroke="${G}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Descending Triangle": `<line x1="5" y1="65" x2="125" y2="65" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><line x1="5" y1="12" x2="125" y2="55" stroke="${L}" stroke-width="1.2"/><polyline points="5,30 25,65 40,35 60,65 80,48 100,65 120,60" fill="none" stroke="${R}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Symmetrical Triangle": `<line x1="5" y1="15" x2="120" y2="42" stroke="${L}" stroke-width="1.2"/><line x1="5" y1="68" x2="120" y2="42" stroke="${L}" stroke-width="1.2"/><polyline points="5,45 25,20 40,55 60,28 80,48 100,35 118,42" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Rising Wedge": `<line x1="5" y1="55" x2="120" y2="18" stroke="${L}" stroke-width="1.2"/><line x1="5" y1="70" x2="120" y2="35" stroke="${L}" stroke-width="1.2"/><polyline points="5,63 25,45 40,58 60,32 80,48 100,25 120,28" fill="none" stroke="${R}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Falling Wedge": `<line x1="5" y1="10" x2="120" y2="45" stroke="${L}" stroke-width="1.2"/><line x1="5" y1="30" x2="120" y2="58" stroke="${L}" stroke-width="1.2"/><polyline points="5,20 25,35 40,25 60,48 80,38 100,55 120,50" fill="none" stroke="${G}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Bull Flag": `<polyline points="5,72 22,12" fill="none" stroke="${G}" stroke-width="2.4" stroke-linecap="round"/><polyline points="22,12 40,28 52,18 64,32 76,22" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="76,22 100,4" fill="none" stroke="${G}" stroke-width="2.4" stroke-linecap="round"/>`,
+    "Bear Flag": `<polyline points="5,6 22,66" fill="none" stroke="${R}" stroke-width="2.4" stroke-linecap="round"/><polyline points="22,66 40,50 52,60 64,46 76,56" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="76,56 100,74" fill="none" stroke="${R}" stroke-width="2.4" stroke-linecap="round"/>`,
+    "Rectangle (Range)": `<line x1="5" y1="18" x2="125" y2="18" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><line x1="5" y1="60" x2="125" y2="60" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,60 25,18 40,60 60,18 75,60 95,18 110,60 122,35" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Rectangle": `<line x1="5" y1="18" x2="125" y2="18" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><line x1="5" y1="60" x2="125" y2="60" stroke="${L}" stroke-dasharray="4,3" stroke-width="1.2"/><polyline points="5,60 25,18 40,60 60,18 75,60 95,18 110,60 122,35" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "Pennant": `<polyline points="5,70 22,10" fill="none" stroke="${G}" stroke-width="2.4" stroke-linecap="round"/><line x1="22" y1="18" x2="70" y2="40" stroke="${L}" stroke-width="1.2"/><line x1="22" y1="50" x2="70" y2="40" stroke="${L}" stroke-width="1.2"/><polyline points="22,20 35,45 45,25 58,38 68,32" fill="none" stroke="${GO}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><polyline points="70,40 95,10" fill="none" stroke="${G}" stroke-width="2.4" stroke-linecap="round"/>`,
+    "Diamond": `<polyline points="10,42 40,14 70,42 40,70 10,42" fill="none" stroke="${L}" stroke-width="1.2"/><polyline points="10,42 22,30 32,50 45,25 55,48 70,42 95,12" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  };
+  const body = icons[name] || `<line x1="5" y1="40" x2="125" y2="40" stroke="${L}" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 130 78" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+}
+
+function renderPatterns(id, arr){
+  const wrap = document.getElementById(id);
+  arr.forEach(([name,dir,desc])=>{
+    const el = document.createElement('div'); el.className='pat-card';
+    el.innerHTML = `<div class="pat-visual">${patternIcon(name)}</div>
+      <div class="pat-head">${arrowHTML(dir)}<h5>${name}</h5></div>
+      <p>${desc}</p>`;
+    wrap.appendChild(el);
+  });
+}
+renderPatterns('revGrid', REV);
+renderPatterns('contGrid', CONT);
+renderPatterns('bilGrid', BIL);
+
+/* ---------- indicators ---------- */
+const IND = [
+ ["Bollinger Bands","Volatilitas","Tiga garis (tengah = SMA, atas/bawah = deviasi standar) yang melebar saat volatilitas tinggi dan menyempit saat pasar tenang.",
+  "Harga menyentuh/menembus pita bawah lalu mulai memantul naik","Harga menyentuh/menembus pita atas lalu mulai tertahan turun"],
+ ["MACD","Momentum / Sinyal","Selisih dua EMA (12 &amp; 26) membentuk histogram; persilangan garis MACD dengan garis sinyal (9) menandai potensi perubahan momentum.",
+  "Garis MACD memotong ke atas garis sinyal (golden cross)","Garis MACD memotong ke bawah garis sinyal (death cross)"],
+ ["RSI (Relative Strength Index)","Overbought/Oversold","Berskala 0–100; area di atas 70 dianggap jenuh beli, di bawah 30 dianggap jenuh jual — bukan sinyal mutlak, perlu konfirmasi tren.",
+  "RSI keluar dari area di bawah 30 (mulai naik kembali)","RSI keluar dari area di atas 70 (mulai turun kembali)"],
+ ["EMA 200","Tren Jangka Panjang","Rata-rata bergerak eksponensial 200 periode — penanda arah tren besar; harga di atasnya cenderung bullish jangka panjang, di bawahnya bearish.",
+  "Harga memantul di atas EMA 200 saat tren naik","Harga tertahan/breakdown di bawah EMA 200 saat tren turun"],
+ ["EMA 50","Area Dinamis / Stop","Sering dipakai sebagai support/resistance dinamis dan acuan penempatan stop loss pada tren menengah.",
+  "Harga memantul di atas EMA 50","Harga tertahan atau breakdown di bawah EMA 50"],
+ ["EMA 9 &amp; EMA 21","Tren Jangka Pendek","Persilangan kedua EMA ini (9 memotong 21) sering dipakai sebagai sinyal entry/exit jangka pendek (golden/death cross versi cepat).",
+  "EMA 9 memotong ke atas EMA 21","EMA 9 memotong ke bawah EMA 21"],
+ ["Volume","Konfirmasi","Lonjakan volume saat breakout menambah keyakinan validitas pergerakan; breakout dengan volume tipis lebih rawan gagal (fakeout).",
+  "Volume naik signifikan saat breakout ke atas","Volume naik signifikan saat breakdown ke bawah"],
+ ["Fibonacci Retracement","Area Koreksi","Level 23.6%–78.6% dari suatu pergerakan dipakai untuk memperkirakan area koreksi wajar sebelum tren berlanjut.",
+  "Harga memantul di area 50%–61.8% saat uptrend","Harga tertahan di area 50%–61.8% saat downtrend"],
+];
+
+/* ---------- mini diagram per indicator, viewBox 0 0 130 78 ---------- */
+function indicatorIcon(name){
+  const G='#34D399', R='#EF4444', GO='#EAC65A', L='#5B6478', W='#E7EAF0';
+  const icons = {
+    "Bollinger Bands": `
+      <polyline points="5,15 25,10 45,16 65,10 85,16 105,10 125,15" fill="none" stroke="${L}" stroke-width="1.3"/>
+      <polyline points="5,38 25,36 45,39 65,36 85,39 105,36 125,38" fill="none" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <polyline points="5,60 25,64 45,58 65,64 85,58 105,64 125,60" fill="none" stroke="${L}" stroke-width="1.3"/>
+      <polyline points="5,45 25,15 45,50 65,12 85,55 105,14 125,45" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "MACD": `
+      <line x1="5" y1="40" x2="125" y2="40" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <rect x="11" y="28" width="8" height="12" fill="${G}"/><rect x="26" y="20" width="8" height="20" fill="${G}"/>
+      <rect x="41" y="40" width="8" height="12" fill="${R}"/><rect x="56" y="40" width="8" height="22" fill="${R}"/>
+      <rect x="71" y="34" width="8" height="6" fill="${G}"/><rect x="86" y="15" width="8" height="25" fill="${G}"/>
+      <rect x="101" y="40" width="8" height="8" fill="${R}"/><rect x="116" y="40" width="8" height="18" fill="${R}"/>
+      <polyline points="11,44 34,48 56,58 79,30 101,50 120,20" fill="none" stroke="${W}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="11,50 34,52 56,50 79,46 101,44 120,32" fill="none" stroke="${GO}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "RSI (Relative Strength Index)": `
+      <rect x="5" y="20" width="120" height="38" fill="${R}" opacity="0.07"/>
+      <line x1="5" y1="20" x2="125" y2="20" stroke="${R}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="58" x2="125" y2="58" stroke="${G}" stroke-dasharray="3,3" stroke-width="1"/>
+      <text x="7" y="17" font-size="8" fill="${R}" font-family="monospace">70</text>
+      <text x="7" y="70" font-size="8" fill="${G}" font-family="monospace">30</text>
+      <polyline points="20,40 35,17 50,45 65,64 80,48 95,19 110,60 122,42" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "EMA 200": `
+      <polyline points="5,60 25,55 45,58 65,50 85,45 105,40 125,32" fill="none" stroke="${L}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="5,50 20,35 35,45 50,20 65,38 80,15 95,32 110,10 125,22" fill="none" stroke="${G}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "EMA 50": `
+      <polyline points="5,48 25,40 45,44 65,32 85,38 105,26 125,30" fill="none" stroke="${GO}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="5,58 20,50 32,60 45,44 58,52 65,32 78,42 92,26 105,26 118,15 125,30" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+    "EMA 9 &amp; EMA 21": `
+      <polyline points="5,52 25,48 45,50 60,38 75,40 90,20 105,24 125,12" fill="none" stroke="${L}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="5,42 25,44 45,36 60,40 75,24 90,26 105,15 125,18" fill="none" stroke="${GO}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="72" cy="31" r="3.5" fill="${G}"/>`,
+    "Volume": `
+      <polyline points="5,32 25,26 45,22 65,16 85,12 105,7 125,4" fill="none" stroke="${W}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="8" y="60" width="10" height="14" fill="${L}"/><rect x="26" y="56" width="10" height="18" fill="${L}"/>
+      <rect x="44" y="58" width="10" height="16" fill="${L}"/><rect x="62" y="48" width="10" height="26" fill="${L}"/>
+      <rect x="80" y="34" width="10" height="40" fill="${GO}"/><rect x="98" y="24" width="10" height="50" fill="${GO}"/>
+      <rect x="116" y="30" width="10" height="44" fill="${GO}"/>`,
+    "Fibonacci Retracement": `
+      <line x1="5" y1="10" x2="125" y2="10" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="22" x2="125" y2="22" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="32" x2="125" y2="32" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="42" x2="125" y2="42" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="52" x2="125" y2="52" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="62" x2="125" y2="62" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <line x1="5" y1="72" x2="125" y2="72" stroke="${L}" stroke-dasharray="3,3" stroke-width="1"/>
+      <text x="7" y="20" font-size="6.5" fill="${L}" font-family="monospace">23.6</text>
+      <text x="7" y="40" font-size="6.5" fill="${L}" font-family="monospace">50</text>
+      <text x="7" y="60" font-size="6.5" fill="${L}" font-family="monospace">78.6</text>
+      <polyline points="15,10 60,52 125,20" fill="none" stroke="${GO}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  };
+  const body = icons[name] || `<line x1="5" y1="40" x2="125" y2="40" stroke="${L}" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 130 78" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+}
+
+const indList = document.getElementById('indList');
+IND.forEach(([name,tag,desc,buySig,sellSig],i)=>{
+  const el = document.createElement('div'); el.className='ind-card';
+  el.innerHTML = `<div class="ind-visual">${indicatorIcon(name)}</div>
+    <div class="ind-head"><div class="ind-num">${i+1}</div><h4>${name}</h4><span class="ind-tag">${tag}</span></div>
+    <p class="ind-desc">${desc}</p>
+    <div class="ind-signals">
+      <div class="buy"><b>Sinyal Beli</b><span>${buySig}</span></div>
+      <div class="sell"><b>Sinyal Jual</b><span>${sellSig}</span></div>
+    </div>`;
+  indList.appendChild(el);
+});
+
+/* ---------- signal combos ---------- */
+const BUY = [
+ ["Hammer","area Support kunci","Setup Reversal Bullish",4],
+ ["Bullish Engulfing","EMA 50 sebagai support","Konfirmasi Tren Naik",4],
+ ["RSI keluar dari area Oversold","MACD Golden Cross","Momentum Beli Terkonfirmasi",5],
+ ["Double Bottom","breakout neckline + volume naik","Reversal Kuat",4],
+ ["Morning Star","area Fibonacci 61.8%","Titik Balik Berkualitas Tinggi",5],
+ ["Ascending Triangle","breakout resistance + volume","Lanjutan Tren Naik",3],
+];
+const SELL = [
+ ["Shooting Star","area Resistance kunci","Setup Reversal Bearish",4],
+ ["Bearish Engulfing","EMA 50 sebagai resistance","Konfirmasi Tren Turun",4],
+ ["RSI keluar dari area Overbought","MACD Death Cross","Momentum Jual Terkonfirmasi",5],
+ ["Double Top","breakdown neckline + volume naik","Reversal Kuat",4],
+ ["Evening Star","area Fibonacci 61.8%","Titik Balik Berkualitas Tinggi",5],
+ ["Descending Triangle","breakdown support + volume","Lanjutan Tren Turun",3],
+];
+function renderSignals(id, arr){
+  const wrap = document.getElementById(id);
+  arr.forEach(([a,b,result,stars])=>{
+    const starsHtml = '★'.repeat(stars) + '☆'.repeat(5-stars);
+    const el = document.createElement('div'); el.className='sig-row';
+    el.innerHTML = `<div class="combo"><b>${a}</b> + ${b} = <b>${result}</b></div><div class="stars">${starsHtml}</div>`;
+    wrap.appendChild(el);
+  });
+}
+renderSignals('buyList', BUY);
+renderSignals('sellList', SELL);
+</script>
+</body>
+</html>

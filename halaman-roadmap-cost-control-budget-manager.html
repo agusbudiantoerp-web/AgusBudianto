@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Roadmap Cost Control and Budget Manager Tambang</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f2ee;--surf:#fff;--ink:#1d2326;--mute:#5d676c;--line:#d9d9d2;--ore:#c47a1c;--cu:#1f7a6d;--pit:#2b3236;--onpit:#f3f2ee;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15191b;--surf:#1e2427;--ink:#ecebe6;--mute:#9aa5aa;--line:#323b3f;--ore:#e09a3e;--cu:#4cb5a5;--pit:#0d1011;--onpit:#ecebe6}}
+:root[data-theme="dark"]{--bg:#15191b;--surf:#1e2427;--ink:#ecebe6;--mute:#9aa5aa;--line:#323b3f;--ore:#e09a3e;--cu:#4cb5a5;--pit:#0d1011;--onpit:#ecebe6}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "Public Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",sans-serif;line-height:1.1;margin:0}
+.w{max-width:940px;margin:0 auto;padding:0 20px}
+.hero{background:var(--pit);color:var(--onpit);padding:56px 0 0;overflow:hidden}
+.hero h1{font-size:clamp(34px,7vw,64px);font-weight:800;max-width:15ch}
+.hero p{max-width:60ch;color:var(--onpit);opacity:.82;margin:18px 0 28px}
+.pit{display:flex;flex-direction:column;align-items:flex-start;gap:0;margin-top:8px}
+.bench{height:34px;background:var(--ore);border-radius:0 3px 3px 0;color:#1d1608;font:700 13px/34px "Bricolage Grotesque",sans-serif;padding-left:12px;white-space:nowrap;overflow:hidden;opacity:.5;transition:opacity .3s}
+.bench.on{opacity:1}
+.bench:nth-child(1){width:100%}.bench:nth-child(2){width:86%}.bench:nth-child(3){width:72%}.bench:nth-child(4){width:58%}.bench:nth-child(5){width:44%}.bench:nth-child(6){width:30%}.bench:nth-child(7){width:20%}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 0}
+.bar .w{display:flex;align-items:center;gap:14px;font-size:14px}
+.trk{flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.fil{height:100%;width:0;background:var(--cu);transition:width .3s}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surf);color:var(--ink);border-radius:6px;padding:4px 10px}
+button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--cu);outline-offset:2px}
+section{padding:44px 0 8px}
+h2{font-size:clamp(26px,4vw,36px);font-weight:700;margin-bottom:8px}
+.lead{color:var(--mute);max-width:62ch;margin:0 0 22px}
+details{background:var(--surf);border:1px solid var(--line);border-left:6px solid var(--ore);border-radius:4px;margin:0 0 12px}
+details[open]{border-left-color:var(--cu)}
+summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+summary::-webkit-details-marker{display:none}
+summary h3{font-size:21px;font-weight:700}
+.dur{color:var(--mute);font-size:14px;margin-left:auto}
+.pc{font-size:13px;color:var(--cu);font-weight:600}
+.body{padding:0 18px 18px;display:grid;gap:14px}
+.body ul{list-style:none;margin:0;padding:0}
+.body li label{display:flex;gap:10px;padding:5px 0;cursor:pointer;align-items:flex-start}
+.body input{margin-top:5px;accent-color:var(--cu);width:17px;height:17px;flex:none}
+.box{border:1px dashed var(--line);border-radius:4px;padding:12px 14px;font-size:15px}
+.box b{font-family:"Bricolage Grotesque",sans-serif}
+.calc{background:var(--surf);border:1px solid var(--line);border-radius:4px;padding:20px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.calc label{display:grid;gap:4px;font-size:14px;color:var(--mute)}
+.calc input[type=number]{font:inherit;padding:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px;width:100%}
+.out{grid-column:1/-1;display:flex;gap:28px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
+.out div span{display:block;font:800 30px/1.1 "Bricolage Grotesque",sans-serif;color:var(--cu)}
+.out small{color:var(--mute)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:"Bricolage Grotesque",sans-serif}
+.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:4px;padding:16px 18px}
+.card h3{font-size:19px;margin-bottom:8px}.card ul{margin:0;padding-left:18px}
+footer{padding:36px 0 56px;color:var(--mute);font-size:14px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="w">
+<h1>Dari nol sampai Cost Control and Budget Manager tambang</h1>
+<p>Kurikulum belajar mandiri 12 bulan, disusun mengikuti tanggung jawab di lowongan: budget OPEX dan CAPEX, kontrol pengeluaran, forecast, analisis unit cost, tender, dan kepemimpinan. Centang materi yang sudah kamu kuasai, progresmu tersimpan di browser ini.</p>
+<div class="pit" id="pit" aria-hidden="true"></div>
+</div></header>
+
+<div class="bar"><div class="w"><span id="pct">0%</span><div class="trk"><div class="fil" id="fil"></div></div><button id="rst" type="button">Reset</button></div></div>
+
+<main class="w">
+<section><h2>Tujuh bench, dari dasar sampai puncak</h2>
+<p class="lead">Seperti tambang terbuka yang digali bench demi bench, setiap fase membangun fondasi fase berikutnya. Tiap fase punya materi, proyek latihan untuk portofolio, dan output yang bisa kamu tunjukkan saat wawancara.</p>
+<div id="ph"></div></section>
+
+<section><h2>Latihan: hitung unit cost dan uji sensitivitas BBM</h2>
+<p class="lead">Contoh sederhana dari analisis scenario yang dilakukan setiap hari oleh tim cost control. Ubah angka dan lihat dampaknya. Angka bawaan hanya ilustrasi.</p>
+<div class="calc">
+<label>Total biaya operasi (USD juta)<input type="number" id="c1" value="48" min="0" step="0.1"></label>
+<label>Volume ore (juta tonne)<input type="number" id="c2" value="3.2" min="0.1" step="0.1"></label>
+<label>Porsi BBM dari total biaya (%)<input type="number" id="c3" value="28" min="0" max="100"></label>
+<label>Perubahan harga BBM (%)<input type="number" id="c4" value="15" step="1"></label>
+<div class="out">
+<div><span id="o1">-</span><small>cost per tonne awal (USD)</small></div>
+<div><span id="o2">-</span><small>cost per tonne setelah harga BBM berubah</small></div>
+<div><span id="o3">-</span><small>tambahan biaya setahun (USD juta)</small></div>
+</div></div></section>
+
+<section><h2>Peta lowongan ke kurikulum</h2>
+<p class="lead">Setiap tanggung jawab di lowongan dipetakan ke fase yang melatihnya.</p>
+<div class="tw"><table><thead><tr><th>Tanggung jawab di lowongan</th><th>Fase</th><th>Bukti kemampuan</th></tr></thead><tbody>
+<tr><td>Budget OPEX dan CAPEX tahunan</td><td>2, 3</td><td>Model budget tahunan berbasis driver</td></tr>
+<tr><td>Monitor dan kontrol pengeluaran, variance</td><td>4</td><td>Laporan variance bulanan dengan tindakan korektif</td></tr>
+<tr><td>Forecast, proyeksi, analisis scenario</td><td>4</td><td>Rolling forecast dengan 3 scenario</td></tr>
+<tr><td>Analisis unit cost dan dashboard</td><td>2, 5</td><td>Dashboard Power BI cost per tonne dan per BCM</td></tr>
+<tr><td>Dukungan tender dan bid</td><td>6</td><td>Cost build-up tender kontrak mining</td></tr>
+<tr><td>Efisiensi, kepatuhan, kepemimpinan tim</td><td>4, 7</td><td>Daftar inisiatif penghematan dan rencana tim</td></tr>
+</tbody></table></div></section>
+
+<section><h2>Strategi masuk tanpa pengalaman</h2>
+<div class="two">
+<div class="card"><h3>Jalur karier realistis</h3><ul>
+<li>Syarat 10 tahun pengalaman berarti posisi ini adalah tujuan, bukan pintu masuk.</li>
+<li>Mulai dari Cost Analyst, Budget Analyst, atau Junior Cost Controller di tambang atau kontraktor.</li>
+<li>Estimasi: Analyst (0-3 tahun), Senior atau Cost Controller (3-6), Superintendent (6-9), Manager (9-12).</li>
+<li>Kontraktor mining dan alat berat sering lebih terbuka untuk fresh graduate.</li>
+</ul></div>
+<div class="card"><h3>Sertifikasi yang membantu</h3><ul>
+<li>Microsoft PL-300 (Power BI Data Analyst)</li>
+<li>CMA (Certified Management Accountant) untuk cost dan budget</li>
+<li>AACE CCP atau CCT untuk cost engineering</li>
+<li>Kursus SAP FICO atau S/4HANA Finance dasar</li>
+<li>Kursus dasar pertambangan dari asosiasi atau kampus</li>
+</ul></div>
+<div class="card"><h3>Portofolio yang dilihat recruiter</h3><ul>
+<li>Satu model budget OPEX dan CAPEX lengkap di Excel</li>
+<li>Satu dashboard Power BI unit cost</li>
+<li>Satu cost build-up tender dengan asumsi tertulis</li>
+<li>Ringkasan satu halaman per proyek: masalah, metode, hasil</li>
+</ul></div>
+<div class="card"><h3>Kebiasaan seorang expert</h3><ul>
+<li>Selalu hubungkan angka dengan operasi: tanya apa penyebab di lapangan.</li>
+<li>Rutin kunjungi pit, workshop, dan gudang.</li>
+<li>Baca laporan keuangan perusahaan tambang publik tiap kuartal.</li>
+<li>Tulis asumsi, jangan hanya angka akhir.</li>
+</ul></div>
+</div></section>
+</main>
+<footer><div class="w">Kurikulum ini panduan umum. Sesuaikan dengan sistem dan kebijakan perusahaan tempat kamu bekerja nanti.</div></footer>
+
+<script>
+var P=[
+{t:"Fondasi akuntansi, Excel, dan dasar tambang",d:"Bulan 1-2",g:"Memahami bahasa keuangan dan alur kerja tambang.",
+ k:["Laporan keuangan: laba rugi, neraca, arus kas","Biaya vs beban, biaya tetap vs variabel, direct vs indirect","Siklus tambang: eksplorasi, bor, peledakan, muat, angkut, pengolahan","Istilah wajib: BCM, tonne, strip ratio, overburden, ROM, stockpile","KPI alat: availability, utilization, produktivitas, fuel ratio","Excel dasar: SUMIFS, XLOOKUP, PivotTable, grafik"],
+ p:"Buat tabel biaya sederhana satu alat berat (BBM, operator, maintenance) dan hitung biaya per jam."},
+{t:"Struktur biaya tambang dan cost accounting",d:"Bulan 3-4",g:"Membaca dan membongkar komponen biaya operasi tambang.",
+ k:["Elemen biaya: tenaga kerja, BBM, spare part, bahan peledak, kontraktor, G&A","Cost center, cost element, WBS, internal order","Unit cost: cost per tonne, per BCM, per jam alat","Biaya pemilikan dan operasi alat (ownership dan operating cost)","Metrik industri: C1 cash cost dan AISC","Alokasi biaya dan costing: absorption vs standard cost"],
+ p:"Susun cost breakdown tambang hipotetis dan hitung cost per tonne serta per BCM."},
+{t:"Budgeting OPEX",d:"Bulan 5-6",g:"Menyusun budget tahunan yang selaras dengan mine plan.",
+ k:["Kalender budget dan alur konsolidasi lintas departemen","Driver-based budget: volume, strip ratio, jarak angkut, harga BBM, kurs","Zero-based vs incremental budgeting","Hubungan mine plan, production plan, dan budget","Asumsi, kontingensi, dan dokumentasi budget","Presentasi dan pembelaan budget ke manajemen"],
+ p:"Bangun model budget OPEX satu tahun per bulan, berbasis driver, di Excel."},
+{t:"Budgeting CAPEX dan analisis investasi",d:"Bulan 6-7",g:"Mengelola belanja modal dari usulan sampai penutupan proyek.",
+ k:["Sustaining vs growth CAPEX, penggantian alat, pengembangan pit","Depresiasi dan amortisasi, depresiasi unit produksi","Business case: NPV, IRR, payback, sensitivitas","AFE dan proses persetujuan, delegation of authority","Pelacakan proyek: budget vs commitment vs aktual","Replace vs rebuild vs sewa alat"],
+ p:"Buat business case pembelian armada hauler baru lengkap dengan NPV dan analisis sensitivitas."},
+{t:"Cost control, variance, dan forecasting",d:"Bulan 8-9",g:"Mengendalikan pengeluaran dan memprediksi hasil akhir tahun.",
+ k:["Siklus komitmen: PR, PO, GR, IR, akrual","Analisis variance: harga, volume, efisiensi","Root cause analysis dan tindak lanjut korektif","Rolling forecast dan estimasi outturn akhir tahun","Scenario dan sensitivitas: BBM, strip ratio, kurs, produksi","Pengendalian internal, kepatuhan kebijakan, dan fraud awareness","Inisiatif penghematan dan pelacakan benefit"],
+ p:"Buat laporan variance bulanan dan rolling forecast dengan tiga scenario (base, optimis, pesimis)."},
+{t:"Tools: SAP, Excel lanjutan, Power BI",d:"Bulan 4-10 (paralel)",g:"Mengotomatiskan laporan dan membuat dashboard manajemen.",
+ k:["SAP: modul CO, FI, MM, PS dan alur biaya antar modul","Laporan SAP umum: KSB1, KOB1, CJI3, ME2N","Excel lanjutan: Power Query, Power Pivot, model dinamis","Power BI: model data, DAX dasar, desain dashboard","Visualisasi untuk eksekutif: ringkas, bandingkan dengan plan, tandai deviasi","Kualitas data dan rekonsiliasi antar sumber"],
+ p:"Buat dashboard Power BI: cost per tonne, budget vs aktual, tren, dan drill-down per cost center."},
+{t:"Tender, bid, dan estimasi biaya",d:"Bulan 10-11",g:"Menyusun harga yang kompetitif sekaligus menjaga margin.",
+ k:["Cost build-up: rate alat, tenaga kerja, BBM, overhead","Produktivitas alat dan perhitungan fleet","Kontrak mining: unit rate, cost plus, escalation","Margin, risiko, dan kontingensi dalam harga","Validasi harga dan benchmark pasar","Review dan lessons learned tender"],
+ p:"Susun harga penawaran jasa pengupasan overburden per BCM, lengkap dengan asumsi dan margin."},
+{t:"Kepemimpinan dan level expert",d:"Bulan 12 dan seterusnya",g:"Memimpin tim dan menjadi mitra strategis manajemen.",
+ k:["Memimpin dan mengembangkan tim cost control dan budget","Komunikasi dengan operasi, finance, dan direksi","Menyusun kebijakan, SOP, dan kontrol biaya","Benchmarking antar site dan perusahaan","Strategi biaya jangka panjang dan life of mine","Manajemen perubahan dan budaya disiplin biaya","Mentoring dan suksesi"],
+ p:"Susun rencana 90 hari sebagai manager baru: prioritas, kontrol, tim, dan target penghematan."}];
+var K="rmcc1",S={};
+try{S=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+var ph=document.getElementById("ph"),pit=document.getElementById("pit"),tot=0;
+P.forEach(function(f,i){
+ var b=document.createElement("div");b.className="bench";b.id="b"+i;b.textContent="Fase "+(i+1)+": "+f.t.split(",")[0];pit.appendChild(b);
+ var d=document.createElement("details");if(i===0)d.open=true;
+ var h='<summary><h3>Fase '+(i+1)+': '+f.t+'</h3><span class="pc" id="pc'+i+'"></span><span class="dur">'+f.d+'</span></summary><div class="body"><div><b>Tujuan:</b> '+f.g+'</div><ul>';
+ f.k.forEach(function(x,j){tot++;var id=i+"-"+j;h+='<li><label><input type="checkbox" data-k="'+id+'"'+(S[id]?" checked":"")+'><span>'+x+'</span></label></li>'});
+ h+='</ul><div class="box"><b>Proyek latihan:</b> '+f.p+'</div></div>';
+ d.innerHTML=h;ph.appendChild(d)});
+function upd(){
+ var n=0;P.forEach(function(f,i){var c=0;f.k.forEach(function(x,j){if(S[i+"-"+j])c++});n+=c;
+  document.getElementById("pc"+i).textContent=c+"/"+f.k.length;
+  document.getElementById("b"+i).classList.toggle("on",c===f.k.length)});
+ var p=Math.round(n/tot*100);document.getElementById("pct").textContent=p+"%";document.getElementById("fil").style.width=p+"%"}
+ph.addEventListener("change",function(e){var k=e.target.getAttribute("data-k");if(k){if(e.target.checked)S[k]=1;else delete S[k];save();upd()}});
+document.getElementById("rst").addEventListener("click",function(){if(confirm("Hapus semua progres?")){S={};save();document.querySelectorAll("[data-k]").forEach(function(c){c.checked=false});upd()}});
+upd();
+function calc(){
+ var a=+c1.value,v=+c2.value,s=+c3.value/100,ch=+c4.value/100;
+ if(!(v>0)){o1.textContent=o2.textContent=o3.textContent="-";return}
+ var base=a/v,nw=a*(1+s*ch);
+ o1.textContent=base.toFixed(2);o2.textContent=(nw/v).toFixed(2);o3.textContent=(nw-a).toFixed(1)}
+["c1","c2","c3","c4"].forEach(function(i){document.getElementById(i).addEventListener("input",calc)});calc();
+</script>
+</body>
+</html>

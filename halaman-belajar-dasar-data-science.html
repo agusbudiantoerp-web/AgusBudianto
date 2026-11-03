@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belajar Dasar-Dasar Data Science — Bangun Skill Dari Nol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0e14;
+  --panel:#111823;
+  --panel-2:#0d131c;
+  --border:#233042;
+  --border-soft:#1a2432;
+  --text:#dbe4ee;
+  --muted:#7e8fa3;
+  --blue:#5aa9e6;
+  --blue-dim:#2c4a63;
+  --yellow:#ffcc4d;
+  --green:#3ecf8e;
+  --pink:#e07be0;
+  --red:#ff6b6b;
+  --mono:'JetBrains Mono', monospace;
+  --display:'Space Grotesk', sans-serif;
+  --body:'IBM Plex Sans', sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:
+    radial-gradient(circle at 15% 0%, rgba(90,169,230,0.08), transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(255,204,77,0.06), transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.6;
+  min-height:100vh;
+}
+::selection{background:var(--yellow); color:#0a0e14;}
+a{color:var(--blue);}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:var(--panel-2);}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px;}
+
+/* ===== Top progress rail ===== */
+#top-rail{position:fixed; top:0; left:0; height:3px; width:0%; background:linear-gradient(90deg,var(--blue),var(--yellow)); z-index:999; transition:width .15s ease;}
+
+/* ===== Utility ===== */
+.mono{font-family:var(--mono);}
+.container{max-width:1240px; margin:0 auto; padding:0 28px;}
+.tag{display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); border:1px solid var(--border); padding:3px 9px; border-radius:20px; background:rgba(255,255,255,0.02);}
+
+/* ===== HERO ===== */
+header.hero{position:relative; padding:74px 0 54px; border-bottom:1px solid var(--border-soft); overflow:hidden;}
+.hero-grid{position:absolute; inset:0; background-image:linear-gradient(var(--border-soft) 1px, transparent 1px), linear-gradient(90deg, var(--border-soft) 1px, transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom, black, transparent 85%); opacity:.35; pointer-events:none;}
+.hero-inner{position:relative; display:grid; grid-template-columns:1.15fr .85fr; gap:40px; align-items:center;}
+.eyebrow-row{display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+h1.hero-title{font-family:var(--display); font-weight:700; font-size:clamp(32px,4.2vw,54px); line-height:1.08; letter-spacing:-.01em; margin-bottom:18px;}
+h1.hero-title .accent{color:var(--yellow);}
+h1.hero-title .accent2{color:var(--blue);}
+.hero-sub{color:var(--muted); font-size:16.5px; max-width:560px; margin-bottom:28px;}
+.hero-cta{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+.btn{font-family:var(--body); font-weight:600; font-size:14.5px; padding:13px 22px; border-radius:10px; border:1px solid transparent; cursor:pointer; display:inline-flex; align-items:center; gap:9px; transition:transform .15s ease, box-shadow .15s ease, background .15s ease;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--yellow); color:#1a1300; box-shadow:0 0 0 0 rgba(255,204,77,.4);}
+.btn-primary:hover{box-shadow:0 6px 22px rgba(255,204,77,.25);}
+.btn-ghost{background:transparent; border:1px solid var(--border); color:var(--text);}
+.btn-ghost:hover{border-color:var(--blue); color:var(--blue);}
+.hero-stats{display:flex; gap:26px; margin-top:34px; flex-wrap:wrap;}
+.stat b{display:block; font-family:var(--display); font-size:26px; color:var(--yellow);}
+.stat span{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
+
+/* notebook cell mock in hero */
+.cellmock{background:var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:0 30px 60px -20px rgba(0,0,0,.6);}
+.cellmock-bar{display:flex; gap:7px; padding:11px 14px; border-bottom:1px solid var(--border-soft); background:var(--panel-2);}
+.dot{width:10px; height:10px; border-radius:50%;}
+.dot.r{background:#ff5f56;} .dot.y{background:#ffbd2e;} .dot.g{background:#27c93f;}
+.cellmock-body{padding:16px 18px; font-family:var(--mono); font-size:12.8px;}
+.prompt-in{color:var(--blue);}
+.prompt-out{color:var(--green);}
+.cellmock-body .ln{color:var(--muted); margin:2px 0;}
+.cellmock-body pre{white-space:pre-wrap; color:var(--text); margin:4px 0 10px 0;}
+.cellmock-body .kw{color:var(--pink);} .cellmock-body .fn{color:var(--yellow);} .cellmock-body .cm{color:var(--muted);}
+.cellmock-out{background:var(--panel-2); margin:0 -18px -16px; padding:12px 18px; border-top:1px dashed var(--border-soft);}
+
+/* ===== LAYOUT ===== */
+.layout{display:grid; grid-template-columns:290px 1fr; gap:0; align-items:start;}
+aside.sidebar{position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto; border-right:1px solid var(--border-soft); padding:26px 20px 60px; background:var(--panel-2);}
+aside.sidebar h4{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin:22px 0 10px;}
+.search-box{position:relative; margin-bottom:6px;}
+.search-box input{width:100%; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--body); font-size:13.5px; padding:10px 12px 10px 34px; border-radius:9px; outline:none;}
+.search-box input:focus{border-color:var(--blue);}
+.search-box svg{position:absolute; left:11px; top:50%; transform:translateY(-50%); opacity:.5;}
+.progress-ring-wrap{display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--border); border-radius:12px; background:var(--panel); margin-top:4px;}
+.progress-ring-wrap .txt b{display:block; font-family:var(--display); font-size:20px;}
+.progress-ring-wrap .txt span{font-size:11.5px; color:var(--muted);}
+.mod-nav-item{display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer; font-size:13.5px; color:var(--muted); transition:background .15s, color .15s;}
+.mod-nav-item:hover{background:rgba(255,255,255,0.03); color:var(--text);}
+.mod-nav-item.active{background:var(--blue-dim); color:var(--text);}
+.mod-nav-item .num{font-family:var(--mono); font-size:11px; color:var(--yellow); width:20px;}
+.mod-nav-item .cnt{margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted);}
+
+main{min-width:0; padding:44px 40px 100px;}
+.section-head{margin-bottom:26px;}
+.section-head .tag{margin-bottom:12px;}
+.section-head h2{font-family:var(--display); font-size:clamp(24px,2.6vw,32px); font-weight:700;}
+.section-head p{color:var(--muted); font-size:14.5px; margin-top:8px; max-width:640px;}
+
+.module-block{margin-bottom:56px; scroll-margin-top:20px;}
+.module-head{display:flex; align-items:center; gap:14px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border-soft);}
+.module-badge{font-family:var(--display); font-weight:700; font-size:15px; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid var(--border); color:var(--yellow); flex-shrink:0;}
+.module-head h3{font-family:var(--display); font-size:19px; font-weight:600;}
+.module-head p{color:var(--muted); font-size:13px; margin-top:2px;}
+
+/* ===== Topic cell (accordion) ===== */
+.topic{border:1px solid var(--border); border-radius:13px; margin-bottom:12px; background:var(--panel); overflow:hidden; transition:border-color .15s ease;}
+.topic.open{border-color:var(--blue-dim);}
+.topic-head{display:flex; align-items:center; gap:14px; padding:15px 18px; cursor:pointer; user-select:none;}
+.cell-num{font-family:var(--mono); font-size:12px; color:var(--blue); flex-shrink:0; width:64px;}
+.topic-title{font-weight:600; font-size:14.8px; flex:1;}
+.topic-meta{display:flex; gap:8px; align-items:center; flex-shrink:0;}
+.chev{transition:transform .2s ease; color:var(--muted); flex-shrink:0;}
+.topic.open .chev{transform:rotate(90deg); color:var(--blue);}
+.check{width:20px; height:20px; border-radius:6px; border:1.5px solid var(--border); flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s ease;}
+.check.done{background:var(--green); border-color:var(--green);}
+.check svg{opacity:0; width:12px; height:12px;}
+.check.done svg{opacity:1;}
+.topic-body{max-height:0; overflow:hidden; transition:max-height .35s ease;}
+.topic-body-inner{padding:0 20px 24px 20px; border-top:1px solid var(--border-soft);}
+
+.subblock{margin-top:18px;}
+.subblock h5{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin-bottom:9px; display:flex; align-items:center; gap:7px;}
+.subblock h5::before{content:''; width:6px; height:6px; border-radius:2px;}
+.subblock.teori h5::before{background:var(--blue);}
+.subblock.rumus h5::before{background:var(--yellow);}
+.subblock.tutorial h5::before{background:var(--green);}
+.subblock.soal h5::before{background:var(--pink);}
+.teori-text{font-size:13.8px; color:#c4cedb;}
+.teori-text ul{margin:8px 0 0 18px;}
+.teori-text li{margin-bottom:4px;}
+.teori-text code{font-family:var(--mono); background:var(--panel-2); padding:1px 6px; border-radius:5px; font-size:12.5px; color:var(--yellow);}
+
+.formula-box{background:var(--panel-2); border:1px solid var(--border); border-left:3px solid var(--yellow); border-radius:8px; padding:14px 16px; font-family:var(--mono); font-size:14px; color:var(--yellow); overflow-x:auto;}
+.formula-box .desc{font-family:var(--body); font-size:12.5px; color:var(--muted); margin-top:8px;}
+
+.code-cell{background:var(--panel-2); border:1px solid var(--border); border-radius:9px; overflow:hidden;}
+.code-cell .in{font-family:var(--mono); font-size:12.8px; padding:13px 16px; white-space:pre-wrap; color:#cfe3f5;}
+.code-cell .in .c1{color:var(--pink);} .code-cell .in .c2{color:var(--yellow);} .code-cell .in .c3{color:var(--muted); font-style:italic;} .code-cell .in .c4{color:var(--green);}
+.code-cell .out{border-top:1px dashed var(--border); font-family:var(--mono); font-size:12.3px; padding:11px 16px; color:#9fd8b8; background:rgba(62,207,142,0.04); white-space:pre-wrap;}
+
+.soal-box{background:var(--panel-2); border:1px solid var(--border); border-radius:9px; padding:14px 16px; font-size:13.6px;}
+.reveal-btn{margin-top:10px; background:transparent; border:1px dashed var(--border); color:var(--blue); font-family:var(--mono); font-size:12px; padding:8px 14px; border-radius:7px; cursor:pointer; transition:all .15s;}
+.reveal-btn:hover{border-color:var(--blue); background:rgba(90,169,230,0.06);}
+.pembahasan{max-height:0; overflow:hidden; transition:max-height .35s ease;}
+.pembahasan-inner{margin-top:10px; padding:13px 15px; background:rgba(62,207,142,0.05); border:1px solid rgba(62,207,142,0.25); border-radius:9px; font-size:13.4px;}
+.pembahasan-inner b.lbl{color:var(--green); font-family:var(--mono); font-size:11px; text-transform:uppercase; display:block; margin-bottom:6px;}
+
+/* case study */
+#studi-kasus{background:linear-gradient(180deg, rgba(90,169,230,0.05), transparent 300px); border-top:1px solid var(--border-soft); padding-top:50px;}
+.case-steps{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:30px;}
+.case-step{background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; font-size:12px;}
+.case-step b{display:block; font-family:var(--display); color:var(--yellow); font-size:16px; margin-bottom:4px;}
+table.dataset{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.8px; margin:10px 0;}
+table.dataset th{background:var(--panel-2); color:var(--blue); text-align:left; padding:8px 10px; border-bottom:1px solid var(--border);}
+table.dataset td{padding:7px 10px; border-bottom:1px solid var(--border-soft); color:#c4cedb;}
+table.dataset tr:hover td{background:rgba(255,255,255,0.02);}
+
+footer{border-top:1px solid var(--border-soft); padding:34px 0; text-align:center; color:var(--muted); font-size:13px;}
+footer b{color:var(--text);}
+
+@media (max-width:980px){
+  .hero-inner{grid-template-columns:1fr;}
+  .layout{grid-template-columns:1fr;}
+  aside.sidebar{position:relative; height:auto; border-right:none; border-bottom:1px solid var(--border-soft);}
+  main{padding:32px 18px 80px;}
+  .case-steps{grid-template-columns:repeat(2,1fr);}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; scroll-behavior:auto !important;} }
+</style>
+</head>
+<body>
+
+<div id="top-rail"></div>
+
+<header class="hero">
+  <div class="hero-grid"></div>
+  <div class="container hero-inner">
+    <div>
+      <div class="eyebrow-row">
+        <span class="tag">📓 26 Notebook Cells</span>
+        <span class="tag">🐍 Python · NumPy · Pandas</span>
+        <span class="tag">📊 Interaktif</span>
+      </div>
+      <h1 class="hero-title">Belajar Dasar-Dasar <span class="accent">Data</span> <span class="accent2">Science</span><br>Bangun Skill Dari Nol.</h1>
+      <p class="hero-sub">Bukan tutorial acak. Kurikulum terstruktur dari command shell sampai data visualization — lengkap dengan teori, rumus, tutorial step-by-step, contoh soal, dan studi kasus nyata yang bisa langsung kamu praktikkan.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="document.getElementById('modul-1').scrollIntoView({behavior:'smooth'})">▶ Mulai Belajar</button>
+        <a class="btn btn-ghost" href="#studi-kasus">Lihat Studi Kasus</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>7</b><span>Modul</span></div>
+        <div class="stat"><b>26</b><span>Materi</span></div>
+        <div class="stat"><b>26</b><span>Contoh Soal</span></div>
+        <div class="stat"><b>1</b><span>Studi Kasus Penuh</span></div>
+      </div>
+    </div>
+    <div class="cellmock">
+      <div class="cellmock-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+      <div class="cellmock-body">
+        <div class="ln"><span class="prompt-in">In [1]:</span></div>
+        <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+df = pd.read_csv(<span class="fn">"penjualan_retail.csv"</span>)
+df.<span class="fn">describe</span>() <span class="cm"># mulai eksplorasi</span></pre>
+        <div class="ln"><span class="prompt-out">Out[1]:</span></div>
+        <div class="cellmock-out">        harga        qty
+count   48.000000   48.000000
+mean   142350.00     3.270
+std     58210.14     1.940
+min     19000.00     1.000
+max    310000.00     9.000</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="search-box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search-input" type="text" placeholder="Cari materi... (contoh: pandas)" oninput="filterTopics(this.value)">
+    </div>
+    <div class="progress-ring-wrap">
+      <svg width="46" height="46" viewBox="0 0 46 46">
+        <circle cx="23" cy="23" r="19" stroke="var(--border)" stroke-width="5" fill="none"/>
+        <circle id="ring-fg" cx="23" cy="23" r="19" stroke="var(--green)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 23 23)"/>
+      </svg>
+      <div class="txt"><b id="progress-pct">0%</b><span id="progress-count">0 / 26 selesai</span></div>
+    </div>
+    <h4>Navigasi Modul</h4>
+    <div id="mod-nav"></div>
+    <h4>Lainnya</h4>
+    <div class="mod-nav-item" onclick="document.getElementById('studi-kasus').scrollIntoView({behavior:'smooth'})">🧪 <span>Studi Kasus Komprehensif</span></div>
+    <div class="mod-nav-item" onclick="document.getElementById('spreadsheet-note').scrollIntoView({behavior:'smooth'})">📥 <span>Download Spreadsheet</span></div>
+  </aside>
+
+  <main>
+    <div id="spreadsheet-note" class="section-head" style="margin-bottom:40px; background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--green); border-radius:12px; padding:20px 24px;">
+      <span class="tag" style="margin-bottom:10px;">📎 File Pendamping</span>
+      <h2 style="font-size:19px;">Spreadsheet "Belajar Data Science" (.xlsx)</h2>
+      <p>Bersama halaman ini, kamu juga menerima file <b style="color:var(--text)">belajar-data-science-workbook.xlsx</b> berisi: daftar isi & tracker progres, cheatsheet rumus semua modul, 26 soal latihan + kunci jawaban terpisah, dan dataset studi kasus siap-pakai untuk praktik pandas/numpy. Unduh dari daftar file yang dibagikan bersama halaman ini.</p>
+    </div>
+
+    <div id="modules-container"></div>
+  </main>
+</div>
+
+<section id="studi-kasus" class="container">
+  <div class="section-head">
+    <span class="tag">🧪 Capstone</span>
+    <h2>Studi Kasus Komprehensif: Analisis Penjualan Retail</h2>
+    <p>Menggabungkan seluruh materi — dari data understanding sampai visualization — dalam satu alur kerja data science yang realistis, memakai dataset penjualan toko retail selama Januari 2026.</p>
+  </div>
+
+  <div class="case-steps">
+    <div class="case-step"><b>01</b>Business Understanding</div>
+    <div class="case-step"><b>02</b>Data Understanding</div>
+    <div class="case-step"><b>03</b>Data Preprocessing</div>
+    <div class="case-step"><b>04</b>EDA & Visualisasi</div>
+    <div class="case-step"><b>05</b>Insight & Rekomendasi</div>
+  </div>
+
+  <div id="case-content"></div>
+</section>
+
+<footer>
+  <div class="container">
+    <p><b>Belajar Dasar-Dasar Data Science</b> — Bangun Skill Mulai Dari Nol</p>
+    <p style="margin-top:6px; font-size:12px;">Progres kamu tersimpan selama sesi ini. Refresh halaman untuk mengulang dari awal.</p>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA KONTEN KURSUS — 7 MODUL, 26 MATERI
+// ============================================================
+
+const MODULES = [
+  {id:1, title:"Pengantar & Tools", icon:"🧭", desc:"Fondasi cara berpikir data scientist dan perkakas dasar sebelum menyentuh kode."},
+  {id:2, title:"NumPy Fundamentals", icon:"🔢", desc:"Struktur data numerik cepat yang menjadi fondasi seluruh ekosistem data science Python."},
+  {id:3, title:"Matematika untuk Data Science", icon:"📐", desc:"Statistik dasar dan aljabar linear yang dipakai di balik layar setiap model."},
+  {id:4, title:"Pandas Fundamentals", icon:"🐼", desc:"Struktur data tabular untuk memuat, menyusun, dan menjelajahi dataset nyata."},
+  {id:5, title:"Analisis Data", icon:"🔍", desc:"Meringkas dan mengurutkan data untuk menjawab pertanyaan bisnis."},
+  {id:6, title:"Visualisasi Data", icon:"📊", desc:"Mengubah angka menjadi grafik yang bercerita dan mudah diambil keputusan."},
+  {id:7, title:"Praktik Data Science", icon:"🧪", desc:"Merangkai semua skill menjadi alur kerja EDA-ke-insight yang utuh."},
+];
+
+const TOPICS = [
+// ============ MODUL 1: PENGANTAR & TOOLS ============
+{
+  num:1, module:1, title:"Introduction to Data Science",
+  teori:`Data Science adalah bidang yang menggabungkan <b>statistik</b>, <b>pemrograman</b>, dan <b>pengetahuan domain</b> untuk mengubah data mentah menjadi keputusan. Alur kerja yang umum dipakai adalah siklus <b>OSEMN</b>:
+  <ul>
+    <li><b>O</b>btain — mengumpulkan data dari database, API, file, atau scraping</li>
+    <li><b>S</b>crub — membersihkan data (missing value, duplikat, format)</li>
+    <li><b>E</b>xplore — EDA (Exploratory Data Analysis) untuk menemukan pola</li>
+    <li><b>M</b>odel — membangun model statistik/machine learning bila diperlukan</li>
+    <li><b>iN</b>terpret — menerjemahkan hasil menjadi insight & rekomendasi bisnis</li>
+  </ul>
+  Tiga pilar skill seorang data scientist: <code>coding</code> (Python/SQL), <code>statistik/matematika</code>, dan <code>domain knowledge</code> (memahami konteks bisnis).`,
+  rumus:null,
+  tutorial:`<span class="c3"># Contoh kerangka berpikir OSEMN untuk kasus: "Kenapa penjualan turun bulan ini?"</span>
+<span class="c3"># 1. Obtain  -> tarik data transaksi dari database penjualan</span>
+<span class="c3"># 2. Scrub   -> hapus transaksi duplikat & isi harga yang kosong</span>
+<span class="c3"># 3. Explore -> bandingkan tren penjualan per kategori & wilayah</span>
+<span class="c3"># 4. Model   -> (opsional) buat model prediksi penjualan</span>
+<span class="c3"># 5. Interpret -> "Penjualan kategori elektronik turun 18% karena stok kosong 5 hari"</span>`,
+  soal:`Sebuah e-commerce mengeluhkan "banyak pelanggan checkout tapi tidak jadi bayar". Petakan masalah ini ke dalam 5 tahap OSEMN secara singkat.`,
+  pembahasan:`<b>Obtain:</b> ambil data log checkout & pembayaran dari sistem transaksi.<br><b>Scrub:</b> gabungkan dua tabel (checkout & pembayaran), bersihkan timestamp yang tidak valid.<br><b>Explore:</b> hitung persentase checkout yang tidak lanjut bayar, lihat pola per metode pembayaran & jam.<br><b>Model:</b> (opsional) model klasifikasi untuk memprediksi pelanggan yang berisiko batal bayar.<br><b>Interpret:</b> misal ditemukan 40% kegagalan terjadi pada metode transfer bank karena timeout — rekomendasi: perpanjang waktu sesi pembayaran.`
+},
+{
+  num:2, module:1, title:"Command Shell",
+  teori:`Command shell (terminal) adalah cara berinteraksi dengan komputer lewat teks, jauh lebih cepat untuk mengelola file dan menjalankan tool data science dibanding klik-klik GUI. Perintah dasar yang wajib dikuasai:
+  <ul>
+    <li><code>pwd</code> — menampilkan lokasi folder saat ini</li>
+    <li><code>ls</code> — melihat isi folder</li>
+    <li><code>cd nama_folder</code> — berpindah folder</li>
+    <li><code>mkdir</code> — membuat folder baru</li>
+    <li><code>cp</code> / <code>mv</code> / <code>rm</code> — menyalin, memindah, menghapus file</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`$ pwd
+<span class="c3">/home/user/projects</span>
+
+$ mkdir data-science-project
+$ cd data-science-project
+$ mkdir data notebooks scripts
+$ ls
+<span class="c3">data  notebooks  scripts</span>
+
+$ touch notebooks/eda.ipynb   <span class="c3"># membuat file kosong</span>`,
+  soal:`Tuliskan urutan perintah shell untuk: (1) membuat folder "project-retail", (2) masuk ke folder tersebut, (3) membuat sub-folder "raw" dan "clean", (4) mengecek isi folder saat ini.`,
+  pembahasan:`<code>mkdir project-retail</code><br><code>cd project-retail</code><br><code>mkdir raw clean</code><br><code>ls</code><br>Hasil akhir: berada di dalam <code>project-retail</code> dengan dua sub-folder <code>raw</code> dan <code>clean</code> siap dipakai memisahkan data mentah dan data bersih.`
+},
+{
+  num:3, module:1, title:"Magics (Jupyter Magic Commands)",
+  teori:`Magic commands adalah perintah khusus di Jupyter Notebook yang diawali <code>%</code> (line magic) atau <code>%%</code> (cell magic) untuk mempermudah workflow data science, di luar sintaks Python biasa.
+  <ul>
+    <li><code>%timeit</code> — mengukur waktu eksekusi satu baris kode</li>
+    <li><code>%%time</code> — mengukur waktu eksekusi seluruh cell</li>
+    <li><code>%matplotlib inline</code> — menampilkan grafik langsung di notebook</li>
+    <li><code>%who</code> / <code>%whos</code> — melihat variabel yang aktif di memori</li>
+    <li><code>%load</code> — memuat isi file Python ke dalam cell</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="c1">%%time</span>
+total = <span class="fn">sum</span>(i**2 <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1_000_000))
+
+<span class="c3"># Output menampilkan Wall time, CPU times, dsb</span>
+
+<span class="c1">%timeit</span> [i**2 <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(1000)]
+<span class="c3"># 189 µs ± 3.2 µs per loop (mean ± std. dev. of 7 runs)</span>`,
+  soal:`Kamu punya dua cara menghitung kuadrat 1 juta angka: pakai list comprehension biasa vs numpy array. Magic command apa yang kamu pakai untuk membandingkan kecepatan keduanya secara adil?`,
+  pembahasan:`Gunakan <code>%timeit</code> pada masing-masing baris (atau <code>%%timeit</code> untuk seluruh cell) karena magic ini otomatis menjalankan kode berkali-kali dan menghitung rata-rata serta standar deviasi waktu eksekusi, sehingga hasil perbandingannya lebih adil dan stabil dibanding mengukur manual dengan <code>time.time()</code> sekali jalan.`
+},
+{
+  num:4, module:1, title:"Documentation",
+  teori:`Membaca dokumentasi adalah skill paling sering dipakai seorang data scientist — lebih sering daripada menghafal sintaks. Dua cara cepat mengakses dokumentasi di Python:
+  <ul>
+    <li><code>help(objek)</code> — menampilkan docstring lengkap suatu fungsi/objek</li>
+    <li><code>objek?</code> — di Jupyter, menampilkan dokumentasi singkat (Shift+Tab untuk popup)</li>
+    <li><code>objek??</code> — menampilkan dokumentasi <i>plus</i> kode sumbernya</li>
+  </ul>
+  Kebiasaan baik: selalu cek dokumentasi resmi (mis. <code>numpy.org</code>, <code>pandas.pydata.org</code>) untuk melihat parameter dan contoh penggunaan sebelum menebak-nebak.`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="fn">help</span>(np.mean)
+<span class="c3"># Menampilkan: parameter a, axis, dtype, out, keepdims, dsb.</span>
+
+np.mean?   <span class="c3"># versi singkat khusus Jupyter</span>`,
+  soal:`Kamu baru pertama kali memakai fungsi <code>pandas.DataFrame.groupby()</code> dan bingung parameter apa saja yang tersedia untuk mengurutkan hasil groupby. Bagaimana cara cepat mencari tahu tanpa membuka browser?`,
+  pembahasan:`Jalankan <code>help(pd.DataFrame.groupby)</code> atau di Jupyter ketik <code>pd.DataFrame.groupby?</code> lalu tekan Shift+Enter. Docstring akan menampilkan seluruh parameter seperti <code>by</code>, <code>sort</code>, <code>as_index</code>, lengkap dengan penjelasan singkat — tanpa perlu berpindah ke browser.`
+},
+{
+  num:5, module:1, title:"Markdown",
+  teori:`Markdown adalah bahasa markup ringan untuk menulis dokumentasi bertata-letak rapi (dipakai di Jupyter cell teks, README GitHub, dsb). Sintaks inti:
+  <ul>
+    <li><code># Judul</code>, <code>## Sub-judul</code> — heading</li>
+    <li><code>**tebal**</code>, <code>*miring*</code> — penekanan teks</li>
+    <li><code>- item</code> atau <code>1. item</code> — daftar</li>
+    <li><code>&#96;kode&#96;</code> — inline code, dan tiga backtick untuk blok kode</li>
+    <li><code>| kolom |</code> — membuat tabel</li>
+  </ul>
+  Notebook yang baik selalu menyisipkan cell Markdown untuk menjelaskan tujuan tiap tahap analisis, bukan hanya kode mentah.`,
+  rumus:null,
+  tutorial:`## 1. Data Understanding
+Dataset berisi **500 baris** transaksi dari Januari 2026.
+
+- Kolom \`tanggal\`: tipe datetime
+- Kolom \`harga\`: tipe numerik (Rupiah)
+- Kolom \`kategori\`: tipe kategorikal
+
+| Kategori   | Jumlah |
+|------------|--------|
+| Elektronik | 120    |
+| Fashion    | 210    |`,
+  soal:`Tulis markdown untuk sebuah cell dokumentasi yang berjudul "2. Data Cleaning" dengan daftar bernomor 3 langkah: hapus duplikat, isi missing value, ubah tipe kolom tanggal.`,
+  pembahasan:`<code>## 2. Data Cleaning</code><br><code>1. Hapus baris duplikat</code><br><code>2. Isi missing value pada kolom numerik dengan median</code><br><code>3. Ubah tipe kolom tanggal menjadi datetime</code><br>Heading level 2 (<code>##</code>) dipakai agar tetap satu level di bawah judul utama notebook, dan daftar bernomor dipilih karena urutan langkah ini penting (harus dikerjakan berurutan).`
+},
+
+// ============ MODUL 2: NUMPY FUNDAMENTALS ============
+{
+  num:6, module:2, title:"Intro to NumPy",
+  teori:`NumPy (Numerical Python) adalah pustaka fondasi komputasi numerik di Python. Struktur intinya adalah <b>ndarray</b> (n-dimensional array) yang jauh lebih cepat dan hemat memori dibanding <code>list</code> bawaan Python karena:
+  <ul>
+    <li>Menyimpan data dengan tipe seragam (homogen) secara contiguous di memori</li>
+    <li>Operasi dilakukan secara <b>vectorized</b> (tanpa loop eksplisit di level Python)</li>
+    <li>Menjadi fondasi bagi Pandas, Scikit-learn, dan hampir seluruh stack data science Python</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="c3"># list Python: lambat untuk operasi elemen-per-elemen</span>
+harga_list = [10000, 20000, 30000]
+harga_diskon = [h * 0.9 <span class="kw">for</span> h <span class="kw">in</span> harga_list]
+
+<span class="c3"># numpy array: vectorized, jauh lebih cepat</span>
+harga_np = np.array([10000, 20000, 30000])
+harga_diskon_np = harga_np * 0.9
+<span class="c3"># array([ 9000., 18000., 27000.])</span>`,
+  soal:`Kenapa <code>harga_np * 0.9</code> pada array NumPy bisa langsung mengalikan semua elemen tanpa loop, sementara <code>harga_list * 0.9</code> pada list Python biasa justru akan error?`,
+  pembahasan:`NumPy array mendukung operasi <b>vectorized</b> yang didefinisikan untuk beroperasi elemen-per-elemen secara otomatis di level C (bukan Python), sehingga <code>array * skalar</code> berarti "kalikan tiap elemen". List Python biasa tidak punya definisi operasi matematis semacam itu — operator <code>*</code> pada list hanya mendukung perkalian dengan bilangan bulat untuk mengulang list (mis. <code>[1,2]*2 = [1,2,1,2]</code>), sehingga <code>list * 0.9</code> (float) menghasilkan <code>TypeError</code>.`
+},
+{
+  num:7, module:2, title:"Properties (Atribut Array)",
+  teori:`Setiap NumPy array punya atribut bawaan untuk mengenali karakteristiknya sebelum diolah lebih jauh:
+  <ul>
+    <li><code>.shape</code> — dimensi array, mis. <code>(3, 4)</code> berarti 3 baris 4 kolom</li>
+    <li><code>.ndim</code> — jumlah dimensi (1D, 2D, 3D, dst.)</li>
+    <li><code>.size</code> — total jumlah elemen</li>
+    <li><code>.dtype</code> — tipe data elemen (int64, float64, dsb.)</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+nilai = np.array([[80, 90, 75], [88, 92, 79]])
+
+<span class="fn">print</span>(nilai.shape)  <span class="c3"># (2, 3)</span>
+<span class="fn">print</span>(nilai.ndim)   <span class="c3"># 2</span>
+<span class="fn">print</span>(nilai.size)   <span class="c3"># 6</span>
+<span class="fn">print</span>(nilai.dtype)  <span class="c3"># int64</span>`,
+  soal:`Sebuah array hasil <code>np.array([1.5, 2, 3])</code> dicek dengan <code>.dtype</code> dan hasilnya <code>float64</code>, padahal ada elemen "2" dan "3" yang terlihat seperti integer. Kenapa bisa begitu?`,
+  pembahasan:`NumPy array bersifat <b>homogen</b> — semua elemen harus punya tipe data yang sama. Karena ada satu elemen <code>1.5</code> (float) dalam array tersebut, NumPy otomatis "meng-upcast" seluruh elemen lain ke tipe float64 agar konsisten, sehingga <code>2</code> dan <code>3</code> ikut disimpan sebagai <code>2.0</code> dan <code>3.0</code>.`
+},
+{
+  num:8, module:2, title:"NumPy Arrays (Membuat Array)",
+  teori:`Ada banyak cara membuat array selain dari list secara manual:
+  <ul>
+    <li><code>np.array([...])</code> — dari list/tuple Python</li>
+    <li><code>np.zeros((r,c))</code> / <code>np.ones((r,c))</code> — array berisi nol/satu</li>
+    <li><code>np.arange(start, stop, step)</code> — deret angka dengan interval tetap</li>
+    <li><code>np.linspace(start, stop, n)</code> — n angka dengan jarak sama dari start ke stop</li>
+    <li><code>np.random.rand(r,c)</code> — array acak antara 0–1</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+nol = np.zeros((2,3))
+<span class="c3"># [[0. 0. 0.]
+#  [0. 0. 0.]]</span>
+
+deret = np.arange(0, 10, 2)
+<span class="c3"># [0 2 4 6 8]</span>
+
+merata = np.linspace(0, 1, 5)
+<span class="c3"># [0.   0.25 0.5  0.75 1.  ]</span>`,
+  soal:`Kamu ingin membuat array berisi 5 titik suhu yang tersebar merata dari 0°C sampai 100°C (termasuk kedua ujungnya). Fungsi NumPy apa yang paling tepat, dan tuliskan kodenya?`,
+  pembahasan:`Gunakan <code>np.linspace(0, 100, 5)</code> karena <code>linspace</code> dirancang khusus untuk membagi rentang <code>[start, stop]</code> menjadi <i>n</i> titik dengan jarak yang sama <b>dan menyertakan titik akhir</b>. Hasilnya: <code>[0., 25., 50., 75., 100.]</code>. <code>np.arange</code> kurang tepat di sini karena kita menentukan jumlah titik (5), bukan step size, dan stop pada arange tidak termasuk.`
+},
+{
+  num:9, module:2, title:"Shape & Operations",
+  teori:`Array bisa diubah bentuknya tanpa mengubah datanya lewat <code>.reshape()</code>, selama total elemennya konsisten. NumPy juga mendukung <b>broadcasting</b>: operasi antar array dengan shape berbeda tetap bisa dilakukan jika salah satu dimensinya bernilai 1 atau cocok.
+  <ul>
+    <li><code>.reshape(baris, kolom)</code> — mengubah bentuk array</li>
+    <li><code>.T</code> — transpose (menukar baris dan kolom)</li>
+    <li>Broadcasting — array kecil "diperluas" otomatis agar cocok dengan array besar saat operasi</li>
+  </ul>`,
+  rumus:`Aturan broadcasting: dua dimensi kompatibel jika sama besar, ATAU salah satunya = 1.`,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.arange(6).reshape(2,3)
+<span class="c3"># [[0 1 2]
+#  [3 4 5]]</span>
+
+harga = np.array([[100],[200]])   <span class="c3"># shape (2,1)</span>
+diskon = np.array([0.9, 0.8, 0.7]) <span class="c3"># shape (3,)</span>
+
+hasil = harga * diskon   <span class="c3"># broadcasting -> shape (2,3)</span>
+<span class="c3"># [[ 90.  80.  70.]
+#  [180. 160. 140.]]</span>`,
+  soal:`Array A punya shape <code>(4, 1)</code> dan array B punya shape <code>(1, 5)</code>. Apakah <code>A * B</code> bisa dilakukan? Jika ya, berapa shape hasilnya?`,
+  pembahasan:`Bisa. Menurut aturan broadcasting, NumPy membandingkan dimensi dari kanan: dimensi terakhir <code>1</code> vs <code>5</code> kompatibel karena salah satunya bernilai 1 (diperluas jadi 5), dan dimensi berikutnya <code>4</code> vs <code>1</code> juga kompatibel (diperluas jadi 4). Hasilnya adalah array baru dengan shape <code>(4, 5)</code>, di mana setiap baris A dikalikan dengan seluruh baris B.`
+},
+{
+  num:10, module:2, title:"Indexing (NumPy)",
+  teori:`NumPy mendukung beberapa gaya pengambilan elemen:
+  <ul>
+    <li><b>Basic slicing</b>: <code>arr[start:stop:step]</code>, mirip list Python tapi bisa multi-dimensi <code>arr[baris, kolom]</code></li>
+    <li><b>Boolean indexing</b>: <code>arr[arr > 5]</code> — mengambil elemen yang memenuhi kondisi</li>
+    <li><b>Fancy indexing</b>: <code>arr[[0,2,4]]</code> — mengambil elemen berdasarkan list posisi</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+nilai = np.array([55, 80, 90, 45, 70])
+
+<span class="fn">print</span>(nilai[1:4])          <span class="c3"># [80 90 45]</span>
+<span class="fn">print</span>(nilai[nilai >= 70])  <span class="c3"># boolean indexing -> [80 90 70]</span>
+<span class="fn">print</span>(nilai[[0, 2, 4]])   <span class="c3"># fancy indexing -> [55 90 70]</span>`,
+  soal:`Dari array <code>nilai_ujian = np.array([40, 65, 88, 59, 92, 71])</code>, ambil semua nilai yang termasuk kategori "lulus" (≥ 60) menggunakan satu baris kode.`,
+  pembahasan:`<code>nilai_ujian[nilai_ujian >= 60]</code> → hasilnya <code>[65 88 92 71]</code>. Ekspresi <code>nilai_ujian >= 60</code> menghasilkan array boolean <code>[False True True False True True]</code>, lalu array boolean ini dipakai sebagai "mask" untuk memilih hanya elemen yang bernilai True — ini disebut boolean indexing.`
+},
+
+// ============ MODUL 3: MATEMATIKA UNTUK DATA SCIENCE ============
+{
+  num:11, module:3, title:"Mathematics (Statistik Dasar)",
+  teori:`Statistik deskriptif adalah bahasa dasar untuk meringkas data sebelum analisis lebih jauh:
+  <ul>
+    <li><b>Mean (rata-rata)</b> — nilai tengah dari total dibagi jumlah data</li>
+    <li><b>Median</b> — nilai tengah setelah data diurutkan (tahan terhadap outlier)</li>
+    <li><b>Variance</b> — rata-rata kuadrat jarak tiap data ke mean (mengukur sebaran)</li>
+    <li><b>Standard Deviation</b> — akar dari variance, satuannya sama dengan data asli</li>
+  </ul>`,
+  rumus:`mean (μ) = Σx / n
+variance (σ²) = Σ(x − μ)² / n
+std dev (σ) = √variance`,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+nilai = np.array([70, 75, 80, 85, 90])
+
+<span class="fn">print</span>(np.mean(nilai))   <span class="c3"># 80.0</span>
+<span class="fn">print</span>(np.median(nilai)) <span class="c3"># 80.0</span>
+<span class="fn">print</span>(np.var(nilai))    <span class="c3"># 50.0</span>
+<span class="fn">print</span>(np.std(nilai))    <span class="c3"># 7.07...</span>`,
+  soal:`Data gaji 5 karyawan (dalam juta Rupiah): <code>[8, 9, 8, 10, 60]</code>. Hitung mean dan median-nya, lalu jelaskan mengapa keduanya bisa berbeda jauh dan angka mana yang lebih representatif untuk "gaji tipikal".`,
+  pembahasan:`Mean = (8+9+8+10+60)/5 = 95/5 = <b>19</b>. Median (urutkan: 8,8,9,10,60, ambil tengah) = <b>9</b>. Keduanya berbeda jauh karena nilai 60 adalah <b>outlier</b> yang menarik mean ke atas, sementara median tidak terpengaruh karena hanya melihat posisi tengah. Untuk kasus ini, <b>median (9 juta)</b> lebih representatif sebagai "gaji tipikal" karena mean 19 juta menyesatkan — hanya 1 dari 5 orang yang gajinya mendekati angka itu.`
+},
+{
+  num:12, module:3, title:"Matrix (Aljabar Linear Dasar)",
+  teori:`Matrix (matriks) adalah struktur data 2 dimensi yang mendasari hampir semua algoritma machine learning. Operasi kunci:
+  <ul>
+    <li><b>Transpose</b> — menukar baris menjadi kolom</li>
+    <li><b>Perkalian matriks (dot product)</b> — kolom matrix pertama harus sama dengan baris matrix kedua</li>
+    <li><b>Determinant</b> — nilai skalar yang menunjukkan apakah matrix bisa dibalik (invertible)</li>
+    <li><b>Inverse</b> — matrix "kebalikan" sehingga <code>A · A⁻¹ = I</code> (matrix identitas)</li>
+  </ul>`,
+  rumus:`Dot product (A·B)ᵢⱼ = Σₖ Aᵢₖ · Bₖⱼ
+Syarat: kolom(A) = baris(B)`,
+  tutorial:`<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+A = np.array([[1,2],[3,4]])
+B = np.array([[5,6],[7,8]])
+
+<span class="fn">print</span>(A.T)          <span class="c3"># transpose -> [[1 3] [2 4]]</span>
+<span class="fn">print</span>(A @ B)        <span class="c3"># dot product -> [[19 22] [43 50]]</span>
+<span class="fn">print</span>(np.linalg.det(A))  <span class="c3"># determinant -> -2.0</span>
+<span class="fn">print</span>(np.linalg.inv(A))  <span class="c3"># inverse matrix</span>`,
+  soal:`Matrix A berukuran (2, 3) dan matrix B berukuran (3, 4). Apakah <code>A @ B</code> valid? Jika ya, berapa shape hasilnya?`,
+  pembahasan:`Valid, karena jumlah kolom A (3) sama dengan jumlah baris B (3) — syarat perkalian matriks terpenuhi. Shape hasilnya mengambil baris dari A dan kolom dari B, yaitu <b>(2, 4)</b>. Aturan umumnya: <code>(m,n) @ (n,p) → (m,p)</code>.`
+},
+
+// ============ MODUL 4: PANDAS FUNDAMENTALS ============
+{
+  num:13, module:4, title:"Pandas Series",
+  teori:`<code>Series</code> adalah struktur data 1 dimensi di Pandas — seperti kolom tunggal dari spreadsheet, dilengkapi <b>index</b> (label) untuk tiap nilainya. Series adalah blok bangun dasar sebelum masuk ke DataFrame.
+  <ul>
+    <li>Dibuat dari list, dict, atau array NumPy</li>
+    <li>Index bisa berupa angka otomatis (0,1,2,...) atau label kustom</li>
+    <li>Mendukung operasi vectorized seperti NumPy array</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+harga = pd.Series([15000, 22000, 18000],
+                   index=[<span class="fn">"Kopi"</span>, <span class="fn">"Teh"</span>, <span class="fn">"Susu"</span>])
+
+<span class="fn">print</span>(harga)
+<span class="c3"># Kopi    15000
+# Teh     22000
+# Susu    18000
+# dtype: int64</span>
+
+<span class="fn">print</span>(harga[<span class="fn">"Teh"</span>])   <span class="c3"># akses via label -> 22000</span>
+<span class="fn">print</span>(harga * 1.1)  <span class="c3"># naikkan harga 10% untuk semua item</span>`,
+  soal:`Buat Series bernama <code>stok</code> berisi jumlah stok 3 produk: Buku=50, Pensil=120, Penghapus=80, dengan index nama produk. Lalu tampilkan produk dengan stok di bawah 100.`,
+  pembahasan:`<code>stok = pd.Series([50,120,80], index=["Buku","Pensil","Penghapus"])</code><br><code>stok[stok < 100]</code><br>Hasil: <code>Buku 50</code> dan <code>Penghapus 80</code>. Sama seperti NumPy, Series mendukung boolean indexing — kondisi <code>stok < 100</code> menghasilkan Series boolean yang dipakai sebagai filter.`
+},
+{
+  num:14, module:4, title:"Pandas DataFrame",
+  teori:`<code>DataFrame</code> adalah struktur data 2 dimensi (tabel) — kumpulan Series yang berbagi index yang sama, dengan setiap kolom bisa punya tipe data berbeda. Ini adalah struktur data paling sering dipakai dalam data science.
+  <ul>
+    <li>Dibuat dari dict of list, list of dict, CSV, Excel, database, dsb.</li>
+    <li>Setiap kolom = satu Series</li>
+    <li>Baris diidentifikasi lewat index</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+data = {
+    <span class="fn">"produk"</span>: [<span class="fn">"Kopi"</span>, <span class="fn">"Teh"</span>, <span class="fn">"Susu"</span>],
+    <span class="fn">"harga"</span>: [15000, 22000, 18000],
+    <span class="fn">"qty"</span>: [10, 5, 8]
+}
+df = pd.DataFrame(data)
+<span class="fn">print</span>(df)
+<span class="c3">#   produk  harga  qty
+# 0   Kopi  15000   10
+# 1    Teh  22000    5
+# 2   Susu  18000    8</span>
+
+df[<span class="fn">"total"</span>] = df[<span class="fn">"harga"</span>] * df[<span class="fn">"qty"</span>]  <span class="c3"># kolom baru</span>`,
+  soal:`Buat DataFrame dari 3 mahasiswa dengan kolom nama dan nilai_ujian: Andi=80, Budi=65, Citra=90. Tambahkan kolom baru "status" secara manual berdasarkan aturan lulus jika nilai ≥ 70.`,
+  pembahasan:`<code>df = pd.DataFrame({"nama":["Andi","Budi","Citra"], "nilai_ujian":[80,65,90]})</code><br><code>df["status"] = df["nilai_ujian"].apply(lambda x: "Lulus" if x >= 70 else "Tidak Lulus")</code><br>Method <code>.apply()</code> menjalankan sebuah fungsi ke tiap elemen kolom, cocok untuk membuat kolom turunan berbasis kondisi logis seperti ini.`
+},
+{
+  num:15, module:4, title:"Exploring DataFrame",
+  teori:`Sebelum menganalisis data, selalu lakukan pengecekan awal untuk memahami struktur dan kualitas dataset:
+  <ul>
+    <li><code>.head(n)</code> / <code>.tail(n)</code> — melihat n baris pertama/terakhir</li>
+    <li><code>.info()</code> — ringkasan tipe data & jumlah non-null tiap kolom</li>
+    <li><code>.describe()</code> — statistik ringkas (mean, std, min, max, kuartil) untuk kolom numerik</li>
+    <li><code>.shape</code> — jumlah (baris, kolom)</li>
+    <li><code>.columns</code> / <code>.dtypes</code> — nama kolom & tipe datanya</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`df.<span class="fn">head</span>(3)     <span class="c3"># 3 baris pertama</span>
+df.<span class="fn">info</span>()      <span class="c3"># tipe data & missing value</span>
+df.<span class="fn">describe</span>()  <span class="c3"># statistik ringkas kolom numerik</span>
+<span class="fn">print</span>(df.shape)  <span class="c3"># (jumlah_baris, jumlah_kolom)</span>`,
+  soal:`Kamu baru menerima file CSV berisi 10.000 baris data pelanggan. Sebutkan 3 perintah eksplorasi pertama yang sebaiknya dijalankan, dan apa yang ingin kamu cari dari masing-masing.`,
+  pembahasan:`<b>1.</b> <code>df.head()</code> — memastikan data terbaca dengan benar (kolom & format sesuai ekspektasi). <b>2.</b> <code>df.info()</code> — mengecek tipe data tiap kolom dan menemukan kolom dengan missing value (non-null count lebih kecil dari total baris). <b>3.</b> <code>df.describe()</code> — melihat rentang nilai kolom numerik untuk mendeteksi anomali awal, misalnya umur bernilai negatif atau harga bernilai 0.`
+},
+{
+  num:16, module:4, title:"Filtering",
+  teori:`Filtering adalah proses menyaring baris DataFrame berdasarkan kondisi tertentu, mirip boolean indexing di NumPy tapi bekerja pada level baris tabel.
+  <ul>
+    <li><code>df[df["kolom"] > nilai]</code> — filter kondisi tunggal</li>
+    <li><code>&</code> (dan), <code>|</code> (atau) — menggabungkan kondisi (setiap kondisi harus dalam kurung)</li>
+    <li><code>.loc[baris, kolom]</code> — filter berbasis label</li>
+    <li><code>.iloc[baris, kolom]</code> — filter berbasis posisi index (angka)</li>
+    <li><code>.query("kondisi")</code> — sintaks filter dalam bentuk string</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="c3"># kondisi tunggal</span>
+mahal = df[df[<span class="fn">"harga"</span>] > 20000]
+
+<span class="c3"># kondisi ganda</span>
+target = df[(df[<span class="fn">"harga"</span>] > 15000) & (df[<span class="fn">"qty"</span>] >= 8)]
+
+<span class="c3"># loc: berdasarkan label</span>
+df.loc[df[<span class="fn">"produk"</span>] == <span class="fn">"Kopi"</span>, <span class="fn">"harga"</span>]
+
+<span class="c3"># query: lebih ringkas dibaca</span>
+df.<span class="fn">query</span>(<span class="fn">"harga > 15000 and qty >= 8"</span>)`,
+  soal:`Dari DataFrame transaksi dengan kolom <code>kategori</code> dan <code>total</code>, ambil semua transaksi kategori "Elektronik" ATAU dengan total di atas 500000.`,
+  pembahasan:`<code>df[(df["kategori"] == "Elektronik") | (df["total"] > 500000)]</code><br>Perhatikan penggunaan operator <code>|</code> (bukan kata <code>or</code>) karena Pandas bekerja secara elemen-per-elemen pada Series, dan setiap kondisi wajib dibungkus tanda kurung agar urutan evaluasi operator tidak salah — ini kesalahan paling umum pemula saat filtering Pandas.`
+},
+
+// ============ MODUL 5: ANALISIS DATA ============
+{
+  num:17, module:5, title:"Grouping (GroupBy)",
+  teori:`<code>groupby()</code> mengikuti pola <b>split–apply–combine</b>: data dipecah berdasarkan kategori tertentu, fungsi agregasi diterapkan ke tiap kelompok, lalu hasilnya digabung kembali. Ini fungsi paling powerful untuk meringkas data berdasarkan kategori.
+  <ul>
+    <li><code>.groupby("kolom")</code> — mengelompokkan berdasarkan nilai kolom</li>
+    <li><code>.sum()</code>, <code>.mean()</code>, <code>.count()</code> — agregasi dasar per kelompok</li>
+    <li><code>.agg(["sum","mean"])</code> — beberapa agregasi sekaligus</li>
+  </ul>`,
+  rumus:`Split → Apply → Combine
+groupby(kategori)[nilai].agg(fungsi)`,
+  tutorial:`<span class="c3"># total penjualan per kategori</span>
+ringkasan = df.groupby(<span class="fn">"kategori"</span>)[<span class="fn">"total"</span>].<span class="fn">sum</span>()
+
+<span class="c3"># beberapa agregasi sekaligus</span>
+ringkasan2 = df.groupby(<span class="fn">"kategori"</span>)[<span class="fn">"total"</span>].<span class="fn">agg</span>([<span class="fn">"sum"</span>, <span class="fn">"mean"</span>, <span class="fn">"count"</span>])`,
+  soal:`Dari data transaksi dengan kolom <code>region</code> dan <code>total</code>, hitung total penjualan DAN rata-rata penjualan per region dalam satu perintah.`,
+  pembahasan:`<code>df.groupby("region")["total"].agg(["sum", "mean"])</code><br>Method <code>.agg()</code> menerima list nama fungsi agregasi dan menerapkannya sekaligus ke tiap grup, menghasilkan DataFrame dengan satu baris per region dan kolom <code>sum</code> serta <code>mean</code>.`
+},
+{
+  num:18, module:5, title:"Sorting",
+  teori:`Mengurutkan data membantu menemukan nilai tertinggi/terendah atau menyusun laporan secara rapi.
+  <ul>
+    <li><code>.sort_values("kolom", ascending=False)</code> — urutkan berdasarkan nilai kolom</li>
+    <li><code>.sort_values(["k1","k2"])</code> — urutkan berdasarkan banyak kolom sekaligus</li>
+    <li><code>.sort_index()</code> — urutkan berdasarkan index</li>
+    <li><code>.rank()</code> — memberi peringkat numerik pada tiap nilai</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="c3"># produk dengan total penjualan tertinggi</span>
+top = df.sort_values(<span class="fn">"total"</span>, ascending=<span class="kw">False</span>)
+
+<span class="c3"># urutkan berdasarkan kategori, lalu total dalam kategori</span>
+rapi = df.sort_values([<span class="fn">"kategori"</span>, <span class="fn">"total"</span>], ascending=[<span class="kw">True</span>, <span class="kw">False</span>])
+
+top5 = df.sort_values(<span class="fn">"total"</span>, ascending=<span class="kw">False</span>).head(5)`,
+  soal:`Kamu ingin laporan "5 produk dengan penjualan terendah per kategori". Tuliskan strategi kode singkatnya (boleh kombinasi groupby + sort_values).`,
+  pembahasan:`<code>df.sort_values(["kategori","total"], ascending=[True, True]).groupby("kategori").head(5)</code><br>Urutkan dulu data berdasarkan kategori (agar tetap terkelompok) dan total secara ascending (terendah di atas), lalu gunakan <code>groupby().head(5)</code> untuk mengambil 5 baris teratas dari tiap grup kategori — ini pola umum untuk laporan "top-N per kelompok".`
+},
+
+// ============ MODUL 6: VISUALISASI DATA ============
+{
+  num:19, module:6, title:"Histogram (Categorical Value)",
+  teori:`Untuk data kategorikal (bukan angka kontinu, mis. jenis kelamin, kategori produk), visualisasi distribusinya lebih tepat memakai <b>bar chart</b> dari hasil <code>.value_counts()</code> daripada histogram numerik biasa. Bar chart menunjukkan frekuensi tiap kategori secara jelas.`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+jumlah_kategori = df[<span class="fn">"kategori"</span>].value_counts()
+
+jumlah_kategori.plot(kind=<span class="fn">"bar"</span>, color=<span class="fn">"#5aa9e6"</span>)
+plt.title(<span class="fn">"Distribusi Kategori Produk"</span>)
+plt.xlabel(<span class="fn">"Kategori"</span>); plt.ylabel(<span class="fn">"Jumlah"</span>)
+plt.show()`,
+  soal:`Kolom <code>metode_bayar</code> berisi nilai "Transfer", "QRIS", "COD". Bagaimana cara tercepat mengetahui metode mana yang paling sering dipakai, dan chart apa yang tepat untuk menampilkannya?`,
+  pembahasan:`<code>df["metode_bayar"].value_counts()</code> untuk menghitung frekuensi tiap kategori, lalu <code>.plot(kind="bar")</code> untuk memvisualisasikannya sebagai bar chart. Bar chart dipilih (bukan histogram numerik atau pie chart) karena datanya kategorikal diskrit dan kita ingin membandingkan frekuensi antar kategori secara jelas berdasarkan tinggi batang.`
+},
+{
+  num:20, module:6, title:"Histogram (Numerical Value)",
+  teori:`Histogram untuk data numerik menunjukkan <b>distribusi/sebaran</b> nilai dengan mengelompokkan angka ke dalam interval (<b>bins</b>). Berguna untuk melihat bentuk distribusi (normal, miring/skewed, bimodal) sebelum analisis lanjutan.
+  <ul>
+    <li>Jumlah <code>bins</code> mempengaruhi tingkat detail — terlalu sedikit menyembunyikan pola, terlalu banyak membuat noise</li>
+    <li>Distribusi <b>skewed</b> (miring) sering menandakan perlunya transformasi data</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+df[<span class="fn">"harga"</span>].plot(kind=<span class="fn">"hist"</span>, bins=15, color=<span class="fn">"#ffcc4d"</span>, edgecolor=<span class="fn">"black"</span>)
+plt.title(<span class="fn">"Distribusi Harga Produk"</span>)
+plt.xlabel(<span class="fn">"Harga (Rp)"</span>)
+plt.show()`,
+  soal:`Histogram harga produk menunjukkan sebagian besar batang menumpuk di kiri (harga murah) dengan "ekor panjang" ke kanan (beberapa produk sangat mahal). Apa istilah untuk pola ini dan apa dampaknya jika kamu memakai mean sebagai ringkasan harga "khas"?`,
+  pembahasan:`Pola ini disebut <b>right-skewed</b> (distribusi miring ke kanan / positive skew). Dampaknya, <b>mean akan tertarik ke atas</b> oleh produk-produk mahal di ekor kanan sehingga tidak merepresentasikan harga "khas" dengan baik — sebaiknya gunakan <b>median</b> yang lebih tahan terhadap outlier untuk kasus distribusi skewed seperti ini.`
+},
+{
+  num:21, module:6, title:"Boxplot",
+  teori:`Boxplot merangkum distribusi data lewat 5 angka: minimum, Q1 (kuartil 1), median (Q2), Q3 (kuartil 3), dan maximum — sekaligus mendeteksi <b>outlier</b> secara visual.
+  <ul>
+    <li><b>IQR (Interquartile Range)</b> = Q3 − Q1, mengukur sebaran 50% data tengah</li>
+    <li>Titik di luar <code>Q1 − 1.5×IQR</code> atau <code>Q3 + 1.5×IQR</code> dianggap outlier</li>
+    <li>Sangat berguna untuk membandingkan sebaran antar kategori berdampingan</li>
+  </ul>`,
+  rumus:`IQR = Q3 − Q1
+Batas bawah = Q1 − 1.5 × IQR
+Batas atas  = Q3 + 1.5 × IQR`,
+  tutorial:`<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+df.boxplot(column=<span class="fn">"harga"</span>, by=<span class="fn">"kategori"</span>)
+plt.title(<span class="fn">"Sebaran Harga per Kategori"</span>)
+plt.suptitle(<span class="fn">""</span>)
+plt.show()
+
+<span class="c3"># hitung batas outlier manual</span>
+Q1 = df[<span class="fn">"harga"</span>].quantile(0.25)
+Q3 = df[<span class="fn">"harga"</span>].quantile(0.75)
+IQR = Q3 - Q1
+batas_atas = Q3 + 1.5 * IQR`,
+  soal:`Data harga produk: Q1 = 20000, Q3 = 50000. Sebuah produk berharga 130000. Apakah produk ini termasuk outlier menurut aturan boxplot (1.5×IQR)?`,
+  pembahasan:`IQR = 50000 − 20000 = 30000. Batas atas = Q3 + 1.5×IQR = 50000 + 1.5×30000 = 50000 + 45000 = <b>95000</b>. Karena harga produk (130000) melebihi batas atas (95000), maka <b>ya, produk ini adalah outlier</b> dan akan digambarkan sebagai titik terpisah di atas "whisker" boxplot.`
+},
+{
+  num:22, module:6, title:"Lineplot",
+  teori:`Lineplot adalah pilihan terbaik untuk menampilkan <b>tren data dari waktu ke waktu</b> (time series) karena garis menghubungkan titik secara berurutan sehingga pola naik/turun mudah terlihat.
+  <ul>
+    <li>Sumbu-x biasanya waktu (tanggal, bulan, tahun) — pastikan terurut</li>
+    <li>Bisa menampilkan beberapa garis sekaligus untuk membandingkan kategori</li>
+    <li>Berbeda dengan scatter plot: lineplot mengasumsikan urutan/kontinuitas pada sumbu-x</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+tren = df.groupby(<span class="fn">"tanggal"</span>)[<span class="fn">"total"</span>].<span class="fn">sum</span>()
+
+tren.plot(kind=<span class="fn">"line"</span>, marker=<span class="fn">"o"</span>, color=<span class="fn">"#3ecf8e"</span>)
+plt.title(<span class="fn">"Tren Penjualan Harian"</span>)
+plt.xlabel(<span class="fn">"Tanggal"</span>); plt.ylabel(<span class="fn">"Total Penjualan (Rp)"</span>)
+plt.show()`,
+  soal:`Kamu punya data penjualan harian selama 3 bulan dan ingin melihat apakah ada pola musiman (misal penjualan naik tiap akhir pekan). Kenapa lineplot lebih tepat daripada bar chart untuk kasus ini?`,
+  pembahasan:`Lineplot lebih tepat karena data bersifat <b>kontinu dan berurutan waktu</b> — garis yang menghubungkan titik-titik harian membuat mata lebih mudah menangkap pola naik-turun berulang (misalnya lonjakan tiap Sabtu-Minggu) dibanding bar chart yang menekankan perbandingan nilai individual antar batang, bukan alur trennya.`
+},
+{
+  num:23, module:6, title:"Scatter Plot",
+  teori:`Scatter plot menampilkan hubungan antara <b>dua variabel numerik</b> lewat titik-titik pada bidang x-y, berguna untuk melihat <b>korelasi</b> atau pola hubungan (linear, non-linear, tidak ada hubungan).
+  <ul>
+    <li><b>Korelasi positif</b>: titik cenderung naik dari kiri-bawah ke kanan-atas</li>
+    <li><b>Korelasi negatif</b>: titik cenderung turun dari kiri-atas ke kanan-bawah</li>
+    <li>Koefisien korelasi Pearson (r) mengkuantifikasi kekuatan hubungan linear, dari −1 sampai 1</li>
+  </ul>`,
+  rumus:`r = Σ((x−x̄)(y−ȳ)) / √(Σ(x−x̄)² · Σ(y−ȳ)²)
+r mendekati  1 → korelasi positif kuat
+r mendekati -1 → korelasi negatif kuat
+r mendekati  0 → tidak ada korelasi linear`,
+  tutorial:`<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+plt.scatter(df[<span class="fn">"qty"</span>], df[<span class="fn">"total"</span>], alpha=0.6, color=<span class="fn">"#e07be0"</span>)
+plt.xlabel(<span class="fn">"Kuantitas"</span>); plt.ylabel(<span class="fn">"Total (Rp)"</span>)
+plt.title(<span class="fn">"Hubungan Kuantitas vs Total Penjualan"</span>)
+plt.show()
+
+<span class="fn">print</span>(df[<span class="fn">"qty"</span>].corr(df[<span class="fn">"total"</span>]))  <span class="c3"># koefisien korelasi Pearson</span>`,
+  soal:`Hasil <code>df["iklan_spend"].corr(df["penjualan"])</code> = 0.85. Apa artinya, dan apakah ini membuktikan bahwa iklan MENYEBABKAN kenaikan penjualan?`,
+  pembahasan:`Nilai 0.85 menunjukkan <b>korelasi positif yang kuat</b> — semakin besar belanja iklan, semakin tinggi penjualan cenderung terjadi bersamaan. Namun, ini <b>tidak membuktikan sebab-akibat (causation)</b>. Bisa saja ada faktor ketiga (misalnya musim liburan) yang mendorong perusahaan menaikkan iklan SEKALIGUS penjualan naik secara alami. Prinsip klasik statistik: <i>"correlation does not imply causation"</i> — perlu eksperimen terkontrol (mis. A/B testing) untuk memastikan hubungan sebab-akibat.`
+},
+
+// ============ MODUL 7: PRAKTIK DATA SCIENCE ============
+{
+  num:24, module:7, title:"Data Understanding",
+  teori:`Data Understanding adalah tahap mengenali karakteristik dataset secara menyeluruh sebelum diproses lebih jauh — memastikan kamu tahu "apa isi data ini" sebelum "apa yang bisa dilakukan dengannya".
+  <ul>
+    <li>Cek jumlah baris/kolom, tipe data tiap kolom (<code>.info()</code>)</li>
+    <li>Cek missing value: <code>.isnull().sum()</code></li>
+    <li>Cek duplikat: <code>.duplicated().sum()</code></li>
+    <li>Pahami arti bisnis tiap kolom (bukan hanya nama teknisnya)</li>
+  </ul>`,
+  rumus:null,
+  tutorial:`<span class="fn">print</span>(df.shape)
+<span class="fn">print</span>(df.info())
+<span class="fn">print</span>(df.isnull().sum())      <span class="c3"># jumlah missing value per kolom</span>
+<span class="fn">print</span>(df.duplicated().sum())  <span class="c3"># jumlah baris duplikat</span>
+<span class="fn">print</span>(df.nunique())          <span class="c3"># jumlah nilai unik per kolom</span>`,
+  soal:`Hasil <code>df.isnull().sum()</code> menunjukkan kolom <code>email</code> punya 340 missing value dari total 10.000 baris (3.4%), sedangkan kolom <code>alamat</code> punya 6.500 missing value (65%). Bagaimana strategi awal menangani kedua kolom ini secara berbeda?`,
+  pembahasan:`Untuk <code>email</code> (3.4% missing) — proporsi kecil, bisa dipertimbangkan untuk diisi (jika ada sumber data lain) atau baris tersebut dihapus tanpa banyak kehilangan data. Untuk <code>alamat</code> (65% missing) — proporsi terlalu besar untuk diisi secara wajar, lebih baik dievaluasi apakah kolom ini masih layak dipakai dalam analisis, atau didrop sepenuhnya, karena mengisi 65% data dengan estimasi bisa menyesatkan hasil analisis.`
+},
+{
+  num:25, module:7, title:"Data Preprocessing",
+  teori:`Data Preprocessing mengubah data mentah menjadi bentuk siap-analisis/model. Teknik umum:
+  <ul>
+    <li><b>Handling missing value</b>: <code>.dropna()</code> (hapus) atau <code>.fillna()</code> (isi dengan mean/median/modus)</li>
+    <li><b>Encoding</b>: mengubah data kategorikal menjadi angka, mis. One-Hot Encoding</li>
+    <li><b>Scaling/Normalization</b>: menyamakan skala antar kolom numerik agar adil dibandingkan</li>
+  </ul>`,
+  rumus:`Min-Max Normalization: x' = (x − min) / (max − min)   → hasil 0 s.d. 1
+Standardization (Z-score): z = (x − μ) / σ            → mean 0, std 1`,
+  tutorial:`<span class="c3"># isi missing value numerik dengan median</span>
+df[<span class="fn">"harga"</span>] = df[<span class="fn">"harga"</span>].fillna(df[<span class="fn">"harga"</span>].median())
+
+<span class="c3"># one-hot encoding kolom kategorikal</span>
+df = pd.get_dummies(df, columns=[<span class="fn">"kategori"</span>])
+
+<span class="c3"># normalisasi min-max manual</span>
+df[<span class="fn">"harga_norm"</span>] = (df[<span class="fn">"harga"</span>] - df[<span class="fn">"harga"</span>].min()) / \\
+                     (df[<span class="fn">"harga"</span>].max() - df[<span class="fn">"harga"</span>].min())`,
+  soal:`Kolom <code>harga</code> punya rentang Rp10.000–Rp5.000.000, sedangkan kolom <code>rating</code> punya rentang 1–5. Jika kedua kolom ini akan dipakai bersama dalam perhitungan jarak (mis. untuk clustering), apa yang perlu dilakukan dan kenapa?`,
+  pembahasan:`Perlu dilakukan <b>scaling/normalisasi</b> (misalnya Min-Max atau Standardization) agar kedua kolom berada dalam skala yang sebanding. Tanpa scaling, kolom <code>harga</code> yang rentangnya jutaan akan <b>mendominasi</b> perhitungan jarak dibanding kolom <code>rating</code> yang rentangnya hanya 1-5, sehingga hasil analisis (mis. clustering) akan bias hanya mengikuti variasi harga dan mengabaikan rating.`
+},
+{
+  num:26, module:7, title:"Data Visualization (Storytelling)",
+  teori:`Tahap akhir data science bukan sekadar membuat grafik, tapi memilih visualisasi yang <b>tepat untuk pertanyaan yang ingin dijawab</b> dan menyampaikannya sebagai cerita yang mudah dipahami audiens non-teknis.
+  <table style="width:100%; margin-top:8px; font-size:13px; border-collapse:collapse;">
+  <tr style="color:var(--muted);"><td style="padding:4px 8px;"><b>Tujuan</b></td><td style="padding:4px 8px;"><b>Chart</b></td></tr>
+  <tr><td style="padding:4px 8px;">Perbandingan kategori</td><td style="padding:4px 8px;">Bar chart</td></tr>
+  <tr><td style="padding:4px 8px;">Tren waktu</td><td style="padding:4px 8px;">Line chart</td></tr>
+  <tr><td style="padding:4px 8px;">Distribusi/sebaran</td><td style="padding:4px 8px;">Histogram, Boxplot</td></tr>
+  <tr><td style="padding:4px 8px;">Hubungan 2 variabel</td><td style="padding:4px 8px;">Scatter plot</td></tr>
+  <tr><td style="padding:4px 8px;">Komposisi bagian</td><td style="padding:4px 8px;">Pie/stacked bar (secukupnya)</td></tr>
+  </table>`,
+  rumus:null,
+  tutorial:`<span class="c3"># prinsip: satu chart, satu pesan utama</span>
+fig, ax = plt.subplots(figsize=(8,5))
+tren_bulanan.plot(kind=<span class="fn">"line"</span>, marker=<span class="fn">"o"</span>, ax=ax, color=<span class="fn">"#ffcc4d"</span>)
+ax.set_title(<span class="fn">"Penjualan Naik 24% Sejak Kampanye Maret"</span>)  <span class="c3"># judul = insight, bukan cuma nama kolom</span>
+ax.axvline(x=<span class="fn">"2026-03-01"</span>, color=<span class="fn">"red"</span>, linestyle=<span class="fn">"--"</span>, label=<span class="fn">"Mulai kampanye"</span>)
+ax.legend()
+plt.show()`,
+  soal:`Tim marketing memintamu membuat "satu slide" untuk rapat direksi yang menunjukkan dampak kampanye iklan terhadap penjualan bulanan. Chart apa yang kamu pilih, dan bagaimana membuat judulnya bercerita (bukan sekadar deskriptif)?`,
+  pembahasan:`Pilih <b>line chart</b> tren penjualan bulanan karena menunjukkan perubahan dari waktu ke waktu, ditambah penanda vertikal (garis putus-putus) pada bulan dimulainya kampanye untuk memperjelas titik "sebelum vs sesudah". Judul sebaiknya langsung menyampaikan insight, misalnya <i>"Penjualan Naik 24% Setelah Kampanye Maret"</i> — bukan judul generik seperti <i>"Grafik Penjualan Bulanan"</i>. Judul yang bercerita membuat audiens non-teknis langsung menangkap kesimpulan tanpa harus menginterpretasi grafik sendiri.`
+},
+];
+
+// ============================================================
+// STUDI KASUS KOMPREHENSIF
+// ============================================================
+const CASE_STUDY_HTML = `
+<div class="topic open" style="cursor:default;">
+  <div class="topic-body" style="max-height:none;">
+    <div class="topic-body-inner" style="padding-top:20px; border-top:none;">
+
+      <div class="subblock teori">
+        <h5>Konteks Bisnis</h5>
+        <div class="teori-text">Toko retail <b>"Berkah Elektronik & Fashion"</b> ingin memahami performa penjualan selama Januari 2026 untuk menyiapkan strategi kuartal berikutnya. Kamu ditugaskan sebagai data analyst untuk mengolah data transaksi mentah menjadi rekomendasi bisnis yang bisa dieksekusi.</div>
+      </div>
+
+      <div class="subblock rumus">
+        <h5>01 — Data Understanding: Sekilas Dataset</h5>
+        <div class="teori-text" style="margin-bottom:10px;">Dataset <code>penjualan_januari.csv</code> berisi 10 baris contoh (dari total 48 transaksi) dengan struktur berikut:</div>
+        <table class="dataset">
+          <tr><th>tanggal</th><th>produk</th><th>kategori</th><th>harga</th><th>qty</th><th>region</th></tr>
+          <tr><td>2026-01-02</td><td>Kemeja Flanel</td><td>Fashion</td><td>129000</td><td>2</td><td>Jakarta</td></tr>
+          <tr><td>2026-01-03</td><td>Earphone BT</td><td>Elektronik</td><td>210000</td><td>1</td><td>Bandung</td></tr>
+          <tr><td>2026-01-03</td><td>Celana Jeans</td><td>Fashion</td><td>185000</td><td>—</td><td>Jakarta</td></tr>
+          <tr><td>2026-01-05</td><td>Power Bank</td><td>Elektronik</td><td>150000</td><td>3</td><td>Surabaya</td></tr>
+          <tr><td>2026-01-05</td><td>Power Bank</td><td>Elektronik</td><td>150000</td><td>3</td><td>Surabaya</td></tr>
+          <tr><td>2026-01-08</td><td>Dress Motif</td><td>Fashion</td><td>—</td><td>1</td><td>Jakarta</td></tr>
+          <tr><td>2026-01-12</td><td>Speaker Mini</td><td>Elektronik</td><td>95000</td><td>2</td><td>Bandung</td></tr>
+          <tr><td>2026-01-18</td><td>Jaket Hoodie</td><td>Fashion</td><td>175000</td><td>4</td><td>Surabaya</td></tr>
+          <tr><td>2026-01-25</td><td>Kabel Data</td><td>Elektronik</td><td>25000</td><td>10</td><td>Jakarta</td></tr>
+          <tr><td>2026-01-29</td><td>Powerbank Pro</td><td>Elektronik</td><td>310000</td><td>1</td><td>Jakarta</td></tr>
+        </table>
+        <div class="teori-text">Perhatikan: baris ke-3 punya <code>qty</code> kosong, baris ke-6 punya <code>harga</code> kosong, dan baris ke-4 &amp; ke-5 adalah <b>duplikat persis</b>.</div>
+      </div>
+
+      <div class="subblock tutorial">
+        <h5>02 — Data Preprocessing</h5>
+        <div class="code-cell">
+          <div class="in"><span class="c1">import</span> pandas <span class="c1">as</span> pd
+<span class="c3"># muat data</span>
+df = pd.read_csv(<span class="c2">"penjualan_januari.csv"</span>, parse_dates=[<span class="c2">"tanggal"</span>])
+
+<span class="c3"># 1. cek & hapus duplikat</span>
+df = df.drop_duplicates()
+
+<span class="c3"># 2. tangani missing value</span>
+df[<span class="c2">"qty"</span>] = df[<span class="c2">"qty"</span>].fillna(df[<span class="c2">"qty"</span>].median())
+df[<span class="c2">"harga"</span>] = df[<span class="c2">"harga"</span>].fillna(
+    df.groupby(<span class="c2">"kategori"</span>)[<span class="c2">"harga"</span>].transform(<span class="c2">"median"</span>))
+
+<span class="c3"># 3. kolom turunan</span>
+df[<span class="c2">"total"</span>] = df[<span class="c2">"harga"</span>] * df[<span class="c2">"qty"</span>]</div>
+          <div class="out">Baris duplikat dihapus: 1
+Missing value qty diisi median: 2.0
+Missing value harga diisi median per kategori (Fashion): 152000
+Kolom "total" berhasil dibuat.</div>
+        </div>
+      </div>
+
+      <div class="subblock tutorial">
+        <h5>03 — EDA & Visualisasi</h5>
+        <div class="code-cell">
+          <div class="in"><span class="c3"># total penjualan per kategori</span>
+per_kategori = df.groupby(<span class="c2">"kategori"</span>)[<span class="c2">"total"</span>].sum().sort_values(ascending=<span class="c1">False</span>)
+
+<span class="c3"># tren penjualan harian</span>
+tren = df.groupby(<span class="c2">"tanggal"</span>)[<span class="c2">"total"</span>].sum()
+
+<span class="c3"># deteksi outlier harga dengan IQR</span>
+Q1, Q3 = df[<span class="c2">"harga"</span>].quantile([0.25, 0.75])
+IQR = Q3 - Q1
+outlier = df[df[<span class="c2">"harga"</span>] > Q3 + 1.5*IQR]
+
+<span class="c3"># korelasi qty vs total</span>
+korelasi = df[<span class="c2">"qty"</span>].corr(df[<span class="c2">"total"</span>])</div>
+          <div class="out">per_kategori:
+  Elektronik    790000
+  Fashion       803000
+
+outlier: 1 baris ditemukan -> "Powerbank Pro" (Rp310.000)
+korelasi qty vs total: 0.41 (positif, sedang)</div>
+        </div>
+        <div class="teori-text" style="margin-top:12px;">Dari sini dibuat 3 chart: <b>bar chart</b> total per kategori, <b>line chart</b> tren harian, dan <b>boxplot</b> harga per kategori untuk mengonfirmasi outlier secara visual.</div>
+      </div>
+
+      <div class="subblock soal">
+        <h5>04 — Contoh Soal Studi Kasus</h5>
+        <div class="soal-box">
+          <p><b>Soal:</b> Berdasarkan hasil EDA di atas, kategori Fashion (Rp803.000) sedikit lebih tinggi dari Elektronik (Rp790.000) dalam total penjualan — namun korelasi qty vs total hanya 0.41 (sedang, bukan kuat). Manajer bertanya: <i>"Kalau begitu, kalau kita naikkan jumlah stok (qty) yang dijual, apakah penjualan pasti naik proporsional?"</i> Bagaimana kamu menjawab berdasarkan data, dan analisis tambahan apa yang kamu sarankan sebelum mengambil keputusan itu?</p>
+          <button class="reveal-btn" onclick="togglePembahasan(this)">💡 Lihat Pembahasan</button>
+          <div class="pembahasan"><div class="pembahasan-inner">
+            <b class="lbl">Pembahasan</b>
+            Tidak bisa disimpulkan pasti. Korelasi 0.41 menunjukkan hubungan <b>positif namun tidak kuat</b> antara qty dan total penjualan — artinya <code>total</code> tidak murni ditentukan oleh <code>qty</code>, karena <code>total = harga × qty</code> dan variasi harga antar produk (dari Rp25.000 sampai Rp310.000) ikut mendominasi. Menaikkan qty produk murah (mis. Kabel Data) akan menaikkan total jauh lebih kecil dibanding menaikkan qty produk mahal (mis. Powerbank Pro). <br><br>
+            Analisis tambahan yang disarankan: (1) hitung <b>kontribusi tiap produk terhadap total</b> secara individual, bukan hanya qty-nya, (2) uji korelasi <code>harga</code> vs <code>total</code> juga untuk membandingkan pengaruh keduanya, dan (3) lakukan analisis per kategori terpisah karena pola qty-vs-total di Fashion bisa berbeda dari Elektronik.
+          </div></div>
+        </div>
+      </div>
+
+      <div class="subblock rumus">
+        <h5>05 — Insight & Rekomendasi</h5>
+        <div class="teori-text">
+        <ul>
+          <li><b>Insight 1:</b> Kategori Fashion dan Elektronik hampir seimbang dalam kontribusi penjualan (Rp803rb vs Rp790rb) — tidak ada kategori yang dominan tunggal, sehingga strategi promosi sebaiknya tetap menyeimbangkan kedua lini.</li>
+          <li><b>Insight 2:</b> "Powerbank Pro" (Rp310.000) terdeteksi sebagai outlier harga — perlu dicek apakah ini produk premium yang disengaja atau kesalahan input harga.</li>
+          <li><b>Insight 3:</b> 65% transaksi Elektronik terjadi di Jakarta — indikasi awal potensi ekspansi stok elektronik di wilayah Bandung &amp; Surabaya perlu divalidasi dengan data lebih besar.</li>
+          <li><b>Rekomendasi:</b> lakukan A/B test kenaikan stok pada 2-3 produk terlaris sebelum menaikkan qty semua produk secara merata, mengingat korelasi qty-total yang hanya sedang (0.41).</li>
+        </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+`;
+
+// ============================================================
+// APP LOGIC
+// ============================================================
+const state = { done: new Set() };
+
+function renderSidebarNav(){
+  const nav = document.getElementById('mod-nav');
+  nav.innerHTML = MODULES.map(m=>{
+    const cnt = TOPICS.filter(t=>t.module===m.id).length;
+    return `<div class="mod-nav-item" onclick="scrollToModule(${m.id})">
+      <span class="num">${String(m.id).padStart(2,'0')}</span>
+      <span>${m.icon} ${m.title}</span>
+      <span class="cnt">${cnt}</span>
+    </div>`;
+  }).join('');
+}
+
+function scrollToModule(id){
+  const el = document.getElementById('modul-'+id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderModules(){
+  const container = document.getElementById('modules-container');
+  container.innerHTML = MODULES.map(m=>{
+    const topics = TOPICS.filter(t=>t.module===m.id);
+    return `
+    <div class="module-block" id="modul-${m.id}">
+      <div class="module-head">
+        <div class="module-badge">${String(m.id).padStart(2,'0')}</div>
+        <div>
+          <h3>${m.icon} ${m.title}</h3>
+          <p>${m.desc}</p>
+        </div>
+      </div>
+      <div class="topics-list">
+        ${topics.map(renderTopic).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('case-content').innerHTML = CASE_STUDY_HTML;
+}
+
+function renderTopic(t){
+  return `
+  <div class="topic" id="topic-${t.num}" data-title="${t.title.toLowerCase()}">
+    <div class="topic-head" onclick="toggleTopic(${t.num})">
+      <div class="check" id="check-${t.num}" onclick="event.stopPropagation(); toggleDone(${t.num})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0a0e14" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span class="cell-num">[${String(t.num).padStart(2,'0')}]</span>
+      <span class="topic-title">${t.title}</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="topic-body" id="body-${t.num}">
+      <div class="topic-body-inner">
+        <div class="subblock teori">
+          <h5>Teori</h5>
+          <div class="teori-text">${t.teori}</div>
+        </div>
+        ${t.rumus ? `
+        <div class="subblock rumus">
+          <h5>Rumus</h5>
+          <div class="formula-box">${t.rumus}</div>
+        </div>` : ''}
+        <div class="subblock tutorial">
+          <h5>Tutorial Step-by-Step</h5>
+          <div class="code-cell"><div class="in">${t.tutorial}</div></div>
+        </div>
+        <div class="subblock soal">
+          <h5>Contoh Soal</h5>
+          <div class="soal-box">
+            <p>${t.soal}</p>
+            <button class="reveal-btn" onclick="togglePembahasan(this)">💡 Lihat Pembahasan</button>
+            <div class="pembahasan">
+              <div class="pembahasan-inner"><b class="lbl">Pembahasan</b>${t.pembahasan}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleTopic(num){
+  const topic = document.getElementById('topic-'+num);
+  const body = document.getElementById('body-'+num);
+  const isOpen = topic.classList.contains('open');
+  if(isOpen){
+    topic.classList.remove('open');
+    body.style.maxHeight = null;
+  } else {
+    topic.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 40 + 'px';
+  }
+}
+
+function togglePembahasan(btn){
+  const wrap = btn.nextElementSibling;
+  const isOpen = wrap.style.maxHeight && wrap.style.maxHeight !== '0px';
+  if(isOpen){
+    wrap.style.maxHeight = null;
+    btn.textContent = '💡 Lihat Pembahasan';
+  } else {
+    wrap.style.maxHeight = wrap.scrollHeight + 20 + 'px';
+    btn.textContent = '🙈 Sembunyikan Pembahasan';
+  }
+  // re-measure parent topic body since it expanded
+  const topicBody = btn.closest('.topic-body');
+  if(topicBody) setTimeout(()=>{ topicBody.style.maxHeight = topicBody.scrollHeight + 40 + 'px'; }, 50);
+}
+
+function toggleDone(num){
+  const check = document.getElementById('check-'+num);
+  if(state.done.has(num)){
+    state.done.delete(num);
+    check.classList.remove('done');
+  } else {
+    state.done.add(num);
+    check.classList.add('done');
+  }
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = TOPICS.length;
+  const done = state.done.size;
+  const pct = Math.round((done/total)*100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-count').textContent = done + ' / ' + total + ' selesai';
+  const ring = document.getElementById('ring-fg');
+  const circumference = 119.4;
+  ring.style.strokeDashoffset = circumference - (circumference * pct/100);
+}
+
+function filterTopics(query){
+  const q = query.trim().toLowerCase();
+  document.querySelectorAll('.topic').forEach(el=>{
+    const match = !q || el.dataset.title.includes(q);
+    el.style.display = match ? '' : 'none';
+  });
+  document.querySelectorAll('.module-block').forEach(block=>{
+    const visible = [...block.querySelectorAll('.topic')].some(t=>t.style.display !== 'none');
+    block.style.display = visible ? '' : 'none';
+  });
+}
+
+function updateTopRail(){
+  const scrolled = window.scrollY;
+  const height = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = height > 0 ? (scrolled/height)*100 : 0;
+  document.getElementById('top-rail').style.width = pct + '%';
+}
+
+window.addEventListener('scroll', updateTopRail);
+
+// init
+renderSidebarNav();
+renderModules();
+updateProgress();
+
+</script>
+</body>
+</html>

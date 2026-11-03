@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Panduan BMC — Basic Mechanic Course untuk Pemula</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root{
+  --ink:#191E1C;
+  --steel:#243230;
+  --steel-2:#334544;
+  --paper:#F1ECDE;
+  --paper-2:#E7DFC8;
+  --yellow:#F5B700;
+  --yellow-dk:#C9930A;
+  --orange:#E1560A;
+  --green:#2D5A4A;
+  --green-lt:#3E7A63;
+  --blue:#3E6E8E;
+  --white:#FFFDF8;
+  --danger:#C1272D;
+  --ok:#3E7A46;
+  --radius:6px;
+  --font-display:'Oswald',"Arial Narrow",sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;} *{animation-duration:.001ms !important; transition-duration:.001ms !important;}}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.6;
+}
+
+a{color:inherit;}
+img,svg{display:block;max-width:100%;}
+
+::selection{background:var(--yellow);color:var(--ink);}
+
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;}
+
+.stripe{
+  height:10px;
+  background:repeating-linear-gradient(135deg,var(--yellow) 0 18px, var(--ink) 18px 36px);
+}
+
+/* ---------- HERO ---------- */
+.hero{
+  position:relative;
+  background:var(--steel);
+  color:var(--white);
+  padding:64px 6vw 48px;
+  overflow:hidden;
+  border-bottom:10px solid var(--yellow);
+}
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:radial-gradient(circle at 85% 20%, rgba(245,183,0,.14), transparent 45%),
+                    radial-gradient(circle at 10% 90%, rgba(62,110,142,.18), transparent 40%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--yellow);
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:18px;
+}
+.hero-eyebrow::before{content:"";width:26px;height:2px;background:var(--yellow);display:inline-block;}
+.hero h1{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(2.4rem, 6vw, 4.6rem);
+  line-height:.98;
+  margin:0 0 6px;
+  text-transform:uppercase;
+  letter-spacing:.01em;
+}
+.hero h1 span{color:var(--yellow);}
+.hero p.lead{
+  max-width:640px;
+  font-size:1.08rem;
+  color:#D9D3C2;
+  margin:18px 0 34px;
+}
+.hero-meta{
+  display:flex; flex-wrap:wrap; gap:14px;
+  font-family:var(--font-mono);
+  font-size:.82rem;
+}
+.hero-meta span{
+  border:1px solid rgba(255,255,255,.25);
+  padding:7px 12px;
+  border-radius:999px;
+  color:#EFE9D8;
+  background:rgba(255,255,255,.04);
+}
+
+.toc{
+  position:relative;
+  margin-top:40px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:10px;
+}
+.toc a{
+  text-decoration:none;
+  display:flex; align-items:center; gap:12px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius);
+  padding:12px 14px;
+  transition:background .15s, transform .15s, border-color .15s;
+  color:var(--white);
+}
+.toc a:hover{background:rgba(245,183,0,.14);border-color:var(--yellow);transform:translateY(-2px);}
+.toc .num{
+  font-family:var(--font-mono);
+  color:var(--yellow);
+  font-weight:600;
+  font-size:.82rem;
+  min-width:26px;
+}
+.toc .lbl{font-size:.88rem;font-weight:500;}
+
+/* ---------- LAYOUT ---------- */
+.layout{
+  display:grid;
+  grid-template-columns:230px 1fr;
+  max-width:1360px;
+  margin:0 auto;
+}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;}
+}
+
+/* Sticky chapter tab nav = "binder tabs" */
+.chapter-nav{
+  position:sticky; top:0; align-self:start;
+  height:100vh;
+  overflow-y:auto;
+  padding:26px 0 26px 6px;
+  border-right:1px solid var(--paper-2);
+  scrollbar-width:thin;
+}
+@media (max-width:900px){
+  .chapter-nav{
+    position:sticky; top:0; z-index:40;
+    height:auto; width:100%;
+    display:flex; overflow-x:auto; overflow-y:hidden;
+    background:var(--paper); border-right:none; border-bottom:2px solid var(--ink);
+    padding:10px 10px;
+    gap:6px;
+  }
+}
+.chapter-nav a{
+  display:flex; align-items:center; gap:10px;
+  text-decoration:none; color:var(--steel);
+  font-family:var(--font-display);
+  text-transform:uppercase;
+  font-size:.82rem; letter-spacing:.03em;
+  padding:11px 14px;
+  border-left:4px solid transparent;
+  white-space:nowrap;
+  transition:all .15s;
+}
+@media (max-width:900px){
+  .chapter-nav a{border-left:none;border-bottom:4px solid transparent;border-radius:4px 4px 0 0;}
+}
+.chapter-nav a:hover{background:var(--paper-2);}
+.chapter-nav a.active{
+  color:var(--ink);
+  background:var(--yellow);
+  border-left-color:var(--orange);
+  font-weight:600;
+}
+@media (max-width:900px){.chapter-nav a.active{border-left:none;border-bottom-color:var(--orange);}}
+.chapter-nav a .tabnum{font-family:var(--font-mono); font-size:.72rem; opacity:.65;}
+
+/* ---------- MAIN CONTENT ---------- */
+main{padding:0 0 80px;}
+
+.chapter{
+  padding:56px 6vw 20px;
+  border-bottom:1px solid var(--paper-2);
+  scroll-margin-top:14px;
+}
+.chapter-head{
+  display:flex; align-items:flex-end; gap:18px; flex-wrap:wrap;
+  margin-bottom:8px;
+}
+.chapter-tag{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  color:var(--white);
+  background:var(--green);
+  padding:4px 10px;
+  border-radius:3px;
+  letter-spacing:.06em;
+}
+.chapter h2{
+  font-family:var(--font-display);
+  text-transform:uppercase;
+  font-size:clamp(1.6rem,3.4vw,2.5rem);
+  margin:0;
+  color:var(--ink);
+}
+.chapter .subtitle{
+  color:var(--steel-2);
+  font-size:1.02rem;
+  max-width:760px;
+  margin:14px 0 30px;
+}
+
+.card{
+  background:var(--white);
+  border:1px solid var(--paper-2);
+  border-radius:var(--radius);
+  padding:22px 24px;
+  margin-bottom:22px;
+}
+.card h3{
+  font-family:var(--font-display);
+  text-transform:uppercase;
+  font-size:1.1rem;
+  margin:0 0 12px;
+  color:var(--green);
+  display:flex; align-items:center; gap:8px;
+}
+.card h3::before{content:"";width:8px;height:8px;background:var(--yellow);border-radius:2px;display:inline-block;}
+
+.grid2{display:grid; grid-template-columns:1.1fr .9fr; gap:22px;}
+@media (max-width:800px){.grid2{grid-template-columns:1fr;}}
+
+.analogy{
+  border-left:4px solid var(--blue);
+  background:#EEF4F7;
+  padding:14px 16px;
+  border-radius:0 4px 4px 0;
+  font-size:.95rem;
+  margin-top:12px;
+}
+.analogy b{color:var(--blue);}
+
+/* Diagram interactive */
+.diagram-wrap{
+  background:var(--steel);
+  border-radius:var(--radius);
+  padding:16px;
+  position:relative;
+}
+.diagram-wrap svg{width:100%; height:auto;}
+.hotspot{cursor:pointer;}
+.hotspot circle.dot{fill:var(--yellow); stroke:var(--ink); stroke-width:2;}
+.hotspot:hover circle.dot, .hotspot.active circle.dot{fill:var(--orange);}
+.hotspot text{fill:var(--white); font-family:var(--font-mono); font-size:11px; pointer-events:none;}
+.diagram-info{
+  margin-top:12px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:4px;
+  padding:12px 14px;
+  color:var(--paper);
+  font-size:.88rem;
+  min-height:58px;
+}
+.diagram-info b{color:var(--yellow);}
+.diagram-hint{color:#B9C9C2; font-size:.76rem; margin-top:8px; font-family:var(--font-mono);}
+
+/* Step stepper (4-stroke etc.) */
+.stepper{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+.stepper button{
+  font-family:var(--font-mono); font-size:.76rem;
+  border:1px solid var(--paper-2); background:var(--paper);
+  padding:7px 12px; border-radius:999px; cursor:pointer;
+  color:var(--steel-2);
+}
+.stepper button.active{background:var(--ink); color:var(--yellow); border-color:var(--ink);}
+
+/* Tools grid */
+.tool-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px;}
+.tool-card{
+  background:var(--white); border:1px solid var(--paper-2); border-radius:var(--radius);
+  padding:14px; text-align:center;
+}
+.tool-card svg{width:52px;height:52px;margin:0 auto 8px;}
+.tool-card h4{font-family:var(--font-display); font-size:.86rem; text-transform:uppercase; margin:0 0 6px;}
+.tool-card p{font-size:.78rem; color:var(--steel-2); margin:0;}
+
+/* Accordion troubleshooting */
+.accordion-item{border:1px solid var(--paper-2); border-radius:4px; margin-bottom:10px; overflow:hidden; background:var(--white);}
+.accordion-item[open] summary{background:var(--yellow); color:var(--ink);}
+summary{
+  cursor:pointer; list-style:none;
+  padding:13px 16px;
+  font-family:var(--font-display); text-transform:uppercase; font-size:.92rem;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--paper);
+}
+summary::-webkit-details-marker{display:none;}
+summary::after{content:"+"; font-family:var(--font-mono); font-size:1.1rem;}
+.accordion-item[open] summary::after{content:"–";}
+.accordion-body{padding:16px; font-size:.92rem;}
+.tbl{width:100%; border-collapse:collapse; font-size:.88rem; margin-top:6px;}
+.tbl th, .tbl td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--paper-2); vertical-align:top;}
+.tbl th{font-family:var(--font-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--steel-2); background:var(--paper);}
+.badge-cause{color:var(--orange); font-weight:600;}
+.badge-fix{color:var(--ok); font-weight:600;}
+
+/* Checklist */
+.checklist{list-style:none; padding:0; margin:0;}
+.checklist li{
+  display:flex; gap:10px; align-items:flex-start;
+  padding:8px 0; border-bottom:1px dashed var(--paper-2); font-size:.92rem;
+}
+.checklist input{margin-top:3px; accent-color:var(--green);}
+
+/* warning box */
+.warn{
+  border:2px dashed var(--danger);
+  background:#FBEAEA;
+  border-radius:4px;
+  padding:14px 16px;
+  font-size:.9rem;
+  display:flex; gap:12px; align-items:flex-start;
+  margin-top:14px;
+}
+.warn svg{flex:none; width:26px; height:26px;}
+.tip{
+  border-left:4px solid var(--ok);
+  background:#EAF5EC;
+  padding:12px 14px; border-radius:0 4px 4px 0;
+  font-size:.9rem; margin-top:14px;
+}
+
+/* method steps */
+.steps-flow{display:flex; flex-direction:column; gap:0; counter-reset:step;}
+.step-row{display:flex; gap:16px; padding:16px 0; border-bottom:1px solid var(--paper-2);}
+.step-row:last-child{border-bottom:none;}
+.step-num{
+  font-family:var(--font-display); font-size:1.6rem; color:var(--yellow-dk);
+  -webkit-text-stroke:1px var(--ink); min-width:44px;
+}
+.step-row h4{margin:0 0 4px; font-family:var(--font-display); text-transform:uppercase;}
+.step-row p{margin:0; color:var(--steel-2); font-size:.92rem;}
+
+/* footer */
+footer{
+  background:var(--ink); color:#D9D3C2; padding:40px 6vw; font-size:.85rem;
+}
+footer .fgrid{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+footer b{color:var(--yellow); font-family:var(--font-display); letter-spacing:.03em;}
+footer a{color:var(--paper);}
+
+.legend-badges{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;}
+.legend-badges span{font-family:var(--font-mono); font-size:.72rem; padding:4px 9px; border-radius:999px; border:1px solid var(--paper-2);}
+
+.print-btn{
+  font-family:var(--font-mono); font-size:.8rem;
+  background:var(--yellow); border:1px solid var(--ink); color:var(--ink);
+  padding:9px 16px; border-radius:4px; cursor:pointer; font-weight:600;
+}
+.print-btn:hover{background:var(--orange); color:var(--white);}
+
+@media print{
+  .chapter-nav, .stripe, .print-hide{display:none !important;}
+  .layout{grid-template-columns:1fr;}
+  .chapter{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-eyebrow">Modul Belajar Mandiri &middot; Diklat Basic Mechanic Course</div>
+  <h1>Buku Panduan<br><span>Mekanik Alat Berat</span> Pemula</h1>
+  <p class="lead">Ringkasan teori, diagram interaktif, dan panduan troubleshooting dari 9 materi inti Basic Mechanic Course — disusun dengan bahasa sederhana, banyak analogi sehari-hari, supaya siapa pun yang baru mulai bisa langsung paham cara kerja dan cara memperbaikinya.</p>
+  <div class="hero-meta">
+    <span>9 Bab Materi</span>
+    <span>Diagram Klik-Interaktif</span>
+    <span>Tabel Troubleshooting</span>
+    <span>Bisa Disimpan &amp; Dibuka Offline</span>
+  </div>
+  <nav class="toc" aria-label="Daftar isi">
+    <a href="#bab1"><span class="num">01</span><span class="lbl">Keselamatan Kerja</span></a>
+    <a href="#bab2"><span class="num">02</span><span class="lbl">Perkakas Dasar</span></a>
+    <a href="#bab3"><span class="num">03</span><span class="lbl">Mesin Diesel Dasar</span></a>
+    <a href="#bab4"><span class="num">04</span><span class="lbl">Powertrain &amp; Transmisi</span></a>
+    <a href="#bab5"><span class="num">05</span><span class="lbl">Sistem Hidraulik</span></a>
+    <a href="#bab6"><span class="num">06</span><span class="lbl">Kemudi &amp; Rem</span></a>
+    <a href="#bab7"><span class="num">07</span><span class="lbl">Final Drive &amp; Undercarriage</span></a>
+    <a href="#bab8"><span class="num">08</span><span class="lbl">Sistem Kelistrikan</span></a>
+    <a href="#bab9"><span class="num">09</span><span class="lbl">Metode Troubleshooting</span></a>
+  </nav>
+</header>
+<div class="stripe"></div>
+
+<div class="layout">
+  <nav class="chapter-nav" id="chapterNav" aria-label="Navigasi bab">
+    <a href="#bab1" data-tab="bab1"><span class="tabnum">01</span> Safety</a>
+    <a href="#bab2" data-tab="bab2"><span class="tabnum">02</span> Perkakas</a>
+    <a href="#bab3" data-tab="bab3"><span class="tabnum">03</span> Mesin</a>
+    <a href="#bab4" data-tab="bab4"><span class="tabnum">04</span> Powertrain</a>
+    <a href="#bab5" data-tab="bab5"><span class="tabnum">05</span> Hidraulik</a>
+    <a href="#bab6" data-tab="bab6"><span class="tabnum">06</span> Kemudi/Rem</a>
+    <a href="#bab7" data-tab="bab7"><span class="tabnum">07</span> Undercarriage</a>
+    <a href="#bab8" data-tab="bab8"><span class="tabnum">08</span> Elektrikal</a>
+    <a href="#bab9" data-tab="bab9"><span class="tabnum">09</span> Troubleshoot</a>
+  </nav>
+
+  <main>
+
+    <!-- ================= BAB 1 : SAFETY ================= -->
+    <section class="chapter" id="bab1">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 01</span>
+        <h2>Basic Safety &amp; Alat Pelindung Diri</h2>
+      </div>
+      <p class="subtitle">Sebelum memegang kunci pas, seorang mekanik wajib paham risiko di sekitarnya. Aturan sederhana: <b>tidak ada pekerjaan yang lebih penting daripada keselamatan Anda pulang dengan selamat.</b></p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Kenapa Safety Diutamakan?</h3>
+          <p>Di area alat berat, bahaya datang dari banyak arah: unit yang bergerak, tekanan hidraulik ribuan psi, komponen panas mesin, arus listrik aki, hingga benda berat yang bisa jatuh. Sebagian besar kecelakaan bukan karena unit rusak, tapi karena <b>langkah kerja yang dilewati</b>.</p>
+          <div class="analogy"><b>Analogi:</b> Anggap APD (Alat Pelindung Diri) seperti sabuk pengaman di mobil — tidak mencegah tabrakan terjadi, tapi mengurangi akibat fatal jika hal buruk terjadi.</div>
+        </div>
+        <div class="card">
+          <h3>APD Wajib Mekanik</h3>
+          <div class="tool-grid" id="ppeGrid"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>5 Aturan Emas Sebelum Mulai Kerja</h3>
+        <div class="steps-flow">
+          <div class="step-row"><div class="step-num">1</div><div><h4>Lock Out - Tag Out (LOTO)</h4><p>Matikan unit, cabut kunci kontak, pasang tanda "Jangan Dihidupkan" sebelum membuka komponen berputar atau bertekanan.</p></div></div>
+          <div class="step-row"><div class="step-num">2</div><div><h4>Turunkan Beban / Ganjal Unit</h4><p>Turunkan bucket/blade ke tanah, pasang ganjal roda, lepas tekanan sisa di sistem hidraulik sebelum membongkar selang.</p></div></div>
+          <div class="step-row"><div class="step-num">3</div><div><h4>Cek Suhu Komponen</h4><p>Biarkan mesin, radiator, dan oli dingin dulu sebelum dibuka — cairan panas bertekanan bisa menyembur.</p></div></div>
+          <div class="step-row"><div class="step-num">4</div><div><h4>Gunakan Alat yang Tepat</h4><p>Jangan memaksakan alat yang salah ukuran; kunci yang selip adalah penyebab umum tangan terluka.</p></div></div>
+          <div class="step-row"><div class="step-num">5</div><div><h4>Bersih &amp; Rapi (Housekeeping)</h4><p>Tumpahan oli dan kabel berserakan adalah penyebab terpeleset dan tersandung nomor satu di bengkel.</p></div></div>
+        </div>
+      </div>
+
+      <div class="warn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 1 21h22L12 2Z" stroke="#C1272D" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v5" stroke="#C1272D" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="#C1272D"/></svg>
+        <div><b>Bahaya tersembunyi:</b> Tekanan sisa pada selang hidraulik tetap bisa menyemprot oli bertekanan tinggi meski mesin sudah mati. Selalu turunkan tekanan sistem (release pressure) sebelum membuka fitting.</div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 2 : TOOLS ================= -->
+    <section class="chapter" id="bab2">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 02</span>
+        <h2>Perkakas &amp; Elemen Mesin Dasar</h2>
+      </div>
+      <p class="subtitle">Mengenal nama, bentuk, dan fungsi alat sebelum digunakan akan mempercepat proses belajar dan mencegah alat rusak akibat salah pakai.</p>
+
+      <div class="card">
+        <h3>Perkakas Tangan Wajib Kenal</h3>
+        <div class="tool-grid" id="toolsGrid"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Elemen Mesin Dasar (Fastener)</h3>
+          <table class="tbl">
+            <tr><th>Elemen</th><th>Fungsi Singkat</th></tr>
+            <tr><td>Baut &amp; Mur</td><td>Mengikat dua komponen agar tidak bergeser / lepas</td></tr>
+            <tr><td>Ring / Washer</td><td>Meratakan tekanan baut dan melindungi permukaan part</td></tr>
+            <tr><td>Pin &amp; Snap Ring</td><td>Mengunci posisi poros atau bearing agar tidak bergeser aksial</td></tr>
+            <tr><td>Bearing (Laher)</td><td>Mengurangi gesekan antar komponen yang berputar</td></tr>
+            <tr><td>Seal &amp; O-ring</td><td>Mencegah kebocoran oli/udara di sambungan komponen</td></tr>
+            <tr><td>Gasket</td><td>Perapat antar permukaan datar (mis. cylinder head)</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Konsep Torsi (Torque)</h3>
+          <p>Setiap baut punya nilai kekencangan standar dari pabrikan, disebut <b>torque spec</b> (satuan Nm atau lb-ft). Terlalu kendor baut bisa lepas sendiri; terlalu kencang baut bisa patah / drat rusak.</p>
+          <div class="analogy"><b>Analogi:</b> Mengencangkan baut itu seperti mengikat tali sepatu — cukup kencang agar tidak lepas, tapi tidak sampai talinya putus.</div>
+          <div class="tip">Tips pemula: selalu gunakan <b>kunci torsi (torque wrench)</b> untuk baut-baut kritikal seperti kepala silinder, roda, dan final drive.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 3 : ENGINE ================= -->
+    <section class="chapter" id="bab3">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 03</span>
+        <h2>Basic Engine — Mesin Diesel 4 Langkah</h2>
+      </div>
+      <p class="subtitle">Hampir semua alat berat menggunakan mesin diesel 4 langkah (4-stroke). Memahami siklus ini adalah pondasi untuk semua materi lanjutan.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Siklus Kerja Mesin Diesel</h3>
+          <div class="stepper" id="engineStepper"></div>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 320 260" id="engineSvg"></svg>
+          </div>
+          <div class="diagram-info" id="engineInfo">Klik tombol langkah di atas untuk melihat proses satu per satu.</div>
+        </div>
+        <div class="card">
+          <h3>Komponen Utama Engine</h3>
+          <div class="diagram-wrap" style="background:var(--white); border:1px solid var(--paper-2);">
+            <svg viewBox="0 0 300 300" id="engineParts"></svg>
+          </div>
+          <div class="diagram-info" style="background:#F2EEE0; color:var(--ink); border-color:var(--paper-2);" id="enginePartsInfo">Klik salah satu titik kuning pada gambar untuk melihat nama &amp; fungsi komponen.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Perawatan Dasar (Basic Maintenance)</h3>
+        <ul class="checklist" id="maintChecklist"></ul>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting Mesin Umum</h3>
+        <div id="engineTrouble"></div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 4 : POWERTRAIN ================= -->
+    <section class="chapter" id="bab4">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 04</span>
+        <h2>Direct Drive System &amp; Torqflow Transmission</h2>
+      </div>
+      <p class="subtitle">Powertrain adalah jalur penyaluran tenaga dari mesin sampai roda / track. Ada dua pendekatan umum: <b>Direct Drive</b> (mekanikal, pakai kopling &amp; gigi) dan <b>Torqflow / Torque Converter</b> (menggunakan fluida oli).</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Direct Drive System</h3>
+          <p>Tenaga dari mesin disalurkan lewat kopling mekanis dan susunan roda gigi (gearbox) langsung ke poros output. Perpindahan tenaga terasa "tegas" karena minim slip.</p>
+          <div class="analogy"><b>Analogi:</b> Seperti sepeda dengan rantai — kayuhan Anda (mesin) langsung memutar roda belakang lewat rantai (gigi), tanpa media perantara cairan.</div>
+        </div>
+        <div class="card">
+          <h3>Torqflow Transmission (Torque Converter)</h3>
+          <p>Menggunakan oli sebagai media penyalur tenaga antara mesin dan transmisi, sehingga perpindahan tenaga lebih halus dan mampu melipatgandakan torsi saat start dari diam.</p>
+          <div class="analogy"><b>Analogi:</b> Seperti dua kipas angin yang saling berhadapan — kipas pertama (mesin) berputar meniup angin ke kipas kedua (transmisi) sehingga ikut berputar, tanpa tersambung fisik secara kaku.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting Powertrain</h3>
+        <div id="powertrainTrouble"></div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 5 : HYDRAULIC ================= -->
+    <section class="chapter" id="bab5">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 05</span>
+        <h2>Sistem Hidraulik</h2>
+      </div>
+      <p class="subtitle">Sistem hidraulik memindahkan tenaga menggunakan <b>oli bertekanan</b>, sehingga tenaga kecil dari pompa bisa menghasilkan gaya sangat besar di cylinder — inilah yang menggerakkan bucket, blade, dan boom.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Alur Kerja Sistem Hidraulik</h3>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 340 240" id="hydSvg"></svg>
+          </div>
+          <div class="diagram-info" id="hydInfo">Klik komponen pada diagram untuk melihat penjelasan alurnya.</div>
+          <div class="diagram-hint">Urutan aliran: Tanki → Pompa → Katup Kontrol → Aktuator (Cylinder) → kembali ke Tanki.</div>
+        </div>
+        <div class="card">
+          <h3>Konsep Dasar Hukum Pascal</h3>
+          <p>Tekanan yang diberikan pada fluida di ruang tertutup akan diteruskan sama besar ke segala arah. Semakin besar luas permukaan piston, semakin besar gaya dorong yang dihasilkan dari tekanan yang sama.</p>
+          <div class="analogy"><b>Analogi:</b> Seperti menekan ujung selang berisi air — tekanan jari Anda di satu ujung akan terasa di ujung lain, meski tanpa kabel atau gigi penyambung.</div>
+          <div class="tip">Satuan tekanan hidraulik biasanya <b>PSI</b> atau <b>Bar/Kg-cm²</b>. Selalu cek tekanan sesuai spesifikasi di manual unit, jangan mengira-ngira.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting Hidraulik</h3>
+        <div id="hydTrouble"></div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 6 : STEERING & BRAKE ================= -->
+    <section class="chapter" id="bab6">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 06</span>
+        <h2>Sistem Kemudi (Steering) &amp; Rem (Brake)</h2>
+      </div>
+      <p class="subtitle">Dua sistem yang paling menentukan keselamatan operator: kemampuan mengarahkan unit dan kemampuan menghentikannya.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Sistem Kemudi Hidraulik (Power Steering)</h3>
+          <p>Pada alat berat, kemudi umumnya dibantu tenaga hidraulik (power steering) agar operator tidak perlu tenaga besar untuk membelokkan unit yang berat.</p>
+          <ul>
+            <li><b>Steering wheel / joystick</b> — input arah dari operator</li>
+            <li><b>Steering control valve</b> — mengatur arah aliran oli</li>
+            <li><b>Steering cylinder</b> — mendorong roda / artikulasi unit</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Sistem Rem (Brake System)</h3>
+          <p>Rem hidraulik bekerja dengan menekan oli dari master cylinder ke brake chamber, yang kemudian menekan kampas rem ke disc/drum untuk memperlambat putaran roda.</p>
+          <div class="analogy"><b>Analogi:</b> Sama seperti sistem hidraulik lain — sedikit tekanan kaki di pedal diperbesar oleh sistem menjadi gaya jepit yang kuat di roda.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting Kemudi &amp; Rem</h3>
+        <div id="steerTrouble"></div>
+      </div>
+
+      <div class="warn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 1 21h22L12 2Z" stroke="#C1272D" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v5" stroke="#C1272D" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="#C1272D"/></svg>
+        <div><b>Jangan pernah</b> mengoperasikan unit bila pedal rem terasa "dalam" atau lampu indikator rem menyala — parkirkan unit dan laporkan ke atasan/mekanik senior.</div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 7 : UNDERCARRIAGE ================= -->
+    <section class="chapter" id="bab7">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 07</span>
+        <h2>Final Drive, Axle &amp; Undercarriage</h2>
+      </div>
+      <p class="subtitle">Bagian ini adalah "kaki" alat berat — final drive mereduksi putaran menjadi torsi besar, sementara undercarriage (untuk unit crawler) menahan seluruh beban unit di atas track.</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Komponen Undercarriage (Unit Crawler)</h3>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 380 200" id="ucSvg"></svg>
+          </div>
+          <div class="diagram-info" id="ucInfo">Klik komponen pada gambar untuk melihat fungsinya.</div>
+        </div>
+        <div class="card">
+          <h3>Final Drive &amp; Axle Wheel Suspension</h3>
+          <p><b>Final drive</b> adalah reduksi gigi terakhir sebelum roda/sprocket, mengubah putaran cepat bertorsi kecil dari transmisi menjadi putaran lambat bertorsi besar.</p>
+          <p><b>Axle &amp; suspension</b> pada unit roda ban menopang beban unit sekaligus menyerap guncangan dari medan kerja agar komponen lain tidak cepat rusak.</p>
+          <div class="tip">Inspeksi rutin: cek level oli final drive, cari rembesan oli di seal, dan dengarkan suara kasar/berdengung saat unit berjalan pelan.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Panduan Cepat: Cara Cek Keausan Track (Undercarriage)</h3>
+        <div class="steps-flow">
+          <div class="step-row"><div class="step-num">1</div><div><h4>Parkir di permukaan rata</h4><p>Pastikan unit mati dan aman sebelum inspeksi (ikuti LOTO Bab 1).</p></div></div>
+          <div class="step-row"><div class="step-num">2</div><div><h4>Periksa ketegangan track</h4><p>Track yang terlalu kendor mempercepat aus pada sprocket dan idler.</p></div></div>
+          <div class="step-row"><div class="step-num">3</div><div><h4>Cek ketebalan track shoe &amp; link</h4><p>Bandingkan dengan spesifikasi minimum di manual; jika sudah tipis, ganti sebelum patah di lapangan.</p></div></div>
+          <div class="step-row"><div class="step-num">4</div><div><h4>Cek kebocoran oli roller/idler</h4><p>Rembesan oli menandakan seal rusak dan roller berisiko cepat aus/macet.</p></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting Undercarriage &amp; Final Drive</h3>
+        <div id="ucTrouble"></div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 8 : ELECTRICAL ================= -->
+    <section class="chapter" id="bab8">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 08</span>
+        <h2>Sistem Kelistrikan Dasar</h2>
+      </div>
+      <p class="subtitle">Kelistrikan alat berat mengatur starting, penerangan, indikator panel, hingga sistem keamanan tambahan (autolube, fire suppression, AC).</p>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Alur Rangkaian Kelistrikan Dasar</h3>
+          <div class="diagram-wrap">
+            <svg viewBox="0 0 340 200" id="elecSvg"></svg>
+          </div>
+          <div class="diagram-info" id="elecInfo">Klik komponen untuk melihat penjelasan alur arus listrik.</div>
+        </div>
+        <div class="card">
+          <h3>Dasar Membaca Multitester</h3>
+          <table class="tbl">
+            <tr><th>Mode</th><th>Kegunaan</th></tr>
+            <tr><td>DCV (Voltage)</td><td>Cek tegangan aki / suplai listrik komponen</td></tr>
+            <tr><td>Ohm (Ω)</td><td>Cek putus/tidaknya kabel atau nilai resistansi part</td></tr>
+            <tr><td>Continuity (bunyi "tit")</td><td>Cek cepat apakah kabel/fuse masih tersambung</td></tr>
+            <tr><td>DCA (Ampere)</td><td>Cek arus yang mengalir pada rangkaian (perlu kehati-hatian)</td></tr>
+          </table>
+          <div class="tip">Aturan aman: selalu mulai pengukuran dari rentang (range) tertinggi bila menggunakan multitester analog/manual.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting Kelistrikan</h3>
+        <div id="elecTrouble"></div>
+      </div>
+
+      <div class="card">
+        <h3>Materi Pendukung Lain di Kelistrikan &amp; Kenyamanan Kabin</h3>
+        <div class="grid2">
+          <div>
+            <h4 style="font-family:var(--font-display);text-transform:uppercase;">Basic Autolube</h4>
+            <p style="font-size:.9rem;color:var(--steel-2)">Sistem pelumasan otomatis (grease) berkala ke titik-titik pin/bushing agar mekanik tidak perlu grease manual satu per satu — cek level grease reservoir dan jalur selang secara rutin.</p>
+          </div>
+          <div>
+            <h4 style="font-family:var(--font-display);text-transform:uppercase;">Basic Fire Suppression</h4>
+            <p style="font-size:.9rem;color:var(--steel-2)">Sistem pemadam otomatis yang mendeteksi panas berlebih di area mesin dan menyemprotkan agen pemadam — pastikan tabung bertekanan, nozzle tidak tersumbat, dan tanggal kadaluarsa selalu dicek.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 9 : TROUBLESHOOTING METHOD ================= -->
+    <section class="chapter" id="bab9">
+      <div class="chapter-head">
+        <span class="chapter-tag">Bab 09</span>
+        <h2>Metode Basic Troubleshooting</h2>
+      </div>
+      <p class="subtitle">Troubleshooting yang baik bukan menebak, tapi mengikuti alur logis dari gejala menuju akar masalah. Gunakan 5 langkah berikut untuk semua sistem di atas.</p>
+
+      <div class="card">
+        <h3>5 Langkah Troubleshooting Sistematis</h3>
+        <div class="steps-flow">
+          <div class="step-row"><div class="step-num">1</div><div><h4>Kumpulkan Gejala (Symptom)</h4><p>Tanyakan ke operator: kapan terjadi, seberapa sering, ada suara/bau/asap aneh?</p></div></div>
+          <div class="step-row"><div class="step-num">2</div><div><h4>Verifikasi Masalah</h4><p>Coba ulangi kondisi tersebut sendiri (bila aman) untuk memastikan gejala benar terjadi, bukan salah operasional.</p></div></div>
+          <div class="step-row"><div class="step-num">3</div><div><h4>Analisis Sistem Terkait</h4><p>Gunakan diagram sistem (seperti pada Bab 3–8) untuk mempersempit kemungkinan penyebab — mulai dari yang paling sederhana &amp; murah dicek.</p></div></div>
+          <div class="step-row"><div class="step-num">4</div><div><h4>Uji &amp; Perbaiki</h4><p>Cek satu per satu kemungkinan dari yang paling mudah diverifikasi, lalu lakukan perbaikan sesuai standar (torque spec, part book).</p></div></div>
+          <div class="step-row"><div class="step-num">5</div><div><h4>Uji Ulang &amp; Dokumentasikan</h4><p>Jalankan unit untuk memastikan gejala hilang, lalu catat di laporan kerja / part book untuk riwayat perawatan.</p></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Kenapa "Part Book Reading" Penting?</h3>
+        <p>Part book / service manual adalah "kamus resmi" setiap unit: nomor part, urutan bongkar-pasang, dan spesifikasi teknis (torque, clearance, kapasitas oli). Mekanik pemula yang terbiasa membaca part book akan jauh lebih cepat naik level dibanding yang hanya mengandalkan hafalan.</p>
+        <div class="tip">Kebiasaan baik: setiap kali membongkar komponen baru, buka dulu part book / manual unit tersebut — jangan mengandalkan ingatan dari unit lain yang mungkin berbeda model.</div>
+      </div>
+
+      <div class="card print-hide">
+        <h3>Cetak / Simpan Sebagai PDF</h3>
+        <p style="font-size:.9rem;color:var(--steel-2);margin-bottom:12px;">Gunakan tombol di bawah untuk mencetak halaman ini atau menyimpannya sebagai PDF melalui dialog cetak browser Anda.</p>
+        <button class="print-btn" onclick="window.print()">🖨️ Cetak Halaman Ini</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="fgrid">
+    <div>
+      <b>BUKU PANDUAN BMC</b>
+      <p style="margin:8px 0 0;max-width:420px;">Materi ringkasan pembelajaran mandiri untuk Diklat Basic Mechanic Course. Selalu rujuk manual resmi unit dan instruksi instruktur/K3 di tempat kerja untuk prosedur baku yang mengikat.</p>
+    </div>
+    <div>
+      <b>Disusun untuk pemula</b>
+      <p style="margin:8px 0 0;">File ini dapat disimpan (Ctrl/Cmd+S) dan dibuka kembali secara offline di browser mana pun.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------------- helper to build SVG hotspot elements ---------------- */
+function hotspotEl(x,y,label){
+  return `<g class="hotspot" tabindex="0" role="button" aria-label="${label}">
+    <circle class="dot" cx="${x}" cy="${y}" r="7"></circle>
+  </g>`;
+}
+
+/* ================= PPE grid ================= */
+const ppeItems = [
+  {name:"Helm Safety", icon:`<svg viewBox="0 0 64 64"><path d="M8 40c0-14 10-26 24-26s24 12 24 26" fill="none" stroke="#F5B700" stroke-width="4"/><rect x="6" y="38" width="52" height="8" rx="3" fill="#243230"/><rect x="28" y="10" width="8" height="8" fill="#F5B700"/></svg>`, desc:"Melindungi kepala dari benturan &amp; benda jatuh."},
+  {name:"Kacamata Safety", icon:`<svg viewBox="0 0 64 64"><circle cx="20" cy="32" r="12" fill="none" stroke="#3E6E8E" stroke-width="4"/><circle cx="44" cy="32" r="12" fill="none" stroke="#3E6E8E" stroke-width="4"/><line x1="32" y1="32" x2="32" y2="32" stroke="#3E6E8E" stroke-width="4"/><line x1="8" y1="26" x2="2" y2="22" stroke="#3E6E8E" stroke-width="3"/><line x1="56" y1="26" x2="62" y2="22" stroke="#3E6E8E" stroke-width="3"/></svg>`, desc:"Melindungi mata dari serpihan &amp; percikan oli."},
+  {name:"Sarung Tangan", icon:`<svg viewBox="0 0 64 64"><path d="M18 58V30c0-3 2-5 5-5s5 2 5 5v-8c0-3 2-5 5-5s5 2 5 5v6c0-3 2-5 5-5s5 2 5 5v10c3 0 5 2 5 5v20c0 4-3 7-7 7H25c-4 0-7-3-7-7Z" fill="none" stroke="#E1560A" stroke-width="3.5" stroke-linejoin="round"/></svg>`, desc:"Melindungi tangan dari benda tajam &amp; panas."},
+  {name:"Sepatu Safety", icon:`<svg viewBox="0 0 64 64"><path d="M8 50h44c4 0 8-3 8-7l-16-4-8-10H16l-2 8-6 4Z" fill="none" stroke="#2D5A4A" stroke-width="4" stroke-linejoin="round"/><rect x="6" y="50" width="54" height="6" rx="2" fill="#2D5A4A"/></svg>`, desc:"Ujung baja melindungi kaki dari benda berat."},
+  {name:"Masker/Respirator", icon:`<svg viewBox="0 0 64 64"><path d="M14 30c0-6 8-10 18-10s18 4 18 10-6 20-18 20-18-14-18-20Z" fill="none" stroke="#C1272D" stroke-width="3.5"/><circle cx="24" cy="30" r="3" fill="#C1272D"/><circle cx="40" cy="30" r="3" fill="#C1272D"/></svg>`, desc:"Melindungi paru-paru dari debu &amp; asap las."},
+  {name:"Rompi Reflektif", icon:`<svg viewBox="0 0 64 64"><path d="M20 14 32 20l12-6 8 10-6 30H18l-6-30Z" fill="none" stroke="#F5B700" stroke-width="4" stroke-linejoin="round"/><line x1="20" y1="30" x2="44" y2="30" stroke="#243230" stroke-width="3"/></svg>`, desc:"Membuat mekanik terlihat jelas di area unit."}
+];
+document.getElementById('ppeGrid').innerHTML = ppeItems.map(i=>`<div class="tool-card">${i.icon}<h4>${i.name}</h4><p>${i.desc}</p></div>`).join('');
+
+/* ================= Tools grid ================= */
+const tools = [
+  {name:"Kunci Pas / Ring", icon:`<svg viewBox="0 0 64 64"><path d="M10 14a10 10 0 0 1 16 8l24 24-6 6-24-24a10 10 0 0 1-10-14Z" fill="none" stroke="#243230" stroke-width="3.5" stroke-linejoin="round"/></svg>`, desc:"Mengencangkan/melepas baut &amp; mur."},
+  {name:"Kunci Sok", icon:`<svg viewBox="0 0 64 64"><rect x="24" y="8" width="16" height="22" rx="3" fill="none" stroke="#3E6E8E" stroke-width="3.5"/><line x1="32" y1="30" x2="32" y2="52" stroke="#3E6E8E" stroke-width="4"/><line x1="18" y1="52" x2="46" y2="52" stroke="#3E6E8E" stroke-width="4"/></svg>`, desc:"Untuk baut sulit dijangkau, kerja lebih cepat."},
+  {name:"Kunci Torsi", icon:`<svg viewBox="0 0 64 64"><line x1="14" y1="46" x2="40" y2="20" stroke="#E1560A" stroke-width="4"/><circle cx="46" cy="14" r="8" fill="none" stroke="#E1560A" stroke-width="3.5"/><path d="M10 50h10v6H10z" fill="#E1560A"/></svg>`, desc:"Mengencangkan baut sesuai spesifikasi (Nm)."},
+  {name:"Obeng (+/-)", icon:`<svg viewBox="0 0 64 64"><rect x="26" y="6" width="12" height="10" rx="2" fill="#F5B700"/><line x1="32" y1="16" x2="32" y2="50" stroke="#243230" stroke-width="5"/><path d="M32 50 26 58h12Z" fill="#243230"/></svg>`, desc:"Melepas/memasang sekrup."},
+  {name:"Tang Kombinasi", icon:`<svg viewBox="0 0 64 64"><path d="M20 8 32 30 44 8" fill="none" stroke="#2D5A4A" stroke-width="4" stroke-linejoin="round"/><line x1="32" y1="30" x2="20" y2="58" stroke="#2D5A4A" stroke-width="4"/><line x1="32" y1="30" x2="44" y2="58" stroke="#2D5A4A" stroke-width="4"/></svg>`, desc:"Menjepit, memotong, menekuk kawat/kabel."},
+  {name:"Palu", icon:`<svg viewBox="0 0 64 64"><rect x="10" y="10" width="26" height="14" rx="2" fill="#243230"/><line x1="30" y1="24" x2="52" y2="54" stroke="#8a6a3a" stroke-width="5" stroke-linecap="round"/></svg>`, desc:"Memberi impact ringan saat pemasangan pin/pasak."},
+  {name:"Dongkrak (Jack)", icon:`<svg viewBox="0 0 64 64"><rect x="8" y="46" width="48" height="8" rx="2" fill="#243230"/><path d="M18 46 32 20l14 26Z" fill="none" stroke="#F5B700" stroke-width="4" stroke-linejoin="round"/></svg>`, desc:"Mengangkat unit untuk akses bagian bawah."},
+  {name:"Multitester", icon:`<svg viewBox="0 0 64 64"><rect x="12" y="10" width="40" height="30" rx="3" fill="none" stroke="#3E6E8E" stroke-width="3.5"/><circle cx="32" cy="25" r="7" fill="none" stroke="#3E6E8E" stroke-width="3"/><line x1="20" y1="40" x2="16" y2="56" stroke="#C1272D" stroke-width="3"/><line x1="44" y1="40" x2="48" y2="56" stroke="#243230" stroke-width="3"/></svg>`, desc:"Mengukur tegangan, arus, dan hambatan listrik."}
+];
+document.getElementById('toolsGrid').innerHTML = tools.map(i=>`<div class="tool-card">${i.icon}<h4>${i.name}</h4><p>${i.desc}</p></div>`).join('');
+
+/* ================= Maintenance checklist ================= */
+const maint = [
+  "Cek level oli mesin (dipstick) sebelum start harian",
+  "Cek level air radiator / coolant",
+  "Cek indikator air cleaner / filter udara",
+  "Buang air &amp; sedimen dari water separator bahan bakar",
+  "Periksa kekencangan V-belt / fan belt",
+  "Periksa kebocoran oli di sekitar mesin",
+  "Dengarkan suara mesin saat idle — catat bila ada suara asing"
+];
+document.getElementById('maintChecklist').innerHTML = maint.map(m=>`<li><input type="checkbox"><span>${m}</span></li>`).join('');
+
+/* ================= Accordion builder ================= */
+function buildAccordion(containerId, items){
+  const html = items.map((it,idx)=>`
+    <details class="accordion-item" ${idx===0?'open':''}>
+      <summary>${it.gejala}</summary>
+      <div class="accordion-body">
+        <table class="tbl">
+          <tr><th>Kemungkinan Penyebab</th><th>Cara Mengatasi</th></tr>
+          ${it.rows.map(r=>`<tr><td class="badge-cause">${r.cause}</td><td class="badge-fix">${r.fix}</td></tr>`).join('')}
+        </table>
+      </div>
+    </details>`).join('');
+  document.getElementById(containerId).innerHTML = html;
+}
+
+buildAccordion('engineTrouble', [
+  {gejala:"Mesin sulit / tidak mau start", rows:[
+    {cause:"Aki lemah / terminal kotor", fix:"Cas ulang aki, bersihkan &amp; kencangkan terminal"},
+    {cause:"Udara masuk ke sistem bahan bakar", fix:"Lakukan bleeding / buang angin pada saluran bahan bakar"},
+    {cause:"Filter bahan bakar tersumbat", fix:"Ganti filter solar sesuai jadwal servis"}
+  ]},
+  {gejala:"Asap knalpot hitam pekat", rows:[
+    {cause:"Filter udara kotor/tersumbat", fix:"Bersihkan atau ganti filter udara"},
+    {cause:"Injektor bahan bakar bermasalah", fix:"Kalibrasi/servis injektor oleh teknisi fuel system"}
+  ]},
+  {gejala:"Mesin overheat (suhu tinggi)", rows:[
+    {cause:"Air radiator kurang / bocor", fix:"Tambah coolant, cek &amp; tambal kebocoran"},
+    {cause:"Kisi radiator tersumbat kotoran", fix:"Bersihkan sirip radiator dengan udara bertekanan"},
+    {cause:"V-belt kendor/putus (water pump tak berputar)", fix:"Setel ketegangan atau ganti belt"}
+  ]}
+]);
+
+buildAccordion('powertrainTrouble', [
+  {gejala:"Perpindahan gigi terasa kasar/menghentak", rows:[
+    {cause:"Level oli transmisi kurang", fix:"Tambah oli transmisi sesuai spesifikasi"},
+    {cause:"Kampas kopling aus", fix:"Inspeksi &amp; ganti kampas kopling"}
+  ]},
+  {gejala:"Unit terasa 'ngempos' saat menanjak", rows:[
+    {cause:"Torque converter aus/slip", fix:"Servis atau ganti unit torque converter"},
+    {cause:"Filter oli transmisi tersumbat", fix:"Ganti filter oli transmisi"}
+  ]},
+  {gejala:"Suara berisik dari area transmisi", rows:[
+    {cause:"Gigi transmisi aus/gompal", fix:"Bongkar &amp; periksa kondisi gear set"},
+    {cause:"Bearing poros output aus", fix:"Ganti bearing yang rusak"}
+  ]}
+]);
+
+buildAccordion('hydTrouble', [
+  {gejala:"Gerakan hidraulik (bucket/blade) lambat", rows:[
+    {cause:"Level oli hidraulik kurang", fix:"Tambah oli sesuai level yang ditentukan"},
+    {cause:"Filter hidraulik tersumbat", fix:"Ganti elemen filter hidraulik"},
+    {cause:"Pompa hidraulik mulai aus", fix:"Cek tekanan output pompa, servis bila di bawah spesifikasi"}
+  ]},
+  {gejala:"Ada suara berdengung/berisik dari pompa", rows:[
+    {cause:"Oli hidraulik kotor/teraerasi (banyak udara)", fix:"Ganti oli, cek kebocoran udara di sisi hisap pompa"},
+    {cause:"Level oli terlalu rendah", fix:"Tambah oli hingga level normal"}
+  ]},
+  {gejala:"Cylinder turun sendiri (drift) saat berhenti", rows:[
+    {cause:"Seal piston cylinder aus/bocor", fix:"Ganti seal kit cylinder"},
+    {cause:"Katup kontrol (control valve) bocor internal", fix:"Servis/ganti spool control valve"}
+  ]}
+]);
+
+buildAccordion('steerTrouble', [
+  {gejala:"Kemudi terasa berat", rows:[
+    {cause:"Tekanan sistem power steering kurang", fix:"Cek &amp; setel tekanan sesuai spesifikasi"},
+    {cause:"Level oli steering rendah", fix:"Tambah oli hidraulik steering"}
+  ]},
+  {gejala:"Pedal rem terasa dalam/lembek", rows:[
+    {cause:"Ada udara dalam sistem rem", fix:"Lakukan bleeding sistem rem"},
+    {cause:"Kampas rem sudah tipis", fix:"Ganti kampas rem"}
+  ]},
+  {gejala:"Unit menarik ke satu sisi saat direm", rows:[
+    {cause:"Keausan kampas rem tidak merata", fix:"Ganti kampas rem secara sepasang/merata"},
+    {cause:"Piston caliper/brake chamber macet", fix:"Servis atau ganti unit caliper/chamber"}
+  ]}
+]);
+
+buildAccordion('ucTrouble', [
+  {gejala:"Suara kasar/berdengung dari final drive", rows:[
+    {cause:"Level oli final drive kurang", fix:"Tambah oli sesuai spesifikasi kapasitas"},
+    {cause:"Gigi reduksi internal aus", fix:"Bongkar &amp; periksa kondisi gear set"}
+  ]},
+  {gejala:"Track kendor berlebihan / sering lepas", rows:[
+    {cause:"Ketegangan track belum disetel", fix:"Setel ulang ketegangan track sesuai spesifikasi"},
+    {cause:"Idler/sprocket sudah aus parah", fix:"Ganti komponen yang aus"}
+  ]},
+  {gejala:"Rembesan oli di area roller/idler", rows:[
+    {cause:"Seal roller/idler rusak", fix:"Ganti seal &amp; cek level oli internal"}
+  ]}
+]);
+
+buildAccordion('elecTrouble', [
+  {gejala:"Lampu indikator redup / aki cepat soak", rows:[
+    {cause:"Alternator tidak mengisi optimal", fix:"Cek tegangan output alternator saat mesin hidup"},
+    {cause:"Terminal aki kotor/kendor", fix:"Bersihkan &amp; kencangkan terminal"}
+  ]},
+  {gejala:"Salah satu lampu/indikator mati total", rows:[
+    {cause:"Fuse (sekring) putus", fix:"Ganti fuse dengan ampere yang sama persis"},
+    {cause:"Kabel putus/konsleting", fix:"Telusuri kabel dengan multitester mode continuity"}
+  ]},
+  {gejala:"Starter tidak bereaksi sama sekali", rows:[
+    {cause:"Aki soak/tegangan drop", fix:"Cas ulang atau ganti aki"},
+    {cause:"Relay/solenoid starter rusak", fix:"Cek &amp; ganti relay starter"}
+  ]}
+]);
+
+/* ================= ENGINE 4-STROKE INTERACTIVE ================= */
+const strokes = [
+  {name:"1. Intake", desc:"Piston bergerak turun, katup masuk (intake valve) terbuka, udara segar masuk ke ruang bakar."},
+  {name:"2. Compression", desc:"Kedua katup tertutup, piston naik memampatkan udara hingga bertekanan &amp; bersuhu sangat tinggi."},
+  {name:"3. Power", desc:"Bahan bakar diinjeksikan ke udara panas bertekanan sehingga terbakar sendiri (self-ignition), mendorong piston turun dengan kuat."},
+  {name:"4. Exhaust", desc:"Piston naik kembali, katup buang (exhaust valve) terbuka, gas sisa pembakaran didorong keluar."}
+];
+const stepperEl = document.getElementById('engineStepper');
+stepperEl.innerHTML = strokes.map((s,i)=>`<button data-i="${i}" class="${i===0?'active':''}">${s.name}</button>`).join('');
+
+function renderEngineStroke(i){
+  const svg = document.getElementById('engineSvg');
+  const pistonY = [140,90,60,110][i]; // simple visual variation per stroke
+  const valveIn = i===0 ? 1:0;
+  const valveEx = i===3 ? 1:0;
+  svg.innerHTML = `
+    <rect x="90" y="30" width="140" height="200" fill="none" stroke="#F5B700" stroke-width="3" rx="6"/>
+    <rect x="100" y="${pistonY}" width="120" height="34" fill="#F5B700" rx="4"/>
+    <line x1="160" y1="${pistonY+34}" x2="160" y2="230" stroke="#EFE9D8" stroke-width="8"/>
+    <rect x="110" y="34" width="24" height="${10+valveIn*14}" fill="#3E6E8E"/>
+    <rect x="186" y="34" width="24" height="${10+valveEx*14}" fill="#E1560A"/>
+    <text x="160" y="20" text-anchor="middle" fill="#EFE9D8" font-family="JetBrains Mono" font-size="11">${strokes[i].name}</text>
+    <text x="122" y="60" fill="#3E6E8E" font-family="JetBrains Mono" font-size="9" text-anchor="middle">IN</text>
+    <text x="198" y="60" fill="#E1560A" font-family="JetBrains Mono" font-size="9" text-anchor="middle">EX</text>
+  `;
+  document.getElementById('engineInfo').innerHTML = `<b>${strokes[i].name}</b><br>${strokes[i].desc}`;
+  [...stepperEl.children].forEach((b,idx)=>b.classList.toggle('active', idx===i));
+}
+stepperEl.addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  renderEngineStroke(+btn.dataset.i);
+});
+renderEngineStroke(0);
+
+/* ================= ENGINE PARTS HOTSPOTS ================= */
+const engineParts = [
+  {x:150, y:60, name:"Cylinder Head", desc:"Menutup ruang bakar bagian atas, tempat katup &amp; injektor terpasang."},
+  {x:150, y:140, name:"Piston &amp; Ring", desc:"Bergerak naik-turun mengubah tekanan pembakaran menjadi gerak mekanis."},
+  {x:150, y:210, name:"Crankshaft", desc:"Mengubah gerak naik-turun piston menjadi gerak putar (rotasi)."},
+  {x:70, y:110, name:"Camshaft", desc:"Mengatur waktu buka-tutup katup intake &amp; exhaust."},
+  {x:230, y:100, name:"Fuel Injector", desc:"Menyemprotkan bahan bakar bertekanan tinggi ke ruang bakar."},
+  {x:230, y:200, name:"Oil Pan", desc:"Menampung oli pelumas mesin di bagian paling bawah."}
+];
+const partsSvg = document.getElementById('engineParts');
+partsSvg.innerHTML = `
+  <rect x="90" y="30" width="120" height="220" fill="none" stroke="#243230" stroke-width="2.5" rx="8"/>
+  <line x1="90" y1="90" x2="210" y2="90" stroke="#243230" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="90" y1="180" x2="210" y2="180" stroke="#243230" stroke-width="1.5" stroke-dasharray="3 3"/>
+  ${engineParts.map(p=>hotspotEl(p.x,p.y,p.name)).join('')}
+`;
+partsSvg.querySelectorAll('.hotspot').forEach((el,idx)=>{
+  const p = engineParts[idx];
+  const activate = ()=>{
+    partsSvg.querySelectorAll('.hotspot').forEach(h=>h.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('enginePartsInfo').innerHTML = `<b>${p.name}</b><br>${p.desc}`;
+  };
+  el.addEventListener('click', activate);
+  el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
+});
+
+/* ================= Generic hotspot-diagram builder ================= */
+function buildFlowDiagram(svgEl, infoElId, nodes, connectorPath){
+  svgEl.innerHTML = `
+    <path d="${connectorPath}" fill="none" stroke="#EFE9D8" stroke-width="2.5" stroke-dasharray="5 5" opacity=".55"/>
+    ${nodes.map(n=>`
+      <g>
+        <rect x="${n.x-38}" y="${n.y-16}" width="76" height="32" rx="6" fill="rgba(255,255,255,.06)" stroke="#3E4E4C"/>
+        <text x="${n.x}" y="${n.y+4}" text-anchor="middle" fill="#EFE9D8" font-family="JetBrains Mono" font-size="9.5">${n.short}</text>
+      </g>
+      <g class="hotspot" tabindex="0" role="button" aria-label="${n.name}">
+        <circle class="dot" cx="${n.x}" cy="${n.y-16}" r="6"></circle>
+      </g>
+    `).join('')}
+  `;
+  svgEl.querySelectorAll('.hotspot').forEach((el,idx)=>{
+    const n = nodes[idx];
+    const activate = ()=>{
+      svgEl.querySelectorAll('.hotspot').forEach(h=>h.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById(infoElId).innerHTML = `<b>${n.name}</b><br>${n.desc}`;
+    };
+    el.addEventListener('click', activate);
+    el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
+  });
+}
+
+/* Hydraulic loop */
+buildFlowDiagram(document.getElementById('hydSvg'),'hydInfo',[
+  {x:50,y:130,short:"TANKI",name:"Reservoir (Tanki Oli)",desc:"Menyimpan oli hidraulik dan melepaskan panas/udara sebelum disirkulasikan kembali."},
+  {x:140,y:60,short:"POMPA",name:"Hydraulic Pump",desc:"Mengubah tenaga mekanis mesin menjadi aliran oli bertekanan."},
+  {x:230,y:60,short:"KATUP",name:"Control Valve",desc:"Mengatur arah &amp; jumlah aliran oli menuju aktuator sesuai perintah operator."},
+  {x:300,y:130,short:"CYLINDER",name:"Aktuator (Cylinder)",desc:"Mengubah tekanan oli menjadi gerak dorong/tarik pada bucket, blade, atau boom."},
+  {x:140,y:190,short:"FILTER",name:"Filter Oli",desc:"Menyaring kotoran agar tidak merusak komponen presisi di pompa &amp; katup."}
+], "M50 130 L140 60 L230 60 L300 130 L140 190 L50 130");
+
+/* Electrical circuit */
+buildFlowDiagram(document.getElementById('elecSvg'),'elecInfo',[
+  {x:50,y:100,short:"AKI",name:"Baterai (Aki)",desc:"Sumber energi listrik utama untuk starting &amp; sistem kelistrikan."},
+  {x:140,y:60,short:"KONTAK",name:"Kunci Kontak",desc:"Saklar utama yang menyalurkan/mematuskan arus ke seluruh sistem."},
+  {x:230,y:60,short:"SEKRING",name:"Fuse / Sekring",desc:"Pengaman yang putus lebih dulu bila terjadi arus berlebih, melindungi komponen lain."},
+  {x:290,y:130,short:"BEBAN",name:"Beban Listrik (Starter/Lampu)",desc:"Komponen yang bekerja menggunakan arus listrik, misalnya motor starter &amp; lampu."},
+  {x:140,y:170,short:"GROUND",name:"Ground / Massa",desc:"Jalur kembalinya arus ke aki, biasanya lewat rangka/body unit."}
+], "M50 100 L140 60 L230 60 L290 130 L140 170 L50 100");
+
+/* Undercarriage */
+function buildUCDiagram(){
+  const svg = document.getElementById('ucSvg');
+  const nodes = [
+    {x:60,y:150,short:"IDLER",name:"Front Idler",desc:"Menjaga jalur track di bagian depan &amp; meredam kejut."},
+    {x:150,y:60,short:"CARRIER",name:"Carrier Roller",desc:"Menopang bagian atas track agar tidak melorot/kendor berlebihan."},
+    {x:320,y:150,short:"SPROCKET",name:"Sprocket (Final Drive)",desc:"Menggerakkan track dengan menyalurkan torsi dari final drive."},
+    {x:150,y:170,short:"ROLLER",name:"Track Roller (Bawah)",desc:"Menopang berat unit &amp; mendistribusikannya merata di sepanjang track."},
+    {x:230,y:170,short:"SHOE",name:"Track Shoe &amp; Link",desc:"Bagian yang bersentuhan langsung dengan tanah, memberi traksi &amp; menopang beban."}
+  ];
+  svg.innerHTML = `
+    <path d="M60 150 Q40 60 150 60 L320 150 Q320 175 290 175 L90 175 Q60 175 60 150Z" fill="none" stroke="#EFE9D8" stroke-width="3"/>
+    ${nodes.map(n=>`
+      <g>
+        <rect x="${n.x-40}" y="${n.y-30}" width="80" height="18" rx="4" fill="rgba(255,255,255,.06)" stroke="#3E4E4C"/>
+        <text x="${n.x}" y="${n.y-17}" text-anchor="middle" fill="#EFE9D8" font-family="JetBrains Mono" font-size="9">${n.short}</text>
+      </g>
+      <g class="hotspot" tabindex="0" role="button" aria-label="${n.name}">
+        <circle class="dot" cx="${n.x}" cy="${n.y}" r="7"></circle>
+      </g>
+    `).join('')}
+  `;
+  svg.querySelectorAll('.hotspot').forEach((el,idx)=>{
+    const n = nodes[idx];
+    const activate = ()=>{
+      svg.querySelectorAll('.hotspot').forEach(h=>h.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('ucInfo').innerHTML = `<b>${n.name}</b><br>${n.desc}`;
+    };
+    el.addEventListener('click', activate);
+    el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
+  });
+}
+buildUCDiagram();
+
+/* ================= Active chapter nav highlight ================= */
+const navLinks = [...document.querySelectorAll('#chapterNav a')];
+const sections = navLinks.map(a=>document.querySelector(a.getAttribute('href')));
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const id = '#'+entry.target.id;
+      navLinks.forEach(l=>l.classList.toggle('active', l.getAttribute('href')===id));
+    }
+  });
+},{rootMargin:"-40% 0px -50% 0px", threshold:0});
+sections.forEach(s=>s&&obs.observe(s));
+</script>
+</body>
+</html>

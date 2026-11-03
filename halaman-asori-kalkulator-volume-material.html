@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASORI — Kalkulator Volume Material</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #07090d;
+  --s1:       #0e1118;
+  --s2:       #161b25;
+  --s3:       #1e2535;
+  --border:   #232c3d;
+  --gold:     #f0a500;
+  --gold2:    #ffcc55;
+  --orange:   #e85d04;
+  --green:    #27c97a;
+  --red:      #e74c3c;
+  --blue:     #4a9eff;
+  --text:     #dce4f0;
+  --muted:    #5a6880;
+  --mono:     'Space Mono', monospace;
+  --sans:     'Sora', sans-serif;
+  --disp:     'Bebas Neue', cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+
+/* ─── GRID BG ─── */
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(240,165,0,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(240,165,0,.03) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0}
+
+/* ─── TOPBAR ─── */
+.topbar{background:var(--s1);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:stretch;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:14px;padding:14px 0;border-right:1px solid var(--border);padding-right:24px;margin-right:24px}
+.brand-hex{width:40px;height:40px;background:var(--gold);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:16px;color:#000;flex-shrink:0}
+.brand-name{font-family:var(--disp);font-size:32px;letter-spacing:3px;color:var(--gold);line-height:1}
+.brand-sub{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+.topbar-formula{display:flex;align-items:center;gap:10px;flex:1;flex-wrap:wrap;padding:10px 0}
+.tf-label{font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:2px;white-space:nowrap}
+.tf-eq{font-family:var(--mono);font-size:12px;color:var(--text)}
+.tf-eq .v{color:var(--gold);font-weight:700}
+.tf-eq .op{color:var(--muted)}
+.topbar-ver{align-self:center;margin-left:auto;font-family:var(--mono);font-size:9px;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);color:var(--gold);padding:4px 10px;letter-spacing:2px;white-space:nowrap}
+
+/* ─── MAIN WRAP ─── */
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:32px 24px 80px}
+
+/* ─── SECTION TITLE ─── */
+.sec{margin-bottom:28px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sec-num{font-family:var(--disp);font-size:38px;color:var(--gold);line-height:1;opacity:.6}
+.sec-title{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text)}
+.sec-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5}
+
+/* ─── EQUIPMENT GRID ─── */
+.eq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:900px){.eq-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.eq-grid{grid-template-columns:1fr}}
+.eq-card{background:var(--s1);border:2px solid var(--border);padding:16px 14px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+.eq-card::after{content:'';position:absolute;inset:0;background:rgba(240,165,0,0);transition:.15s}
+.eq-card:hover{border-color:rgba(240,165,0,.5)}
+.eq-card.active{border-color:var(--gold);background:rgba(240,165,0,.05)}
+.eq-card.active::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold)}
+.eq-type-badge{font-family:var(--mono);font-size:8px;letter-spacing:2px;padding:2px 7px;border:1px solid;margin-bottom:8px;display:inline-block;text-transform:uppercase}
+.badge-exc{border-color:rgba(74,158,255,.4);color:var(--blue);background:rgba(74,158,255,.06)}
+.badge-ldr{border-color:rgba(39,201,122,.4);color:var(--green);background:rgba(39,201,122,.06)}
+.eq-name{font-family:var(--disp);font-size:22px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:6px}
+.eq-brand{font-size:10px;color:var(--muted);margin-bottom:10px}
+.eq-specs{display:flex;flex-direction:column;gap:4px}
+.eq-spec-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px}
+.eq-spec-row .k{color:var(--muted)}
+.eq-spec-row .val{color:var(--gold);font-weight:700}
+.eq-selected-tick{position:absolute;top:10px;right:10px;width:18px;height:18px;background:var(--gold);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;color:#000;font-weight:700}
+.eq-card.active .eq-selected-tick{display:flex}
+
+/* ─── EFFICIENCY ROW ─── */
+.eff-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:700px){.eff-row{grid-template-columns:1fr}}
+.eff-card{background:var(--s1);border:1px solid var(--border);padding:14px 16px}
+.eff-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.eff-slider-wrap{display:flex;align-items:center;gap:10px}
+input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--gold);border-radius:50%;cursor:pointer}
+.eff-val{font-family:var(--mono);font-size:14px;color:var(--gold);font-weight:700;min-width:38px;text-align:right}
+.eff-hint{font-size:9px;color:var(--muted);margin-top:5px;font-family:var(--mono)}
+
+/* ─── PANEL ─── */
+.panel{background:var(--s1);border:1px solid var(--border)}
+.panel-hd{background:var(--s2);padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.panel-hd-num{font-family:var(--disp);font-size:24px;color:var(--gold)}
+.panel-hd-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.panel-body{padding:18px}
+
+/* ─── MAT TABS ─── */
+.mat-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.mat-tab{font-family:var(--mono);font-size:10px;padding:6px 14px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;letter-spacing:1px;transition:all .1s}
+.mat-tab:hover{border-color:var(--gold);color:var(--text)}
+.mat-tab.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+
+/* ─── SELECT / INPUT ─── */
+select,input[type=number],input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:12px;padding:9px 11px;outline:none;appearance:none;transition:border-color .15s}
+select:focus,input:focus{border-color:var(--gold)}
+select option{background:var(--bg)}
+.form-row{margin-bottom:14px}
+label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+
+/* ─── MIXED MATERIAL SECTION ─── */
+.mixed-section{display:none}
+.mixed-section.show{display:block}
+.mixed-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.mixed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:12px}
+.mix-item{background:var(--bg);border:1px solid var(--border);padding:10px 12px;display:flex;flex-direction:column;gap:5px}
+.mix-item-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1px}
+.mix-item-name{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px}
+.mix-pct-row{display:flex;align-items:center;gap:6px}
+.mix-pct-row input[type=number]{padding:5px 8px;font-size:11px;width:60px}
+.mix-pct-unit{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.mix-pct-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden}
+.mix-pct-bar{height:100%;background:var(--gold);border-radius:2px;transition:width .2s}
+.mix-total-row{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px;padding:8px 12px;background:var(--s2);border:1px solid var(--border);margin-top:4px}
+.mix-total-row .ok{color:var(--green)}
+.mix-total-row .err{color:var(--red)}
+.mix-total-row .warn{color:var(--gold)}
+
+/* ─── DATA TABLE ─── */
+.dt{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px}
+.dt th{background:var(--bg);padding:7px 11px;text-align:left;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.dt td{padding:8px 11px;border-bottom:1px solid rgba(35,44,61,.5);color:var(--text)}
+.dt tr:last-child td{border-bottom:none}
+.dt td.num{color:var(--gold);text-align:right}
+.dt td.unt{color:var(--muted);font-size:9px}
+.dt tr.highlight td{background:rgba(240,165,0,.05)}
+
+/* ─── OUTPUT ─── */
+.output-panel{background:var(--s1);border:1px solid var(--border);margin-top:24px;display:none}
+.output-hd{background:linear-gradient(135deg,var(--gold),var(--orange));padding:16px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.output-hd-left .t1{font-family:var(--disp);font-size:26px;color:#000;letter-spacing:2px;line-height:1}
+.output-hd-left .t2{font-family:var(--mono);font-size:10px;color:rgba(0,0,0,.6);letter-spacing:2px;margin-top:3px}
+.output-hd-right{font-family:var(--mono);font-size:10px;color:rgba(0,0,0,.7);text-align:right}
+
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:20px}
+.rc{background:var(--bg);border:1px solid var(--border);padding:14px}
+.rc-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.rc-val{font-family:var(--disp);font-size:34px;color:var(--gold);line-height:1;letter-spacing:1px}
+.rc-unit{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px}
+.rc.big .rc-val{font-size:44px;color:var(--gold2)}
+.rc.big{border-color:rgba(240,165,0,.4)}
+
+/* BREAKDOWN */
+.bkd{padding:0 20px 20px}
+.bkd-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.bkd-steps{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-family:var(--mono);font-size:11px}
+.bs{background:var(--s2);border:1px solid var(--border);padding:6px 10px}
+.bs .bv{color:var(--gold);font-weight:700;display:block}
+.bs .bl{color:var(--muted);font-size:9px;display:block;margin-bottom:2px}
+.bop{color:var(--border);font-size:18px;font-weight:700}
+
+/* MIXED BREAKDOWN TABLE */
+.mix-bkd-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10px;margin-top:8px}
+.mix-bkd-table th{background:var(--s3);padding:5px 10px;text-align:left;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.mix-bkd-table td{padding:6px 10px;border-bottom:1px solid rgba(35,44,61,.4);color:var(--text)}
+.mix-bkd-table td.n{color:var(--gold);text-align:right}
+.mix-bkd-table tfoot td{color:var(--gold2);font-weight:700;border-top:1px solid var(--gold);border-bottom:none}
+
+/* NOTES */
+.info{background:rgba(74,158,255,.06);border:1px solid rgba(74,158,255,.2);border-left:3px solid var(--blue);padding:10px 14px;font-size:11px;color:var(--muted);line-height:1.6;margin-top:12px}
+.info strong{color:var(--blue)}
+.warn-note{background:rgba(231,76,60,.07);border:1px solid rgba(231,76,60,.2);border-left:3px solid var(--red);padding:8px 12px;font-family:var(--mono);font-size:10px;color:rgba(231,76,60,.85);margin-top:8px;line-height:1.5}
+
+/* BTN */
+.btn-calc{width:100%;background:var(--gold);color:#000;border:none;padding:16px;font-family:var(--disp);font-size:26px;letter-spacing:4px;cursor:pointer;transition:all .15s;margin-top:8px}
+.btn-calc:hover{background:var(--orange);color:#fff}
+.btn-calc:active{transform:scale(.99)}
+.btn-reset{background:transparent;color:var(--muted);border:1px solid var(--border);padding:9px 20px;font-family:var(--mono);font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .15s;margin-top:6px;width:100%}
+.btn-reset:hover{border-color:var(--muted);color:var(--text)}
+
+/* REF */
+.ref-wrap{margin-top:40px}
+.ref-title{font-family:var(--disp);font-size:32px;letter-spacing:2px;color:var(--gold);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.ref-card{background:var(--s1);border:1px solid var(--border);overflow:hidden}
+.ref-card-hd{background:var(--s2);padding:9px 14px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--gold);letter-spacing:2px;border-bottom:1px solid var(--border)}
+
+/* 2-col layout */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:800px){.two-col{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--border);padding:18px 0;margin-top:50px;text-align:center;font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;line-height:1.8}
+
+/* bucket override inline */
+.bucket-override-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:500px){.bucket-override-row{grid-template-columns:1fr}}
+
+/* size group toggle */
+.size-group{display:none}
+.size-group.active{display:block}
+
+/* eff preset btns */
+.preset-btns{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.pbtn{font-family:var(--mono);font-size:9px;padding:3px 9px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;letter-spacing:1px;transition:.1s}
+.pbtn:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-hex">A</div>
+    <div>
+      <div class="brand-name">ASORI</div>
+      <div class="brand-sub">Kalkulator Volume Material</div>
+    </div>
+  </div>
+  <div class="topbar-formula">
+    <span class="tf-label">FORMULA :</span>
+    <span class="tf-eq">
+      <span class="v">V</span> <span class="op">=</span>
+      <span class="v"> Bucket</span> <span class="op">×</span>
+      <span class="v"> Efisiensi Alat</span> <span class="op">×</span>
+      <span class="v"> Fill Factor</span>
+    </span>
+  </div>
+  <div class="topbar-ver">v3.0 | 2025</div>
+</div>
+
+<div class="wrap">
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 01 — ALAT ANGKUT
+  ═══════════════════════════════════════════════ -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div>
+        <div class="sec-title">Pilih Alat Angkut</div>
+        <div class="sec-desc">Klik alat yang digunakan — kapasitas bucket dapat dioverride secara manual</div>
+      </div>
+    </div>
+
+    <div class="eq-grid">
+      <div class="eq-card" id="eq_ec210" onclick="selectEq('ec210')">
+        <div class="eq-selected-tick">✓</div>
+        <div class="eq-type-badge badge-exc">Excavator</div>
+        <div class="eq-name">EC210</div>
+        <div class="eq-brand">Volvo Construction Equipment</div>
+        <div class="eq-specs">
+          <div class="eq-spec-row"><span class="k">Bucket Standar</span><span class="val">1.05 m³</span></div>
+          <div class="eq-spec-row"><span class="k">Op. Weight</span><span class="val">~21 ton</span></div>
+          <div class="eq-spec-row"><span class="k">Engine</span><span class="val">160 HP</span></div>
+        </div>
+      </div>
+      <div class="eq-card" id="eq_ec350" onclick="selectEq('ec350')">
+        <div class="eq-selected-tick">✓</div>
+        <div class="eq-type-badge badge-exc">Excavator</div>
+        <div class="eq-name">EC350D</div>
+        <div class="eq-brand">Volvo Construction Equipment</div>
+        <div class="eq-specs">
+          <div class="eq-spec-row"><span class="k">Bucket Standar</span><span class="val">1.90 m³</span></div>
+          <div class="eq-spec-row"><span class="k">Op. Weight</span><span class="val">~35 ton</span></div>
+          <div class="eq-spec-row"><span class="k">Engine</span><span class="val">272 HP</span></div>
+        </div>
+      </div>
+      <div class="eq-card" id="eq_e6350" onclick="selectEq('e6350')">
+        <div class="eq-selected-tick">✓</div>
+        <div class="eq-type-badge badge-exc">Excavator</div>
+        <div class="eq-name">E6350H</div>
+        <div class="eq-brand">SDLG (Volvo Group)</div>
+        <div class="eq-specs">
+          <div class="eq-spec-row"><span class="k">Bucket Standar</span><span class="val">1.80 m³</span></div>
+          <div class="eq-spec-row"><span class="k">Op. Weight</span><span class="val">~35 ton</span></div>
+          <div class="eq-spec-row"><span class="k">Engine</span><span class="val">257 HP</span></div>
+        </div>
+      </div>
+      <div class="eq-card" id="eq_l956" onclick="selectEq('l956')">
+        <div class="eq-selected-tick">✓</div>
+        <div class="eq-type-badge badge-ldr">Wheel Loader</div>
+        <div class="eq-name">L956F</div>
+        <div class="eq-brand">SDLG (Volvo Group)</div>
+        <div class="eq-specs">
+          <div class="eq-spec-row"><span class="k">Bucket Standar</span><span class="val">3.00 m³</span></div>
+          <div class="eq-spec-row"><span class="k">Op. Weight</span><span class="val">~17 ton</span></div>
+          <div class="eq-spec-row"><span class="k">Engine</span><span class="val">162 HP</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bucket & Cycles override -->
+    <div class="bucket-override-row">
+      <div class="form-row" style="margin:0">
+        <label>Override Kapasitas Bucket (m³) — opsional</label>
+        <input type="number" id="bucketOverride" placeholder="Kosongkan = gunakan bucket standar" step="0.01" min="0.1" oninput="calculate()">
+      </div>
+      <div class="form-row" style="margin:0">
+        <label>Jumlah Cycle / Swing</label>
+        <input type="number" id="numCycles" value="1" min="1" step="1" oninput="calculate()">
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 02 — EFISIENSI ALAT
+  ═══════════════════════════════════════════════ -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div>
+        <div class="sec-title">Efisiensi Alat Kerja</div>
+        <div class="sec-desc">Faktor reduksi akibat waktu non-produktif, kondisi medan, operator skill, dll.</div>
+      </div>
+    </div>
+    <div class="eff-row">
+      <div class="eff-card">
+        <div class="eff-label">Efisiensi Waktu Kerja</div>
+        <div class="eff-slider-wrap">
+          <input type="range" id="eff1" min="0.50" max="1.00" step="0.01" value="0.83" oninput="onEffChange()">
+          <div class="eff-val" id="eff1v">0.83</div>
+        </div>
+        <div class="eff-hint">50 mnt efektif / jam = 0.83</div>
+        <div class="preset-btns">
+          <button class="pbtn" onclick="setEff('eff1',0.75)">45 mnt</button>
+          <button class="pbtn" onclick="setEff('eff1',0.83)">50 mnt</button>
+          <button class="pbtn" onclick="setEff('eff1',0.92)">55 mnt</button>
+          <button class="pbtn" onclick="setEff('eff1',1.00)">60 mnt</button>
+        </div>
+      </div>
+      <div class="eff-card">
+        <div class="eff-label">Faktor Kondisi Medan</div>
+        <div class="eff-slider-wrap">
+          <input type="range" id="eff2" min="0.60" max="1.00" step="0.01" value="0.90" oninput="onEffChange()">
+          <div class="eff-val" id="eff2v">0.90</div>
+        </div>
+        <div class="eff-hint">Ideal=1.0 | Normal=0.90 | Buruk=0.70</div>
+        <div class="preset-btns">
+          <button class="pbtn" onclick="setEff('eff2',1.00)">Ideal</button>
+          <button class="pbtn" onclick="setEff('eff2',0.90)">Normal</button>
+          <button class="pbtn" onclick="setEff('eff2',0.80)">Buruk</button>
+          <button class="pbtn" onclick="setEff('eff2',0.70)">Sangat Buruk</button>
+        </div>
+      </div>
+      <div class="eff-card">
+        <div class="eff-label">Efisiensi Operator</div>
+        <div class="eff-slider-wrap">
+          <input type="range" id="eff3" min="0.60" max="1.00" step="0.01" value="0.90" oninput="onEffChange()">
+          <div class="eff-val" id="eff3v">0.90</div>
+        </div>
+        <div class="eff-hint">Ahli=1.0 | Terlatih=0.90 | Pemula=0.70</div>
+        <div class="preset-btns">
+          <button class="pbtn" onclick="setEff('eff3',1.00)">Expert</button>
+          <button class="pbtn" onclick="setEff('eff3',0.90)">Terlatih</button>
+          <button class="pbtn" onclick="setEff('eff3',0.80)">Sedang</button>
+          <button class="pbtn" onclick="setEff('eff3',0.70)">Pemula</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--muted)">
+      Efisiensi Total = <span id="effTotal" style="color:var(--gold);font-weight:700">0.67</span>
+      &nbsp;|&nbsp; (0.83 × 0.90 × 0.90)
+      <span id="effFormula"></span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 03 — MATERIAL
+  ═══════════════════════════════════════════════ -->
+  <div class="sec">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div>
+        <div class="sec-title">Jenis & Gradasi Material</div>
+        <div class="sec-desc">Untuk batu andesit ≥100 mm — atur komposisi campuran gradasi material</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <!-- LEFT: PILIH MATERIAL -->
+      <div class="panel">
+        <div class="panel-hd"><div class="panel-hd-num">A</div><div class="panel-hd-title">Pilih Jenis Material</div></div>
+        <div class="panel-body">
+          <div class="mat-tabs" id="matTabs">
+            <button class="mat-tab" onclick="selectMatGroup('tanah',this)">Tanah</button>
+            <button class="mat-tab" onclick="selectMatGroup('clay',this)">Clay</button>
+            <button class="mat-tab" onclick="selectMatGroup('batubara',this)">Batu Bara</button>
+            <button class="mat-tab" onclick="selectMatGroup('andesit',this)">Batu Andesit</button>
+          </div>
+
+          <!-- TANAH -->
+          <div id="mg_tanah" class="size-group">
+            <div class="form-row">
+              <label>Jenis Tanah</label>
+              <select id="sel_tanah" onchange="onMatChange()">
+                <option value="tanah_gembur">Tanah Gembur (Loose Soil)</option>
+                <option value="tanah_biasa">Tanah Biasa (Common Earth)</option>
+                <option value="tanah_keras">Tanah Keras (Hard Earth)</option>
+                <option value="tanah_berbatu">Tanah Berbatu (Rocky Soil)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- CLAY -->
+          <div id="mg_clay" class="size-group">
+            <div class="form-row">
+              <label>Jenis Clay</label>
+              <select id="sel_clay" onchange="onMatChange()">
+                <option value="clay_lunak">Clay Lunak (Soft Clay)</option>
+                <option value="clay_sedang">Clay Sedang (Medium Clay)</option>
+                <option value="clay_keras">Clay Keras (Stiff Clay)</option>
+                <option value="clay_sangat_keras">Clay Sangat Keras (Very Stiff Clay)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- BATU BARA -->
+          <div id="mg_batubara" class="size-group">
+            <div class="form-row">
+              <label>Kondisi Batu Bara</label>
+              <select id="sel_batubara" onchange="onMatChange()">
+                <option value="bb_lepas">Batu Bara Lepas / ROM</option>
+                <option value="bb_pecah">Batu Bara Pecah / Terfragmentasi</option>
+                <option value="bb_halus">Batu Bara Halus (Fine Coal)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ANDESIT -->
+          <div id="mg_andesit" class="size-group">
+            <div class="form-row">
+              <label>Mode Perhitungan Andesit</label>
+              <select id="andesitMode" onchange="onAndesitModeChange()">
+                <option value="single">Material Tunggal (satu ukuran dominan)</option>
+                <option value="mixed">Campuran Gradasi (mixed gradation)</option>
+              </select>
+            </div>
+            <!-- SINGLE -->
+            <div id="andesit_single">
+              <div class="form-row">
+                <label>Ukuran / Gradasi</label>
+                <select id="sel_andesit" onchange="onMatChange()">
+                  <option value="abu_batu">Abu Batu / Crusher Dust (&lt;5 mm)</option>
+                  <option value="split_5_10">Split 5–10 mm</option>
+                  <option value="split_10_20">Split 10–20 mm</option>
+                  <option value="split_20_30">Split 20–30 mm</option>
+                  <option value="split_30_50">Split 30–50 mm</option>
+                  <option value="split_50_70">Split 50–70 mm</option>
+                  <option value="batu_100_250">Boulder 100–250 mm</option>
+                  <option value="batu_300_400">Boulder 300–400 mm</option>
+                </select>
+              </div>
+            </div>
+            <!-- MIXED -->
+            <div id="andesit_mixed" class="mixed-section">
+              <div class="mixed-title">⚙ Komposisi Campuran Gradasi Material</div>
+              <div class="info" style="margin-bottom:12px">
+                <strong>Catatan:</strong> Masukkan persentase (%) tiap fraksi ukuran yang ikut terangkut. Total harus = 100%. Sistem akan menghitung Fill Factor dan Void Ratio rata-rata tertimbang secara otomatis.
+              </div>
+              <div class="mixed-grid" id="mixedGrid">
+                <!-- generated by JS -->
+              </div>
+              <div class="mix-total-row" id="mixTotal">
+                <span>Total Komposisi</span>
+                <span id="mixTotalVal" class="warn">0 %</span>
+              </div>
+            </div>
+            <div class="warn-note" id="andesitWarning" style="display:none"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT: PARAMETER MATERIAL -->
+      <div class="panel">
+        <div class="panel-hd"><div class="panel-hd-num">B</div><div class="panel-hd-title">Parameter Material Terpilih</div></div>
+        <div class="panel-body">
+          <table class="dt">
+            <thead>
+              <tr><th>Parameter</th><th style="text-align:right">Nilai</th><th>Satuan</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Fill Factor (FF)</td><td class="num" id="td_ff">—</td><td class="unt">rasio</td></tr>
+              <tr><td>Efisiensi Total (E)</td><td class="num" id="td_eff">—</td><td class="unt">rasio</td></tr>
+              <tr><td>Berat Jenis Bulk (BJ)</td><td class="num" id="td_bj">—</td><td class="unt">ton/m³</td></tr>
+              <tr><td>Void Ratio (Rasio Rongga)</td><td class="num" id="td_vr">—</td><td class="unt">desimal</td></tr>
+              <tr><td>Swell Factor</td><td class="num" id="td_sf">—</td><td class="unt">%</td></tr>
+              <tr class="highlight"><td><strong>FF × Efisiensi Total</strong></td><td class="num" id="td_combined"><strong>—</strong></td><td class="unt">rasio</td></tr>
+            </tbody>
+          </table>
+
+          <div id="mixedResultNote" style="display:none" class="info" style="margin-top:12px">
+            <strong>Nilai campuran</strong> — dihitung sebagai rata-rata tertimbang berdasarkan % komposisi tiap fraksi.
+          </div>
+
+          <div class="info" style="margin-top:12px">
+            <strong>Tentang Fill Factor:</strong> Fill Factor mencerminkan seberapa penuh bucket terisi material secara efektif. Faktor ini dipengaruhi ukuran, bentuk, dan gradasi material. Material kasar dan berukuran besar menghasilkan lebih banyak rongga dalam bucket sehingga FF lebih rendah.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       TOMBOL HITUNG
+  ═══════════════════════════════════════════════ -->
+  <button class="btn-calc" onclick="calculate()">⚡ HITUNG VOLUME</button>
+  <button class="btn-reset" onclick="resetAll()">↺ RESET</button>
+
+  <!-- ═══════════════════════════════════════════════
+       OUTPUT
+  ═══════════════════════════════════════════════ -->
+  <div class="output-panel" id="outputPanel">
+    <div class="output-hd">
+      <div class="output-hd-left">
+        <div class="t1">HASIL PERHITUNGAN</div>
+        <div class="t2" id="outSubtitle">—</div>
+      </div>
+      <div class="output-hd-right" id="outDetail">—</div>
+    </div>
+
+    <div class="result-grid">
+      <div class="rc big">
+        <div class="rc-label">Volume / Cycle</div>
+        <div class="rc-val" id="res_per_cycle">—</div>
+        <div class="rc-unit">m³ / cycle</div>
+      </div>
+      <div class="rc">
+        <div class="rc-label">Total Volume</div>
+        <div class="rc-val" id="res_total">—</div>
+        <div class="rc-unit">m³</div>
+      </div>
+      <div class="rc">
+        <div class="rc-label">Total Tonase</div>
+        <div class="rc-val" id="res_ton">—</div>
+        <div class="rc-unit">ton</div>
+      </div>
+      <div class="rc">
+        <div class="rc-label">Bucket Efektif</div>
+        <div class="rc-val" id="res_bkt_eff">—</div>
+        <div class="rc-unit">m³ (setelah FF & Efisiensi)</div>
+      </div>
+    </div>
+
+    <!-- STEP BREAKDOWN -->
+    <div class="bkd">
+      <div class="bkd-title">Langkah Perhitungan</div>
+      <div class="bkd-steps" id="bkdSteps"></div>
+    </div>
+
+    <!-- MIXED TABLE (if applicable) -->
+    <div id="mixBkdWrap" style="display:none;padding:0 20px 20px">
+      <div class="bkd-title">Detail Komposisi Campuran</div>
+      <table class="mix-bkd-table" id="mixBkdTable">
+        <thead>
+          <tr><th>Gradasi</th><th>Pct (%)</th><th>FF</th><th>Void Ratio</th><th>BJ (t/m³)</th><th>Kontribusi V (m³/cycle)</th></tr>
+        </thead>
+        <tbody id="mixBkdBody"></tbody>
+        <tfoot id="mixBkdFoot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       REFERENSI TABEL
+  ═══════════════════════════════════════════════ -->
+  <div class="ref-wrap">
+    <div class="ref-title">TABEL REFERENSI</div>
+    <div class="ref-grid">
+
+      <div class="ref-card">
+        <div class="ref-card-hd">SPESIFIKASI ALAT ANGKUT</div>
+        <table class="dt">
+          <thead><tr><th>Alat</th><th>Tipe</th><th style="text-align:right">Bucket (m³)</th></tr></thead>
+          <tbody>
+            <tr><td>Volvo EC210</td><td class="unt">Excavator</td><td class="num">1.05</td></tr>
+            <tr><td>Volvo EC350D</td><td class="unt">Excavator</td><td class="num">1.90</td></tr>
+            <tr><td>SDLG E6350H</td><td class="unt">Excavator</td><td class="num">1.80</td></tr>
+            <tr><td>SDLG L956F</td><td class="unt">Loader</td><td class="num">3.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-card-hd">BATU ANDESIT — FILL FACTOR & VOID RATIO</div>
+        <table class="dt">
+          <thead><tr><th>Gradasi</th><th style="text-align:right">Fill Factor</th><th style="text-align:right">Void Ratio</th><th style="text-align:right">BJ Bulk</th></tr></thead>
+          <tbody>
+            <tr><td>Abu Batu &lt;5mm</td><td class="num">1.00</td><td class="num">0.38</td><td class="num">1.64</td></tr>
+            <tr><td>Split 5–10mm</td><td class="num">0.95</td><td class="num">0.40</td><td class="num">1.59</td></tr>
+            <tr><td>Split 10–20mm</td><td class="num">0.92</td><td class="num">0.42</td><td class="num">1.54</td></tr>
+            <tr><td>Split 20–30mm</td><td class="num">0.88</td><td class="num">0.43</td><td class="num">1.51</td></tr>
+            <tr><td>Split 30–50mm</td><td class="num">0.85</td><td class="num">0.44</td><td class="num">1.48</td></tr>
+            <tr><td>Split 50–70mm</td><td class="num">0.80</td><td class="num">0.45</td><td class="num">1.46</td></tr>
+            <tr><td>Boulder 100–250mm</td><td class="num">0.72</td><td class="num">0.47</td><td class="num">1.40</td></tr>
+            <tr><td>Boulder 300–400mm</td><td class="num">0.60</td><td class="num">0.50</td><td class="num">1.33</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-card-hd">TANAH & CLAY — PARAMETER</div>
+        <table class="dt">
+          <thead><tr><th>Material</th><th style="text-align:right">FF</th><th style="text-align:right">BJ Bulk</th><th style="text-align:right">Void</th></tr></thead>
+          <tbody>
+            <tr><td>Tanah Gembur</td><td class="num">1.05</td><td class="num">1.60</td><td class="num">0.38</td></tr>
+            <tr><td>Tanah Biasa</td><td class="num">0.95</td><td class="num">1.80</td><td class="num">0.40</td></tr>
+            <tr><td>Tanah Keras</td><td class="num">0.85</td><td class="num">1.90</td><td class="num">0.42</td></tr>
+            <tr><td>Tanah Berbatu</td><td class="num">0.75</td><td class="num">2.00</td><td class="num">0.45</td></tr>
+            <tr><td>Clay Lunak</td><td class="num">1.00</td><td class="num">1.75</td><td class="num">0.35</td></tr>
+            <tr><td>Clay Sedang</td><td class="num">0.92</td><td class="num">1.85</td><td class="num">0.38</td></tr>
+            <tr><td>Clay Keras</td><td class="num">0.82</td><td class="num">1.95</td><td class="num">0.40</td></tr>
+            <tr><td>Clay Sangat Keras</td><td class="num">0.72</td><td class="num">2.00</td><td class="num">0.42</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-card-hd">EFISIENSI ALAT — REFERENSI</div>
+        <table class="dt">
+          <thead><tr><th>Kondisi</th><th style="text-align:right">Efisiensi</th></tr></thead>
+          <tbody>
+            <tr><td>Ideal — 60 mnt efektif/jam</td><td class="num">1.00</td></tr>
+            <tr><td>Baik — 55 mnt efektif/jam</td><td class="num">0.92</td></tr>
+            <tr><td>Normal — 50 mnt efektif/jam</td><td class="num">0.83</td></tr>
+            <tr><td>Sedang — 45 mnt efektif/jam</td><td class="num">0.75</td></tr>
+            <tr><td>Buruk — 40 mnt efektif/jam</td><td class="num">0.67</td></tr>
+            <tr><td>Sangat Buruk — 36 mnt/jam</td><td class="num">0.60</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div>ASORI — KALKULATOR VOLUME MATERIAL HEAVY EQUIPMENT</div>
+  <div>Referensi: Caterpillar Performance Handbook Ed.48 · Komatsu Spec & App Guide · CECE/ISO Standards</div>
+  <div style="margin-top:4px">© 2025 — Field Edition v3.0</div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
+<script>
+// ─── DATA MASTER ──────────────────────────────────────────
+const EQ = {
+  ec210: { name:'Volvo EC210',  bucket:1.05 },
+  ec350: { name:'Volvo EC350D', bucket:1.90 },
+  e6350: { name:'SDLG E6350H', bucket:1.80 },
+  l956:  { name:'SDLG L956F',  bucket:3.00 }
+};
+
+// BJ = bulk density (loose/in-truck), ton/m³
+// ff = fill factor, vr = void ratio (fraction pori antar partikel di bucket)
+const MAT = {
+  // TANAH
+  tanah_gembur:      { label:'Tanah Gembur',        ff:1.05, bj:1.60, vr:0.38, sw:12 },
+  tanah_biasa:       { label:'Tanah Biasa',          ff:0.95, bj:1.80, vr:0.40, sw:22 },
+  tanah_keras:       { label:'Tanah Keras',          ff:0.85, bj:1.90, vr:0.42, sw:28 },
+  tanah_berbatu:     { label:'Tanah Berbatu',        ff:0.75, bj:2.00, vr:0.45, sw:35 },
+  // CLAY
+  clay_lunak:        { label:'Clay Lunak',           ff:1.00, bj:1.75, vr:0.35, sw:17 },
+  clay_sedang:       { label:'Clay Sedang',          ff:0.92, bj:1.85, vr:0.38, sw:22 },
+  clay_keras:        { label:'Clay Keras',           ff:0.82, bj:1.95, vr:0.40, sw:28 },
+  clay_sangat_keras: { label:'Clay Sangat Keras',    ff:0.72, bj:2.00, vr:0.42, sw:32 },
+  // BATU BARA
+  bb_lepas:          { label:'Batu Bara Lepas (ROM)',ff:0.90, bj:0.82, vr:0.45, sw:40 },
+  bb_pecah:          { label:'Batu Bara Pecah',      ff:0.82, bj:0.85, vr:0.48, sw:45 },
+  bb_halus:          { label:'Batu Bara Halus',      ff:0.95, bj:0.80, vr:0.42, sw:35 },
+  // ANDESIT
+  abu_batu:          { label:'Abu Batu <5mm',        ff:1.00, bj:1.64, vr:0.38, sw:30, note:'Material halus, mengalir baik, FF tinggi' },
+  split_5_10:        { label:'Split 5–10 mm',        ff:0.95, bj:1.59, vr:0.40, sw:32, note:'Split kecil, isian bucket sangat baik' },
+  split_10_20:       { label:'Split 10–20 mm',       ff:0.92, bj:1.54, vr:0.42, sw:33, note:'Split medium, umum untuk base agregat' },
+  split_20_30:       { label:'Split 20–30 mm',       ff:0.88, bj:1.51, vr:0.43, sw:34, note:'Split kasar menengah' },
+  split_30_50:       { label:'Split 30–50 mm',       ff:0.85, bj:1.48, vr:0.44, sw:35, note:'Mulai ada rongga signifikan di bucket' },
+  split_50_70:       { label:'Split 50–70 mm',       ff:0.80, bj:1.46, vr:0.45, sw:36, note:'Batu belah besar, FF berkurang jelas' },
+  batu_100_250:      { label:'Boulder 100–250 mm',   ff:0.72, bj:1.40, vr:0.47, sw:38, note:'Boulder kecil–menengah. Rongga antar batu besar. Biasanya terangkut bersama material lebih halus.' },
+  batu_300_400:      { label:'Boulder 300–400 mm',   ff:0.60, bj:1.33, vr:0.50, sw:40, note:'Boulder besar. FF rendah karena geometri ireguler dan rongga sangat besar. Mode CAMPURAN sangat direkomendasikan.' },
+};
+
+// ANDESIT keys untuk mixed mode
+const ANDESIT_KEYS = ['abu_batu','split_5_10','split_10_20','split_20_30','split_30_50','split_50_70','batu_100_250','batu_300_400'];
+
+// ─── STATE ──────────────────────────────────────────
+let selEq = null;
+let selMatGroup = null;
+let selMatKey = null;
+let andesitMode = 'single';
+
+// ─── EQUIPMENT ──────────────────────────────────────
+function selectEq(key) {
+  selEq = key;
+  document.querySelectorAll('.eq-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('eq_' + key).classList.add('active');
+  calculate();
+}
+
+// ─── EFFICIENCY ──────────────────────────────────────
+function onEffChange() {
+  const e1 = +document.getElementById('eff1').value;
+  const e2 = +document.getElementById('eff2').value;
+  const e3 = +document.getElementById('eff3').value;
+  document.getElementById('eff1v').textContent = e1.toFixed(2);
+  document.getElementById('eff2v').textContent = e2.toFixed(2);
+  document.getElementById('eff3v').textContent = e3.toFixed(2);
+  const tot = e1 * e2 * e3;
+  document.getElementById('effTotal').textContent = tot.toFixed(3);
+  document.getElementById('effFormula').textContent = ` (${e1.toFixed(2)} × ${e2.toFixed(2)} × ${e3.toFixed(2)})`;
+  updateParamDisplay();
+  calculate();
+}
+
+function setEff(id, val) {
+  document.getElementById(id).value = val;
+  onEffChange();
+}
+
+function getTotalEff() {
+  return (+document.getElementById('eff1').value) *
+         (+document.getElementById('eff2').value) *
+         (+document.getElementById('eff3').value);
+}
+
+// ─── MATERIAL GROUP ──────────────────────────────────
+function selectMatGroup(group, btn) {
+  selMatGroup = group;
+  document.querySelectorAll('.mat-tab').forEach(t => t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.querySelectorAll('.size-group').forEach(g => g.classList.remove('active'));
+  document.getElementById('mg_' + group).classList.add('active');
+  refreshMatKey();
+  calculate();
+}
+
+function onMatChange() {
+  refreshMatKey();
+  calculate();
+}
+
+function refreshMatKey() {
+  if (!selMatGroup) return;
+  if (selMatGroup === 'tanah')    selMatKey = document.getElementById('sel_tanah').value;
+  if (selMatGroup === 'clay')     selMatKey = document.getElementById('sel_clay').value;
+  if (selMatGroup === 'batubara') selMatKey = document.getElementById('sel_batubara').value;
+  if (selMatGroup === 'andesit')  {
+    if (andesitMode === 'single') selMatKey = document.getElementById('sel_andesit').value;
+    else selMatKey = '__mixed__';
+  }
+  updateParamDisplay();
+}
+
+// ─── ANDESIT MODE ────────────────────────────────────
+function onAndesitModeChange() {
+  andesitMode = document.getElementById('andesitMode').value;
+  document.getElementById('andesit_single').style.display = andesitMode === 'single' ? 'block' : 'none';
+  const ms = document.getElementById('andesit_mixed');
+  if (andesitMode === 'mixed') { ms.classList.add('show'); buildMixedGrid(); }
+  else ms.classList.remove('show');
+  refreshMatKey();
+  calculate();
+}
+
+function buildMixedGrid() {
+  const grid = document.getElementById('mixedGrid');
+  grid.innerHTML = '';
+  ANDESIT_KEYS.forEach(k => {
+    const m = MAT[k];
+    const div = document.createElement('div');
+    div.className = 'mix-item';
+    div.innerHTML = `
+      <div class="mix-item-label">Gradasi</div>
+      <div class="mix-item-name">${m.label}</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:3px">FF=${m.ff} | Void=${m.vr} | BJ=${m.bj}</div>
+      <div class="mix-pct-row">
+        <input type="number" id="mix_${k}" min="0" max="100" step="1" value="0" placeholder="0" oninput="onMixPctChange()">
+        <span class="mix-pct-unit">%</span>
+      </div>
+      <div class="mix-pct-bar-wrap"><div class="mix-pct-bar" id="bar_${k}" style="width:0%"></div></div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function onMixPctChange() {
+  let tot = 0;
+  ANDESIT_KEYS.forEach(k => {
+    const v = Math.max(0, +document.getElementById('mix_'+k).value || 0);
+    tot += v;
+    document.getElementById('bar_'+k).style.width = Math.min(100,v) + '%';
+  });
+  const tv = document.getElementById('mixTotalVal');
+  tv.textContent = tot + ' %';
+  tv.className = tot === 100 ? 'ok' : tot > 100 ? 'err' : 'warn';
+  updateParamDisplay();
+  calculate();
+}
+
+function getMixedParams() {
+  let totPct = 0, wFF = 0, wBJ = 0, wVR = 0;
+  const breakdown = [];
+  ANDESIT_KEYS.forEach(k => {
+    const pct = Math.max(0, +document.getElementById('mix_'+k).value || 0);
+    if (pct > 0) {
+      const m = MAT[k];
+      const w = pct / 100;
+      wFF += w * m.ff;
+      wBJ += w * m.bj;
+      wVR += w * m.vr;
+      totPct += pct;
+      breakdown.push({ key:k, label:m.label, pct, ff:m.ff, vr:m.vr, bj:m.bj });
+    }
+  });
+  if (totPct === 0) return null;
+  // Normalize if not 100
+  const norm = 100 / totPct;
+  return { ff: wFF*norm, bj: wBJ*norm, vr: wVR*norm, totPct, breakdown };
+}
+
+// ─── PARAM DISPLAY ───────────────────────────────────
+function updateParamDisplay() {
+  const eff = getTotalEff();
+  document.getElementById('td_eff').textContent = eff.toFixed(3);
+
+  if (selMatGroup === 'andesit' && andesitMode === 'mixed') {
+    const mp = getMixedParams();
+    if (!mp) { clearParamDisplay(); return; }
+    document.getElementById('td_ff').textContent  = mp.ff.toFixed(3);
+    document.getElementById('td_bj').textContent  = mp.bj.toFixed(3);
+    document.getElementById('td_vr').textContent  = mp.vr.toFixed(3);
+    document.getElementById('td_sf').textContent  = '—';
+    document.getElementById('td_combined').innerHTML = '<strong>' + (mp.ff * eff).toFixed(3) + '</strong>';
+    document.getElementById('mixedResultNote').style.display = 'block';
+    return;
+  }
+
+  if (!selMatKey || selMatKey === '__mixed__') { clearParamDisplay(); return; }
+  const m = MAT[selMatKey];
+  if (!m) { clearParamDisplay(); return; }
+  document.getElementById('td_ff').textContent  = m.ff.toFixed(2);
+  document.getElementById('td_bj').textContent  = m.bj.toFixed(2);
+  document.getElementById('td_vr').textContent  = m.vr.toFixed(2);
+  document.getElementById('td_sf').textContent  = m.sw + '%';
+  document.getElementById('td_combined').innerHTML = '<strong>' + (m.ff * eff).toFixed(3) + '</strong>';
+  document.getElementById('mixedResultNote').style.display = 'none';
+
+  // Warning andesit
+  const warn = document.getElementById('andesitWarning');
+  if (m.note && selMatGroup === 'andesit') {
+    warn.textContent = '📌 ' + m.note;
+    warn.style.display = 'block';
+  } else {
+    warn.style.display = 'none';
+  }
+}
+
+function clearParamDisplay() {
+  ['td_ff','td_bj','td_vr','td_sf','td_combined'].forEach(id => {
+    document.getElementById(id).textContent = '—';
+  });
+}
+
+// ─── CALCULATE ───────────────────────────────────────
+function calculate() {
+  if (!selEq) return;
+  if (!selMatGroup || !selMatKey) return;
+
+  const eq = EQ[selEq];
+  const eff = getTotalEff();
+  const overrideRaw = parseFloat(document.getElementById('bucketOverride').value);
+  const bucket = (!isNaN(overrideRaw) && overrideRaw > 0) ? overrideRaw : eq.bucket;
+  const cycles = Math.max(1, parseInt(document.getElementById('numCycles').value) || 1);
+
+  let ff, bj, vr, matLabel, isMixed = false, mixBreakdown = null;
+
+  if (selMatGroup === 'andesit' && andesitMode === 'mixed') {
+    const mp = getMixedParams();
+    if (!mp || mp.totPct < 1) return; // tidak cukup data
+    ff = mp.ff;
+    bj = mp.bj;
+    vr = mp.vr;
+    matLabel = 'Andesit Campuran';
+    isMixed = true;
+    mixBreakdown = mp.breakdown;
+  } else {
+    if (!selMatKey || selMatKey === '__mixed__') return;
+    const m = MAT[selMatKey];
+    if (!m) return;
+    ff = m.ff;
+    bj = m.bj;
+    vr = m.vr;
+    matLabel = m.label;
+  }
+
+  // ─── FORMULA UTAMA ───────────────────────────────
+  // V = Bucket × Efisiensi Total × Fill Factor
+  const v_per_cycle = bucket * eff * ff;
+  const v_total = v_per_cycle * cycles;
+  const tonase = v_total * bj;
+  const bkt_eff = bucket * eff * ff; // same as v_per_cycle but explicit label
+
+  // DISPLAY
+  document.getElementById('res_per_cycle').textContent = v_per_cycle.toFixed(3);
+  document.getElementById('res_total').textContent = v_total.toFixed(3);
+  document.getElementById('res_ton').textContent = tonase.toFixed(2);
+  document.getElementById('res_bkt_eff').textContent = bkt_eff.toFixed(3);
+
+  document.getElementById('outSubtitle').textContent =
+    `${eq.name} | ${matLabel} | ${cycles} cycle${cycles>1?'s':''}`;
+  document.getElementById('outDetail').innerHTML =
+    `Bucket: ${bucket.toFixed(2)} m³<br>Efisiensi: ${eff.toFixed(3)}<br>Fill Factor: ${ff.toFixed(3)}`;
+
+  // BREAKDOWN STEPS
+  const stepsHTML = `
+    <div class="bs"><span class="bl">Bucket</span><span class="bv">${bucket.toFixed(3)}</span></div>
+    <span class="bop">×</span>
+    <div class="bs"><span class="bl">Efisiensi Total</span><span class="bv">${eff.toFixed(3)}</span></div>
+    <span class="bop">×</span>
+    <div class="bs"><span class="bl">Fill Factor</span><span class="bv">${ff.toFixed(3)}</span></div>
+    <span class="bop">=</span>
+    <div class="bs" style="border-color:var(--gold)"><span class="bl">V / Cycle</span><span class="bv" style="font-size:15px">${v_per_cycle.toFixed(3)} m³</span></div>
+    <span class="bop">×</span>
+    <div class="bs"><span class="bl">Cycles</span><span class="bv">${cycles}</span></div>
+    <span class="bop">=</span>
+    <div class="bs" style="border-color:var(--gold)"><span class="bl">V Total</span><span class="bv" style="font-size:15px">${v_total.toFixed(3)} m³</span></div>
+    <span class="bop">×</span>
+    <div class="bs"><span class="bl">BJ Bulk</span><span class="bv">${bj.toFixed(2)}</span></div>
+    <span class="bop">=</span>
+    <div class="bs" style="border-color:var(--gold2)"><span class="bl">Tonase</span><span class="bv" style="font-size:15px">${tonase.toFixed(2)} ton</span></div>
+  `;
+  document.getElementById('bkdSteps').innerHTML = stepsHTML;
+
+  // MIXED BREAKDOWN TABLE
+  const mixWrap = document.getElementById('mixBkdWrap');
+  if (isMixed && mixBreakdown) {
+    mixWrap.style.display = 'block';
+    let rows = '';
+    let totContrib = 0;
+    mixBreakdown.forEach(b => {
+      const contrib = bucket * eff * b.ff * (b.pct/100);
+      totContrib += contrib;
+      rows += `<tr>
+        <td>${b.label}</td>
+        <td class="n">${b.pct}</td>
+        <td class="n">${b.ff.toFixed(2)}</td>
+        <td class="n">${b.vr.toFixed(2)}</td>
+        <td class="n">${b.bj.toFixed(2)}</td>
+        <td class="n">${contrib.toFixed(4)}</td>
+      </tr>`;
+    });
+    document.getElementById('mixBkdBody').innerHTML = rows;
+    document.getElementById('mixBkdFoot').innerHTML = `
+      <tr>
+        <td colspan="5"><strong>TOTAL (rata-rata tertimbang)</strong></td>
+        <td class="n">${v_per_cycle.toFixed(4)} m³/cycle</td>
+      </tr>
+    `;
+  } else {
+    mixWrap.style.display = 'none';
+  }
+
+  document.getElementById('outputPanel').style.display = 'block';
+  document.getElementById('outputPanel').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// ─── RESET ──────────────────────────────────────────
+function resetAll() {
+  selEq = null; selMatGroup = null; selMatKey = null; andesitMode = 'single';
+  document.querySelectorAll('.eq-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.mat-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.size-group').forEach(g => g.classList.remove('active'));
+  document.getElementById('outputPanel').style.display = 'none';
+  document.getElementById('numCycles').value = '1';
+  document.getElementById('bucketOverride').value = '';
+  document.getElementById('andesitMode').value = 'single';
+  document.getElementById('andesit_single').style.display = 'block';
+  document.getElementById('andesit_mixed').classList.remove('show');
+  document.getElementById('mixedResultNote').style.display = 'none';
+  document.getElementById('andesitWarning').style.display = 'none';
+  clearParamDisplay();
+  // reset efisiensi
+  setEff('eff1', 0.83); setEff('eff2', 0.90); setEff('eff3', 0.90);
+}
+
+// ─── INIT ────────────────────────────────────────────
+onEffChange();
+</script>
+</body>
+</html>

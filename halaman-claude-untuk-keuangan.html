@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude untuk Divisi Keuangan — Kurikulum AI Skill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E6;
+    --paper-white:#FBF8F1;
+    --ink:#182620;
+    --ink-soft:#3E4C44;
+    --green:#25543F;
+    --green-deep:#173B2B;
+    --gold:#B8863B;
+    --gold-soft:#D9B876;
+    --rule:#CBC1A4;
+    --rule-soft:#DED5BC;
+    --rust:#9C4632;
+    --shadow: 0 8px 24px rgba(23,43,32,0.10);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold-soft);color:var(--ink);}
+
+  .folio{font-family:'IBM Plex Mono',monospace;}
+
+  /* ===== Ledger spine background texture ===== */
+  .ruled{
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 37px,
+      var(--rule-soft) 38px
+    );
+  }
+
+  /* ===== TOP BAR ===== */
+  header.topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper-white);
+    border-bottom:1px solid var(--rule);
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces',serif; font-weight:600; font-size:17px; letter-spacing:0.2px;
+  }
+  .brand .mark{
+    width:28px;height:28px;border-radius:3px;
+    background:var(--green);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--paper-white); font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+  }
+  nav.tabs{
+    display:flex; gap:2px;
+  }
+  nav.tabs a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:0.03em;
+    color:var(--ink-soft); text-decoration:none;
+    padding:8px 12px; border-radius:2px;
+    transition:background .15s ease, color .15s ease;
+  }
+  nav.tabs a:hover{background:var(--paper); color:var(--green);}
+  @media (max-width:860px){ nav.tabs{display:none;} }
+
+  /* ===== HERO ===== */
+  .hero{
+    max-width:1180px; margin:0 auto;
+    padding:64px 28px 40px;
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px;
+    align-items:end;
+  }
+  @media (max-width:900px){ .hero{grid-template-columns:1fr; gap:28px; padding-top:40px;} }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--gold); margin:0 0 18px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"§"; color:var(--rust); font-weight:600;}
+  h1.headline{
+    font-family:'Fraunces',serif; font-weight:600;
+    font-size:clamp(38px,5.4vw,64px); line-height:1.02; letter-spacing:-0.01em;
+    margin:0 0 22px; color:var(--green-deep);
+  }
+  h1.headline em{ font-style:italic; color:var(--rust); font-weight:500; }
+  .hero-sub{
+    font-size:16.5px; line-height:1.65; color:var(--ink-soft); max-width:52ch; margin:0 0 26px;
+  }
+  .hero-actions{ display:flex; gap:12px; flex-wrap:wrap; }
+  .btn{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.02em;
+    padding:13px 22px; border-radius:2px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid transparent; cursor:pointer;
+  }
+  .btn-primary{ background:var(--green); color:var(--paper-white); }
+  .btn-primary:hover{ background:var(--green-deep); }
+  .btn-ghost{ border-color:var(--rule); color:var(--ink); background:transparent; }
+  .btn-ghost:hover{ border-color:var(--green); color:var(--green); }
+
+  /* signature: ledger credentials card */
+  .credential-card{
+    background:var(--paper-white);
+    border:1px solid var(--rule);
+    box-shadow:var(--shadow);
+    padding:26px 26px 22px;
+    position:relative;
+  }
+  .credential-card::before{
+    content:"";
+    position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--gold);
+  }
+  .credential-card .stamp{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:14px; display:block;
+  }
+  .credential-card h3{
+    font-family:'Fraunces',serif; font-size:20px; margin:0 0 14px; color:var(--green-deep);
+  }
+  .totals-row{
+    display:flex; justify-content:space-between; padding:10px 0;
+    border-top:1px dashed var(--rule); font-size:13.5px;
+  }
+  .totals-row:last-child{border-bottom:1px dashed var(--rule);}
+  .totals-row span:first-child{ color:var(--ink-soft); }
+  .totals-row span:last-child{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--green-deep); }
+
+  /* ===== SECTION: intro strip ===== */
+  .intro-strip{
+    max-width:1180px; margin:20px auto 0; padding:0 28px 56px;
+    border-bottom:1px solid var(--rule);
+  }
+  .intro-strip p{
+    font-size:14.5px; color:var(--ink-soft); line-height:1.7; max-width:76ch; margin:0;
+  }
+
+  /* ===== MODULE SPINE NAV (mobile pills) ===== */
+  .mobile-pills{
+    display:none;
+    max-width:1180px; margin:0 auto; padding:18px 28px 0; gap:8px; overflow-x:auto;
+  }
+  @media (max-width:860px){ .mobile-pills{display:flex;} }
+  .mobile-pills a{
+    flex:0 0 auto; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
+    padding:8px 12px; border:1px solid var(--rule); border-radius:20px; text-decoration:none; color:var(--ink-soft);
+  }
+
+  /* ===== MODULES LAYOUT ===== */
+  .modules-wrap{
+    max-width:1180px; margin:0 auto; padding:20px 28px 100px;
+    display:grid; grid-template-columns:64px 1fr; gap:0 32px;
+  }
+  @media (max-width:860px){ .modules-wrap{grid-template-columns:1fr;} }
+
+  .spine{
+    position:relative;
+  }
+  @media (max-width:860px){ .spine{display:none;} }
+  .spine-line{
+    position:absolute; left:31px; top:0; bottom:0; width:1px; background:var(--rule);
+  }
+  .spine-tab{
+    position:sticky; top:90px;
+    display:flex; flex-direction:column; gap:22px; padding-top:6px;
+  }
+  .spine-tab a{
+    width:62px; text-align:center; text-decoration:none;
+    font-family:'IBM Plex Mono',monospace; font-size:15px; font-weight:600;
+    color:var(--ink-soft); background:var(--paper-white);
+    border:1px solid var(--rule); padding:10px 0;
+    transition:all .18s ease;
+  }
+  .spine-tab a.active, .spine-tab a:hover{
+    color:var(--paper-white); background:var(--green); border-color:var(--green);
+    transform:translateX(4px);
+  }
+
+  section.module{
+    padding:52px 0 44px;
+    border-bottom:1px solid var(--rule);
+    scroll-margin-top:90px;
+  }
+  section.module:last-child{border-bottom:none;}
+
+  .module-head{
+    display:flex; gap:22px; align-items:flex-start; margin-bottom:8px;
+  }
+  .module-num{
+    font-family:'Fraunces',serif; font-weight:600; font-size:44px; color:var(--rule);
+    line-height:1; min-width:70px;
+  }
+  .module-titlewrap h2{
+    font-family:'Fraunces',serif; font-size:28px; font-weight:600; margin:0 0 6px; color:var(--green-deep);
+  }
+  .module-titlewrap .desc{ color:var(--ink-soft); font-size:14.5px; line-height:1.6; max-width:64ch; }
+  .module-meta{
+    margin-left:auto; text-align:right; flex:0 0 auto;
+  }
+  .lesson-count{
+    font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; color:var(--gold);
+    line-height:1;
+  }
+  .lesson-count-label{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  @media (max-width:600px){
+    .module-head{flex-wrap:wrap;} .module-meta{margin-left:0; text-align:left;}
+  }
+
+  /* ===== LESSON ENTRIES ===== */
+  .entries{ margin-top:24px; border-top:1px solid var(--rule); }
+  details.entry{
+    border-bottom:1px solid var(--rule);
+  }
+  details.entry summary{
+    list-style:none; cursor:pointer;
+    display:flex; align-items:center; gap:16px;
+    padding:16px 4px;
+  }
+  details.entry summary::-webkit-details-marker{display:none;}
+  .entry-folio{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--rule); min-width:34px;
+  }
+  .entry-title{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:15px; color:var(--ink); flex:1;
+  }
+  .entry-goal{
+    font-size:12.5px; color:var(--ink-soft); display:none;
+  }
+  @media (min-width:760px){ .entry-goal{display:block; max-width:280px; text-align:right;} }
+  .entry-toggle{
+    font-family:'IBM Plex Mono',monospace; font-size:16px; color:var(--gold); min-width:16px; text-align:center;
+    transition:transform .2s ease;
+  }
+  details[open] .entry-toggle{ transform:rotate(45deg); }
+  details[open] summary{ padding-bottom:6px; }
+
+  .entry-body{
+    padding:0 4px 24px 50px;
+  }
+  .entry-goal-mobile{
+    display:block; font-size:13px; color:var(--ink-soft); margin-bottom:14px; line-height:1.55;
+  }
+  @media (min-width:760px){ .entry-goal-mobile{display:none;} }
+
+  .promptcard{
+    background:var(--green-deep); color:var(--paper-white);
+    padding:18px 20px; position:relative; border-left:3px solid var(--gold);
+  }
+  .promptcard .label{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--gold-soft); margin-bottom:10px; display:block;
+  }
+  .promptcard pre{
+    font-family:'IBM Plex Mono',monospace; font-size:12.8px; line-height:1.65;
+    white-space:pre-wrap; word-break:break-word; margin:0 0 14px; color:#F1EEE3;
+  }
+  .copybtn{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.04em;
+    background:transparent; border:1px solid rgba(251,248,241,0.35); color:var(--paper-white);
+    padding:7px 12px; cursor:pointer; border-radius:2px;
+  }
+  .copybtn:hover{ background:rgba(251,248,241,0.12); }
+  .copybtn.copied{ border-color:var(--gold); color:var(--gold-soft); }
+
+  .tip{
+    margin-top:14px; font-size:13px; color:var(--ink-soft); line-height:1.6;
+    padding-left:18px; position:relative;
+  }
+  .tip::before{ content:"↳"; position:absolute; left:0; color:var(--rust); }
+
+  /* ===== FOOTER ===== */
+  footer{
+    background:var(--green-deep); color:var(--paper-white);
+    padding:56px 28px 40px;
+  }
+  .footer-inner{ max-width:1180px; margin:0 auto; }
+  footer h3{ font-family:'Fraunces',serif; font-size:24px; font-weight:600; margin:0 0 14px; }
+  footer p{ color:#CBD8CF; font-size:14px; line-height:1.7; max-width:60ch; margin:0 0 24px; }
+  .footer-meta{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;
+    border-top:1px solid rgba(251,248,241,0.15); padding-top:20px;
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#9FB2A5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+
+  /* ===== FORMULA / MANUAL CALCULATION CARD ===== */
+  .formulacard{
+    background:var(--paper-white); border:1px solid var(--rule); border-left:3px solid var(--green);
+    padding:18px 20px; margin-top:14px;
+  }
+  .formulacard .label{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--green); margin-bottom:10px; display:block;
+  }
+  .formulacard .formula{
+    font-family:'IBM Plex Mono',monospace; font-size:13.5px; background:var(--paper);
+    border:1px dashed var(--rule); padding:12px 14px; margin:0 0 14px; color:var(--green-deep); overflow-x:auto;
+  }
+  .formulacard table{ width:100%; border-collapse:collapse; font-size:13px; margin-bottom:10px; }
+  .formulacard table td{ padding:6px 8px; border-bottom:1px dashed var(--rule-soft); }
+  .formulacard table td:first-child{ color:var(--ink-soft); width:56%; }
+  .formulacard table td:last-child{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--green-deep); text-align:right; }
+  .formulacard .result{
+    font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; color:var(--rust);
+    padding-top:10px; border-top:1px solid var(--rule);
+  }
+  .formulacard .datanote{
+    font-size:11.5px; color:var(--ink-soft); margin-top:12px; line-height:1.6; font-style:italic;
+  }
+
+  /* ===== CASE STUDY BLOCK ===== */
+  .case-study{
+    max-width:1180px; margin:8px auto 0; padding:0 28px 8px;
+  }
+  .case-study-inner{
+    background:var(--green-deep); color:var(--paper-white);
+    padding:36px 36px 30px; position:relative; border-top:4px solid var(--gold);
+  }
+  @media (max-width:640px){ .case-study-inner{ padding:26px 20px 24px; } }
+  .case-study-inner .label{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--gold-soft); margin-bottom:10px; display:block;
+  }
+  .case-study-inner h2{
+    font-family:'Fraunces',serif; font-size:26px; font-weight:600; margin:0 0 10px;
+  }
+  .case-study-inner > p{ color:#CBD8CF; font-size:14px; line-height:1.7; max-width:74ch; margin:0 0 26px; }
+  .cs-step{
+    background:rgba(251,248,241,0.05); border:1px solid rgba(251,248,241,0.15);
+    padding:18px 20px; margin-bottom:16px;
+  }
+  .cs-step .cs-title{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14.5px; margin-bottom:10px; color:var(--gold-soft);
+  }
+  .cs-step .formula{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; background:rgba(0,0,0,0.18);
+    padding:10px 12px; margin:0 0 12px; color:#F1EEE3; overflow-x:auto;
+  }
+  .cs-step table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .cs-step table td{ padding:5px 6px; border-bottom:1px dashed rgba(251,248,241,0.15); color:#CBD8CF; }
+  .cs-step table td:last-child{ font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--paper-white); text-align:right; }
+  .cs-step .cs-result{
+    font-family:'IBM Plex Mono',monospace; font-size:14.5px; font-weight:600; color:var(--gold-soft);
+    padding-top:10px; margin-top:8px; border-top:1px solid rgba(251,248,241,0.2);
+  }
+  .cs-source{
+    font-size:11.5px; color:#9FB2A5; margin-top:20px; line-height:1.7;
+  }
+
+  /* ===== CERTIFICATION INFO BOX ===== */
+  .examinfo{
+    margin:22px 0 8px; border:1px solid var(--rule); background:var(--paper-white);
+    display:grid; grid-template-columns:repeat(4,1fr);
+  }
+  @media (max-width:760px){ .examinfo{ grid-template-columns:repeat(2,1fr); } }
+  .examinfo div{
+    padding:16px 18px; border-right:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  }
+  .examinfo div:nth-child(4n){ border-right:none; }
+  .examinfo .k{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--gold); display:block; margin-bottom:6px;
+  }
+  .examinfo .v{ font-size:13px; color:var(--ink); line-height:1.5; }
+  .badge-track{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--green-deep); background:var(--gold-soft);
+    padding:3px 9px; margin-bottom:14px;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="mark">C</span> Claude untuk Divisi Keuangan</div>
+    <nav class="tabs">
+      <a href="#m1">01 Modeling</a>
+      <a href="#m2">02 Risiko Pasar</a>
+      <a href="#m3">03 Kepatuhan</a>
+      <a href="#m4">04 Keputusan Strategis</a>
+      <a href="#m5">05 Otomasi</a>
+      <a href="#m6">06 WMI</a>
+      <a href="#m7">07 CSA</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div>
+    <p class="eyebrow">Kurikulum AI Skill — Fungsi Keuangan Korporat</p>
+    <h1 class="headline">Buku besar untuk<br><em>belajar Claude</em><br>di meja kerja Anda.</h1>
+    <p class="hero-sub">Tujuh modul, empat puluh dua pelajaran — disusun seperti jurnal akuntansi: setiap entri punya nomor folio, tujuan belajar, dan contoh prompt siap pakai yang bisa langsung Anda tempel ke Claude, baik untuk pekerjaan riil di tim keuangan maupun untuk persiapan ujian sertifikasi profesi pasar modal.</p>
+    <div class="hero-actions">
+      <a href="#m1" class="btn btn-primary">Mulai dari Modul 01 →</a>
+      <a href="#unduh" class="btn btn-ghost">Cara mengunduh halaman ini</a>
+    </div>
+  </div>
+  <div class="credential-card">
+    <span class="stamp">Ringkasan Kurikulum · Neraca Pembelajaran</span>
+    <h3>Total isi buku besar</h3>
+    <div class="totals-row"><span>Modul</span><span>7</span></div>
+    <div class="totals-row"><span>Pelajaran</span><span>42</span></div>
+    <div class="totals-row"><span>Contoh prompt siap pakai</span><span>42</span></div>
+    <div class="totals-row"><span>Rumus + perhitungan manual</span><span>8</span></div>
+    <div class="totals-row"><span>Jalur sertifikasi profesi</span><span>WMI · CSA</span></div>
+    <div class="totals-row"><span>Level</span><span>Analis → Manajer</span></div>
+  </div>
+</div>
+
+<div class="intro-strip">
+  <p>Setiap modul di bawah mengikuti struktur yang sama: <strong>tujuan modul</strong>, daftar pelajaran yang bisa dibuka satu per satu, dan di dalamnya sebuah <strong>kartu prompt</strong> — contoh instruksi nyata yang dirancang seperti template kerja seorang CFA/CFP. Pada pelajaran kuantitatif inti (DCF, WACC, multiples, VaR/Sharpe/Beta, NPV/IRR, NAB reksa dana, rasio keuangan), tersedia juga <strong>kartu rumus</strong> berwarna hijau tua berisi formula dan langkah perhitungan manual — sebagian memakai data riil saham ASII agar terasa nyata, bukan sekadar angka abstrak. Dua modul terakhir (06 dan 07) ditandai <strong>"Jalur Sertifikasi Profesi"</strong> — dirancang khusus untuk membantu Anda belajar menghadapi uji kompetensi <strong>Wakil Manajer Investasi (WMI)</strong> dan <strong>Analis Efek (RSA/CSA)</strong> yang diselenggarakan LSP Pasar Modal Indonesia di bawah lisensi BNSP. Salin prompt, sesuaikan konteks Anda, lalu jalankan di Claude — atau hitung dulu manual dengan rumusnya untuk memastikan Anda paham logikanya sebelum mendelegasikan ke AI.</p>
+</div>
+
+<div class="case-study">
+  <div class="case-study-inner">
+    <span class="label">Studi Kasus Nyata · Data Awal Juli 2026</span>
+    <h2>Menghitung Nilai Wajar Saham ASII Selangkah demi Selangkah</h2>
+    <p>Sebelum masuk ke 42 pelajaran, satu contoh perhitungan manual penuh — bukan prompt — menggunakan data riil PT Astra International Tbk (ASII) sebagai latihan. Anda bisa mengulang langkah yang sama untuk saham lain dengan mengganti input datanya.</p>
+
+    <div class="cs-step">
+      <div class="cs-title">Langkah 1 — Cost of Equity dengan CAPM</div>
+      <div class="formula">Cost of Equity (Ke) = Rf + β × (Rm − Rf)</div>
+      <table>
+        <tr><td>Risk-free rate (Rf) — yield SBN 10 tahun</td><td>7,2%</td></tr>
+        <tr><td>Beta ASII (5 tahun, vs IHSG)</td><td>0,78</td></tr>
+        <tr><td>Equity risk premium Indonesia (Rm − Rf), estimasi umum</td><td>6,0%</td></tr>
+      </table>
+      <div class="cs-result">Ke = 7,2% + 0,78 × 6,0% = 7,2% + 4,68% = 11,9%</div>
+    </div>
+
+    <div class="cs-step">
+      <div class="cs-title">Langkah 2 — Valuasi dengan Dividend Discount Model (Gordon Growth)</div>
+      <div class="formula">Nilai Wajar per Saham = D₀ × (1 + g) / (Ke − g)</div>
+      <table>
+        <tr><td>Laba per saham (EPS) FY2025</td><td>Rp 810</td></tr>
+        <tr><td>Rasio pembayaran dividen (payout ratio)</td><td>≈ 48%</td></tr>
+        <tr><td>Dividen per saham tahun berjalan (D₀ = EPS × payout)</td><td>≈ Rp 389</td></tr>
+        <tr><td>Asumsi pertumbuhan jangka panjang (g), ≈ pertumbuhan ekonomi</td><td>5,0%</td></tr>
+        <tr><td>Cost of equity (Ke, dari Langkah 1)</td><td>11,9%</td></tr>
+      </table>
+      <div class="cs-result">Nilai wajar = (389 × 1,05) / (0,119 − 0,05) = 408,5 / 0,069 ≈ Rp 5.920 / saham</div>
+    </div>
+
+    <div class="cs-step">
+      <div class="cs-title">Langkah 3 — Cross-check dengan Multiples (P/E &amp; P/BV)</div>
+      <div class="formula">P/E = Harga Saham / EPS      P/BV = Harga Saham / Nilai Buku per Saham</div>
+      <table>
+        <tr><td>Harga saham ASII (awal Juli 2026)</td><td>≈ Rp 4.650</td></tr>
+        <tr><td>EPS FY2025</td><td>Rp 810</td></tr>
+        <tr><td>P/E saat ini</td><td>4.650 / 810 = 5,7x</td></tr>
+        <tr><td>Total ekuitas FY2025</td><td>Rp 290,81 triliun</td></tr>
+        <tr><td>Estimasi saham beredar (Laba bersih Rp32,77T ÷ EPS Rp810)</td><td>≈ 40,46 miliar lembar</td></tr>
+        <tr><td>Nilai buku per saham (BVPS = Ekuitas / saham beredar)</td><td>≈ Rp 7.187</td></tr>
+        <tr><td>P/BV saat ini</td><td>4.650 / 7.187 = 0,65x</td></tr>
+      </table>
+      <div class="cs-result">P/E 5,7x dan P/BV 0,65x — jauh di bawah rata-rata historisnya, sejalan dengan hasil DDM di Langkah 2 yang mengindikasikan harga pasar berada di bawah estimasi nilai wajar.</div>
+    </div>
+
+    <p class="cs-source">Sumber data: laporan keuangan FY2025 ASII (EPS Rp810, ekuitas Rp290,81T, laba bersih Rp32,77T), yield SBN 10 tahun per pertengahan 2026 (kisaran 6,9%–7,3%), beta ASII dari TradingView, harga saham dari data pasar awal Juni–Juli 2026. Angka equity risk premium dan payout ratio bersifat estimasi untuk ilustrasi. <strong>Ini contoh metodologi, bukan rekomendasi investasi</strong> — selalu verifikasi harga, laporan keuangan terbaru, dan asumsi sebelum digunakan untuk keputusan nyata.</p>
+  </div>
+</div>
+
+<div class="mobile-pills">
+  <a href="#m1">01</a><a href="#m2">02</a><a href="#m3">03</a><a href="#m4">04</a><a href="#m5">05</a><a href="#m6">06</a><a href="#m7">07</a>
+</div>
+
+<div class="modules-wrap">
+  <div class="spine">
+    <div class="spine-line"></div>
+    <div class="spine-tab">
+      <a href="#m1">01</a>
+      <a href="#m2">02</a>
+      <a href="#m3">03</a>
+      <a href="#m4">04</a>
+      <a href="#m5">05</a>
+      <a href="#m6">06</a>
+      <a href="#m7">07</a>
+    </div>
+  </div>
+
+  <div>
+    <!-- MODULE 01 -->
+    <section class="module" id="m1">
+      <div class="module-head">
+        <div class="module-num folio">01</div>
+        <div class="module-titlewrap">
+          <h2>Financial Modeling Prompts</h2>
+          <div class="desc">Membangun model keuangan yang presisi — dari proyeksi tiga laporan hingga valuasi — dengan Claude sebagai co-pilot analitis Anda.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">8</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.1</span><span class="entry-title">Membangun Model DCF (Discounted Cash Flow) dari Nol</span><span class="entry-goal">Estimasi nilai intrinsik perusahaan dari proyeksi arus kas bebas.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Estimasi nilai intrinsik perusahaan dari proyeksi arus kas bebas.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-1">Anda adalah analis valuasi senior. Bantu saya membangun model DCF 5 tahun untuk [nama perusahaan], sektor [sektor]. Data yang saya miliki: pendapatan tahun terakhir Rp[angka], margin EBITDA [%], capex sebagai % pendapatan [%], WACC [%], dan tingkat pertumbuhan terminal [%]. Susun: (1) proyeksi free cash flow to firm per tahun, (2) perhitungan terminal value dengan metode Gordon Growth, (3) diskonto ke nilai kini, (4) sensitivitas terhadap WACC ±1% dan pertumbuhan terminal ±0,5%. Tampilkan dalam tabel dan jelaskan asumsi paling berisiko.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-1', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual</span>
+              <div class="formula">FCFF = EBIT × (1 − Tarif Pajak) + Depresiasi − Capex − ΔModal Kerja
+Nilai Kini = Σ [ FCFF_t / (1 + WACC)^t ]   +   Terminal Value / (1 + WACC)^n
+Terminal Value = FCFF_n × (1 + g) / (WACC − g)</div>
+              <table>
+                <tr><td>EBIT tahun proyeksi</td><td>Rp 100 miliar</td></tr>
+                <tr><td>Tarif pajak efektif</td><td>22%</td></tr>
+                <tr><td>NOPAT = EBIT × (1 − 22%)</td><td>Rp 78 miliar</td></tr>
+                <tr><td>+ Depresiasi</td><td>Rp 15 miliar</td></tr>
+                <tr><td>− Capex</td><td>Rp 20 miliar</td></tr>
+                <tr><td>− Kenaikan modal kerja</td><td>Rp 5 miliar</td></tr>
+                <tr><td>WACC yang dipakai</td><td>11,9%</td></tr>
+              </table>
+              <div class="result">FCFF tahun tersebut = 78 + 15 − 20 − 5 = Rp 68 miliar → didiskon dengan faktor 1/(1+11,9%)^t untuk tiap tahun proyeksi, lalu dijumlah dengan terminal value yang juga didiskon ke nilai kini.</div>
+              <p class="datanote">Angka di atas ilustrasi generik agar rumus mudah diikuti. WACC 11,9% memakai hasil perhitungan CAPM pada studi kasus ASII di atas halaman — ganti dengan cost of equity dan cost of debt perusahaan Anda sendiri.</p>
+            </div>
+            <p class="tip">Tip: lampirkan laporan keuangan 3 tahun terakhir sebagai file agar Claude menurunkan asumsi dari data historis riil, bukan angka generik.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.2</span><span class="entry-title">Menyusun Proyeksi Laporan Keuangan 3-Statement</span><span class="entry-goal">Menghubungkan laba rugi, neraca, dan arus kas secara konsisten.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menghubungkan laba rugi, neraca, dan arus kas secara konsisten.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-2">Buatkan kerangka model 3-statement (Laba Rugi, Neraca, Arus Kas) untuk proyeksi 3 tahun ke depan berdasarkan data historis yang saya lampirkan. Pastikan neraca selalu balance (aset = liabilitas + ekuitas), gunakan schedule utang dan depresiasi terpisah, dan tunjukkan bagaimana kas akhir tahun mengalir dari laporan arus kas ke neraca. Beri catatan setiap asumsi kunci (rasio piutang, hutang usaha, hari persediaan) di baris terpisah agar mudah diubah.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-2', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta Claude membuat versi Excel dengan rumus, bukan hanya angka statis, agar model bisa Anda utak-atik sendiri.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.3</span><span class="entry-title">Analisis Sensitivitas & Skenario (What-if Analysis)</span><span class="entry-goal">Menguji ketahanan model terhadap perubahan variabel kunci.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menguji ketahanan model terhadap perubahan variabel kunci.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-3">Dari model keuangan yang sudah kita susun, buatkan analisis skenario tiga kondisi: pesimis, dasar, dan optimis. Ubah asumsi pertumbuhan pendapatan (turun 2%, tetap, naik 3%) dan margin EBITDA (±1,5%). Tampilkan dampaknya ke laba bersih, arus kas bebas, dan valuasi akhir dalam satu tabel perbandingan. Tambahkan interpretasi singkat: skenario mana yang paling sensitif terhadap perubahan asumsi.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-3', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta Claude menyoroti variabel dengan dampak terbesar (driver utama) agar diskusi manajemen lebih terarah.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.4</span><span class="entry-title">Valuasi dengan Multiples (Comparable Company Analysis)</span><span class="entry-goal">Membandingkan valuasi perusahaan terhadap peer sejenis.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Membandingkan valuasi perusahaan terhadap peer sejenis.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-4">Bantu saya melakukan comparable company analysis untuk [nama perusahaan] di sektor [sektor]. Berikut data 4 perusahaan pembanding beserta EV/EBITDA, P/E, dan P/BV [tempel data]. Hitung rata-rata dan median tiap multiple, terapkan ke metrik keuangan perusahaan target, lalu hasilkan rentang valuasi implisit. Jelaskan jika ada outlier di antara peer yang sebaiknya dikeluarkan dari perhitungan dan alasannya.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-4', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual — Saham ASII</span>
+              <div class="formula">P/E = Harga Saham / EPS
+P/BV = Harga Saham / Nilai Buku per Saham (BVPS)
+EV/EBITDA = (Kapitalisasi Pasar + Total Utang − Kas) / EBITDA</div>
+              <table>
+                <tr><td>Harga saham ASII (awal Juli 2026)</td><td>Rp 4.650</td></tr>
+                <tr><td>EPS FY2025</td><td>Rp 810</td></tr>
+                <tr><td>Ekuitas FY2025 ÷ 40,46 miliar saham (BVPS)</td><td>Rp 7.187</td></tr>
+              </table>
+              <div class="result">P/E = 4.650 / 810 = 5,7x   ·   P/BV = 4.650 / 7.187 = 0,65x</div>
+              <p class="datanote">Bandingkan angka ini dengan rata-rata P/E dan P/BV emiten sejenis (misalnya konglomerasi otomotif/alat berat lain) untuk menilai apakah ASII diperdagangkan pada valuasi diskon atau premium terhadap peer-nya.</p>
+            </div>
+            <p class="tip">Tip: minta Claude mencari alasan bisnis di balik perbedaan multiple antar peer, bukan hanya menghitung rata-rata.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.5</span><span class="entry-title">Model LBO (Leveraged Buyout) Sederhana</span><span class="entry-goal">Mengukur potensi return akuisisi dengan struktur pendanaan utang.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Mengukur potensi return akuisisi dengan struktur pendanaan utang.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-5">Susun model LBO sederhana untuk akuisisi [target] dengan harga beli Rp[angka], struktur pendanaan 60% utang / 40% ekuitas, bunga utang [%], dan exit multiple EV/EBITDA [angka] pada tahun ke-5. Proyeksikan pelunasan utang bertahap dari arus kas bebas, lalu hitung IRR dan MOIC (multiple on invested capital) bagi investor ekuitas. Tunjukkan bagaimana IRR berubah jika exit multiple turun 1x.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-5', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: cocok untuk tim corporate development yang mengevaluasi akuisisi anak usaha atau target strategis.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.6</span><span class="entry-title">Perhitungan WACC & Cost of Capital</span><span class="entry-goal">Menentukan tingkat diskonto yang tepat untuk valuasi dan keputusan investasi.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menentukan tingkat diskonto yang tepat untuk valuasi dan keputusan investasi.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-6">Hitungkan WACC untuk [nama perusahaan] menggunakan data berikut: beta saham [angka], risk-free rate [%] (acuan SBN 10 tahun), equity risk premium [%], struktur modal (utang/ekuitas) [rasio], cost of debt pra-pajak [%], dan tarif pajak efektif [%]. Tunjukkan langkah CAPM untuk cost of equity, lalu gabungkan menjadi WACC tertimbang. Jelaskan asumsi mana yang paling mempengaruhi hasil akhir.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-6', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual — Saham ASII</span>
+              <div class="formula">Cost of Equity = Rf + β × (Rm − Rf)
+Cost of Debt setelah pajak = Kd × (1 − Tarif Pajak)
+WACC = (E/V × Ke) + (D/V × Kd setelah pajak)</div>
+              <table>
+                <tr><td>Risk-free rate (yield SBN 10 tahun)</td><td>7,2%</td></tr>
+                <tr><td>Beta ASII</td><td>0,78</td></tr>
+                <tr><td>Equity risk premium (estimasi)</td><td>6,0%</td></tr>
+                <tr><td>Cost of equity (Ke)</td><td>11,9%</td></tr>
+                <tr><td>Cost of debt pra-pajak (asumsi)</td><td>7,5%</td></tr>
+                <tr><td>Tarif pajak efektif</td><td>22%</td></tr>
+                <tr><td>Cost of debt setelah pajak = 7,5% × (1−22%)</td><td>5,85%</td></tr>
+                <tr><td>Bobot ekuitas / utang (asumsi ilustratif)</td><td>75% / 25%</td></tr>
+              </table>
+              <div class="result">WACC = (75% × 11,9%) + (25% × 5,85%) = 8,93% + 1,46% = 10,4%</div>
+              <p class="datanote">Cost of equity 11,9% konsisten dengan Langkah 1 studi kasus di atas. Bobot utang-ekuitas dan cost of debt di sini ilustratif — ambil angka riil dari neraca (total utang berbunga vs ekuitas) dan bunga pinjaman aktual perusahaan Anda.</p>
+            </div>
+            <p class="tip">Tip: gunakan data risk-free rate dan risk premium pasar Indonesia agar hasil relevan untuk keputusan lokal.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.7</span><span class="entry-title">Working Capital & Cash Flow Forecasting</span><span class="entry-goal">Memproyeksikan kebutuhan modal kerja dan likuiditas jangka pendek.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memproyeksikan kebutuhan modal kerja dan likuiditas jangka pendek.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-7">Berdasarkan data historis piutang, persediaan, dan hutang usaha yang saya lampirkan, proyeksikan kebutuhan modal kerja bulanan untuk 12 bulan ke depan. Hitung days sales outstanding, days inventory outstanding, dan days payable outstanding, lalu tunjukkan bulan-bulan dengan risiko defisit kas tertinggi. Sertakan rekomendasi apakah diperlukan fasilitas kredit modal kerja tambahan.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-7', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta grafik arus kas bulanan agar pola musiman bisnis terlihat jelas bagi manajemen.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">1.8</span><span class="entry-title">Dashboard KPI Keuangan Otomatis</span><span class="entry-goal">Merangkum metrik kinerja keuangan kunci dalam satu tampilan.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Merangkum metrik kinerja keuangan kunci dalam satu tampilan.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p1-8">Dari data keuangan bulanan yang saya lampirkan, susun dashboard KPI yang mencakup: pertumbuhan pendapatan MoM & YoY, margin kotor, margin EBITDA, rasio lancar, dan cash runway. Sajikan dalam format ringkas dengan indikator naik/turun dibanding bulan sebelumnya, dan tandai metrik mana yang menyimpang lebih dari 10% dari target anggaran.</pre>
+              <button class="copybtn" onclick="copyPrompt('p1-8', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: jadwalkan prompt ini bulanan agar dashboard konsisten dan mudah dibandingkan antar periode.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- MODULE 02 -->
+    <section class="module" id="m2">
+      <div class="module-head">
+        <div class="module-num folio">02</div>
+        <div class="module-titlewrap">
+          <h2>Market &amp; Risk Analysis</h2>
+          <div class="desc">Membaca kondisi pasar dan mengukur eksposur risiko secara sistematis, dari makroekonomi hingga risiko kredit.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">6</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">2.1</span><span class="entry-title">Riset Makroekonomi & Dampaknya ke Portofolio</span><span class="entry-goal">Menerjemahkan berita ekonomi menjadi implikasi konkret.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menerjemahkan berita ekonomi menjadi implikasi konkret.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p2-1">Ringkas perkembangan suku bunga acuan Bank Indonesia, inflasi, dan nilai tukar Rupiah dalam 3 bulan terakhir. Jelaskan dalam bahasa yang mudah dipahami manajemen non-teknis, lalu uraikan tiga implikasi konkret bagi perusahaan di sektor [sektor perusahaan Anda], termasuk dampak terhadap biaya pendanaan dan daya beli konsumen.</pre>
+              <button class="copybtn" onclick="copyPrompt('p2-1', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: aktifkan pencarian web di Claude agar data yang digunakan adalah data terkini, bukan dari ingatan model.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">2.2</span><span class="entry-title">Analisis Rasio Risiko (VaR, Sharpe Ratio, Beta)</span><span class="entry-goal">Mengkuantifikasi risiko investasi secara terukur.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Mengkuantifikasi risiko investasi secara terukur.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p2-2">Dari data return harian portofolio yang saya lampirkan (12 bulan terakhir), hitung Value at Risk (VaR 95% dan 99%, metode historis), Sharpe Ratio, dan beta terhadap IHSG. Jelaskan artinya dalam kalimat sederhana: berapa potensi kerugian maksimum dalam satu hari dengan tingkat keyakinan 95%, dan apakah portofolio memberi imbal hasil yang sepadan dengan risikonya.</pre>
+              <button class="copybtn" onclick="copyPrompt('p2-2', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual (Data Ilustrasi)</span>
+              <div class="formula">Sharpe Ratio = (Return Portofolio − Risk-free Rate) / Standar Deviasi Return
+VaR (metode historis) = Persentil ke-(100−CL)% dari distribusi return, dikalikan Nilai Portofolio
+Beta = Kovarian(Return Saham, Return IHSG) / Varian(Return IHSG)</div>
+              <table>
+                <tr><td>Return bulanan portofolio (5 bulan contoh)</td><td>2%, −1%, 3%, −4%, 1%</td></tr>
+                <tr><td>Rata-rata return bulanan</td><td>0,2%</td></tr>
+                <tr><td>Standar deviasi return bulanan</td><td>≈ 2,68%</td></tr>
+                <tr><td>Risk-free rate bulanan (≈7,2%/12)</td><td>0,6%</td></tr>
+                <tr><td>Nilai portofolio</td><td>Rp 1 miliar</td></tr>
+              </table>
+              <div class="result">Sharpe Ratio = (0,2% − 0,6%) / 2,68% = −0,15 (imbal hasil belum sepadan dengan risiko pada sampel ini)
+VaR 95% historis (1 bulan terburuk dari 5 data) ≈ −4% × Rp1 miliar = Rp 40 juta potensi kerugian</div>
+              <p class="datanote">Angka return di atas hanya data ilustrasi 5 titik agar langkah hitung mudah diikuti manual. Untuk hasil VaR yang andal, gunakan minimal 60–250 data return harian/bulanan riil, bukan 5 titik.</p>
+            </div>
+            <p class="tip">Tip: unggah data dalam format CSV/Excel agar Claude dapat menghitung langsung, bukan menerka dari deskripsi.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">2.3</span><span class="entry-title">Stress Testing Portofolio Investasi</span><span class="entry-goal">Menguji ketahanan portofolio terhadap skenario krisis.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menguji ketahanan portofolio terhadap skenario krisis.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p2-3">Lakukan stress test pada portofolio berikut [tempel komposisi aset] terhadap tiga skenario: (1) IHSG turun 20%, (2) Rupiah melemah 15% terhadap USD, (3) suku bunga naik 200 bps. Perkirakan dampak ke nilai portofolio pada tiap skenario, dan identifikasi aset mana yang paling rentan sehingga perlu dipertimbangkan untuk lindung nilai atau diversifikasi.</pre>
+              <button class="copybtn" onclick="copyPrompt('p2-3', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta Claude membuat versi ringkas untuk komite investasi dan versi rinci untuk tim risiko.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">2.4</span><span class="entry-title">Competitive Landscape & Industry Analysis</span><span class="entry-goal">Memetakan posisi kompetitif perusahaan dalam industrinya.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memetakan posisi kompetitif perusahaan dalam industrinya.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p2-4">Buatkan analisis lanskap kompetitif untuk industri [sebutkan industri] di Indonesia. Identifikasi 5 pemain utama, bandingkan pangsa pasar, model bisnis, dan margin jika tersedia datanya, lalu susun analisis Porter's Five Forces singkat. Tutup dengan tiga risiko kompetitif terbesar bagi perusahaan kami dalam 2 tahun ke depan.</pre>
+              <button class="copybtn" onclick="copyPrompt('p2-4', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan pencarian web agar data pangsa pasar dan pemain baru selalu mutakhir.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">2.5</span><span class="entry-title">Credit Risk Assessment untuk Calon Debitur</span><span class="entry-goal">Menilai kelayakan kredit sebelum keputusan pembiayaan.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menilai kelayakan kredit sebelum keputusan pembiayaan.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p2-5">Berdasarkan laporan keuangan calon debitur yang saya lampirkan (3 tahun terakhir), lakukan analisis kredit mencakup: rasio likuiditas, rasio solvabilitas (debt-to-equity, interest coverage), tren profitabilitas, dan kualitas arus kas operasional. Berikan skor risiko kredit kualitatif (rendah/sedang/tinggi) beserta tiga alasan utama, tanpa menyimpulkan keputusan akhir persetujuan.</pre>
+              <button class="copybtn" onclick="copyPrompt('p2-5', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan hasil ini sebagai bahan diskusi komite kredit, bukan pengganti keputusan final berwenang.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">2.6</span><span class="entry-title">Analisis Tren Pasar Modal & Sentimen Investor</span><span class="entry-goal">Memahami arah pasar untuk mendukung keputusan pendanaan.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memahami arah pasar untuk mendukung keputusan pendanaan.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p2-6">Ringkas tren IHSG dan sentimen investor asing (net buy/sell) dalam sebulan terakhir. Kaitkan dengan rencana kami menerbitkan obligasi korporasi/rights issue senilai Rp[angka] dalam 6 bulan ke depan — apakah kondisi pasar saat ini cenderung mendukung atau menghambat, dan faktor apa yang perlu dipantau sebelum eksekusi.</pre>
+              <button class="copybtn" onclick="copyPrompt('p2-6', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: selalu minta sumber data saat menyangkut angka pasar terkini agar bisa diverifikasi tim treasury.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- MODULE 03 -->
+    <section class="module" id="m3">
+      <div class="module-head">
+        <div class="module-num folio">03</div>
+        <div class="module-titlewrap">
+          <h2>Regulatory Compliance Docs</h2>
+          <div class="desc">Menyisir dokumen regulasi dan laporan panjang untuk menemukan poin yang benar-benar penting, lebih cepat dan lebih teliti.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">5</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">3.1</span><span class="entry-title">Ekstraksi Klausul Kunci dari Dokumen Regulasi OJK/BI</span><span class="entry-goal">Menemukan pasal relevan tanpa membaca seluruh dokumen.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menemukan pasal relevan tanpa membaca seluruh dokumen.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p3-1">Saya lampirkan draf peraturan OJK/BI tentang [topik]. Ekstrak seluruh pasal yang mengatur kewajiban pelaporan, batas waktu, dan sanksi bagi perusahaan sektor [sektor Anda]. Sajikan dalam tabel: nomor pasal, ringkasan kewajiban, tenggat waktu, dan pihak yang bertanggung jawab secara internal. Tandai pasal yang berbeda signifikan dari peraturan sebelumnya jika saya lampirkan versi lama sebagai pembanding.</pre>
+              <button class="copybtn" onclick="copyPrompt('p3-1', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: hasil ekstraksi tetap perlu diverifikasi tim legal/compliance sebelum menjadi acuan resmi.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">3.2</span><span class="entry-title">Ringkasan Cepat Laporan Keuangan Audited</span><span class="entry-goal">Menangkap inti temuan auditor dan catatan penting dalam hitungan menit.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menangkap inti temuan auditor dan catatan penting dalam hitungan menit.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p3-2">Dari laporan keuangan auditan yang saya lampirkan, buat ringkasan eksekutif satu halaman: opini auditor, perubahan kebijakan akuntansi signifikan, catatan atas kontinjensi atau litigasi, dan setiap "emphasis of matter" yang dicantumkan auditor. Gunakan bahasa yang bisa dipahami direksi non-akuntan.</pre>
+              <button class="copybtn" onclick="copyPrompt('p3-2', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta Claude membandingkan opini auditor tahun ini dengan tahun lalu bila keduanya dilampirkan.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">3.3</span><span class="entry-title">Checklist Kepatuhan Pajak & Pelaporan</span><span class="entry-goal">Memastikan tidak ada kewajiban pelaporan yang terlewat.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memastikan tidak ada kewajiban pelaporan yang terlewat.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p3-3">Buatkan checklist kepatuhan pajak bulanan dan tahunan untuk perusahaan berbentuk PT di Indonesia dengan aktivitas [jelaskan jenis usaha], mencakup PPh 21/23/25/29, PPN, dan pelaporan SPT Tahunan Badan. Sertakan tenggat waktu tiap kewajiban dan konsekuensi keterlambatan secara umum. Format sebagai tabel yang bisa langsung dipakai tim pajak internal.</pre>
+              <button class="copybtn" onclick="copyPrompt('p3-3', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: selalu validasi tenggat dan tarif terbaru ke konsultan pajak resmi, karena aturan pajak sering berubah.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">3.4</span><span class="entry-title">Deteksi Perubahan Regulasi (Regulatory Change Tracking)</span><span class="entry-goal">Memantau dan membandingkan versi regulasi dari waktu ke waktu.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memantau dan membandingkan versi regulasi dari waktu ke waktu.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p3-4">Saya lampirkan dua versi peraturan [nama regulasi]: versi lama dan versi revisi terbaru. Bandingkan keduanya pasal demi pasal, identifikasi seluruh perubahan substantif (bukan sekadar redaksional), dan jelaskan dampaknya terhadap proses bisnis kami saat ini di area [sebutkan area, misal: pelaporan keuangan, permodalan, tata kelola].</pre>
+              <button class="copybtn" onclick="copyPrompt('p3-4', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: jadikan hasil ini lampiran memo resmi ke divisi terkait agar perubahan segera diadopsi ke SOP.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">3.5</span><span class="entry-title">Penyusunan Memo Kepatuhan Internal</span><span class="entry-goal">Mengomunikasikan implikasi regulasi ke unit bisnis secara jelas.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Mengomunikasikan implikasi regulasi ke unit bisnis secara jelas.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p3-5">Susun memo kepatuhan internal untuk manajemen tentang regulasi [nama regulasi] yang baru berlaku. Strukturnya: latar belakang singkat, kewajiban baru bagi perusahaan, tenggat waktu implementasi, unit yang bertanggung jawab, dan langkah tindak lanjut yang direkomendasikan. Gunakan nada formal namun ringkas, maksimal satu halaman.</pre>
+              <button class="copybtn" onclick="copyPrompt('p3-5', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta versi bahasa Indonesia formal dan versi bahasa Inggris sekaligus jika perusahaan multinasional.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- MODULE 04 -->
+    <section class="module" id="m4">
+      <div class="module-head">
+        <div class="module-num folio">04</div>
+        <div class="module-titlewrap">
+          <h2>Strategic Financial Decisions</h2>
+          <div class="desc">Menyusun rekomendasi berbasis data untuk keputusan besar: investasi, akuisisi, struktur modal, dan restrukturisasi.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">7</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.1</span><span class="entry-title">Analisis Capital Budgeting (NPV, IRR, Payback Period)</span><span class="entry-goal">Menilai kelayakan finansial dari proyek investasi.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menilai kelayakan finansial dari proyek investasi.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-1">Evaluasi kelayakan proyek investasi berikut: investasi awal Rp[angka], proyeksi arus kas tahunan selama [n] tahun [tempel angka], dan discount rate [%]. Hitung NPV, IRR, profitability index, dan payback period (sederhana & terdiskonto). Simpulkan apakah proyek layak dijalankan dan sebutkan asumsi yang paling menentukan hasil.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-1', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual</span>
+              <div class="formula">NPV = Σ [ CFₜ / (1 + r)ᵗ ] − Investasi Awal
+IRR = tingkat diskonto r dimana NPV = 0
+Payback Period = Tahun terakhir arus kas negatif + (Sisa investasi belum tertutup / Arus kas tahun berikutnya)</div>
+              <table>
+                <tr><td>Investasi awal (tahun 0)</td><td>Rp 500 juta</td></tr>
+                <tr><td>Arus kas tahun 1</td><td>Rp 180 juta</td></tr>
+                <tr><td>Arus kas tahun 2</td><td>Rp 200 juta</td></tr>
+                <tr><td>Arus kas tahun 3</td><td>Rp 220 juta</td></tr>
+                <tr><td>Discount rate (r = WACC)</td><td>10,4%</td></tr>
+              </table>
+              <div class="result">NPV = 180/1,104 + 200/1,104² + 220/1,104³ − 500
+     = 163,0 + 164,1 + 163,5 − 500 = Rp 9,4 juta (positif → proyek layak)
+Payback period ≈ 2 tahun + (120/220) ≈ 2,5 tahun</div>
+              <p class="datanote">Discount rate memakai hasil WACC dari pelajaran 1.6. NPV positif meski tipis — pada kondisi ini biasanya IRR dihitung juga untuk melihat margin keamanan proyek; IRR bisa didekati dengan mencoba beberapa tingkat diskonto secara bertahap (trial and error) hingga NPV mendekati nol.</p>
+            </div>
+            <p class="tip">Tip: minta perbandingan dengan proyek alternatif jika ada, untuk mendukung keputusan alokasi modal.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.2</span><span class="entry-title">Keputusan M&A — Due Diligence Cepat</span><span class="entry-goal">Menyaring red flag awal sebelum proses due diligence penuh.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menyaring red flag awal sebelum proses due diligence penuh.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-2">Saya lampirkan laporan keuangan 3 tahun dari calon target akuisisi. Lakukan preliminary due diligence keuangan: identifikasi tren pendapatan dan margin, kualitas laba (misalnya item non-rutin yang membesar-besarkan laba), tingkat utang dan kovenan, serta potensi red flag yang perlu didalami tim due diligence penuh. Susun sebagai daftar prioritas dari yang paling kritikal.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-2', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan ini sebagai penyaringan awal — due diligence final tetap memerlukan verifikasi auditor independen.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.3</span><span class="entry-title">Optimalisasi Struktur Modal</span><span class="entry-goal">Menentukan bauran utang-ekuitas yang paling efisien.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menentukan bauran utang-ekuitas yang paling efisien.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-3">Perusahaan kami saat ini memiliki rasio debt-to-equity [angka] dengan cost of debt [%] dan cost of equity [%]. Analisis apakah menambah porsi utang untuk mendanai ekspansi senilai Rp[angka] akan menurunkan WACC dan meningkatkan nilai perusahaan, dengan mempertimbangkan risiko kenaikan financial distress cost. Tunjukkan titik struktur modal optimal secara indikatif.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-3', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: sertakan kovenan pinjaman existing agar rekomendasi tidak melanggar batas rasio yang sudah disepakati kreditur.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.4</span><span class="entry-title">Perencanaan Anggaran Tahunan (Budgeting & Forecasting)</span><span class="entry-goal">Menyusun anggaran berbasis data historis dan target strategis.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menyusun anggaran berbasis data historis dan target strategis.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-4">Berdasarkan realisasi anggaran 2 tahun terakhir yang saya lampirkan, susun draf anggaran tahun depan per departemen dengan asumsi pertumbuhan pendapatan [%] dan inflasi biaya operasional [%]. Tandai pos anggaran yang historisnya sering meleset dari rencana (varians tinggi) agar mendapat perhatian khusus saat review dengan masing-masing kepala departemen.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-4', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta format yang sama dengan template anggaran perusahaan Anda agar langsung bisa diinput ke sistem.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.5</span><span class="entry-title">Analisis Kelayakan Investasi Proyek Baru</span><span class="entry-goal">Menilai proyek baru dari sisi pasar, operasional, dan finansial.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menilai proyek baru dari sisi pasar, operasional, dan finansial.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-5">Kami mempertimbangkan membuka lini bisnis baru: [jelaskan singkat]. Bantu susun studi kelayakan awal mencakup estimasi ukuran pasar, proyeksi pendapatan 3 tahun dengan asumsi konservatif, struktur biaya utama, kebutuhan investasi awal, dan estimasi titik impas (break-even point). Tutup dengan tiga risiko terbesar yang bisa menggagalkan proyek ini.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-5', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan hasil ini sebagai draf awal proposal, lalu perdalam angka pasar dengan riset lapangan tim bisnis.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.6</span><span class="entry-title">Strategi Manajemen Likuiditas</span><span class="entry-goal">Menjaga kecukupan kas dalam berbagai kondisi bisnis.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menjaga kecukupan kas dalam berbagai kondisi bisnis.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-6">Dari proyeksi arus kas 12 bulan yang saya lampirkan, identifikasi bulan-bulan dengan posisi kas paling ketat. Rekomendasikan kombinasi strategi likuiditas: percepatan penagihan piutang, negosiasi tenor hutang usaha, atau fasilitas kredit siaga (standby facility), lengkap dengan estimasi dampaknya terhadap posisi kas minimum bulanan.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-6', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: tetapkan buffer kas minimum sebagai parameter tetap dalam prompt agar rekomendasi realistis untuk operasional.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">4.7</span><span class="entry-title">Skenario Restrukturisasi Utang</span><span class="entry-goal">Menyusun opsi restrukturisasi saat tekanan arus kas meningkat.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menyusun opsi restrukturisasi saat tekanan arus kas meningkat.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p4-7">Perusahaan menghadapi tekanan pembayaran utang senilai Rp[angka] jatuh tempo dalam [periode]. Susun 3 opsi restrukturisasi: perpanjangan tenor, konversi sebagian utang menjadi ekuitas, dan refinancing dengan kreditur baru. Untuk tiap opsi, jelaskan dampaknya terhadap rasio keuangan utama dan tingkat kesulitan negosiasi secara realistis.</pre>
+              <button class="copybtn" onclick="copyPrompt('p4-7', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: skenario ini sebaiknya selalu direview bersama tim legal dan konsultan keuangan sebelum dibawa ke kreditur.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- MODULE 05 -->
+    <section class="module" id="m5">
+      <div class="module-head">
+        <div class="module-num folio">05</div>
+        <div class="module-titlewrap">
+          <h2>Automated Financial Workflows</h2>
+          <div class="desc">Menghemat waktu tim dengan menjadikan Claude bagian dari alur kerja rutin — rekonsiliasi, pelaporan, dan persetujuan.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">4</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">5.1</span><span class="entry-title">Otomatisasi Rekonsiliasi Data Keuangan</span><span class="entry-goal">Menemukan selisih antar dua sumber data secara cepat.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menemukan selisih antar dua sumber data secara cepat.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p5-1">Saya lampirkan dua file: mutasi rekening bank dan buku besar kas perusahaan untuk periode yang sama. Bandingkan keduanya, identifikasi transaksi yang tidak cocok (selisih nominal, transaksi hilang di salah satu sisi, atau perbedaan tanggal pencatatan), dan sajikan daftar item rekonsiliasi yang perlu ditindaklanjuti beserta kemungkinan penyebabnya.</pre>
+              <button class="copybtn" onclick="copyPrompt('p5-1', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: unggah kedua file dalam format CSV/Excel agar pencocokan baris per baris lebih akurat.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">5.2</span><span class="entry-title">Template Prompt untuk Laporan Bulanan Otomatis</span><span class="entry-goal">Menstandardisasi laporan bulanan agar konsisten tiap periode.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menstandardisasi laporan bulanan agar konsisten tiap periode.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p5-2">Gunakan template berikut setiap bulan: dari data keuangan bulan [bulan] yang saya lampirkan, susun laporan manajemen dengan struktur tetap — (1) ringkasan kinerja vs anggaran, (2) tiga sorotan utama, (3) tiga area perhatian, (4) proyeksi bulan depan. Pertahankan gaya bahasa dan urutan yang sama seperti laporan bulan sebelumnya agar mudah dibandingkan pembaca.</pre>
+              <button class="copybtn" onclick="copyPrompt('p5-2', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: simpan prompt ini sebagai template tetap (project instructions) agar formatnya konsisten setiap bulan.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">5.3</span><span class="entry-title">Alur Kerja Persetujuan Anggaran (Approval Workflow)</span><span class="entry-goal">Menyiapkan ringkasan pengajuan agar proses persetujuan lebih cepat.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menyiapkan ringkasan pengajuan agar proses persetujuan lebih cepat.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p5-3">Dari daftar pengajuan anggaran departemen yang saya lampirkan, buat ringkasan per pengajuan: tujuan pengeluaran, nominal, kesesuaian dengan pagu anggaran yang tersisa, dan tingkat urgensi. Urutkan dari yang paling mendesak untuk disetujui, dan tandai pengajuan yang melebihi pagu departemen agar mendapat perhatian khusus sebelum diteruskan ke penyetuju.</pre>
+              <button class="copybtn" onclick="copyPrompt('p5-3', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan untuk mempercepat triase, keputusan persetujuan akhir tetap berada di tangan penanggung jawab anggaran.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">5.4</span><span class="entry-title">Integrasi Claude dengan Excel/Spreadsheet untuk Pipeline Data</span><span class="entry-goal">Membangun alur kerja rutin yang menghubungkan Claude dengan data spreadsheet.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Membangun alur kerja rutin yang menghubungkan Claude dengan data spreadsheet.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt</span>
+              <pre id="p5-4">Saya punya file Excel mentah berisi data transaksi harian dengan kolom tidak konsisten. Bersihkan data ini (standarisasi format tanggal, satuan mata uang, dan kategori transaksi), lalu susun pivot ringkasan per kategori dan per bulan. Jelaskan langkah pembersihan yang Anda lakukan agar bisa saya ulangi secara manual di bulan berikutnya bila diperlukan.</pre>
+              <button class="copybtn" onclick="copyPrompt('p5-4', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: manfaatkan Claude for Excel untuk mengedit spreadsheet langsung di tempat, tanpa bolak-balik salin tempel.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- MODULE 06 -->
+    <section class="module" id="m6">
+      <div class="module-head">
+        <div class="module-num folio">06</div>
+        <div class="module-titlewrap">
+          <span class="badge-track">Jalur Sertifikasi Profesi</span>
+          <h2>Persiapan Ujian Wakil Manajer Investasi (WMI)</h2>
+          <div class="desc">Menggunakan Claude sebagai tutor belajar untuk lisensi wajib OJK bagi siapa pun yang mewakili perusahaan Manajer Investasi.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">6</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="examinfo">
+        <div><span class="k">Dasar Hukum</span><span class="v">POJK No. 31/POJK.04/2018 tentang Perizinan Wakil Manajer Investasi</span></div>
+        <div><span class="k">Penyelenggara Uji</span><span class="v">LSP Pasar Modal Indonesia (LSPPM), di bawah lisensi BNSP</span></div>
+        <div><span class="k">Acuan Kompetensi</span><span class="v">SKKNI No. 20 Tahun 2024 — Jenjang Kualifikasi 5, Subbidang Pengelolaan Investasi</span></div>
+        <div><span class="k">Syarat Umum</span><span class="v">S1/D4 Keuangan; atau D3 + 1 th pengalaman; atau SMU/sederajat + 3–4 th pengalaman industri jasa keuangan</span></div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0;">Persyaratan dan biaya uji kompetensi dapat berubah — selalu cek halaman resmi <span class="folio">lsppm.com</span> sebelum mendaftar.</p>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">6.1</span><span class="entry-title">Kerangka Regulasi Manajer Investasi & Peran WMI</span><span class="entry-goal">Memahami dasar hukum, kewajiban fiduciary, dan batas kewenangan WMI.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memahami dasar hukum, kewajiban fiduciary, dan batas kewenangan WMI.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p6-1">Jelaskan kepada saya seperti sedang mengajar calon Wakil Manajer Investasi: apa perbedaan tanggung jawab antara Manajer Investasi (badan hukum) dan Wakil Manajer Investasi (perseorangan) menurut POJK 31/POJK.04/2018? Sertakan penjelasan prinsip fiduciary duty, larangan benturan kepentingan, dan tiga contoh pelanggaran umum yang membuat izin WMI bisa dicabut. Tutup dengan 5 soal pilihan ganda untuk menguji pemahaman saya, tanpa langsung memberi jawabannya.</pre>
+              <button class="copybtn" onclick="copyPrompt('p6-1', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: minta Claude berperan sebagai penguji dan memberi skor setelah Anda menjawab, agar belajar terasa seperti simulasi ujian.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">6.2</span><span class="entry-title">Instrumen & Struktur Reksa Dana</span><span class="entry-goal">Menguasai jenis reksa dana, mekanisme NAB, dan proses subscription/redemption.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menguasai jenis reksa dana, mekanisme NAB, dan proses subscription/redemption.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p6-2">Buatkan tabel perbandingan reksa dana pasar uang, pendapatan tetap, campuran, saham, terproteksi, dan indeks: profil risiko, horizon investasi ideal, komposisi aset yang diizinkan, dan batasan regulasi utamanya. Setelah itu, jelaskan langkah perhitungan Nilai Aktiva Bersih (NAB) per unit penyertaan dan berikan satu contoh perhitungan numerik sederhana.</pre>
+              <button class="copybtn" onclick="copyPrompt('p6-2', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual</span>
+              <div class="formula">NAB per Unit Penyertaan = (Total Nilai Aset Reksa Dana − Kewajiban) / Jumlah Unit Penyertaan Beredar</div>
+              <table>
+                <tr><td>Total nilai aset reksa dana</td><td>Rp 105 miliar</td></tr>
+                <tr><td>Total kewajiban (biaya, utang)</td><td>Rp 2 miliar</td></tr>
+                <tr><td>Unit penyertaan beredar</td><td>103 juta unit</td></tr>
+              </table>
+              <div class="result">NAB/unit = (105 miliar − 2 miliar) / 103 juta = Rp 1.000 per unit</div>
+              <p class="datanote">Ini konsep inti yang paling sering diuji: NAB/unit berubah setiap hari bursa mengikuti perubahan nilai aset di dalamnya.</p>
+            </div>
+            <p class="tip">Tip: minta Claude membuatkan flashcard istilah (NAB, subscription fee, redemption fee, switching) untuk dihafalkan cepat sebelum ujian.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">6.3</span><span class="entry-title">Konstruksi & Rebalancing Portofolio</span><span class="entry-goal">Menyusun alokasi aset sesuai profil risiko dan menjaga bobot portofolio tetap sesuai target.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menyusun alokasi aset sesuai profil risiko dan menjaga bobot portofolio tetap sesuai target.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p6-3">Saya sedang belajar konstruksi portofolio untuk ujian WMI. Jelaskan strategic asset allocation vs tactical asset allocation, lalu berikan studi kasus: investor profil moderat dengan horizon 5 tahun. Rancang alokasi awal antar kelas aset (saham, obligasi, pasar uang), jelaskan kapan portofolio perlu di-rebalance, dan bagaimana cara menghitung bobot aktual setelah harga bergerak.</pre>
+              <button class="copybtn" onclick="copyPrompt('p6-3', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual</span>
+              <div class="formula">Bobot Aktual Aset = Nilai Pasar Aset / Total Nilai Portofolio</div>
+              <table>
+                <tr><td>Target alokasi awal: Saham</td><td>50%</td></tr>
+                <tr><td>Target alokasi awal: Obligasi</td><td>50%</td></tr>
+                <tr><td>Setelah saham naik 20%, obligasi tetap</td><td>Saham Rp120jt, Obligasi Rp100jt</td></tr>
+              </table>
+              <div class="result">Bobot aktual saham = 120/(120+100) = 54,5% → menyimpang 4,5 poin dari target 50%, sehingga perlu rebalancing (jual sebagian saham, tambah obligasi) untuk kembali ke bobot target.</div>
+            </div>
+            <p class="tip">Tip: latihan seperti ini sering muncul dalam bentuk studi kasus di uji kompetensi — biasakan menghitung manual dulu sebelum cek dengan Claude.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">6.4</span><span class="entry-title">Manajemen Risiko Portofolio Reksa Dana</span><span class="entry-goal">Mengukur dan mengendalikan risiko dalam pengelolaan dana kolektif.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Mengukur dan mengendalikan risiko dalam pengelolaan dana kolektif.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p6-4">Jelaskan konsep tracking error dan bagaimana WMI menggunakannya untuk mengevaluasi reksa dana indeks. Lalu jelaskan batasan diversifikasi yang diatur regulasi (misalnya batas maksimum kepemilikan pada satu efek dalam reksa dana), dan mengapa batasan ini penting untuk melindungi investor. Berikan contoh pelanggaran batasan diversifikasi dan konsekuensinya.</pre>
+              <button class="copybtn" onclick="copyPrompt('p6-4', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: kaitkan materi ini dengan pelajaran 2.2 pada Modul 02 (VaR, Sharpe Ratio) — konsepnya sama, hanya konteksnya reksa dana, bukan portofolio pribadi.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">6.5</span><span class="entry-title">Kepatuhan, Pelaporan, dan Kode Etik WMI</span><span class="entry-goal">Memahami kewajiban pelaporan berkala dan standar perilaku profesional.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Memahami kewajiban pelaporan berkala dan standar perilaku profesional.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p6-5">Susun ringkasan kewajiban pelaporan berkala yang harus dipenuhi Manajer Investasi ke OJK (laporan NAB harian, laporan bulanan, laporan tahunan). Lalu jelaskan lima prinsip kode etik utama bagi WMI (mengutamakan kepentingan nasabah, larangan insider trading, larangan menjanjikan imbal hasil pasti, dsb) dengan satu contoh kasus pelanggaran nyata dari industri untuk tiap prinsip jika Anda dapat menemukannya lewat pencarian web.</pre>
+              <button class="copybtn" onclick="copyPrompt('p6-5', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: aktifkan pencarian web di Claude agar contoh kasus pelanggaran yang diberikan adalah kejadian nyata dan terverifikasi, bukan karangan.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">6.6</span><span class="entry-title">Simulasi Soal & Studi Kasus Uji Kompetensi WMI</span><span class="entry-goal">Melatih pola soal sebelum menghadapi uji kompetensi sesungguhnya.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Melatih pola soal sebelum menghadapi uji kompetensi sesungguhnya.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p6-6">Bertindaklah sebagai asesor Uji Kompetensi WMI. Berikan saya 10 soal studi kasus bergaya uji kompetensi LSPPM yang menggabungkan regulasi, perhitungan NAB, dan alokasi portofolio, dengan tingkat kesulitan bertahap dari mudah ke sulit. Setelah saya jawab satu per satu, beri umpan balik spesifik: bagian mana yang benar, bagian mana yang perlu diperbaiki, dan pasal/konsep apa yang perlu saya pelajari ulang.</pre>
+              <button class="copybtn" onclick="copyPrompt('p6-6', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: ulangi sesi ini beberapa kali dengan topik berbeda setiap minggu — pengulangan terjadwal (spaced repetition) jauh lebih efektif daripada belajar semalam sebelum ujian.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- MODULE 07 -->
+    <section class="module" id="m7">
+      <div class="module-head">
+        <div class="module-num folio">07</div>
+        <div class="module-titlewrap">
+          <span class="badge-track">Jalur Sertifikasi Profesi</span>
+          <h2>Persiapan Ujian Analis Efek: RSA & Certified Securities Analyst (CSA)</h2>
+          <div class="desc">Menggunakan Claude untuk berlatih analisis fundamental, teknikal, dan menyusun laporan riset setara standar analis profesional pasar modal.</div>
+        </div>
+        <div class="module-meta"><div class="lesson-count folio">6</div><div class="lesson-count-label">pelajaran</div></div>
+      </div>
+
+      <div class="examinfo">
+        <div><span class="k">Dasar Standar</span><span class="v">Kepmenakertrans No. 317/LATTAS/XII/2014 tentang Standar Kompetensi Analis Efek</span></div>
+        <div><span class="k">Penyelenggara Uji</span><span class="v">LSP Pasar Modal Indonesia (LSPPM), di bawah lisensi BNSP</span></div>
+        <div><span class="k">Jenjang</span><span class="v">RSA — Registered Securities Analyst (Analisa Efek Madya) → CSA — Certified Securities Analyst (Analisa Efek Utama)</span></div>
+        <div><span class="k">Syarat Umum</span><span class="v">RSA: S1 Ekonomi/Keuangan + lisensi WPPE/WPEE/WMI, atau 3 th pengalaman keuangan. CSA: S2, atau S1 + 5 th pengalaman</span></div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-soft);margin:6px 0 0;">Persyaratan dan biaya pelatihan dapat berubah — selalu cek halaman resmi <span class="folio">lsppm.com</span> atau <span class="folio">csainstitute.or.id</span> sebelum mendaftar.</p>
+
+      <div class="entries">
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">7.1</span><span class="entry-title">Analisis Fundamental: Mengumpulkan & Mengolah Data Laporan Keuangan</span><span class="entry-goal">Unit kompetensi inti pertama dalam skema uji Analis Efek.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Unit kompetensi inti pertama dalam skema uji Analis Efek.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p7-1">Saya berlatih untuk unit kompetensi "Mengumpulkan Data yang Diperlukan dalam Analisis Fundamental" pada uji Analis Efek. Lampirkan laporan keuangan [nama emiten] dan bantu saya mengidentifikasi: sumber data primer yang wajib diperiksa (laporan tahunan, prospektus, keterbukaan informasi), item mana yang paling sering direkayasa (window dressing), dan bagaimana cara cross-check angka laporan keuangan dengan data dari BEI/OJK.</pre>
+              <button class="copybtn" onclick="copyPrompt('p7-1', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan emiten yang datanya sudah Anda kenal dari Modul 01–02 di halaman ini agar latihan terasa berkesinambungan.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">7.2</span><span class="entry-title">Analisis Rasio Keuangan & Valuasi Saham untuk Laporan Riset</span><span class="entry-goal">Menerjemahkan angka laporan keuangan menjadi opini valuasi yang bisa dipertanggungjawabkan.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menerjemahkan angka laporan keuangan menjadi opini valuasi yang bisa dipertanggungjawabkan.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p7-2">Latih saya menghitung rasio profitabilitas (ROE, ROA, margin), likuiditas (current ratio, quick ratio), dan solvabilitas (DER, interest coverage) dari laporan keuangan [nama emiten] yang saya lampirkan. Setelah saya hitung manual, koreksi hasil saya dan jelaskan bagaimana rasio-rasio ini biasa dirangkai menjadi satu opini valuasi dalam laporan riset analis.</pre>
+              <button class="copybtn" onclick="copyPrompt('p7-2', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual — Saham ASII</span>
+              <div class="formula">ROE = Laba Bersih / Total Ekuitas
+Net Profit Margin = Laba Bersih / Pendapatan</div>
+              <table>
+                <tr><td>Laba bersih FY2025</td><td>Rp 32,77 triliun</td></tr>
+                <tr><td>Total ekuitas FY2025</td><td>Rp 290,81 triliun</td></tr>
+                <tr><td>Pendapatan bersih FY2025</td><td>Rp 323,39 triliun</td></tr>
+              </table>
+              <div class="result">ROE = 32,77 / 290,81 = 11,3%   ·   Net Margin = 32,77 / 323,39 = 10,1% (sesuai laporan resmi perusahaan)</div>
+            </div>
+            <p class="tip">Tip: bandingkan hasil rasio Anda dengan rata-rata sektor — analis yang baik selalu memberi konteks pembanding, bukan angka berdiri sendiri.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">7.3</span><span class="entry-title">Analisis Makroekonomi & Industri (Top-Down Approach)</span><span class="entry-goal">Menempatkan analisis saham dalam konteks ekonomi dan industri yang lebih luas.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menempatkan analisis saham dalam konteks ekonomi dan industri yang lebih luas.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p7-3">Bantu saya berlatih pendekatan top-down: mulai dari kondisi makroekonomi Indonesia terkini (suku bunga, inflasi, nilai tukar), turun ke analisis siklus industri [sebutkan sektor], lalu ke posisi kompetitif emiten [nama emiten] di dalamnya. Jelaskan bagaimana ketiga lapisan analisis ini saling memengaruhi rekomendasi akhir (buy/hold/sell) dalam laporan riset analis.</pre>
+              <button class="copybtn" onclick="copyPrompt('p7-3', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: unit kompetensi ini sering diuji lewat studi kasus tertulis — latih menulis analisis top-down dalam waktu terbatas (30–45 menit) untuk simulasi kondisi ujian.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">7.4</span><span class="entry-title">Analisis Teknikal: Tren, Support/Resistance, Indikator</span><span class="entry-goal">Membaca pergerakan harga saham menggunakan grafik dan indikator teknikal.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Membaca pergerakan harga saham menggunakan grafik dan indikator teknikal.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p7-4">Jelaskan konsep dasar analisis teknikal yang diujikan dalam sertifikasi Analis Efek: identifikasi tren (uptrend/downtrend/sideways), cara menarik garis support dan resistance, serta cara membaca tiga indikator populer (Moving Average, RSI, MACD). Untuk tiap indikator, jelaskan sinyal beli dan jual yang umum digunakan, beserta satu keterbatasan utamanya agar saya tidak menggunakannya secara membabi buta.</pre>
+              <button class="copybtn" onclick="copyPrompt('p7-4', this)">Salin prompt</button>
+            </div>
+            <div class="formulacard">
+              <span class="label">Rumus & Contoh Perhitungan Manual</span>
+              <div class="formula">Simple Moving Average (SMA n-hari) = Jumlah harga penutupan n hari terakhir / n</div>
+              <table>
+                <tr><td>Harga penutupan 5 hari terakhir</td><td>4.600, 4.650, 4.700, 4.620, 4.680</td></tr>
+              </table>
+              <div class="result">SMA-5 = (4.600+4.650+4.700+4.620+4.680) / 5 = 23.250 / 5 = Rp 4.650</div>
+              <p class="datanote">Sinyal umum: harga menembus ke atas SMA disebut golden signal jangka pendek; menembus ke bawah disebut death signal — namun harus dikonfirmasi indikator lain, bukan dipakai sendirian.</p>
+            </div>
+            <p class="tip">Tip: minta Claude membuat visualisasi chart dari data harga yang Anda unggah agar konsep support/resistance lebih mudah dipahami secara visual.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">7.5</span><span class="entry-title">Menyusun Laporan Riset Ekuitas (Equity Research Report) Profesional</span><span class="entry-goal">Menulis laporan riset sesuai standar yang dinilai dalam uji kompetensi.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Menulis laporan riset sesuai standar yang dinilai dalam uji kompetensi.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p7-5">Bantu saya menyusun kerangka laporan riset ekuitas standar industri untuk [nama emiten]: (1) ringkasan investasi & rekomendasi, (2) tesis investasi utama, (3) ringkasan kinerja keuangan, (4) valuasi (multiples & DCF/DDM), (5) risiko utama, (6) katalis jangka pendek. Setelah kerangkanya siap, kritisi draf laporan yang saya tulis sendiri: bagian mana yang argumennya lemah atau tidak didukung data.</pre>
+              <button class="copybtn" onclick="copyPrompt('p7-5', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: gunakan hasil studi kasus ASII di bagian atas halaman ini sebagai contoh isi bagian valuasi laporan riset Anda.</p>
+          </div>
+        </details>
+
+        <details class="entry">
+          <summary><span class="entry-folio folio">7.6</span><span class="entry-title">Presentasi Hasil Riset & Simulasi Wawancara Uji Kompetensi</span><span class="entry-goal">Berlatih mempertahankan analisis secara lisan, seperti pada sesi wawancara asesor.</span><span class="entry-toggle">+</span></summary>
+          <div class="entry-body">
+            <p class="entry-goal-mobile">Berlatih mempertahankan analisis secara lisan, seperti pada sesi wawancara asesor.</p>
+            <div class="promptcard">
+              <span class="label">Contoh Prompt Belajar</span>
+              <pre id="p7-6">Bertindaklah sebagai asesor LSPPM yang sedang menguji kompetensi Analis Efek. Saya akan mempresentasikan singkat rekomendasi saham [nama emiten] yang sudah saya susun. Setelah saya selesai, ajukan 5 pertanyaan kritis yang biasa ditanyakan asesor untuk menguji apakah rekomendasi saya benar-benar berbasis data atau hanya opini, lalu beri penilaian dan saran perbaikan cara saya menjawab.</pre>
+              <button class="copybtn" onclick="copyPrompt('p7-6', this)">Salin prompt</button>
+            </div>
+            <p class="tip">Tip: rekam suara Anda sendiri saat presentasi, lalu minta Claude mentranskrip dan mengevaluasi kejelasan alur argumen — bukan hanya isi kontennya.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<footer id="unduh">
+  <div class="footer-inner">
+    <h3>Cara menyimpan kurikulum ini</h3>
+    <p>Halaman ini adalah satu file HTML mandiri. Untuk menyimpannya: klik tombol unduh/download pada file yang dibagikan di percakapan ini, lalu buka filenya langsung di browser kapan saja — tanpa koneksi internet, kecuali untuk memuat huruf. Anda juga bisa menyalinnya ke Google Drive atau intranet perusahaan agar bisa diakses seluruh tim keuangan.</p>
+    <p>Dibangun mengikuti struktur kurikulum "Claude for Financial Department": 7 modul, 42 pelajaran — lima modul fungsi keuangan korporat (financial modeling, market & risk analysis, regulatory compliance, strategic decisions, automated workflows) ditambah dua modul jalur sertifikasi profesi pasar modal (Wakil Manajer Investasi dan Analis Efek RSA/CSA). Dirancang untuk analis hingga manajer keuangan yang ingin menjadikan Claude bagian dari pekerjaan sehari-hari sekaligus tutor belajar sertifikasi — bukan sekadar alat coba-coba.</p>
+    <div class="footer-meta">
+      <span>Buku Besar Pembelajaran · Divisi Keuangan</span>
+      <span>Folio 01–07 · 42 Entri</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyPrompt(id, btn){
+    const text = document.getElementById(id).innerText;
+    const done = () => {
+      const original = btn.textContent;
+      btn.textContent = "Tersalin ✓";
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = original; btn.classList.remove('copied'); }, 1800);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text, done));
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, cb){
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  // active tab highlight on scroll
+  const sections = document.querySelectorAll('section.module');
+  const navLinks = document.querySelectorAll('.spine-tab a, nav.tabs a');
+  const setActive = () => {
+    let currentId = '';
+    sections.forEach(sec=>{
+      const rect = sec.getBoundingClientRect();
+      if(rect.top <= 140 && rect.bottom > 140) currentId = sec.id;
+    });
+    navLinks.forEach(link=>{
+      link.classList.toggle('active', link.getAttribute('href') === '#'+currentId);
+    });
+  };
+  document.addEventListener('scroll', setActive, {passive:true});
+  setActive();
+</script>
+
+</body>
+</html>

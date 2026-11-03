@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jalur Profesional: Ethical Hacker &amp; Cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --bg: #0A0E13;
+    --bg-raised: #10161D;
+    --bg-card: #121922;
+    --line: rgba(230, 237, 243, 0.09);
+    --line-strong: rgba(230, 237, 243, 0.18);
+    --text: #E7EDF3;
+    --text-dim: #8E9BA8;
+    --text-faint: #5C6774;
+    --amber: #E3A23D;
+    --amber-dim: rgba(227, 162, 61, 0.14);
+    --teal: #49CFC2;
+    --teal-dim: rgba(73, 207, 194, 0.12);
+    --red: #E2554B;
+    --red-dim: rgba(226, 85, 75, 0.12);
+    --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+    --font-sans: 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+    color-scheme: dark;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(72px + env(safe-area-inset-top, 0px)); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  a { color: inherit; }
+  .mono { font-family: var(--font-mono); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+  .wrap-narrow { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- NAV ---------- */
+  header.nav {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 50;
+    background: rgba(10, 14, 19, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal);
+    flex-shrink: 0;
+  }
+  .nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--text-dim); }
+  .nav-links a { text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover, .nav-links a:focus-visible { color: var(--text); }
+  @media (max-width: 680px) { .nav-links { display: none; } }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 820px) { .hero-grid { grid-template-columns: 1fr; } }
+
+  .eyebrow-term {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--teal);
+    margin-bottom: 20px;
+    min-height: 20px;
+  }
+  .eyebrow-term .cursor {
+    display: inline-block;
+    width: 8px; height: 15px;
+    background: var(--teal);
+    vertical-align: -2px;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  h1.hero-title {
+    font-size: clamp(34px, 5vw, 54px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 14ch;
+  }
+  .hero-title em {
+    font-style: normal;
+    color: var(--amber);
+  }
+  .hero-sub {
+    margin-top: 22px;
+    font-size: 17px;
+    color: var(--text-dim);
+    max-width: 52ch;
+  }
+  .hero-ctas { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 13px 22px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.12s ease, background 0.15s, border-color 0.15s;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--amber); color: #15110A; }
+  .btn-primary:hover { background: #EEAE50; }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--line-strong); }
+  .btn-ghost:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* terminal panel */
+  .term {
+    background: var(--bg-raised);
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    background: #0D1319;
+  }
+  .term-bar span { width: 10px; height: 10px; border-radius: 50%; background: #39424D; }
+  .term-bar .label { margin-left: 8px; font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); }
+  .term-body {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.8;
+    padding: 18px 16px;
+    color: #C7D2DB;
+    min-height: 230px;
+  }
+  .term-body .prompt { color: var(--teal); }
+  .term-body .path { color: var(--amber); }
+  .term-body .out { color: var(--text-dim); }
+  .term-body .ok { color: var(--teal); }
+  .term-line { opacity: 0; animation: reveal 0.3s forwards; }
+  @keyframes reveal { to { opacity: 1; } }
+
+  /* ---------- ETHICS BANNER ---------- */
+  .ethics {
+    background: var(--red-dim);
+    border-top: 1px solid rgba(226, 85, 75, 0.3);
+    border-bottom: 1px solid rgba(226, 85, 75, 0.3);
+    padding: 20px 0;
+  }
+  .ethics-inner {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    font-size: 14.5px;
+  }
+  .ethics-mark {
+    font-family: var(--font-mono);
+    color: var(--red);
+    font-weight: 700;
+    font-size: 13px;
+    border: 1px solid rgba(226, 85, 75, 0.45);
+    border-radius: 5px;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .ethics p { color: #E8C3C0; }
+  .ethics strong { color: var(--text); }
+
+  /* ---------- SECTION SHELL ---------- */
+  section { padding: 76px 0; border-bottom: 1px solid var(--line); }
+  .sec-head { margin-bottom: 40px; max-width: 60ch; }
+  .sec-kicker {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--teal);
+    margin-bottom: 10px;
+  }
+  .sec-title { font-size: clamp(24px, 3.4vw, 32px); font-weight: 700; letter-spacing: -0.01em; }
+  .sec-desc { margin-top: 12px; color: var(--text-dim); font-size: 15.5px; }
+
+  /* ---------- ROADMAP (stepped — genuinely sequential) ---------- */
+  .roadmap { position: relative; }
+  .rstep {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 22px;
+    position: relative;
+    padding-bottom: 36px;
+  }
+  .rstep:last-child { padding-bottom: 0; }
+  .rstep::before {
+    content: '';
+    position: absolute;
+    left: 31px; top: 46px; bottom: -4px;
+    width: 1px;
+    background: var(--line-strong);
+  }
+  .rstep:last-child::before { display: none; }
+  .rnum {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: var(--bg-card);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--amber);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .rcontent { padding-top: 10px; }
+  .rlevel { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .rtitle { font-size: 19px; font-weight: 600; margin-top: 4px; }
+  .rdesc { color: var(--text-dim); margin-top: 8px; font-size: 14.5px; max-width: 58ch; }
+  .rtags { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .rtag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 4px 9px;
+    background: var(--bg-card);
+  }
+
+  /* ---------- MATERI ACCORDION ---------- */
+  .modlist { display: flex; flex-direction: column; gap: 10px; }
+  .mod {
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--bg-card);
+    overflow: hidden;
+  }
+  .mod-head {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-sans);
+    text-align: left;
+    cursor: pointer;
+  }
+  .mod-head-left { display: flex; align-items: center; gap: 14px; }
+  .mod-idx { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-faint); width: 28px; flex-shrink: 0; }
+  .mod-name { font-size: 15.5px; font-weight: 600; }
+  .mod-chevron {
+    font-family: var(--font-mono);
+    color: var(--text-faint);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .mod[data-open="true"] .mod-chevron { transform: rotate(45deg); color: var(--amber); }
+  .mod-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.28s ease;
+  }
+  .mod[data-open="true"] .mod-panel { max-height: 600px; }
+  .mod-panel-inner {
+    padding: 0 20px 22px 62px;
+    color: var(--text-dim);
+    font-size: 14.5px;
+  }
+  .mod-panel-inner ul { margin-top: 10px; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .mod-panel-inner li::marker { color: var(--teal); }
+
+  /* ---------- PRAKTIK CARDS ---------- */
+  .practice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 680px) { .practice-grid { grid-template-columns: 1fr; } }
+  .pcard {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 22px;
+  }
+  .pcard-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .pcard-name { font-size: 16px; font-weight: 600; }
+  .pcard-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal);
+    background: var(--teal-dim);
+    border-radius: 4px;
+    padding: 3px 7px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .pcard-desc { margin-top: 10px; font-size: 14px; color: var(--text-dim); }
+
+  /* ---------- CASE STUDIES ---------- */
+  .case-list { display: flex; flex-direction: column; gap: 14px; }
+  .case {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 10px;
+    padding: 24px 26px;
+  }
+  .case-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .case-num { font-family: var(--font-mono); font-size: 12px; color: var(--amber); }
+  .case-year { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); }
+  .case-title { font-size: 18px; font-weight: 600; margin-top: 6px; }
+  .case-grid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 760px) { .case-grid { grid-template-columns: 1fr; } }
+  .case-col-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .case-col p { font-size: 14px; color: var(--text-dim); }
+
+  /* ---------- CONTOH SOAL ---------- */
+  .qlist { display: flex; flex-direction: column; gap: 12px; }
+  .q {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 9px;
+    padding: 20px 22px;
+  }
+  .q-top { display: flex; gap: 12px; align-items: baseline; }
+  .q-idx { font-family: var(--font-mono); color: var(--amber); font-size: 13px; flex-shrink: 0; }
+  .q-text { font-size: 15px; font-weight: 500; }
+  .q-answer {
+    margin-top: 12px;
+    margin-left: 26px;
+    font-size: 14px;
+    color: var(--text-dim);
+    display: none;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .q[data-shown="true"] .q-answer { display: block; }
+  .q-toggle {
+    margin-top: 10px;
+    margin-left: 26px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--teal);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .q-toggle:hover { text-decoration: underline; }
+
+  /* ---------- SERTIFIKASI ---------- */
+  .cert-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  @media (max-width: 760px) { .cert-row { grid-template-columns: repeat(2, 1fr); } }
+  .cert {
+    background: var(--bg-card);
+    padding: 22px 18px;
+  }
+  .cert-name { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--text); }
+  .cert-level { font-size: 12.5px; color: var(--text-faint); margin-top: 6px; }
+
+  /* ---------- DOWNLOAD ---------- */
+  .dl-panel {
+    border: 1px solid var(--line-strong);
+    background: linear-gradient(165deg, var(--bg-card), var(--bg-raised));
+    border-radius: 14px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  @media (max-width: 760px) { .dl-panel { grid-template-columns: 1fr; padding: 28px; } }
+  .dl-title { font-size: 21px; font-weight: 700; }
+  .dl-desc { margin-top: 10px; color: var(--text-dim); font-size: 14.5px; }
+  .dl-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .dl-list-item { font-size: 13.5px; color: var(--text-dim); display: flex; gap: 8px; align-items: baseline; }
+  .dl-list-item .mark { color: var(--teal); font-family: var(--font-mono); flex-shrink: 0; }
+  .dl-side { text-align: center; }
+  .dl-filesize { font-family: var(--font-mono); font-size: 12px; color: var(--text-faint); margin-top: 10px; }
+  #dl-status { font-size: 12.5px; margin-top: 10px; min-height: 16px; font-family: var(--font-mono); }
+  #dl-status.ok { color: var(--teal); }
+  #dl-status.err { color: var(--red); }
+
+  footer {
+    padding: 36px 0 calc(36px + env(safe-area-inset-bottom, 0px));
+    font-size: 13px;
+    color: var(--text-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer .mono { color: var(--text-dim); }
+  :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="dot"></span>jalur&#8203;hacker<span style="color:var(--text-faint)">.etis</span></div>
+    <nav class="nav-links">
+      <a href="#roadmap">Roadmap</a>
+      <a href="#materi">Materi</a>
+      <a href="#praktik">Praktik</a>
+      <a href="#studi-kasus">Studi Kasus</a>
+      <a href="#sertifikasi">Sertifikasi</a>
+      <a href="#unduh">Unduh</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow-term" id="typeline">&nbsp;<span class="cursor"></span></div>
+      <h1 class="hero-title">Dari awam menjadi <em>ethical hacker</em> profesional.</h1>
+      <p class="hero-sub">Kurikulum terstruktur untuk menguasai keamanan siber secara legal dan bertanggung jawab — teori jaringan dan web, praktik di lab resmi, lima studi kasus pelanggaran nyata, hingga jalur sertifikasi dan karier sebagai penetration tester.</p>
+      <div class="hero-ctas">
+        <a href="#roadmap" class="btn btn-primary">Mulai dari Level 0</a>
+        <a href="#unduh" class="btn btn-ghost">Unduh panduan lengkap</a>
+      </div>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span></span><span></span><span></span><div class="label">sesi — akses legal</div></div>
+      <div class="term-body" id="termBody"></div>
+    </div>
+  </div>
+</section>
+
+<div class="ethics">
+  <div class="wrap ethics-inner">
+    <div class="ethics-mark">ETIKA</div>
+    <p><strong>Semua teknik di halaman ini hanya boleh dipraktikkan pada sistem milik sendiri, lingkungan lab resmi (TryHackMe, HackTheBox, PortSwigger Labs), atau target dengan izin tertulis lewat program bug bounty.</strong> Mengakses atau menguji sistem orang lain tanpa izin melanggar UU ITE di Indonesia dan undang-undang serupa di hampir semua negara, terlepas dari niat pelakunya.</p>
+  </div>
+</div>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">01 — peta jalan</div>
+      <h2 class="sec-title">Lima tingkat, dari nol sampai siap kerja</h2>
+      <p class="sec-desc">Urutan ini memang berjenjang — setiap level bertumpu pada level sebelumnya, jadi ikuti berurutan daripada loncat ke yang terlihat menarik.</p>
+    </div>
+
+    <div class="roadmap">
+      <div class="rstep">
+        <div class="rnum">0</div>
+        <div class="rcontent">
+          <div class="rlevel">Fondasi</div>
+          <div class="rtitle">Cara kerja komputer dan jaringan</div>
+          <p class="rdesc">Sebelum menyentuh alat keamanan apa pun, pahami apa yang sebenarnya kamu amankan: sistem operasi, command line, model OSI, TCP/IP, DNS, dan HTTP.</p>
+          <div class="rtags">
+            <span class="rtag">Linux dasar</span><span class="rtag">Bash</span><span class="rtag">TCP/IP</span><span class="rtag">DNS &amp; HTTP</span>
+          </div>
+        </div>
+      </div>
+      <div class="rstep">
+        <div class="rnum">1</div>
+        <div class="rcontent">
+          <div class="rlevel">Pemula</div>
+          <div class="rtitle">Konsep keamanan &amp; pemrograman dasar</div>
+          <p class="rdesc">Pelajari model ancaman, prinsip CIA triad (confidentiality, integrity, availability), kriptografi dasar, serta cukup Python/JavaScript untuk membaca dan menulis skrip sederhana.</p>
+          <div class="rtags">
+            <span class="rtag">CIA triad</span><span class="rtag">Kriptografi dasar</span><span class="rtag">Python</span><span class="rtag">Git</span>
+          </div>
+        </div>
+      </div>
+      <div class="rstep">
+        <div class="rnum">2</div>
+        <div class="rcontent">
+          <div class="rlevel">Menengah</div>
+          <div class="rtitle">Keamanan aplikasi web &amp; OWASP Top 10</div>
+          <p class="rdesc">Masuk ke kerentanan aplikasi web paling umum — injection, broken access control, misconfiguration — lewat lab legal yang memang dirancang untuk dibobol (DVWA, Juice Shop, PortSwigger Academy).</p>
+          <div class="rtags">
+            <span class="rtag">OWASP Top 10</span><span class="rtag">Burp Suite</span><span class="rtag">Lab terkontrol</span>
+          </div>
+        </div>
+      </div>
+      <div class="rstep">
+        <div class="rnum">3</div>
+        <div class="rcontent">
+          <div class="rlevel">Lanjut</div>
+          <div class="rtitle">Pengujian jaringan &amp; infrastruktur</div>
+          <p class="rdesc">Perluas ke level infrastruktur: enumerasi layanan, hardening konfigurasi, privilege escalation, dan metodologi pengujian penetrasi formal (PTES, OSSTMM) di lingkungan CTF dan home lab.</p>
+          <div class="rtags">
+            <span class="rtag">Nmap</span><span class="rtag">Metasploitable (lab)</span><span class="rtag">Active Directory lab</span><span class="rtag">PTES</span>
+          </div>
+        </div>
+      </div>
+      <div class="rstep">
+        <div class="rnum">4</div>
+        <div class="rcontent">
+          <div class="rlevel">Profesional</div>
+          <div class="rtitle">Sertifikasi, bug bounty, dan karier</div>
+          <p class="rdesc">Validasi kemampuan lewat sertifikasi yang diakui industri, mulai berkontribusi di program bug bounty resmi dengan ruang lingkup jelas, dan bangun portofolio laporan temuan yang rapi dan bertanggung jawab.</p>
+          <div class="rtags">
+            <span class="rtag">OSCP / CEH</span><span class="rtag">Bug bounty resmi</span><span class="rtag">Laporan temuan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="materi">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">02 — materi &amp; teori</div>
+      <h2 class="sec-title">Enam modul inti</h2>
+      <p class="sec-desc">Klik tiap modul untuk membuka ringkasan teori dan topik yang perlu dikuasai.</p>
+    </div>
+    <div class="modlist" id="modlist"></div>
+  </div>
+</section>
+
+<section id="praktik">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">03 — praktik</div>
+      <h2 class="sec-title">Lab dan platform yang legal untuk latihan</h2>
+      <p class="sec-desc">Semua opsi di bawah dirancang khusus untuk dipraktikkan — tidak satu pun melibatkan sistem pihak ketiga tanpa izin.</p>
+    </div>
+    <div class="practice-grid" id="practiceGrid"></div>
+  </div>
+</section>
+
+<section id="studi-kasus">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">04 — lima studi kasus</div>
+      <h2 class="sec-title">Pelanggaran nyata, diurai dari laporan publik</h2>
+      <p class="sec-desc">Lima insiden keamanan paling banyak dipelajari industri. Fokusnya pada akar masalah dan pelajaran mitigasi — bukan langkah eksploitasi.</p>
+    </div>
+    <div class="case-list" id="caseList"></div>
+  </div>
+</section>
+
+<section id="soal">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">05 — contoh soal</div>
+      <h2 class="sec-title">Uji pemahaman konsep</h2>
+      <p class="sec-desc">Lima pertanyaan konseptual. Klik "lihat jawaban" setelah mencoba menjawab sendiri.</p>
+    </div>
+    <div class="qlist" id="qList"></div>
+  </div>
+</section>
+
+<section id="sertifikasi">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">06 — sertifikasi</div>
+      <h2 class="sec-title">Validasi yang diakui industri</h2>
+    </div>
+    <div class="cert-row" id="certRow"></div>
+  </div>
+</section>
+
+<section id="unduh" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="dl-panel">
+      <div>
+        <div class="dl-title">Unduh panduan lengkap (.md)</div>
+        <p class="dl-desc">Satu berkas Markdown berisi seluruh roadmap, materi, daftar lab, lima studi kasus, dan contoh soal di halaman ini — supaya bisa dibuka offline atau dicetak.</p>
+        <div class="dl-list">
+          <div class="dl-list-item"><span class="mark">—</span>Peta jalan 5 level lengkap dengan topik per level</div>
+          <div class="dl-list-item"><span class="mark">—</span>Ringkasan 6 modul teori</div>
+          <div class="dl-list-item"><span class="mark">—</span>Daftar lab &amp; platform latihan legal</div>
+          <div class="dl-list-item"><span class="mark">—</span>5 studi kasus pelanggaran nyata + pelajaran mitigasi</div>
+          <div class="dl-list-item"><span class="mark">—</span>Jalur sertifikasi</div>
+        </div>
+      </div>
+      <div class="dl-side">
+        <button class="btn btn-primary" id="dlBtn" style="width:100%; justify-content:center;">Unduh sebagai Markdown</button>
+        <div class="dl-filesize mono">panduan-ethical-hacker.md</div>
+        <div id="dl-status"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div>Dibuat untuk edukasi keamanan siber yang legal dan etis.</div>
+  <div class="mono">status: <span style="color:var(--teal)">akses_diberikan</span></div>
+</footer>
+
+<script>
+(function () {
+
+  /* ---------------- DATA ---------------- */
+
+  var typeText = "root@career:~$ whoami  ->  ethical-hacker-in-training";
+
+  var modules = [
+    {
+      name: "Jaringan &amp; Sistem Operasi",
+      points: [
+        "Model OSI dan TCP/IP: bagaimana paket data berpindah dari klien ke server",
+        "Port, protokol umum (HTTP/HTTPS, DNS, SSH, FTP) dan fungsinya",
+        "Dasar administrasi Linux: filesystem, permission, proses, shell scripting"
+      ]
+    },
+    {
+      name: "Keamanan Aplikasi Web",
+      points: [
+        "OWASP Top 10: injection, broken authentication, broken access control, security misconfiguration",
+        "Cara kerja session, cookie, token, dan mengapa pengelolaannya rawan disalahgunakan",
+        "Prinsip secure coding: validasi input, parameterized query, least privilege"
+      ]
+    },
+    {
+      name: "Kriptografi Terapan",
+      points: [
+        "Perbedaan enkripsi simetris dan asimetris, serta kapan masing-masing dipakai",
+        "Hashing vs enkripsi, dan mengapa password harus di-hash dengan salt",
+        "TLS/HTTPS: bagaimana koneksi web diamankan secara praktis"
+      ]
+    },
+    {
+      name: "Pemrograman untuk Keamanan",
+      points: [
+        "Python untuk automasi, parsing log, dan membangun tooling analisis",
+        "Membaca kode orang lain untuk menemukan pola bug tanpa harus menjadi penulis ahli",
+        "Dasar penggunaan API dan cara aplikasi modern saling berkomunikasi"
+      ]
+    },
+    {
+      name: "Metodologi Pengujian Penetrasi",
+      points: [
+        "Lima fase standar: reconnaissance, scanning, akses, mempertahankan akses (di lab), pelaporan",
+        "Kerangka kerja formal: PTES, OSSTMM, NIST SP 800-115",
+        "Menentukan ruang lingkup (scope) dan mengapa keluar dari scope adalah pelanggaran serius"
+      ]
+    },
+    {
+      name: "Etika, Hukum &amp; Pelaporan",
+      points: [
+        "UU ITE dan dasar hukum computer crime di yurisdiksi lain (CFAA, Computer Misuse Act)",
+        "Responsible disclosure: cara melaporkan kerentanan ke pemilik sistem dengan benar",
+        "Menulis laporan temuan yang jelas: dampak, bukti, dan rekomendasi perbaikan"
+      ]
+    }
+  ];
+
+  var practices = [
+    { name: "TryHackMe", badge: "pemula", desc: "Jalur belajar terpandu dengan mesin virtual siap pakai di browser — titik awal paling ramah untuk pemula." },
+    { name: "HackTheBox", badge: "menengah+", desc: "Mesin dan tantangan realistis untuk mengasah skill setelah menguasai dasar." },
+    { name: "PortSwigger Web Security Academy", badge: "gratis", desc: "Lab interaktif resmi dari pembuat Burp Suite, berfokus penuh pada kerentanan web." },
+    { name: "Home lab (VirtualBox/VMware)", badge: "wajib dibangun", desc: "Jalankan Kali Linux berdampingan dengan target sengaja rentan seperti DVWA atau OWASP Juice Shop di mesin sendiri." },
+    { name: "CTF (Capture The Flag)", badge: "komunitas", desc: "Kompetisi legal yang mengasah problem-solving nyata; cari event lewat CTFtime." },
+    { name: "Program Bug Bounty resmi", badge: "lanjutan", desc: "Uji skill pada sistem produksi sungguhan — tapi hanya dalam ruang lingkup yang diizinkan tertulis oleh pemiliknya." }
+  ];
+
+  var cases = [
+    {
+      num: "01", year: "2017", title: "Equifax — kerentanan yang dibiarkan tak ditambal",
+      what: "Penyerang mengakses data pribadi sekitar 147 juta orang melalui celah pada kerangka kerja web Apache Struts.",
+      root: "Patch keamanan untuk kerentanan itu sudah tersedia selama berbulan-bulan sebelum insiden, tapi belum dipasang di sistem produksi.",
+      lesson: "Manajemen patch yang disiplin adalah pertahanan paling dasar namun paling sering diabaikan oleh organisasi besar sekalipun."
+    },
+    {
+      num: "02", year: "2014", title: "Heartbleed — bug di jantung enkripsi internet",
+      what: "Cacat pada pustaka OpenSSL yang digunakan jutaan server memungkinkan pembacaan memori server, berpotensi membocorkan kunci privat dan data sesi.",
+      root: "Kesalahan validasi panjang data pada fitur 'heartbeat' TLS — bug pemrograman kecil dengan dampak masif karena skala pemakaian pustaka tersebut.",
+      lesson: "Pustaka open-source yang dipakai luas butuh audit kode independen; satu bug kecil bisa berdampak pada seluruh ekosistem."
+    },
+    {
+      num: "03", year: "2015", title: "TalkTalk — SQL injection pada situs publik",
+      what: "Data pribadi sekitar 157.000 pelanggan operator telekomunikasi Inggris ini dicuri melalui celah injection pada aplikasi web mereka.",
+      root: "Input pengguna tidak divalidasi dengan benar sebelum digabungkan ke dalam query basis data — kerentanan injection klasik yang sudah dikenal lebih dari satu dekade.",
+      lesson: "Parameterized query dan validasi input bukan praktik opsional; ini adalah pertahanan dasar yang wajib ada di setiap aplikasi yang menyentuh basis data."
+    },
+    {
+      num: "04", year: "2021", title: "Log4Shell — satu baris log, akses penuh",
+      what: "Kerentanan pada pustaka logging Log4j (dipakai jutaan aplikasi Java) memungkinkan eksekusi kode jarak jauh hanya dengan mengirim string tertentu yang akan dicatat ke log.",
+      root: "Fitur lookup otomatis pada pustaka logging memproses input yang tidak tepercaya tanpa sanitasi memadai.",
+      lesson: "Fitur 'nyaman' pada dependensi pihak ketiga bisa menjadi pintu masuk serangan; audit dependensi sama pentingnya dengan audit kode sendiri."
+    },
+    {
+      num: "05", year: "2019", title: "Capital One — kesalahan konfigurasi cloud (SSRF)",
+      what: "Data lebih dari 100 juta pelanggan dicuri setelah penyerang memanfaatkan celah Server-Side Request Forgery untuk mengakses kredensial pada layanan cloud yang salah konfigurasi.",
+      root: "Firewall aplikasi web yang salah konfigurasi memberi akses berlebih ke metadata server cloud yang seharusnya terisolasi.",
+      lesson: "Keamanan cloud menuntut pemahaman model tanggung jawab bersama; kesalahan konfigurasi, bukan hanya bug kode, kini menjadi vektor serangan utama."
+    }
+  ];
+
+  var questions = [
+    {
+      q: "Apa yang dimaksud dengan prinsip 'least privilege' dalam keamanan sistem?",
+      a: "Setiap pengguna, proses, atau sistem hanya diberi akses minimum yang benar-benar dibutuhkan untuk menjalankan tugasnya — tidak lebih. Ini membatasi dampak jika satu akun atau komponen berhasil disusupi."
+    },
+    {
+      q: "Dalam OWASP Top 10, apa perbedaan antara 'Injection' dan 'Broken Access Control'?",
+      a: "Injection terjadi saat input yang tidak tepercaya dieksekusi sebagai bagian dari perintah atau query (mis. SQL injection). Broken Access Control terjadi saat sistem gagal membatasi tindakan pengguna sesuai izin yang seharusnya mereka miliki, meski inputnya sendiri valid."
+    },
+    {
+      q: "Mengapa password sebaiknya di-hash dengan salt, bukan hanya di-hash biasa?",
+      a: "Salt adalah data acak unik yang ditambahkan sebelum hashing, sehingga dua password yang sama akan menghasilkan hash berbeda. Ini mencegah penyerang menggunakan tabel hash yang sudah dihitung sebelumnya (rainbow table) untuk membobol banyak akun sekaligus."
+    },
+    {
+      q: "Apa yang membedakan penetration testing yang legal dari aktivitas ilegal, secara teknis sama-sama 'meretas'?",
+      a: "Izin tertulis dan ruang lingkup (scope) yang disepakati di awal. Pentester sah bekerja dalam batas yang diizinkan pemilik sistem dan melaporkan temuan secara bertanggung jawab; tanpa izin tertulis itu, tindakan yang identik secara teknis menjadi tindak pidana."
+    },
+    {
+      q: "Mengapa kerentanan seperti Heartbleed atau Log4Shell bisa berdampak begitu luas padahal 'hanya' satu bug?",
+      a: "Karena bug tersebut berada pada pustaka (library) yang dipakai ulang oleh ribuan hingga jutaan aplikasi berbeda. Satu kelemahan di komponen yang banyak dipakai ulang berarti dampaknya berlipat ganda di seluruh ekosistem yang bergantung padanya."
+    }
+  ];
+
+  var certs = [
+    { name: "CompTIA Security+", level: "Fondasi — konsep keamanan umum" },
+    { name: "CEH", level: "Menengah — metodologi ethical hacking" },
+    { name: "eJPT", level: "Menengah — pentest praktikal berbasis lab" },
+    { name: "OSCP", level: "Lanjut — ujian pentest praktik 24 jam" }
+  ];
+
+  /* ---------------- RENDER ---------------- */
+
+  function esc(s) { return s; }
+
+  var modlist = document.getElementById('modlist');
+  modules.forEach(function (m, i) {
+    var el = document.createElement('div');
+    el.className = 'mod';
+    el.setAttribute('data-open', i === 0 ? 'true' : 'false');
+    el.innerHTML =
+      '<button class="mod-head" aria-expanded="' + (i === 0 ? 'true' : 'false') + '">' +
+        '<div class="mod-head-left"><span class="mod-idx mono">0' + (i + 1) + '</span><span class="mod-name">' + m.name + '</span></div>' +
+        '<span class="mod-chevron mono">+</span>' +
+      '</button>' +
+      '<div class="mod-panel"><div class="mod-panel-inner"><ul>' +
+        m.points.map(function (p) { return '<li>' + p + '</li>'; }).join('') +
+      '</ul></div></div>';
+    var btn = el.querySelector('.mod-head');
+    btn.addEventListener('click', function () {
+      var open = el.getAttribute('data-open') === 'true';
+      el.setAttribute('data-open', open ? 'false' : 'true');
+      btn.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+    modlist.appendChild(el);
+  });
+
+  var practiceGrid = document.getElementById('practiceGrid');
+  practices.forEach(function (p) {
+    var el = document.createElement('div');
+    el.className = 'pcard';
+    el.innerHTML =
+      '<div class="pcard-head"><div class="pcard-name">' + p.name + '</div><div class="pcard-badge mono">' + p.badge + '</div></div>' +
+      '<div class="pcard-desc">' + p.desc + '</div>';
+    practiceGrid.appendChild(el);
+  });
+
+  var caseList = document.getElementById('caseList');
+  cases.forEach(function (c) {
+    var el = document.createElement('div');
+    el.className = 'case';
+    el.innerHTML =
+      '<div class="case-top"><span class="case-num mono">KASUS ' + c.num + '</span><span class="case-year mono">' + c.year + '</span></div>' +
+      '<div class="case-title">' + c.title + '</div>' +
+      '<div class="case-grid">' +
+        '<div class="case-col"><div class="case-col-label mono">Apa yang terjadi</div><p>' + c.what + '</p></div>' +
+        '<div class="case-col"><div class="case-col-label mono">Akar masalah</div><p>' + c.root + '</p></div>' +
+        '<div class="case-col"><div class="case-col-label mono">Pelajaran</div><p>' + c.lesson + '</p></div>' +
+      '</div>';
+    caseList.appendChild(el);
+  });
+
+  var qList = document.getElementById('qList');
+  questions.forEach(function (item, i) {
+    var el = document.createElement('div');
+    el.className = 'q';
+    el.innerHTML =
+      '<div class="q-top"><span class="q-idx">Q' + (i + 1) + '</span><span class="q-text">' + item.q + '</span></div>' +
+      '<button class="q-toggle">lihat jawaban</button>' +
+      '<div class="q-answer">' + item.a + '</div>';
+    var toggle = el.querySelector('.q-toggle');
+    toggle.addEventListener('click', function () {
+      var shown = el.getAttribute('data-shown') === 'true';
+      el.setAttribute('data-shown', shown ? 'false' : 'true');
+      toggle.textContent = shown ? 'lihat jawaban' : 'sembunyikan jawaban';
+    });
+    qList.appendChild(el);
+  });
+
+  var certRow = document.getElementById('certRow');
+  certs.forEach(function (c) {
+    var el = document.createElement('div');
+    el.className = 'cert';
+    el.innerHTML = '<div class="cert-name">' + c.name + '</div><div class="cert-level">' + c.level + '</div>';
+    certRow.appendChild(el);
+  });
+
+  /* ---------------- TERMINAL ANIMATION ---------------- */
+
+  var termLines = [
+    { html: '<span class="prompt">$</span> init career-path --track=<span class="path">ethical-hacking</span>' },
+    { html: '<span class="out">memeriksa prasyarat...</span>' },
+    { html: '<span class="ok">[ok]</span> <span class="out">dasar jaringan &amp; linux</span>' },
+    { html: '<span class="ok">[ok]</span> <span class="out">pemahaman etika &amp; hukum</span>' },
+    { html: '<span class="out">memuat 5 modul teori, 6 platform lab, 5 studi kasus...</span>' },
+    { html: '<span class="prompt">$</span> status' },
+    { html: '<span class="ok">akses diberikan</span> <span class="out">— scroll untuk mulai</span>' }
+  ];
+
+  function typeInto(el, text, speed, cb) {
+    var i = 0;
+    el.innerHTML = '';
+    var span = document.createElement('span');
+    el.appendChild(span);
+    var cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    el.appendChild(cursor);
+    var iv = setInterval(function () {
+      span.textContent = text.slice(0, i);
+      i++;
+      if (i > text.length) {
+        clearInterval(iv);
+        if (cb) cb();
+      }
+    }, speed);
+  }
+
+  var eyebrow = document.getElementById('typeline');
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    eyebrow.textContent = typeText;
+  } else {
+    typeInto(eyebrow, typeText, 28);
+  }
+
+  var termBody = document.getElementById('termBody');
+  function renderTermLines() {
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    termLines.forEach(function (line, i) {
+      var div = document.createElement('div');
+      div.className = 'term-line';
+      div.innerHTML = line.html;
+      if (!reduced) { div.style.animationDelay = (i * 0.28) + 's'; }
+      else { div.style.opacity = '1'; }
+      termBody.appendChild(div);
+    });
+  }
+  renderTermLines();
+
+  /* ---------------- DOWNLOAD ---------------- */
+
+  function buildMarkdown() {
+    var md = '# Panduan Jalur Ethical Hacker & Cybersecurity\n\n';
+    md += '_Kurikulum belajar legal dan etis — dari nol sampai profesional._\n\n';
+    md += '> Semua teknik hanya untuk dipraktikkan pada sistem sendiri, lab resmi, atau target dengan izin tertulis (bug bounty).\n\n';
+
+    md += '## Peta Jalan (5 Level)\n\n';
+    var levels = [
+      ['Level 0 — Fondasi', 'Cara kerja komputer dan jaringan', 'Linux dasar, Bash, TCP/IP, DNS & HTTP'],
+      ['Level 1 — Pemula', 'Konsep keamanan & pemrograman dasar', 'CIA triad, kriptografi dasar, Python, Git'],
+      ['Level 2 — Menengah', 'Keamanan aplikasi web & OWASP Top 10', 'OWASP Top 10, Burp Suite, lab terkontrol'],
+      ['Level 3 — Lanjut', 'Pengujian jaringan & infrastruktur', 'Nmap, Metasploitable (lab), Active Directory lab, PTES'],
+      ['Level 4 — Profesional', 'Sertifikasi, bug bounty, dan karier', 'OSCP/CEH, bug bounty resmi, laporan temuan']
+    ];
+    levels.forEach(function (l) {
+      md += '### ' + l[0] + '\n' + l[1] + '\n\nTopik: ' + l[2] + '\n\n';
+    });
+
+    md += '## Materi & Teori (6 Modul)\n\n';
+    modules.forEach(function (m, i) {
+      md += '### ' + (i + 1) + '. ' + m.name.replace('&amp;', '&') + '\n';
+      m.points.forEach(function (p) { md += '- ' + p + '\n'; });
+      md += '\n';
+    });
+
+    md += '## Praktik — Lab & Platform Legal\n\n';
+    practices.forEach(function (p) {
+      md += '- **' + p.name + '** (' + p.badge + '): ' + p.desc + '\n';
+    });
+    md += '\n';
+
+    md += '## Lima Studi Kasus\n\n';
+    cases.forEach(function (c) {
+      md += '### Kasus ' + c.num + ' — ' + c.title + ' (' + c.year + ')\n';
+      md += '**Apa yang terjadi:** ' + c.what + '\n\n';
+      md += '**Akar masalah:** ' + c.root + '\n\n';
+      md += '**Pelajaran:** ' + c.lesson + '\n\n';
+    });
+
+    md += '## Contoh Soal\n\n';
+    questions.forEach(function (q, i) {
+      md += '**Q' + (i + 1) + '. ' + q.q + '**\n\n';
+      md += 'Jawaban: ' + q.a + '\n\n';
+    });
+
+    md += '## Jalur Sertifikasi\n\n';
+    certs.forEach(function (c) {
+      md += '- **' + c.name + '** — ' + c.level + '\n';
+    });
+    md += '\n---\n_Gunakan panduan ini hanya untuk tujuan belajar yang legal dan etis._\n';
+
+    return md;
+  }
+
+  var dlBtn = document.getElementById('dlBtn');
+  var dlStatus = document.getElementById('dl-status');
+
+  dlBtn.addEventListener('click', function () {
+    dlStatus.className = '';
+    dlStatus.textContent = 'menyiapkan berkas...';
+    runDownload();
+  });
+
+  async function runDownload() {
+    try {
+      var downloads = await claude.use('downloads');
+      if (!downloads) {
+        dlStatus.className = 'err';
+        dlStatus.textContent = 'Unduhan tidak tersedia di tampilan ini.';
+        return;
+      }
+      var md = buildMarkdown();
+      var result = await downloads.save({
+        filename: 'panduan-ethical-hacker.md',
+        data: md
+      });
+      dlStatus.className = 'ok';
+      dlStatus.textContent = result.status === 'saved' ? 'tersimpan.' : 'terkirim.';
+    } catch (err) {
+      dlStatus.className = 'err';
+      if (err && err.code === 'declined') {
+        dlStatus.textContent = 'dibatalkan.';
+      } else if (err && err.code === 'rate_limited') {
+        dlStatus.textContent = 'coba lagi sebentar lagi.';
+      } else {
+        dlStatus.textContent = 'gagal menyiapkan unduhan.';
+      }
+    }
+  }
+
+})();
+</script>
+</body>
+</html>

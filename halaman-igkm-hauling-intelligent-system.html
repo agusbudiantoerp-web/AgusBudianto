@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGKM Hauling Intelligent System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- TOP NAVIGATION & HERO -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-500 text-slate-950 p-2 rounded-lg font-bold flex items-center justify-center">
+                    <i data-lucide="calculator" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold tracking-wider text-amber-400">IGKM</h1>
+                    <p class="text-xs text-slate-400">Hauling Intelligent System</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="exportToCSV()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-2 border border-slate-700 transition">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Ekspor Data</span>
+                </button>
+                <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 transition">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">Cetak Laporan</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+        
+        <!-- Welcome Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-amber-950/20 to-slate-900 border border-slate-800 rounded-2xl p-5 mb-6 shadow-xl">
+            <div class="md:flex md:items-center md:justify-between">
+                <div class="mb-4 md:mb-0">
+                    <span class="bg-amber-500/10 text-amber-400 text-xs px-2.5 py-1 rounded-full font-semibold uppercase tracking-wider">Sistem Cerdas Pertambangan v3.5</span>
+                    <h2 class="text-2xl font-extrabold mt-2 text-white">Evaluasi Finansial & Analisis Overhead Hauling</h2>
+                    <p class="text-slate-400 text-sm mt-1">Estimasi komparasi tarif owner, kalkulasi ritase nyata, serta simulasi laba rugi bulanan bersih (Operasional & Overhead).</p>
+                </div>
+                <div class="text-slate-400 text-xs text-right hidden lg:block border-l border-slate-800 pl-6">
+                    <p>Standard Analisis Finansial:</p>
+                    <p class="font-mono text-amber-400">Mining Feasibility Study & Site Overhead Modeling</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-COLUMNS GRID: CONFIGURATIONS, MATCH FACTOR, FINANCIALS -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- COLUMN 1: INPUT PARAMETERS (CONFIGURATIONS) -->
+            <div class="space-y-6 lg:col-span-1">
+                
+                <!-- 1. DUMP TRUCK SPECIFICATIONS -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
+                        <i data-lucide="truck" class="text-amber-400 w-5 h-5"></i>
+                        <h3 class="font-bold text-white text-sm">1. Spesifikasi Dump Truck (DT)</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Preset Model DT</label>
+                            <select id="dtModel" onchange="applyPresetDT()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                <option value="scania6x4">Scania P410 6x4 (Cap. ~20 Ton)</option>
+                                <option value="volvo8x4">Volvo FMX 440 8x4 (Cap. ~30 Ton)</option>
+                                <option value="custom" selected>Kustom Spesifikasi Sendiri</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Cap. Nyata / Rit (Ton)</label>
+                                <input type="number" id="dtCapacity" value="25" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Waktu Siklus/Rit (Mnt)</label>
+                                <input type="number" id="dtCycleTime" value="24" step="0.5" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Armada DT</label>
+                                <input type="number" id="dtCount" value="8" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Sewa DT / Jam (Rp)</label>
+                                <input type="number" id="dtHourlyCost" value="325000" step="5000" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Konsumsi Solar (L/Jam)</label>
+                                <input type="number" id="dtFuelBurn" value="18" step="0.5" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Gaji Supir / Jam (Rp)</label>
+                                <input type="number" id="driverHourly" value="45000" step="1000" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. LOADING TOOL CONFIG -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
+                        <i data-lucide="shovel" class="text-amber-400 w-5 h-5"></i>
+                        <h3 class="font-bold text-white text-sm">2. Alat Muat (Loader / Excavator)</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Alat Muat</label>
+                            <input type="number" id="loaderCount" value="1" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Waktu Muat / DT (Mnt)</label>
+                            <input type="number" id="loaderCycleTime" value="2.8" step="0.1" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ROAD & ENVIRONMENT -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-sm">
+                    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
+                        <i data-lucide="route" class="text-amber-400 w-5 h-5"></i>
+                        <h3 class="font-bold text-white text-sm">3. Kondisi Jalan & Bahan Bakar</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Jarak 1-Arah (Km)</label>
+                                <input type="number" id="roadDistance" value="12.5" step="0.1" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1">Harga Solar / Liter</label>
+                                <input type="number" id="fuelPrice" value="15500" step="100" oninput="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs font-semibold text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Faktor Koreksi Jalan & Hambatan</label>
+                            <select id="roadFactor" onchange="calculateAll()" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                                <option value="1.0">Datar - Mulus (Faktor Hambatan 1.0)</option>
+                                <option value="1.2" selected>Medium / Bergelombang (Faktor Hambatan 1.2)</option>
+                                <option value="1.4">Tanjakan Terjal / Licin (Faktor Hambatan 1.4)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. COMMERCIAL & OVERHEAD AGREEMENT -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-sm border-amber-500/20">
+                    <div class="flex items-center gap-2 mb-4 pb-2 border-b border-slate-800">
+                        <i data-lucide="handshake" class="text-amber-400 w-5 h-5"></i>
+                        <h3 class="font-bold text-white text-sm">4. Komersial & Overhead Site</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Tarif Hauling dari Owner (Rp/Ton/Km)</label>
+                            <input type="number" id="ownerRate" value="3100" step="50" oninput="calculateAll()" class="w-full bg-slate-950 border border-amber-500/50 rounded-lg px-3 py-1.5 text-xs font-extrabold text-amber-400 focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                            <span class="text-[10px] text-slate-500 mt-1 block">Tarif kontrak pengangkutan material tambang.</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Biaya Overhead Site / Bulan (Rp)</label>
+                            <input type="number" id="siteOverhead" value="125000000" step="5000000" oninput="calculateAll()" class="w-full bg-slate-950 border border-purple-500/40 rounded-lg px-3 py-1.5 text-xs font-extrabold text-purple-400 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <span class="text-[10px] text-slate-500 mt-1 block">Sewa camp/mess, perizinan, staf non-produksi, K3, ATK, dll.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMN 2: KEY RESULTS & DETAILED PROFIT LOSS ANALYSIS -->
+            <div class="space-y-6 lg:col-span-2">
+                
+                <!-- TOP METRICS (3 CARDS) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Match Factor Card -->
+                    <div id="mfCard" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between transition-all">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Match Factor</span>
+                                <span id="mfBadge" class="px-2 py-0.5 rounded text-[10px] font-bold">Optimal</span>
+                            </div>
+                            <div class="text-3xl font-extrabold mt-2 text-white" id="outMatchFactor">0.00</div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-2" id="mfDescription">-</p>
+                    </div>
+
+                    <!-- Profit/Loss Per Rit Card -->
+                    <div id="profitRitCard" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between transition-all">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Laba-Rugi / Rit DT</span>
+                                <i id="profitRitIcon" data-lucide="trending-up" class="w-4 h-4"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold mt-2" id="outProfitPerRit">Rp 0</div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-2" id="outMarginRitPct">Margin: 0%</p>
+                    </div>
+
+                    <!-- Total Productivity Card -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold uppercase text-slate-400 tracking-wider">Total Prod / Jam</span>
+                                <i data-lucide="database" class="w-4 h-4 text-amber-500"></i>
+                            </div>
+                            <div class="text-2xl font-extrabold mt-2 text-white" id="outProductivity">0 Ton/Jam</div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-2" id="outTripsPerHour">Total Ritase: 0 rit/jam</p>
+                    </div>
+                </div>
+
+                <!-- TABLE OF RITASE ANALYSIS (PENDAPATAN VS BIAYA PER RIT) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="trending-up" class="text-amber-400 w-5 h-5"></i>
+                            <h3 class="font-bold text-white text-md">Analisis Keekonomian Per Ritase Dump Truck</h3>
+                        </div>
+                        <span class="text-[10px] font-mono text-slate-400">Parameter Per Rit/DT</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Revenue and cost details -->
+                        <div class="space-y-3">
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                                <span class="text-xs text-slate-400 font-semibold block">Pendapatan Owner per Ritase</span>
+                                <div class="text-xl font-bold text-emerald-400 mt-1" id="outRevPerRit">Rp 0</div>
+                                <span class="text-[10px] text-slate-500 block mt-1">Formula: Kapasitas DT &times; Jarak &times; Tarif Kontrak</span>
+                            </div>
+
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                                <span class="text-xs text-slate-400 font-semibold block">Biaya Operasional per Ritase</span>
+                                <div class="text-xl font-bold text-rose-400 mt-1" id="outCostPerRit">Rp 0</div>
+                                <span class="text-[10px] text-slate-500 block mt-1">Biaya penyusutan/sewa unit, konsumsi solar, upah driver, serta faktor jalan per ritase.</span>
+                            </div>
+                        </div>
+
+                        <!-- Realtime analysis box -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 pb-1 border-b border-slate-800">Rasio Pengeluaran Per Ritase</h4>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">Biaya Sewa Unit/Rit:</span>
+                                        <span class="font-semibold text-white" id="outRentPerRit">Rp 0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">Biaya Solar/Rit:</span>
+                                        <span class="font-semibold text-white" id="outFuelPerRit">Rp 0</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">Biaya Upah Supir/Rit:</span>
+                                        <span class="font-semibold text-white" id="outDriverPerRit">Rp 0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Small progress indicator -->
+                            <div class="mt-4 pt-3 border-t border-slate-800">
+                                <div class="flex justify-between text-[10px] mb-1 text-slate-400">
+                                    <span>Rasio Laba Kotor per Rit:</span>
+                                    <span id="outProfitMarginBarText" class="font-bold">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                    <div id="outProfitMarginBar" class="bg-emerald-500 h-1.5 transition-all" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MONTHLY FINANCIAL STATEMENT (LABA RUGI BULANAN) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="text-amber-400 w-5 h-5"></i>
+                            <h3 class="font-bold text-white text-md">Proyeksi Laba Rugi Operasional & Overhead (30 Hari)</h3>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="workingDays" value="26" title="Hari Kerja" oninput="calculateAll()" class="w-16 bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-xs text-center text-white focus:outline-none">
+                            <span class="text-xs text-slate-400 self-center">Hari / Bln</span>
+                            <input type="number" id="workingHours" value="18" title="Jam Kerja Harian" oninput="calculateAll()" class="w-16 bg-slate-950 border border-slate-700 rounded px-2 py-0.5 text-xs text-center text-white focus:outline-none">
+                            <span class="text-xs text-slate-400 self-center">Jam / Hari</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Total Pendapatan Bulanan</span>
+                            <div class="text-lg font-extrabold text-emerald-400 mt-1" id="outMonthlyRevenue">Rp 0</div>
+                            <span class="text-[10px] text-slate-500 block mt-1" id="outMonthlyProd">Vol: 0 Ton</span>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Biaya Operasional + Overhead</span>
+                            <div class="text-lg font-extrabold text-rose-400 mt-1" id="outMonthlyCost">Rp 0</div>
+                            <span class="text-[10px] text-slate-500 block mt-1">Seluruh armada + overhead site</span>
+                        </div>
+                        <div id="monthlyNetCard" class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Laba / Rugi Bersih Bulanan</span>
+                                <div class="text-lg font-extrabold mt-1" id="outMonthlyNetProfit">Rp 0</div>
+                            </div>
+                            <span class="text-[10px] text-slate-500 block mt-1" id="outMonthlyProfitLabel">Status Proyek</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div class="space-y-2">
+                            <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Estimasi Komponen Pengeluaran Bulanan</h4>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400">Total Pengeluaran Solar:</span>
+                                    <span class="font-semibold text-white" id="outMonthlyFuel">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400">Total Biaya Sewa Unit DT:</span>
+                                    <span class="font-semibold text-white" id="outMonthlyRent">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-400">Total Upah Tenaga Kerja:</span>
+                                    <span class="font-semibold text-white" id="outMonthlyDriver">Rp 0</span>
+                                </div>
+                                <div class="flex justify-between border-t border-slate-800 pt-1.5 mt-1 text-purple-400 font-bold">
+                                    <span>Biaya Overhead Site (Tetap):</span>
+                                    <span id="outMonthlyOverhead">Rp 0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="h-44 flex justify-center">
+                            <canvas id="monthlyCostChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-900/40 py-6 mt-12 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>&copy; 2026 IGKM Hauling Intelligent System. Dirancang oleh Ahli Pertambangan & Finansial.</p>
+            <p class="flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Sistem Siap Digunakan - Jalankan di HP atau Laptop Secara Offline
+            </p>
+        </div>
+    </footer>
+
+    <!-- LOGIC & CALCULATIONS -->
+    <script>
+        let monthlyChartInstance = null;
+
+        // Custom Presets for DT Models
+        const dtPresets = {
+            scania6x4: { capacity: 20, cycleTime: 18, hourlyCost: 320000, fuelBurn: 16 },
+            volvo8x4: { capacity: 30, cycleTime: 25, hourlyCost: 450000, fuelBurn: 22 }
+        };
+
+        function applyPresetDT() {
+            const select = document.getElementById("dtModel");
+            const val = select.value;
+            if (val !== "custom" && dtPresets[val]) {
+                const preset = dtPresets[val];
+                document.getElementById("dtCapacity").value = preset.capacity;
+                document.getElementById("dtCycleTime").value = preset.cycleTime;
+                document.getElementById("dtHourlyCost").value = preset.hourlyCost;
+                document.getElementById("dtFuelBurn").value = preset.fuelBurn;
+                calculateAll();
+            }
+        }
+
+        function formatRupiah(value) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+        }
+
+        function calculateAll() {
+            // 1. Fetch Inputs
+            const dtCap = parseFloat(document.getElementById("dtCapacity").value) || 0;
+            const dtCT = parseFloat(document.getElementById("dtCycleTime").value) || 1;
+            const dtCount = parseFloat(document.getElementById("dtCount").value) || 0;
+            const dtHourly = parseFloat(document.getElementById("dtHourlyCost").value) || 0;
+            const dtFuel = parseFloat(document.getElementById("dtFuelBurn").value) || 0;
+
+            const loaderCount = parseFloat(document.getElementById("loaderCount").value) || 1;
+            const loaderCT = parseFloat(document.getElementById("loaderCycleTime").value) || 1;
+
+            const roadDist = parseFloat(document.getElementById("roadDistance").value) || 0;
+            const fuelPrice = parseFloat(document.getElementById("fuelPrice").value) || 0;
+            const roadFact = parseFloat(document.getElementById("roadFactor").value) || 1.0;
+            const driverWage = parseFloat(document.getElementById("driverHourly").value) || 0;
+
+            const ownerRate = parseFloat(document.getElementById("ownerRate").value) || 0;
+            const siteOverhead = parseFloat(document.getElementById("siteOverhead").value) || 0;
+
+            const workDays = parseFloat(document.getElementById("workingDays").value) || 26;
+            const workHours = parseFloat(document.getElementById("workingHours").value) || 18;
+
+            // 2. Technical Calculations (Match Factor & Productivity)
+            const matchFactor = (dtCount * loaderCT) / (loaderCount * dtCT);
+            const tripsPerHourPerDT = 60 / dtCT;
+            const totalTripsPerHour = tripsPerHourPerDT * dtCount;
+            const prodPerHour = tripsPerHourPerDT * dtCap * dtCount;
+
+            // 3. Cost Calculations per Unit per Hour
+            const dtHourlyFuelCost = dtFuel * fuelPrice;
+            const baseHourlyCostPerDT = dtHourly + dtHourlyFuelCost + driverWage;
+            const effectiveHourlyCostPerDT = baseHourlyCostPerDT * roadFact;
+            const totalHourlyCostAllDTs = effectiveHourlyCostPerDT * dtCount;
+
+            // 4. Per Rit (Trip) calculations
+            const hoursPerTrip = dtCT / 60;
+            const rentCostPerRit = dtHourly * hoursPerTrip;
+            const fuelCostPerRit = dtHourlyFuelCost * hoursPerTrip;
+            const driverCostPerRit = driverWage * hoursPerTrip;
+            
+            const totalCostPerRit = (rentCostPerRit + fuelCostPerRit + driverCostPerRit) * roadFact;
+
+            // Revenue per Rit = Capacity (Ton) * Distance (Km) * Contract Rate (Rp/Ton/Km)
+            const totalRevenuePerRit = dtCap * roadDist * ownerRate;
+            const netProfitPerRit = totalRevenuePerRit - totalCostPerRit;
+            const marginRitPct = totalRevenuePerRit > 0 ? (netProfitPerRit / totalRevenuePerRit) * 100 : 0;
+
+            // 5. Monthly Calculations (Project Projections)
+            const totalMonthlyHours = workHours * workDays;
+            const totalMonthlyTrips = totalTripsPerHour * totalMonthlyHours;
+            const totalMonthlyProdTon = prodPerHour * totalMonthlyHours;
+
+            // Financial Projections
+            const totalMonthlyRevenue = totalMonthlyTrips * totalRevenuePerRit;
+            
+            // Breakdown Monthly Expenditures
+            const totalMonthlyFuel = dtHourlyFuelCost * dtCount * totalMonthlyHours * roadFact;
+            const totalMonthlyRent = dtHourly * dtCount * totalMonthlyHours * roadFact;
+            const totalMonthlyDriver = driverWage * dtCount * totalMonthlyHours * roadFact;
+            
+            // Total cost includes Operational Cost + Fixed Overhead Site
+            const totalMonthlyOperationalCost = totalMonthlyFuel + totalMonthlyRent + totalMonthlyDriver;
+            const totalMonthlyCostWithOverhead = totalMonthlyOperationalCost + siteOverhead;
+
+            // Net Profit after both Operating Costs & Site Overhead
+            const totalMonthlyNetProfit = totalMonthlyRevenue - totalMonthlyCostWithOverhead;
+            const monthlyMarginPct = totalMonthlyRevenue > 0 ? (totalMonthlyNetProfit / totalMonthlyRevenue) * 100 : 0;
+
+            // 6. Populate UI Elements
+            document.getElementById("outMatchFactor").textContent = matchFactor.toFixed(2);
+            document.getElementById("outProductivity").textContent = `${prodPerHour.toLocaleString('id-ID', {maximumFractionDigits: 1})} Ton/Jam`;
+            document.getElementById("outTripsPerHour").textContent = `Total Ritase: ${totalTripsPerHour.toFixed(1)} rit/jam`;
+
+            // Ritase Card & Details
+            document.getElementById("outProfitPerRit").textContent = formatRupiah(netProfitPerRit);
+            const profitRitCard = document.getElementById("profitRitCard");
+            const profitRitIcon = document.getElementById("profitRitIcon");
+            if (netProfitPerRit >= 0) {
+                profitRitCard.className = "bg-slate-900 border-2 border-emerald-500/50 rounded-2xl p-4 flex flex-col justify-between transition-all";
+                profitRitIcon.className = "w-4 h-4 text-emerald-400";
+                document.getElementById("outMarginRitPct").className = "text-[10px] text-emerald-400 font-bold mt-2";
+                document.getElementById("outMarginRitPct").textContent = `Margin Untung: +${marginRitPct.toFixed(1)}%`;
+            } else {
+                profitRitCard.className = "bg-slate-900 border-2 border-rose-500/50 rounded-2xl p-4 flex flex-col justify-between transition-all";
+                profitRitIcon.className = "w-4 h-4 text-rose-400";
+                document.getElementById("outMarginRitPct").className = "text-[10px] text-rose-400 font-bold mt-2";
+                document.getElementById("outMarginRitPct").textContent = `Margin Rugi: ${marginRitPct.toFixed(1)}%`;
+            }
+
+            document.getElementById("outRevPerRit").textContent = formatRupiah(totalRevenuePerRit);
+            document.getElementById("outCostPerRit").textContent = formatRupiah(totalCostPerRit);
+            document.getElementById("outRentPerRit").textContent = formatRupiah(rentCostPerRit * roadFact);
+            document.getElementById("outFuelPerRit").textContent = formatRupiah(fuelCostPerRit * roadFact);
+            document.getElementById("outDriverPerRit").textContent = formatRupiah(driverCostPerRit * roadFact);
+
+            // Ritase Margin Bar
+            document.getElementById("outProfitMarginBarText").textContent = `${marginRitPct.toFixed(0)}%`;
+            const boundedMargin = Math.max(0, Math.min(100, marginRitPct));
+            document.getElementById("outProfitMarginBar").style.width = `${boundedMargin}%`;
+            if (netProfitPerRit < 0) {
+                document.getElementById("outProfitMarginBar").className = "bg-rose-500 h-1.5 transition-all";
+            } else {
+                document.getElementById("outProfitMarginBar").className = "bg-emerald-500 h-1.5 transition-all";
+            }
+
+            // Monthly Panel
+            document.getElementById("outMonthlyRevenue").textContent = formatRupiah(totalMonthlyRevenue);
+            document.getElementById("outMonthlyProd").textContent = `Vol: ${totalMonthlyProdTon.toLocaleString('id-ID', {maximumFractionDigits: 0})} Ton / Bln`;
+            document.getElementById("outMonthlyCost").textContent = formatRupiah(totalMonthlyCostWithOverhead);
+            document.getElementById("outMonthlyNetProfit").textContent = formatRupiah(totalMonthlyNetProfit);
+
+            const monthlyNetCard = document.getElementById("monthlyNetCard");
+            const monthlyLabel = document.getElementById("outMonthlyProfitLabel");
+            if (totalMonthlyNetProfit >= 0) {
+                monthlyNetCard.className = "bg-slate-950 p-4 rounded-xl border-2 border-emerald-500/50 flex flex-col justify-between";
+                document.getElementById("outMonthlyNetProfit").className = "text-lg font-extrabold text-emerald-400 mt-1";
+                monthlyLabel.textContent = `Proyek Surplus (+${monthlyMarginPct.toFixed(1)}%)`;
+                monthlyLabel.className = "text-[10px] text-emerald-400 font-bold block mt-1";
+            } else {
+                monthlyNetCard.className = "bg-slate-950 p-4 rounded-xl border-2 border-rose-500/50 flex flex-col justify-between";
+                document.getElementById("outMonthlyNetProfit").className = "text-lg font-extrabold text-rose-400 mt-1";
+                monthlyLabel.textContent = `Proyek Defisit (${monthlyMarginPct.toFixed(1)}%)`;
+                monthlyLabel.className = "text-[10px] text-rose-400 font-bold block mt-1";
+            }
+
+            // Monthly Details Breakdown
+            document.getElementById("outMonthlyFuel").textContent = formatRupiah(totalMonthlyFuel);
+            document.getElementById("outMonthlyRent").textContent = formatRupiah(totalMonthlyRent);
+            document.getElementById("outMonthlyDriver").textContent = formatRupiah(totalMonthlyDriver);
+            document.getElementById("outMonthlyOverhead").textContent = formatRupiah(siteOverhead);
+
+            // Match Factor Status & UI Styling
+            const mfCard = document.getElementById("mfCard");
+            const mfBadge = document.getElementById("mfBadge");
+            const mfDesc = document.getElementById("mfDescription");
+
+            if (matchFactor < 0.9) {
+                mfCard.className = "bg-slate-900 border border-cyan-500/50 rounded-2xl p-4 flex flex-col justify-between transition-all";
+                mfBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-400";
+                mfBadge.textContent = "Loader Menunggu";
+                mfDesc.textContent = "Ekskavator sering idle. Kurang unit DT untuk mengimbangi pemuatan.";
+            } else if (matchFactor > 1.1) {
+                mfCard.className = "bg-slate-900 border border-rose-500/50 rounded-2xl p-4 flex flex-col justify-between transition-all";
+                mfBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400";
+                mfBadge.textContent = "Antrean DT";
+                mfDesc.textContent = "DT sering mengantre panjang di loading point. Pengurangan armada disarankan.";
+            } else {
+                mfCard.className = "bg-slate-900 border border-emerald-500/50 rounded-2xl p-4 flex flex-col justify-between transition-all";
+                mfBadge.className = "px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400";
+                mfBadge.textContent = "Optimal";
+                mfDesc.textContent = "Sinkronisasi alat muat dan alat angkut seimbang, meminimalkan waktu tunggu.";
+            }
+
+            // Update Chart
+            updateChart(totalMonthlyRent, totalMonthlyFuel, totalMonthlyDriver, siteOverhead);
+        }
+
+        function updateChart(rental, fuel, labor, overhead) {
+            const ctx = document.getElementById('monthlyCostChart').getContext('2d');
+            
+            if (monthlyChartInstance) {
+                monthlyChartInstance.data.datasets[0].data = [rental, fuel, labor, overhead];
+                monthlyChartInstance.update();
+            } else {
+                monthlyChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sewa DT', 'Solar', 'Upah Supir', 'Overhead Site'],
+                        datasets: [{
+                            data: [rental, fuel, labor, overhead],
+                            backgroundColor: ['#f59e0b', '#3b82f6', '#a855f7', '#ec4899'],
+                            borderWidth: 2,
+                            borderColor: '#0f172a'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    color: '#94a3b8',
+                                    font: {
+                                        size: 10
+                                    },
+                                    boxWidth: 10
+                                }
+                            }
+                        },
+                        cutout: '60%'
+                    }
+                });
+            }
+        }
+
+        function exportToCSV() {
+            const inputs = {
+                "Kapasitas DT per Rit (Ton)": document.getElementById("dtCapacity").value,
+                "Waktu Siklus DT (Menit)": document.getElementById("dtCycleTime").value,
+                "Jumlah DT": document.getElementById("dtCount").value,
+                "Match Factor": document.getElementById("outMatchFactor").textContent,
+                "Tarif Kontrak Owner (Rp/Ton/Km)": document.getElementById("ownerRate").value,
+                "Biaya Overhead Site Bulanan (Rp)": document.getElementById("siteOverhead").value,
+                "Total Pendapatan per Rit": document.getElementById("outRevPerRit").textContent,
+                "Total Biaya per Rit": document.getElementById("outCostPerRit").textContent,
+                "Laba-Rugi per Rit": document.getElementById("outProfitPerRit").textContent,
+                "Estimasi Pendapatan Bulanan": document.getElementById("outMonthlyRevenue").textContent,
+                "Estimasi Total Biaya Bulanan (Termasuk Overhead)": document.getElementById("outMonthlyCost").textContent,
+                "Laba Bersih Bulanan (Setelah Overhead)": document.getElementById("outMonthlyNetProfit").textContent
+            };
+
+            let csvContent = "data:text/csv;charset=utf-8,Parameter,Nilai\n";
+            for (const [key, value] of Object.entries(inputs)) {
+                csvContent += `"${key}","${value.replace(/[^0-9,-]/g, '')}"\n`;
+            }
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "igkm_hauling_intelligent_system_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = function() {
+            lucide.createIcons();
+            calculateAll();
+        };
+    </script>
+</body>
+</html>

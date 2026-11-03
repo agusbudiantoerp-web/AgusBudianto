@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0A2E1A">
+<meta name="description" content="AMTIS — Absyor Mining Tender Intelligence System. Platform analisis tender tambang berbasis AI.">
+<title>AMTIS — Mining Tender Intelligence System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #050E08;
+  --bg2: #0A1A10;
+  --bg3: #0F2416;
+  --bg4: #132D1B;
+  --green: #1DB954;
+  --green2: #0F6E35;
+  --green3: #2ECC71;
+  --green-glow: rgba(29,185,84,0.15);
+  --green-glow2: rgba(29,185,84,0.08);
+  --amber: #F5A623;
+  --amber2: #D4870A;
+  --red: #E53E3E;
+  --blue: #4299E1;
+  --text: #E8F5EC;
+  --text2: #9DC9A8;
+  --text3: #5A8A66;
+  --border: rgba(29,185,84,0.15);
+  --border2: rgba(29,185,84,0.08);
+  --radius: 10px;
+  --radius-lg: 16px;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+  --shadow: 0 4px 32px rgba(0,0,0,0.6);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ─── NOISE OVERLAY ─── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4;}
+
+/* ─── TYPOGRAPHY ─── */
+h1,h2,h3,h4,h5{font-family:var(--display);}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--green2);border-radius:4px;}
+
+/* ══════════ LANDING PAGE ══════════ */
+#landing{position:relative;z-index:1;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;background:rgba(5,14,8,0.85);}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:1.2rem;color:var(--text);}
+.nav-logo-icon{width:34px;height:34px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.nav-links{display:flex;gap:1.5rem;align-items:center;}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;transition:color 0.2s;}
+.nav-links a:hover{color:var(--green);}
+.nav-cta{background:var(--green);color:#000;padding:8px 20px;border-radius:var(--radius);font-size:0.875rem;font-weight:600;cursor:pointer;border:none;font-family:var(--display);letter-spacing:0.02em;transition:all 0.2s;}
+.nav-cta:hover{background:var(--green3);transform:translateY(-1px);}
+
+/* HERO */
+.hero{padding:5rem 2rem 4rem;text-align:center;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(29,185,84,0.12) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(29,185,84,0.1);border:1px solid rgba(29,185,84,0.3);color:var(--green);padding:5px 14px;border-radius:20px;font-size:0.75rem;font-family:var(--mono);letter-spacing:0.05em;margin-bottom:1.5rem;}
+.hero-badge-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+.hero h1{font-size:clamp(2.5rem,7vw,5rem);font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin-bottom:1.25rem;}
+.hero h1 span{color:var(--green);}
+.hero p{font-size:clamp(1rem,2.5vw,1.2rem);color:var(--text2);max-width:560px;margin:0 auto 2rem;line-height:1.7;font-weight:300;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{background:var(--green);color:#000;border:none;padding:14px 28px;border-radius:var(--radius);font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--display);letter-spacing:0.02em;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
+.btn-primary:hover{background:var(--green3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(29,185,84,0.3);}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);padding:14px 28px;border-radius:var(--radius);font-size:1rem;cursor:pointer;font-family:var(--display);transition:all 0.2s;}
+.btn-outline:hover{border-color:var(--green);color:var(--green);}
+
+/* STATS */
+.stats{display:flex;justify-content:center;gap:3rem;padding:3rem 2rem;flex-wrap:wrap;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.stat{text-align:center;}
+.stat-n{font-family:var(--display);font-size:2.5rem;font-weight:800;color:var(--green);}
+.stat-l{font-size:0.8rem;color:var(--text3);font-family:var(--mono);letter-spacing:0.05em;margin-top:4px;}
+
+/* FEATURES */
+.section{padding:4rem 2rem;max-width:1100px;margin:0 auto;}
+.section-label{font-family:var(--mono);font-size:0.72rem;color:var(--green);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.75rem;}
+.section-title{font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;margin-bottom:1rem;letter-spacing:-0.02em;}
+.section-sub{color:var(--text2);font-size:1rem;font-weight:300;max-width:520px;line-height:1.7;}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-top:2.5rem;}
+.feat{background:var(--bg2);padding:1.75rem;transition:background 0.2s;}
+.feat:hover{background:var(--bg3);}
+.feat-icon{width:40px;height:40px;background:var(--green-glow2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1rem;}
+.feat h4{font-size:1rem;font-weight:600;margin-bottom:0.5rem;}
+.feat p{font-size:0.875rem;color:var(--text2);line-height:1.6;font-weight:300;}
+
+/* FLOW */
+.flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-top:2.5rem;position:relative;}
+.flow-step{padding:1.5rem;border:1px solid var(--border);border-radius:0;margin-right:-1px;margin-bottom:-1px;position:relative;}
+.flow-step:first-child{border-radius:var(--radius-lg) 0 0 var(--radius-lg);}
+.flow-step:last-child{border-radius:0 var(--radius-lg) var(--radius-lg) 0;}
+.flow-num{font-family:var(--mono);font-size:0.7rem;color:var(--green);letter-spacing:0.1em;margin-bottom:0.75rem;}
+.flow-step h4{font-size:0.9rem;font-weight:600;margin-bottom:0.4rem;}
+.flow-step p{font-size:0.78rem;color:var(--text2);line-height:1.5;font-weight:300;}
+
+/* DECISION CARDS */
+.decision-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2.5rem;}
+.dec-card{padding:2rem;border-radius:var(--radius-lg);text-align:center;border:1px solid;}
+.dec-go{background:rgba(29,185,84,0.08);border-color:rgba(29,185,84,0.3);}
+.dec-cgo{background:rgba(245,166,35,0.08);border-color:rgba(245,166,35,0.3);}
+.dec-nogo{background:rgba(229,62,62,0.08);border-color:rgba(229,62,62,0.3);}
+.dec-icon{font-size:2rem;margin-bottom:0.75rem;}
+.dec-label{font-family:var(--display);font-size:1.25rem;font-weight:700;margin-bottom:0.25rem;}
+.dec-go .dec-label{color:var(--green);}
+.dec-cgo .dec-label{color:var(--amber);}
+.dec-nogo .dec-label{color:var(--red);}
+.dec-range{font-family:var(--mono);font-size:0.75rem;color:var(--text2);}
+
+/* CTA SECTION */
+.cta-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:4rem 2rem;text-align:center;}
+.cta-section h2{font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;margin-bottom:1rem;}
+.cta-section p{color:var(--text2);max-width:480px;margin:0 auto 2rem;line-height:1.7;font-weight:300;}
+
+/* FOOTER */
+footer{padding:2rem;text-align:center;color:var(--text3);font-size:0.8rem;font-family:var(--mono);border-top:1px solid var(--border);}
+
+/* ══════════ APP SHELL ══════════ */
+#app{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column;}
+#app.active{display:flex;}
+
+/* APP HEADER */
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.25rem;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;gap:12px;}
+.app-logo{font-family:var(--display);font-weight:800;font-size:1rem;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.app-logo-icon{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.app-header-right{display:flex;align-items:center;gap:8px;}
+.app-btn-sm{background:transparent;border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:var(--sans);transition:all 0.15s;white-space:nowrap;}
+.app-btn-sm:hover{border-color:var(--green);color:var(--green);}
+.app-btn-calc{background:var(--green);border:none;color:#000;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:var(--display);transition:all 0.15s;white-space:nowrap;}
+.app-btn-calc:hover{background:var(--green3);}
+.close-app{background:transparent;border:1px solid var(--border);color:var(--text3);padding:5px 10px;border-radius:6px;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
+.close-app:hover{border-color:var(--red);color:var(--red);}
+
+/* APP BODY */
+.app-body{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR TABS */
+.sidebar{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.sidebar-section{padding:0.75rem 0.5rem 0.25rem;font-size:0.62rem;font-family:var(--mono);color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;padding-left:1rem;}
+.tab-btn{display:flex;align-items:center;gap:8px;width:100%;padding:0.6rem 1rem;background:transparent;border:none;color:var(--text2);font-size:0.8rem;cursor:pointer;text-align:left;transition:all 0.15s;font-family:var(--sans);border-left:2px solid transparent;}
+.tab-btn:hover{background:var(--bg3);color:var(--text);}
+.tab-btn.active{background:var(--green-glow2);color:var(--green);border-left-color:var(--green);}
+.tab-btn .tab-num{font-family:var(--mono);font-size:0.65rem;color:var(--text3);flex-shrink:0;width:16px;}
+.tab-btn.active .tab-num{color:var(--green);}
+
+/* CONTENT AREA */
+.content{flex:1;overflow-y:auto;padding:1.5rem;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* SECTION HEADER */
+.panel-header{margin-bottom:1.5rem;}
+.panel-header h2{font-size:1.2rem;font-weight:700;font-family:var(--display);}
+.panel-header p{font-size:0.8rem;color:var(--text2);margin-top:4px;font-weight:300;}
+
+/* FORM GRID */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.form-grid-3{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:0.75rem;color:var(--text2);font-family:var(--mono);letter-spacing:0.03em;}
+.form-group input,.form-group select{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:0.875rem;font-family:var(--sans);outline:none;transition:border-color 0.15s;width:100%;}
+.form-group input:focus,.form-group select:focus{border-color:var(--green);}
+.form-group input[type=number]{-moz-appearance:textfield;}
+.form-group input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.form-group select option{background:var(--bg2);}
+.form-hint{font-size:0.65rem;color:var(--text3);margin-top:2px;}
+.form-section-title{font-size:0.8rem;font-weight:600;color:var(--green);font-family:var(--display);letter-spacing:0.03em;padding:0.75rem 0 0.25rem;border-bottom:1px solid var(--border2);margin-bottom:0.5rem;grid-column:1/-1;}
+.auto-field{background:rgba(29,185,84,0.05) !important;border-color:rgba(29,185,84,0.2) !important;color:var(--green) !important;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1rem;}
+.card-title{font-size:0.8rem;font-weight:600;font-family:var(--display);margin-bottom:1rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem;margin-bottom:1.5rem;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem;}
+.kpi-label{font-size:0.68rem;color:var(--text3);font-family:var(--mono);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;}
+.kpi-value{font-family:var(--display);font-size:1.4rem;font-weight:700;color:var(--text);}
+.kpi-value.green{color:var(--green);}
+.kpi-value.amber{color:var(--amber);}
+.kpi-value.red{color:var(--red);}
+.kpi-sub{font-size:0.7rem;color:var(--text2);margin-top:3px;font-family:var(--mono);}
+
+/* DECISION BANNER */
+.decision-banner{padding:1.5rem;border-radius:var(--radius-lg);margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;border:1px solid;}
+.decision-banner.go{background:rgba(29,185,84,0.08);border-color:rgba(29,185,84,0.3);}
+.decision-banner.cgo{background:rgba(245,166,35,0.08);border-color:rgba(245,166,35,0.3);}
+.decision-banner.nogo{background:rgba(229,62,62,0.08);border-color:rgba(229,62,62,0.3);}
+.decision-icon-big{font-size:2.5rem;flex-shrink:0;}
+.decision-text h3{font-family:var(--display);font-size:1.5rem;font-weight:800;}
+.decision-banner.go .decision-text h3{color:var(--green);}
+.decision-banner.cgo .decision-text h3{color:var(--amber);}
+.decision-banner.nogo .decision-text h3{color:var(--red);}
+.decision-text p{font-size:0.85rem;color:var(--text2);margin-top:4px;font-weight:300;}
+.decision-score{margin-left:auto;text-align:center;flex-shrink:0;}
+.score-ring{font-family:var(--display);font-size:2rem;font-weight:800;}
+.score-label{font-size:0.65rem;color:var(--text3);font-family:var(--mono);}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem;}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;}
+.chart-title{font-size:0.75rem;font-family:var(--mono);color:var(--text2);letter-spacing:0.05em;margin-bottom:0.75rem;}
+.chart-wrap{position:relative;height:200px;}
+
+/* COST BREAKDOWN */
+.cost-items{display:flex;flex-direction:column;gap:8px;margin-top:0.5rem;}
+.cost-item{display:flex;align-items:center;gap:10px;}
+.cost-bar-wrap{flex:1;height:6px;background:var(--bg3);border-radius:4px;overflow:hidden;}
+.cost-bar{height:100%;border-radius:4px;transition:width 0.6s ease;}
+.cost-label{font-size:0.72rem;color:var(--text2);width:130px;flex-shrink:0;}
+.cost-pct{font-size:0.7rem;font-family:var(--mono);color:var(--text3);width:36px;text-align:right;}
+.cost-val{font-size:0.7rem;font-family:var(--mono);color:var(--green);width:90px;text-align:right;}
+
+/* RISK MATRIX */
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem;}
+.risk-dim{background:var(--bg3);border-radius:8px;padding:0.875rem;}
+.risk-dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.risk-dim-name{font-size:0.75rem;font-weight:600;}
+.risk-dim-score{font-family:var(--mono);font-size:0.8rem;color:var(--green);}
+.risk-bar{height:5px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.risk-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green2),var(--green));}
+.risk-weight{font-size:0.62rem;color:var(--text3);margin-top:4px;font-family:var(--mono);}
+
+/* REPORT */
+.report-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;}
+.report-section-title{font-size:0.8rem;font-weight:700;font-family:var(--display);color:var(--green);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
+.report-section-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--green);border-radius:2px;}
+.report-text{font-size:0.875rem;color:var(--text2);line-height:1.7;font-weight:300;}
+.swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:var(--radius);overflow:hidden;margin-top:0.75rem;}
+.swot-cell{background:var(--bg2);padding:1rem;}
+.swot-cell h5{font-size:0.72rem;font-family:var(--mono);letter-spacing:0.08em;margin-bottom:0.5rem;}
+.swot-cell.s h5{color:#4299E1;}.swot-cell.w h5{color:var(--red);}.swot-cell.o h5{color:var(--green);}.swot-cell.t h5{color:var(--amber);}
+.swot-cell ul{list-style:none;padding:0;}
+.swot-cell li{font-size:0.78rem;color:var(--text2);padding:3px 0;font-weight:300;}
+.swot-cell li::before{content:'→ ';color:var(--text3);}
+.bid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem;margin-top:0.75rem;}
+.bid-card{background:var(--bg3);border-radius:8px;padding:1rem;text-align:center;border:1px solid var(--border2);}
+.bid-card.recommended{border-color:rgba(29,185,84,0.4);background:rgba(29,185,84,0.06);}
+.bid-type{font-size:0.65rem;font-family:var(--mono);color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+.bid-price{font-family:var(--display);font-size:1rem;font-weight:700;color:var(--text);}
+.bid-card.recommended .bid-price{color:var(--green);}
+.bid-margin{font-size:0.68rem;color:var(--text3);margin-top:3px;font-family:var(--mono);}
+
+/* MOBILE BOTTOM NAV */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:300;padding:6px 0 max(6px,env(safe-area-inset-bottom));}
+.bottom-nav-items{display:flex;justify-content:space-around;}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:transparent;border:none;color:var(--text3);font-size:0.6rem;cursor:pointer;padding:4px 10px;border-radius:8px;transition:color 0.15s;font-family:var(--sans);}
+.bnav-btn.active{color:var(--green);}
+.bnav-icon{font-size:1.1rem;}
+
+/* MOBILE SIDEBAR */
+.mobile-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:250;}
+.mobile-sidebar-overlay.open{display:block;}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:8px;font-size:0.8rem;z-index:999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* LOADING */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(5,14,8,0.92);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.loading-overlay.active{display:flex;}
+.loading-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-family:var(--mono);font-size:0.85rem;color:var(--green);}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:0.75rem 1rem;}
+  .nav-links{display:none;}
+  .hero{padding:3rem 1rem 2.5rem;}
+  .stats{gap:1.5rem;padding:2rem 1rem;}
+  .stat-n{font-size:2rem;}
+  .section{padding:2.5rem 1rem;}
+  .decision-row{grid-template-columns:1fr;}
+  .flow-step:first-child,.flow-step:last-child,.flow-step{border-radius:var(--radius);}
+  .flow-grid{grid-template-columns:1fr;}
+  
+  /* APP */
+  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;z-index:260;width:220px;transition:transform 0.3s;}
+  .sidebar.mobile-open{display:flex;}
+  .content{padding:1rem 0.875rem 80px;}
+  .bottom-nav{display:block;}
+  .app-btn-sm.hide-mobile{display:none;}
+  .charts-grid{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .risk-grid{grid-template-columns:1fr;}
+  .swot-grid{grid-template-columns:1fr;}
+  .decision-banner{flex-direction:column;text-align:center;}
+  .decision-score{margin-left:0;}
+  .form-grid{grid-template-columns:1fr 1fr;}
+  .bid-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:400px){
+  .form-grid{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* UTIL */
+.mt1{margin-top:0.5rem;} .mt2{margin-top:1rem;} .mt3{margin-top:1.5rem;} .mt4{margin-top:2rem;}
+.text-green{color:var(--green);} .text-amber{color:var(--amber);} .text-red{color:var(--red);}
+.mono{font-family:var(--mono);}
+.divider{border:none;border-top:1px solid var(--border);margin:1.25rem 0;}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:0.68rem;font-family:var(--mono);}
+.tag-green{background:rgba(29,185,84,0.12);color:var(--green);}
+.tag-amber{background:rgba(245,166,35,0.12);color:var(--amber);}
+.tag-red{background:rgba(229,62,62,0.12);color:var(--red);}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LANDING PAGE ══════════ -->
+<div id="landing">
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">⛏️</div>
+    AMTIS
+  </div>
+  <div class="nav-links">
+    <a href="#features">Fitur</a>
+    <a href="#workflow">Alur</a>
+    <a href="#decision">Keputusan</a>
+  </div>
+  <button class="nav-cta" onclick="openApp()">Buka Aplikasi ↗</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    AI-Powered · Enterprise Mining Platform
+  </div>
+  <h1>Mining Tender<br><span>Intelligence</span> System</h1>
+  <p>Platform analisis tender tambang berbasis AI. Dapatkan rekomendasi GO / NO GO, harga penawaran optimal, dan proyeksi finansial lengkap — dalam hitungan menit.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="openApp()">⛏ Mulai Analisis Tender</button>
+    <button class="btn-outline" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Lihat Fitur ↓</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">10K</div><div class="stat-l">Simulasi Monte Carlo</div></div>
+  <div class="stat"><div class="stat-n">11</div><div class="stat-l">Tab Input Data</div></div>
+  <div class="stat"><div class="stat-n">12</div><div class="stat-l">Grafik Analitik</div></div>
+  <div class="stat"><div class="stat-n">18</div><div class="stat-l">Seksi Laporan AI</div></div>
+  <div class="stat"><div class="stat-n">4</div><div class="stat-l">Format Export</div></div>
+</div>
+
+<div id="features" class="section">
+  <div class="section-label">Fitur Platform</div>
+  <h2 class="section-title">Semua yang dibutuhkan<br>untuk keputusan tender</h2>
+  <p class="section-sub">Dari kalkulasi produktivitas fleet hingga laporan AI 18 seksi, semuanya dalam satu platform.</p>
+  <div class="features-grid">
+    <div class="feat">
+      <div class="feat-icon">🧮</div>
+      <h4>Calculation Engine</h4>
+      <p>Formula teknis lengkap: produktivitas excavator & truck, fleet match factor, cost per BCM/ton, NPV, IRR, payback period.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🤖</div>
+      <h4>AI Consultant Report</h4>
+      <p>Laporan 18 seksi otomatis: SWOT, risk mitigation, strategi negosiasi, harga penawaran minimum & optimal.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🎲</div>
+      <h4>Monte Carlo Simulation</h4>
+      <p>10.000 simulasi probabilistik untuk P10/P50/P90 dan probabilitas profit/loss berdasarkan 7 variabel risiko.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">💰</div>
+      <h4>Bid Pricing Engine</h4>
+      <p>4 skenario harga: Minimum Bid, Recommended Bid, Aggressive Bid, dan Premium Bid — lengkap dengan margin analysis.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">👷</div>
+      <h4>Manpower Planning</h4>
+      <p>Kalkulasi kebutuhan operator, mekanik, dan support berdasarkan roster shift dan relief factor.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🏆</div>
+      <h4>Win Probability Engine</h4>
+      <p>Estimasi peluang menang berdasarkan harga penawaran vs kompetitor dengan simulasi kompetitif.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">⚠️</div>
+      <h4>Risk Scoring 5 Dimensi</h4>
+      <p>Skor 0–100 dari dimensi Teknis, Finansial, Operasional, Sosial, dan Lingkungan dengan sub-kriteria detail.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📊</div>
+      <h4>12 Dashboard Charts</h4>
+      <p>Revenue vs Cost, Cost Breakdown, Cash Flow Projection, Monte Carlo Distribution, Tornado Chart, Risk Matrix.</p>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📱</div>
+      <h4>Mobile Responsive PWA</h4>
+      <p>Berjalan optimal di Android, iPhone, tablet, dan desktop. Bisa diinstall sebagai aplikasi native.</p>
+    </div>
+  </div>
+</div>
+
+<div id="workflow" class="section">
+  <div class="section-label">Alur Kerja</div>
+  <h2 class="section-title">Dari data ke keputusan<br>dalam 5 langkah</h2>
+  <div class="flow-grid">
+    <div class="flow-step"><div class="flow-num">01 — INPUT</div><h4>Isi Data Proyek</h4><p>11 tab input: kontrak, hauling, excavator, dump truck, OB, material, finansial, payment, sosial, manpower, bid strategy.</p></div>
+    <div class="flow-step"><div class="flow-num">02 — CALCULATE</div><h4>Kalkulasi Otomatis</h4><p>Engine Python menghitung produktivitas fleet, cost model lengkap, NPV/IRR, dan cash flow secara real-time.</p></div>
+    <div class="flow-step"><div class="flow-num">03 — SIMULATE</div><h4>Monte Carlo</h4><p>10.000 iterasi simulasi probabilistik menghasilkan distribusi P10/P50/P90 dan probability of profit.</p></div>
+    <div class="flow-step"><div class="flow-num">04 — SCORE</div><h4>Risk Scoring</h4><p>Skor 0–100 dari 5 dimensi + bid competitiveness engine menghasilkan keputusan GO/NO GO berbasis data.</p></div>
+    <div class="flow-step"><div class="flow-num">05 — REPORT</div><h4>Laporan & Export</h4><p>AI menyusun laporan konsultan lengkap. Export ke PDF, Excel, PowerPoint, dan JSON dalam satu klik.</p></div>
+  </div>
+</div>
+
+<div id="decision" class="section">
+  <div class="section-label">Decision Engine</div>
+  <h2 class="section-title">Keputusan berbasis<br>skor risiko objektif</h2>
+  <p class="section-sub">Bobot: Teknis 25% · Finansial 25% · Operasional 20% · Sosial 15% · Lingkungan 15%</p>
+  <div class="decision-row">
+    <div class="dec-card dec-go"><div class="dec-icon">✅</div><div class="dec-label">GO</div><div class="dec-range">Skor ≥ 80</div><p style="font-size:0.78rem;color:var(--text2);margin-top:8px;font-weight:300;">Tender sangat layak diambil. Lanjutkan persiapan dokumen penawaran.</p></div>
+    <div class="dec-card dec-cgo"><div class="dec-icon">⚠️</div><div class="dec-label">CONDITIONAL GO</div><div class="dec-range">Skor 65–79</div><p style="font-size:0.78rem;color:var(--text2);margin-top:8px;font-weight:300;">Tender layak dengan syarat negosiasi terms tertentu sebelum submit.</p></div>
+    <div class="dec-card dec-nogo"><div class="dec-icon">🚫</div><div class="dec-label">NO GO</div><div class="dec-range">Skor < 65</div><p style="font-size:0.78rem;color:var(--text2);margin-top:8px;font-weight:300;">Risiko terlalu tinggi atau margin tidak memadai. Tidak direkomendasikan.</p></div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>Siap menganalisis tender?</h2>
+  <p>Tidak perlu install. Buka langsung di browser laptop atau handphone Anda.</p>
+  <button class="btn-primary" style="margin:0 auto;display:inline-flex;" onclick="openApp()">⛏ Buka AMTIS Sekarang</button>
+</div>
+
+<footer>
+  AMTIS v2.0 · Absyor Mining Tender Intelligence System · Coal · Nickel · Andesite · Overburden · Earthwork
+</footer>
+</div><!-- /landing -->
+
+<!-- ══════════ APP SHELL ══════════ -->
+<div id="app">
+  <div class="app-header">
+    <div class="app-logo">
+      <div class="app-logo-icon">⛏️</div>
+      <span>AMTIS</span>
+    </div>
+    <div class="app-header-right">
+      <button class="app-btn-sm hide-mobile" onclick="showMenuMobile()">☰ Menu</button>
+      <button class="app-btn-sm hide-mobile" onclick="resetForm()">↺ Reset</button>
+      <button class="app-btn-calc" onclick="runCalculation()">▶ Hitung Analisis</button>
+      <button class="close-app" onclick="closeApp()">✕</button>
+    </div>
+  </div>
+
+  <div class="app-body">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-section">Input Data</div>
+      <button class="tab-btn active" onclick="switchTab('t0','INPUT')"><span class="tab-num">0</span>Contract Type</button>
+      <button class="tab-btn" onclick="switchTab('t1','INPUT')"><span class="tab-num">1</span>Project Info</button>
+      <button class="tab-btn" onclick="switchTab('t2','INPUT')"><span class="tab-num">2</span>Hauling Data</button>
+      <button class="tab-btn" onclick="switchTab('t3','INPUT')"><span class="tab-num">3</span>Excavator</button>
+      <button class="tab-btn" onclick="switchTab('t4','INPUT')"><span class="tab-num">4</span>Dump Truck</button>
+      <button class="tab-btn" onclick="switchTab('t5','INPUT')"><span class="tab-num">5</span>Overburden</button>
+      <button class="tab-btn" onclick="switchTab('t6','INPUT')"><span class="tab-num">6</span>Getting Material</button>
+      <button class="tab-btn" onclick="switchTab('t7','INPUT')"><span class="tab-num">7</span>Financial</button>
+      <button class="tab-btn" onclick="switchTab('t8','INPUT')"><span class="tab-num">8</span>Payment Terms</button>
+      <button class="tab-btn" onclick="switchTab('t9','INPUT')"><span class="tab-num">9</span>Social & Env</button>
+      <button class="tab-btn" onclick="switchTab('t10','INPUT')"><span class="tab-num">10</span>Manpower</button>
+      <button class="tab-btn" onclick="switchTab('t11','INPUT')"><span class="tab-num">11</span>Bid Strategy</button>
+      <div class="sidebar-section">Hasil</div>
+      <button class="tab-btn" onclick="switchTab('result','RESULT')"><span class="tab-num">★</span>Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('charts','RESULT')"><span class="tab-num">◉</span>Grafik</button>
+      <button class="tab-btn" onclick="switchTab('report','RESULT')"><span class="tab-num">✦</span>Laporan AI</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="mainContent">
+
+      <!-- TAB 0: CONTRACT TYPE -->
+      <div class="tab-panel active" id="t0">
+        <div class="panel-header"><h2>Contract Type & Scope</h2><p>Tentukan jenis pekerjaan dan lingkup kontrak tender</p></div>
+        <div class="card">
+          <div class="card-title">Jenis Kontrak</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Contract Type</label>
+              <select id="contractType">
+                <option>Hauling Only</option>
+                <option>Getting Only</option>
+                <option>OB Removal Only</option>
+                <option selected>OB + Hauling</option>
+                <option>Getting + Hauling</option>
+                <option>Full Mining Services</option>
+                <option>Rental Equipment</option>
+                <option>Civil & Earthwork</option>
+                <option>Quarry Operation</option>
+                <option>Nickel Mining Services</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Material Utama</label>
+              <select id="materialType">
+                <option value="coal">Batubara (Coal)</option>
+                <option value="nickel">Nikel (Nickel)</option>
+                <option value="andesite">Andesit (Andesite)</option>
+                <option value="ob">Overburden</option>
+                <option value="earthwork">Earthwork</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Scope of Work</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;">
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc1"> Land Clearing</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc2"> Top Soil Removal</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc3"> Drill &amp; Blast</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc4" checked> OB Removal</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc5" checked> Coal Getting</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc6"> Nickel Ore Mining</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc7"> Crushing</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc8" checked> Hauling</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc9"> Stockpile Management</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc10"> Port Loading</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc11"> Barging</label>
+            <label style="display:flex;align-items:center;gap:8px;font-size:0.82rem;cursor:pointer;"><input type="checkbox" id="sc12"> Rehabilitation</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 1: PROJECT INFO -->
+      <div class="tab-panel" id="t1">
+        <div class="panel-header"><h2>Project Information</h2><p>Informasi dasar proyek tender</p></div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Nama Tender</label>
+              <input type="text" id="tenderName" placeholder="contoh: Tender OB Removal Blok A – PT XYZ Mining" value="Tender OB + Coal Getting Blok Selatan">
+            </div>
+            <div class="form-group"><label>Nama Klien / Owner</label><input type="text" id="clientName" placeholder="PT. ..." value="PT. Berau Coal Energy"></div>
+            <div class="form-group"><label>Lokasi Tambang</label><input type="text" id="location" value="Berau, Kalimantan Timur"></div>
+            <div class="form-group">
+              <label>Provinsi</label>
+              <select id="province">
+                <option>Kalimantan Timur</option><option>Kalimantan Selatan</option><option>Kalimantan Tengah</option>
+                <option>Kalimantan Barat</option><option>Kalimantan Utara</option><option>Sulawesi Tenggara</option>
+                <option>Sulawesi Tengah</option><option>Papua</option><option>Sumatera Selatan</option>
+                <option>Bangka Belitung</option><option>Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Durasi Proyek (bulan)</label><input type="number" id="duration" value="36" min="1" max="120"></div>
+            <div class="form-group"><label>Target Produksi Bulanan (ton)</label><input type="number" id="monthlyTarget" value="250000" oninput="calcAnnual()"></div>
+            <div class="form-group"><label>Target Produksi Tahunan (ton) — auto</label><input type="number" id="annualTarget" class="auto-field" readonly></div>
+            <div class="form-group">
+              <label>Mata Uang</label>
+              <select id="currency"><option value="IDR">IDR — Rupiah</option><option value="USD">USD — Dollar</option></select>
+            </div>
+            <div class="form-group"><label>Nomor Referensi Tender</label><input type="text" id="tenderRef" placeholder="opsional" value="BCE-2025-OB-001"></div>
+            <div class="form-group"><label>Tanggal Analisis</label><input type="date" id="analysisDate"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: HAULING -->
+      <div class="tab-panel" id="t2">
+        <div class="panel-header"><h2>Hauling Data</h2><p>Parameter road dan kecepatan angkut</p></div>
+        <div class="card">
+          <div class="form-grid form-grid-3">
+            <div class="form-group"><label>Jarak Hauling One Way (km)</label><input type="number" id="hDistance" value="4.5" step="0.1"></div>
+            <div class="form-group"><label>Road Width (m)</label><input type="number" id="roadWidth" value="14" step="0.5"></div>
+            <div class="form-group"><label>Grade Jalan (%)</label><input type="number" id="roadGrade" value="8" step="0.5" max="15"></div>
+            <div class="form-group"><label>Rolling Resistance (%)</label><input type="number" id="rollingRes" value="3" step="0.5"></div>
+            <div class="form-group"><label>Superelevasi (%)</label><input type="number" id="superelevation" value="3" step="0.5"></div>
+            <div class="form-group"><label>Kecepatan Loaded (km/jam)</label><input type="number" id="speedLoaded" value="20"></div>
+            <div class="form-group"><label>Kecepatan Empty (km/jam)</label><input type="number" id="speedEmpty" value="30"></div>
+            <div class="form-group"><label>Queue Time at Dump (menit)</label><input type="number" id="queueTime" value="3"></div>
+            <div class="form-group"><label>Spotting Time (menit)</label><input type="number" id="spottingTime" value="1.5" step="0.5"></div>
+            <div class="form-group">
+              <label>Kondisi Jalan</label>
+              <select id="roadCondition"><option>Excellent</option><option selected>Good</option><option>Fair</option><option>Poor</option><option>Very Poor</option></select>
+            </div>
+            <div class="form-group">
+              <label>Perkerasan Jalan</label>
+              <select id="roadType"><option>Asphalt</option><option>Concrete</option><option selected>Gravel</option><option>Laterite</option><option>Soil</option></select>
+            </div>
+            <div class="form-group"><label>Jumlah Ramp</label><input type="number" id="numRamps" value="2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: EXCAVATOR -->
+      <div class="tab-panel" id="t3">
+        <div class="panel-header"><h2>Excavator Data</h2><p>Spesifikasi dan parameter produktivitas excavator</p></div>
+        <div class="card">
+          <div class="form-grid form-grid-3">
+            <div class="form-group"><label>Model Excavator</label><input type="text" id="excModel" value="Komatsu PC800"></div>
+            <div class="form-group"><label>Bucket Capacity (m³)</label><input type="number" id="bucketCap" value="4.5" step="0.1"></div>
+            <div class="form-group"><label>Fill Factor (%)</label><input type="number" id="fillFactor" value="85"></div>
+            <div class="form-group"><label>Cycle Time Bank (detik)</label><input type="number" id="cycleTime" value="28"></div>
+            <div class="form-group"><label>Swing Angle (derajat)</label><input type="number" id="swingAngle" value="90"></div>
+            <div class="form-group"><label>Swell Factor (%)</label><input type="number" id="swellFactor" value="30"><div class="form-hint">OB default 30%, Coal 15%</div></div>
+            <div class="form-group"><label>Mechanical Availability (%)</label><input type="number" id="excMA" value="85"></div>
+            <div class="form-group"><label>Physical Availability (%)</label><input type="number" id="excPA" value="90"></div>
+            <div class="form-group"><label>Utilization / Use of PA (%)</label><input type="number" id="excUA" value="83"></div>
+            <div class="form-group"><label>Jumlah Unit</label><input type="number" id="excQty" value="2"></div>
+            <div class="form-group"><label>Jam Kerja / Hari (jam)</label><input type="number" id="workHours" value="20"></div>
+            <div class="form-group"><label>Hari Kerja / Bulan</label><input type="number" id="workDays" value="25"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: DUMP TRUCK -->
+      <div class="tab-panel" id="t4">
+        <div class="panel-header"><h2>Dump Truck Data</h2><p>Spesifikasi dan biaya operasi dump truck</p></div>
+        <div class="card">
+          <div class="form-grid form-grid-3">
+            <div class="form-group"><label>Model Dump Truck</label><input type="text" id="dtModel" value="Komatsu HD785-7"></div>
+            <div class="form-group"><label>Payload (ton)</label><input type="number" id="dtPayload" value="91"></div>
+            <div class="form-group"><label>Jumlah Unit</label><input type="number" id="dtQty" value="18"></div>
+            <div class="form-group"><label>Fuel Loaded (L/jam)</label><input type="number" id="fuelLoaded" value="65"></div>
+            <div class="form-group"><label>Fuel Empty (L/jam)</label><input type="number" id="fuelEmpty" value="38"></div>
+            <div class="form-group"><label>Mechanical Availability (%)</label><input type="number" id="dtMA" value="80"></div>
+            <div class="form-group"><label>Physical Availability (%)</label><input type="number" id="dtPA" value="85"></div>
+            <div class="form-group"><label>Utilization (%)</label><input type="number" id="dtUA" value="80"></div>
+            <div class="form-group"><label>Tire Life (jam)</label><input type="number" id="tireLife" value="4500"></div>
+            <div class="form-group"><label>Tire Cost per Set (Rp)</label><input type="number" id="tireCost" value="280000000"></div>
+            <div class="form-group"><label>Repair &amp; Maint Cost (Rp/jam)</label><input type="number" id="repairCost" value="185000"></div>
+            <div class="form-group"><label>Operator Salary (Rp/bulan)</label><input type="number" id="opSalary" value="8500000"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: OVERBURDEN -->
+      <div class="tab-panel" id="t5">
+        <div class="panel-header"><h2>Overburden Data</h2><p>Volume dan harga kontrak overburden removal</p></div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group"><label>Volume OB Total (BCM)</label><input type="number" id="obBCM" value="12000000" oninput="calcOBLCM()"></div>
+            <div class="form-group"><label>Volume OB Total (LCM) — auto</label><input type="number" id="obLCM" class="auto-field" readonly></div>
+            <div class="form-group"><label>Stripping Ratio (BCM/ton Coal)</label><input type="number" id="strippingRatio" value="6.5" step="0.1"></div>
+            <div class="form-group"><label>Harga Kontrak OB (Rp/BCM)</label><input type="number" id="obPriceBCM" value="28500"></div>
+            <div class="form-group"><label>Harga Kontrak OB (Rp/LCM)</label><input type="number" id="obPriceLCM" value="22000"></div>
+            <div class="form-group"><label>Durasi OB Removal (bulan)</label><input type="number" id="obDuration" value="36"></div>
+            <div class="form-group"><label>OB Bulanan Target (BCM/bulan)</label><input type="number" id="obMonthly" value="333333"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: GETTING MATERIAL -->
+      <div class="tab-panel" id="t6">
+        <div class="panel-header"><h2>Getting Material</h2><p>Volume, harga getting, dan revenue material</p></div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group"><label>Volume Material Total (BCM)</label><input type="number" id="matBCM" value="1846154" oninput="calcMatTon()"></div>
+            <div class="form-group"><label>Volume Material Total (Ton) — auto</label><input type="number" id="matTon" class="auto-field" readonly></div>
+            <div class="form-group"><label>Harga Getting (Rp/ton)</label><input type="number" id="gettingPrice" value="18500"></div>
+            <div class="form-group"><label>Harga Hauling (Rp/ton/km)</label><input type="number" id="haulingPrice" value="4500"></div>
+            <div class="form-group"><label>Harga Jual Material (Rp/ton)</label><input type="number" id="sellingPrice" value="850000"></div>
+            <div class="form-group"><label>Royalti (Rp/ton)</label><input type="number" id="royalty" value="18000"></div>
+            <div class="form-group"><label>Government Levy (Rp/ton)</label><input type="number" id="govLevy" value="8000"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: FINANCIAL -->
+      <div class="tab-panel" id="t7">
+        <div class="panel-header"><h2>Financial Parameters</h2><p>Parameter biaya dan target finansial</p></div>
+        <div class="card">
+          <div class="form-grid form-grid-3">
+            <div class="form-group"><label>Harga Solar (Rp/liter)</label><input type="number" id="fuelPrice" value="13500"></div>
+            <div class="form-group"><label>Eskalasi Harga Solar (%/thn)</label><input type="number" id="fuelEscalation" value="5" step="0.5"></div>
+            <div class="form-group"><label>Suku Bunga Pinjaman (%/thn)</label><input type="number" id="interestRate" value="11" step="0.5"></div>
+            <div class="form-group"><label>Inflasi (%/thn)</label><input type="number" id="inflation" value="4" step="0.5"></div>
+            <div class="form-group"><label>Corporate Tax (%)</label><input type="number" id="taxRate" value="22"></div>
+            <div class="form-group"><label>Target Net Margin (%)</label><input type="number" id="targetMargin" value="15" step="0.5"></div>
+            <div class="form-group"><label>Biaya Mobilisasi (Rp)</label><input type="number" id="mobilizationCost" value="2500000000"></div>
+            <div class="form-group"><label>Biaya Demobilisasi (Rp)</label><input type="number" id="demobilizationCost" value="1200000000"></div>
+            <div class="form-group"><label>Setup / Camp Cost (Rp)</label><input type="number" id="campCost" value="800000000"></div>
+            <div class="form-group"><label>Overhead Kantor Pusat (Rp/bln)</label><input type="number" id="overhead" value="450000000"></div>
+            <div class="form-group"><label>Asuransi (% dari revenue)</label><input type="number" id="insurance" value="0.5" step="0.1"></div>
+            <div class="form-group"><label>Umur Ekonomis Alat (thn)</label><input type="number" id="assetLife" value="8"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 8: PAYMENT -->
+      <div class="tab-panel" id="t8">
+        <div class="panel-header"><h2>Payment Terms</h2><p>Syarat dan ketentuan pembayaran kontrak</p></div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Lama Pembayaran Invoice</label>
+              <select id="paymentTerm">
+                <option>Cash</option><option>14 Hari</option><option>30 Hari</option>
+                <option selected>45 Hari</option><option>60 Hari</option><option>90 Hari</option><option>120 Hari</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Retensi (%)</label><input type="number" id="retention" value="5" step="0.5"></div>
+            <div class="form-group"><label>Periode Retensi (bulan)</label><input type="number" id="retentionPeriod" value="6"></div>
+            <div class="form-group"><label>Down Payment / UM (%)</label><input type="number" id="downPayment" value="10"></div>
+            <div class="form-group"><label>Performance Bond (%)</label><input type="number" id="perfBond" value="5"></div>
+            <div class="form-group">
+              <label>Escalation Clause</label>
+              <select id="escalationClause"><option>Ada</option><option selected>Tidak Ada</option></select>
+            </div>
+            <div class="form-group"><label>Eskalasi per Periode (%)</label><input type="number" id="escalationPct" value="0" step="0.5"></div>
+            <div class="form-group">
+              <label>Payment Currency</label>
+              <select id="paymentCurrency"><option selected>IDR</option><option>USD</option><option>Mixed</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 9: SOCIAL & ENV -->
+      <div class="tab-panel" id="t9">
+        <div class="panel-header"><h2>Social, Environment &amp; Compliance</h2><p>Parameter sosial, lingkungan, dan perizinan</p></div>
+        <div class="card">
+          <div class="form-grid form-grid-3">
+            <div class="form-group">
+              <label>Kondisi Sosial Masyarakat</label>
+              <select id="socialCondition"><option>Sangat Aman</option><option selected>Aman</option><option>Sedang</option><option>Berisiko</option><option>Sangat Berisiko</option></select>
+            </div>
+            <div class="form-group">
+              <label>Potensi Pemalangan</label>
+              <select id="strikeRisk"><option selected>Rendah</option><option>Sedang</option><option>Tinggi</option></select>
+            </div>
+            <div class="form-group">
+              <label>Kondisi Perizinan</label>
+              <select id="permitCondition"><option selected>Aman</option><option>Perlu Review</option><option>Berisiko</option></select>
+            </div>
+            <div class="form-group">
+              <label>Status IUP</label>
+              <select id="iupStatus"><option selected>Aktif</option><option>Hampir Expired</option><option>Bermasalah</option></select>
+            </div>
+            <div class="form-group">
+              <label>Ketersediaan Lahan</label>
+              <select id="landStatus"><option selected>Bebas</option><option>Sebagian</option><option>Bermasalah</option></select>
+            </div>
+            <div class="form-group">
+              <label>Akses Jalan Masuk</label>
+              <select id="roadAccess"><option selected>Baik</option><option>Sedang</option><option>Buruk</option></select>
+            </div>
+            <div class="form-group"><label>CSR Budget (Rp/bulan)</label><input type="number" id="csrBudget" value="75000000"></div>
+            <div class="form-group"><label>Community Development (Rp/bln)</label><input type="number" id="commDev" value="50000000"></div>
+            <div class="form-group"><label>Biaya Reklamasi (Rp/Ha)</label><input type="number" id="reclamationCost" value="45000000"></div>
+            <div class="form-group"><label>Luas Area Reklamasi (Ha)</label><input type="number" id="reclamationArea" value="120"></div>
+            <div class="form-group"><label>Environmental Compliance (Rp/bln)</label><input type="number" id="envCost" value="35000000"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 10: MANPOWER -->
+      <div class="tab-panel" id="t10">
+        <div class="panel-header"><h2>Manpower Planning</h2><p>Perencanaan kebutuhan tenaga kerja proyek</p></div>
+        <div class="card">
+          <div class="card-title">Shift &amp; Roster</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Jumlah Shift / Hari</label>
+              <select id="numShifts"><option>1</option><option selected>2</option><option>3</option></select>
+            </div>
+            <div class="form-group">
+              <label>Pola Roster</label>
+              <select id="rosterPattern"><option>7:1</option><option selected>14:7</option><option>21:7</option><option>28:14</option></select>
+            </div>
+            <div class="form-group"><label>Relief Factor</label><input type="number" id="reliefFactor" value="1.3" step="0.1"></div>
+          </div>
+        </div>
+        <div class="card mt2">
+          <div class="card-title">Posisi Kunci (jumlah orang)</div>
+          <div class="form-grid form-grid-3">
+            <div class="form-group"><label>Project Manager</label><input type="number" id="mp_pm" value="1"></div>
+            <div class="form-group"><label>Mine Superintendent</label><input type="number" id="mp_sup" value="2"></div>
+            <div class="form-group"><label>Mine Foreman</label><input type="number" id="mp_foreman" value="4"></div>
+            <div class="form-group"><label>Dispatcher</label><input type="number" id="mp_dispatcher" value="2"></div>
+            <div class="form-group"><label>Surveyor</label><input type="number" id="mp_surveyor" value="3"></div>
+            <div class="form-group"><label>Geologist</label><input type="number" id="mp_geologist" value="2"></div>
+            <div class="form-group"><label>HSE Officer</label><input type="number" id="mp_hse" value="4"></div>
+            <div class="form-group"><label>Chief Mechanic</label><input type="number" id="mp_chief_mech" value="2"></div>
+            <div class="form-group"><label>Mechanic</label><input type="number" id="mp_mechanic" value="12"></div>
+            <div class="form-group"><label>Welder</label><input type="number" id="mp_welder" value="4"></div>
+            <div class="form-group"><label>Tyreman</label><input type="number" id="mp_tyreman" value="4"></div>
+            <div class="form-group"><label>Admin Site</label><input type="number" id="mp_admin" value="3"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 11: BID STRATEGY -->
+      <div class="tab-panel" id="t11">
+        <div class="panel-header"><h2>Bid Strategy</h2><p>Strategi harga penawaran dan analisis kompetitif</p></div>
+        <div class="card">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Pricing Mode</label>
+              <select id="pricingMode">
+                <option>Cost Plus Margin</option><option selected>Market Competitive</option>
+                <option>Strategic Entry</option><option>Aggressive</option><option>Premium Service</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Target Margin (%)</label><input type="number" id="bidTargetMargin" value="18" step="0.5"></div>
+            <div class="form-group"><label>Minimum Margin Allowed (%)</label><input type="number" id="minMargin" value="8" step="0.5"></div>
+            <div class="form-group"><label>Desired Margin (%)</label><input type="number" id="desiredMargin" value="18" step="0.5"></div>
+            <div class="form-group"><label>Stretch Margin (%)</label><input type="number" id="stretchMargin" value="25" step="0.5"></div>
+            <div class="form-group"><label>Competitor Est. Price (Rp/ton)</label><input type="number" id="competitorPrice" value="105000"></div>
+            <div class="form-group"><label>Jumlah Kompetitor</label><input type="number" id="numCompetitors" value="4" min="1" max="20"></div>
+          </div>
+        </div>
+        <div class="card mt2">
+          <div class="card-title">Owner Payment Risk Assessment</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Track Record Pembayaran Owner</label>
+              <select id="ownerPayHistory"><option selected>Selalu Tepat Waktu</option><option>Kadang Terlambat</option><option>Sering Terlambat</option><option>Pernah Default</option></select>
+            </div>
+            <div class="form-group">
+              <label>Credit Rating Owner</label>
+              <select id="ownerCredit"><option selected>A — Sangat Baik</option><option>B — Baik</option><option>C — Sedang</option><option>D — Buruk</option><option>E — Sangat Buruk</option></select>
+            </div>
+            <div class="form-group">
+              <label>Riwayat Sengketa Kontrak</label>
+              <select id="ownerDispute"><option selected>Tidak Ada</option><option>Pernah Ada, Selesai</option><option>Sedang Dalam Sengketa</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULT TAB -->
+      <div class="tab-panel" id="result">
+        <div class="panel-header"><h2>Dashboard Hasil Analisis</h2><p id="resultTenderName">Belum ada hasil — klik ▶ Hitung Analisis</p></div>
+        <div id="resultContent" style="display:none">
+          <div id="decisionBanner" class="decision-banner go">
+            <div class="decision-icon-big" id="decIcon">✅</div>
+            <div class="decision-text">
+              <h3 id="decLabel">GO</h3>
+              <p id="decDesc">Tender sangat layak diambil. Margin di atas target, risk score tinggi.</p>
+            </div>
+            <div class="decision-score">
+              <div class="score-ring" id="scoreRing">87</div>
+              <div class="score-label">RISK SCORE /100</div>
+            </div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi"><div class="kpi-label">Cost / Ton</div><div class="kpi-value" id="kpi_costTon">—</div><div class="kpi-sub">all-in cost</div></div>
+            <div class="kpi"><div class="kpi-label">Revenue / Bulan</div><div class="kpi-value green" id="kpi_revMonth">—</div><div class="kpi-sub">gross revenue</div></div>
+            <div class="kpi"><div class="kpi-label">Net Margin</div><div class="kpi-value" id="kpi_margin">—</div><div class="kpi-sub">after tax</div></div>
+            <div class="kpi"><div class="kpi-label">NPV Proyek</div><div class="kpi-value green" id="kpi_npv">—</div><div class="kpi-sub">net present value</div></div>
+            <div class="kpi"><div class="kpi-label">IRR</div><div class="kpi-value" id="kpi_irr">—</div><div class="kpi-sub">internal rate return</div></div>
+            <div class="kpi"><div class="kpi-label">Payback Period</div><div class="kpi-value" id="kpi_payback">—</div><div class="kpi-sub">bulan</div></div>
+            <div class="kpi"><div class="kpi-label">Modal Kerja Min.</div><div class="kpi-value amber" id="kpi_wc">—</div><div class="kpi-sub">working capital</div></div>
+            <div class="kpi"><div class="kpi-label">Win Probability</div><div class="kpi-value" id="kpi_winprob">—</div><div class="kpi-sub">vs kompetitor</div></div>
+            <div class="kpi"><div class="kpi-label">Fleet Match Factor</div><div class="kpi-value" id="kpi_mf">—</div><div class="kpi-sub">ideal = 1.00</div></div>
+            <div class="kpi"><div class="kpi-label">Truck Cycle Time</div><div class="kpi-value" id="kpi_ct">—</div><div class="kpi-sub">menit / ritase</div></div>
+            <div class="kpi"><div class="kpi-label">P50 Net Profit/bln</div><div class="kpi-value green" id="kpi_p50">—</div><div class="kpi-sub">monte carlo</div></div>
+            <div class="kpi"><div class="kpi-label">Total Manpower</div><div class="kpi-value" id="kpi_manpower">—</div><div class="kpi-sub">termasuk operator</div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Bid Price Recommendation</div>
+            <div class="bid-grid" id="bidGrid"></div>
+          </div>
+
+          <div class="card mt2">
+            <div class="card-title">Cost Breakdown</div>
+            <div class="cost-items" id="costBreakdown"></div>
+          </div>
+
+          <div class="card mt2">
+            <div class="card-title">Risk Scoring — 5 Dimensi</div>
+            <div class="risk-grid" id="riskGrid"></div>
+          </div>
+
+          <div class="card mt2">
+            <div class="card-title">Working Capital — Skenario Payment Term</div>
+            <div class="form-grid" id="wcScenarios"></div>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem;">
+            <button class="app-btn-calc" onclick="exportJSON()">⬇ Export JSON</button>
+            <button class="app-btn-sm" onclick="printReport()">🖨 Print Report</button>
+            <button class="app-btn-sm" onclick="switchTab('charts','RESULT')">📊 Lihat Grafik</button>
+            <button class="app-btn-sm" onclick="switchTab('report','RESULT')">📄 Laporan AI</button>
+          </div>
+        </div>
+        <div id="resultEmpty" style="text-align:center;padding:4rem 1rem;color:var(--text3);">
+          <div style="font-size:3rem;margin-bottom:1rem;">⛏️</div>
+          <div style="font-family:var(--display);font-size:1.1rem;margin-bottom:0.5rem;color:var(--text2);">Isi data dan klik "Hitung Analisis"</div>
+          <div style="font-size:0.85rem;">Pastikan semua tab terisi untuk hasil yang akurat</div>
+          <button class="btn-primary" style="margin:1.5rem auto 0;display:inline-flex;" onclick="runCalculation()">▶ Hitung Sekarang</button>
+        </div>
+      </div>
+
+      <!-- CHARTS TAB -->
+      <div class="tab-panel" id="charts">
+        <div class="panel-header"><h2>Dashboard Grafik</h2><p>Visualisasi hasil kalkulasi dan simulasi</p></div>
+        <div class="charts-grid" id="chartsContainer">
+          <div class="chart-card"><div class="chart-title">REVENUE vs COST — BULANAN</div><div class="chart-wrap"><canvas id="chartRevCost"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">COST BREAKDOWN</div><div class="chart-wrap"><canvas id="chartCostPie"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">CASH FLOW PROJECTION (24 BLN)</div><div class="chart-wrap"><canvas id="chartCashflow"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">MONTE CARLO — DISTRIBUSI NET PROFIT</div><div class="chart-wrap"><canvas id="chartMonteCarlo"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">WIN PROBABILITY vs BID PRICE</div><div class="chart-wrap"><canvas id="chartWinProb"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">WORKING CAPITAL SENSITIVITY</div><div class="chart-wrap"><canvas id="chartWC"></canvas></div></div>
+        </div>
+        <div id="chartsEmpty" style="text-align:center;padding:4rem;color:var(--text3);">
+          <div style="font-size:2rem;margin-bottom:1rem;">📊</div>
+          <div style="color:var(--text2);">Jalankan kalkulasi terlebih dahulu</div>
+          <button class="btn-primary" style="margin:1.5rem auto 0;display:inline-flex;" onclick="runCalculation()">▶ Hitung Sekarang</button>
+        </div>
+      </div>
+
+      <!-- REPORT TAB -->
+      <div class="tab-panel" id="report">
+        <div class="panel-header"><h2>Laporan AI Konsultan</h2><p>Analisis lengkap 18 seksi berbasis kalkulasi</p></div>
+        <div id="reportContent" style="display:none"></div>
+        <div id="reportEmpty" style="text-align:center;padding:4rem;color:var(--text3);">
+          <div style="font-size:2rem;margin-bottom:1rem;">🤖</div>
+          <div style="color:var(--text2);">Laporan akan tersedia setelah kalkulasi</div>
+          <button class="btn-primary" style="margin:1.5rem auto 0;display:inline-flex;" onclick="runCalculation()">▶ Generate Laporan</button>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /app-body -->
+
+  <!-- BOTTOM NAV MOBILE -->
+  <div class="bottom-nav">
+    <div class="bottom-nav-items">
+      <button class="bnav-btn active" id="bn0" onclick="bnav('INPUT','t0')"><span class="bnav-icon">📋</span>Input</button>
+      <button class="bnav-btn" id="bn1" onclick="bnav('INPUT','t3')"><span class="bnav-icon">🚜</span>Fleet</button>
+      <button class="bnav-btn" id="bn2" onclick="bnav('INPUT','t7')"><span class="bnav-icon">💵</span>Finansial</button>
+      <button class="bnav-btn" id="bn3" onclick="bnav('RESULT','result')"><span class="bnav-icon">📊</span>Hasil</button>
+      <button class="bnav-btn" id="bn4" onclick="bnav('RESULT','report')"><span class="bnav-icon">📄</span>Laporan</button>
+    </div>
+  </div>
+</div><!-- /app -->
+
+<!-- MOBILE SIDEBAR OVERLAY -->
+<div class="mobile-sidebar-overlay" id="sidebarOverlay" onclick="closeMobileSidebar()"></div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text" id="loadingText">Menghitung kalkulasi...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+document.getElementById('analysisDate').value = new Date().toISOString().split('T')[0];
+calcAnnual();
+calcOBLCM();
+calcMatTon();
+
+function calcAnnual(){
+  const v = parseFloat(document.getElementById('monthlyTarget').value)||0;
+  document.getElementById('annualTarget').value = (v*12).toLocaleString('id-ID');
+}
+function calcOBLCM(){
+  const bcm = parseFloat(document.getElementById('obBCM').value)||0;
+  document.getElementById('obLCM').value = Math.round(bcm*1.30).toLocaleString('id-ID');
+}
+function calcMatTon(){
+  const bcm = parseFloat(document.getElementById('matBCM').value)||0;
+  const density = {'coal':1.35,'nickel':2.20,'andesite':2.60,'ob':2.00,'earthwork':2.00};
+  const mat = document.getElementById('materialType')?.value||'coal';
+  document.getElementById('matTon').value = Math.round(bcm*density[mat]).toLocaleString('id-ID');
+}
+
+// ══════════════════════════════════════
+// NAV
+// ══════════════════════════════════════
+function openApp(){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('app').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+function closeApp(){
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('landing').style.display='block';
+  document.body.style.overflow='';
+}
+
+let currentGroup='INPUT';
+function switchTab(id, group){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.getAttribute('onclick')?.includes("'"+id+"'")){b.classList.add('active');}
+  });
+  currentGroup=group;
+  closeMobileSidebar();
+}
+
+function showMenuMobile(){
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+}
+function closeMobileSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+function bnav(group, tabId){
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  switchTab(tabId, group);
+}
+
+function resetForm(){
+  if(!confirm('Reset semua data ke default?')) return;
+  location.reload();
+}
+
+function showToast(msg, duration=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),duration);
+}
+
+// ══════════════════════════════════════
+// CALCULATION ENGINE
+// ══════════════════════════════════════
+let calcResults = null;
+
+function gn(id){ return parseFloat(document.getElementById(id)?.value)||0; }
+function gs(id){ return document.getElementById(id)?.value||''; }
+
+function runCalculation(){
+  showLoading('Menghitung produktivitas excavator...');
+  setTimeout(()=>{
+    updateLoading('Menghitung truck cycle time & fleet matching...');
+    setTimeout(()=>{
+      updateLoading('Menghitung cost model lengkap...');
+      setTimeout(()=>{
+        updateLoading('Menjalankan Monte Carlo 10.000 iterasi...');
+        setTimeout(()=>{
+          updateLoading('Menghitung risk scoring 5 dimensi...');
+          setTimeout(()=>{
+            updateLoading('Generating laporan AI konsultan...');
+            setTimeout(()=>{
+              try {
+                calcResults = compute();
+                renderResults(calcResults);
+                renderCharts(calcResults);
+                renderReport(calcResults);
+                hideLoading();
+                showToast('✅ Kalkulasi selesai!');
+                switchTab('result','RESULT');
+              } catch(e){
+                hideLoading();
+                showToast('⚠️ Error: '+e.message);
+                console.error(e);
+              }
+            },600);
+          },500);
+        },800);
+      },600);
+    },500);
+  },400);
+}
+
+function compute(){
+  // ── INPUTS ──
+  const dur = gn('duration');
+  const monthlyTgt = gn('monthlyTarget');
+  
+  // Excavator
+  const Bc = gn('bucketCap');
+  const Ff = gn('fillFactor')/100;
+  const Ct = gn('cycleTime');
+  const Sf = 1 + gn('swellFactor')/100;
+  const excMA = gn('excMA')/100;
+  const excPA = gn('excPA')/100;
+  const excUA = gn('excUA')/100;
+  const excEff = excMA * excPA * excUA;
+  const excQty = gn('excQty');
+  const workHrs = gn('workHours');
+  const workDays = gn('workDays');
+  
+  const excBCM_hr = (3600/Ct) * Bc * Ff * (1/Sf) * excEff;
+  const excBCM_day = excBCM_hr * workHrs;
+  const excBCM_mo = excBCM_day * workDays * excQty;
+  
+  const density = {'coal':1.35,'nickel':2.20,'andesite':2.60,'ob':2.00,'earthwork':2.00};
+  const mat = gs('materialType');
+  const d = density[mat]||1.35;
+  const excTon_mo = excBCM_mo * d;
+  
+  // Truck cycle time
+  const dist = gn('hDistance');
+  const spL = gn('speedLoaded');
+  const spE = gn('speedEmpty');
+  const dtPayload = gn('dtPayload');
+  const dtMA = gn('dtMA')/100;
+  const dtPA = gn('dtPA')/100;
+  const dtUA = gn('dtUA')/100;
+  const dtEff = dtMA * dtPA * dtUA;
+  const dtQty = gn('dtQty');
+  
+  const t_load = Ct/60;           // menit
+  const t_travel_loaded = (dist/spL)*60;
+  const t_dump = 2.0;
+  const t_travel_empty = (dist/spE)*60;
+  const t_queue = gn('queueTime');
+  const t_spot = gn('spottingTime');
+  const CT_truck = t_load + t_travel_loaded + t_dump + t_travel_empty + t_queue + t_spot;
+  
+  const dtTon_hr = (dtPayload * 60 / CT_truck) * dtEff;
+  const dtTon_mo = dtTon_hr * workHrs * workDays * dtQty;
+  
+  // Fleet Match Factor
+  const CT_exc_min = Ct/60;
+  const mf = (dtQty * CT_exc_min) / (excQty * CT_truck);
+  const dtOptimal = Math.ceil((CT_truck/CT_exc_min) * excQty);
+  
+  // Production (min of excavator, truck capacity, target)
+  const production_mo = Math.min(excTon_mo, dtTon_mo, monthlyTgt);
+  const production_bcm = production_mo / d;
+  
+  // ── COST MODEL ──
+  const fuelPrice = gn('fuelPrice');
+  const fuelLoaded = gn('fuelLoaded');
+  const fuelEmpty = gn('fuelEmpty');
+  const repairCost = gn('repairCost');
+  const tireCost = gn('tireCost');
+  const tireLife = gn('tireLife');
+  const opSalary = gn('opSalary');
+  
+  // Fuel cost DT
+  const activeHrs = workHrs * workDays * dtQty;
+  const loadedPct = t_travel_loaded / CT_truck;
+  const emptyPct = t_travel_empty / CT_truck;
+  const fuelCostDT = (fuelLoaded * loadedPct + fuelEmpty * emptyPct) * activeHrs * fuelPrice;
+  
+  // Lubricant 15% of fuel
+  const lubCost = fuelCostDT * 0.15;
+  
+  // Tire cost
+  const tireCostMo = (dtQty * tireCost * (workHrs * workDays)) / tireLife;
+  
+  // Repair
+  const repairMo = repairCost * activeHrs;
+  
+  // Operator (auto from manpower)
+  const shifts = parseInt(gs('numShifts'))||2;
+  const relief = gn('reliefFactor')||1.3;
+  const operatorDT = Math.ceil(dtQty * shifts * relief);
+  const operatorExc = Math.ceil(excQty * shifts * relief);
+  const totalOperators = operatorDT + operatorExc;
+  
+  // Manual manpower positions
+  const mpFields = ['mp_pm','mp_sup','mp_foreman','mp_dispatcher','mp_surveyor','mp_geologist','mp_hse','mp_chief_mech','mp_mechanic','mp_welder','mp_tyreman','mp_admin'];
+  const indirectPeople = mpFields.reduce((s,id)=>s+gn(id),0);
+  const totalManpower = totalOperators + indirectPeople + Math.ceil(indirectPeople*0.3); // +30% support
+  
+  const laborCostMo = (totalOperators * opSalary) + (indirectPeople * opSalary * 1.4);
+  
+  // CSR, env
+  const csrMo = gn('csrBudget') + gn('commDev');
+  const envMo = gn('envCost') + (gn('reclamationCost') * gn('reclamationArea') / dur);
+  
+  // Overhead
+  const overhead = gn('overhead');
+  
+  // Insurance
+  const ins_pct = gn('insurance')/100;
+  
+  // Mobilization amortized
+  const mobilAmo = (gn('mobilizationCost') + gn('demobilizationCost') + gn('campCost')) / dur;
+  
+  // Road maintenance ~3% revenue (estimate)
+  // Calculate raw revenue first
+  const gettingPr = gn('gettingPrice');
+  const haulingPr = gn('haulingPrice');
+  const haulingDist = gn('hDistance');
+  const sellingPr = gn('sellingPrice');
+  const royaltyPr = gn('royalty');
+  const govLevy = gn('govLevy');
+  
+  const contractRevPerTon = gettingPr + (haulingPr * haulingDist * 2);
+  const grossRevMo = production_mo * contractRevPerTon;
+  const insMo = grossRevMo * ins_pct;
+  const roadMaintMo = grossRevMo * 0.025;
+  
+  // Depreciation (straight line, 8yr life)
+  const assetLife = gn('assetLife') * 12;
+  const assetValue = dtQty * 2500000000 + excQty * 8000000000;
+  const depreciationMo = assetValue / assetLife;
+  
+  // Total direct cost
+  const directCostMo = fuelCostDT + lubCost + tireCostMo + repairMo + laborCostMo + roadMaintMo + csrMo + envMo + insMo;
+  const totalCostMo = directCostMo + overhead + mobilAmo + depreciationMo;
+  
+  const costPerTon = totalCostMo / production_mo;
+  const costPerBCM = totalCostMo / production_bcm;
+  
+  // ── REVENUE MODEL ──
+  const revenue_mo = grossRevMo;
+  const grossProfit = revenue_mo - directCostMo;
+  const ebitda = revenue_mo - directCostMo - overhead;
+  const ebit = ebitda - depreciationMo;
+  const interest = gn('interestRate')/100/12 * assetValue;
+  const ebt = ebit - interest;
+  const tax = Math.max(0, ebt * gn('taxRate')/100);
+  const netProfit_mo = ebt - tax;
+  const netMargin = revenue_mo > 0 ? (netProfit_mo / revenue_mo * 100) : 0;
+  
+  // ── CASH FLOW ──
+  const payTermDays = {
+    'Cash':0,'14 Hari':14,'30 Hari':30,'45 Hari':45,
+    '60 Hari':60,'90 Hari':90,'120 Hari':120
+  }[gs('paymentTerm')]||45;
+  
+  const retPct = gn('retention')/100;
+  const dpPct = gn('downPayment')/100;
+  
+  // Working capital
+  const wcBase = totalCostMo * (payTermDays/30);
+  const retReserve = revenue_mo * retPct * gn('retentionPeriod');
+  const wc = (wcBase + retReserve) * 1.20; // +20% buffer
+  
+  // NPV / IRR
+  const r_monthly = gn('interestRate')/100/12;
+  let npv = -(gn('mobilizationCost') + gn('campCost'));
+  const cashflows = [];
+  for(let m=1;m<=dur;m++){
+    const cf = netProfit_mo + depreciationMo - (m===1?gn('mobilizationCost')/12:0);
+    cashflows.push(cf);
+    npv += cf / Math.pow(1+r_monthly, m);
+  }
+  
+  // IRR (Newton-Raphson)
+  let irr = 0.01;
+  for(let iter=0;iter<100;iter++){
+    let f=-(gn('mobilizationCost')+gn('campCost')), df=0;
+    for(let m=0;m<cashflows.length;m++){
+      f+=cashflows[m]/Math.pow(1+irr,m+1);
+      df-=(m+1)*cashflows[m]/Math.pow(1+irr,m+2);
+    }
+    if(Math.abs(df)<1e-10) break;
+    irr-=f/df;
+    if(irr<-0.99) irr=0.001;
+  }
+  const irr_annual = ((1+irr)**12 - 1)*100;
+  
+  // Payback
+  let cumCF=-(gn('mobilizationCost')+gn('campCost')), payback=dur;
+  for(let m=0;m<cashflows.length;m++){
+    cumCF+=cashflows[m];
+    if(cumCF>0){payback=m+1;break;}
+  }
+  
+  // ROI
+  const totalInv = gn('mobilizationCost')+gn('campCost')+wc;
+  const roi = totalInv>0?(netProfit_mo*dur/totalInv*100):0;
+  
+  // ── MONTE CARLO ──
+  const N=10000;
+  const profits=[];
+  for(let i=0;i<N;i++){
+    const fuelVar = triangular(0.8,1.0,1.2)*fuelPrice;
+    const prodVar = normal(1.0,0.10)*production_mo;
+    const rainVar = 1 - uniform(0,0.25);
+    const avVar = beta_approx(0.85,0.95)*dtEff;
+    const maintVar = lognormal(1.0,0.15)*repairMo;
+    const priceVar = triangular(0.85,1.0,1.15)*contractRevPerTon;
+    
+    const adjProd = prodVar*rainVar;
+    const adjFuel = fuelCostDT*(fuelVar/fuelPrice);
+    const adjCost = totalCostMo*(adjFuel/fuelCostDT)*0.5 + totalCostMo*0.5 + (maintVar-repairMo);
+    const adjRev = adjProd * priceVar;
+    const adjProfit = (adjRev - adjCost)*(1-gn('taxRate')/100);
+    profits.push(adjProfit);
+  }
+  profits.sort((a,b)=>a-b);
+  const p10=profits[Math.floor(N*0.10)];
+  const p50=profits[Math.floor(N*0.50)];
+  const p90=profits[Math.floor(N*0.90)];
+  const probProfit=profits.filter(x=>x>0).length/N*100;
+  const probLoss=100-probProfit;
+  
+  // ── RISK SCORING ──
+  const riskDims = computeRisk();
+  const riskTotal = riskDims.reduce((s,d)=>s+d.score*d.weight,0)*10;
+  
+  // ── BID PRICING ──
+  const minMarginPct = gn('minMargin')/100;
+  const desiredMarginPct = gn('desiredMargin')/100;
+  const stretchMarginPct = gn('stretchMargin')/100;
+  
+  const minBid = costPerTon / (1-minMarginPct);
+  const recommendedBid = costPerTon / (1-desiredMarginPct);
+  const aggressiveBid = costPerTon / (1-(minMarginPct+desiredMarginPct)/2);
+  const premiumBid = costPerTon / (1-stretchMarginPct);
+  
+  // Win probability
+  const compPrice = gn('competitorPrice');
+  const numComp = gn('numCompetitors');
+  const winProb = computeWinProb(recommendedBid, compPrice, numComp);
+  
+  // ── COST BREAKDOWN ──
+  const costBreakdown=[
+    {name:'Bahan Bakar (Solar)', val:fuelCostDT, color:'#1DB954'},
+    {name:'Pelumas & Lubricant', val:lubCost, color:'#17A649'},
+    {name:'Ban (Tire)', val:tireCostMo, color:'#4299E1'},
+    {name:'Repair & Maintenance', val:repairMo, color:'#F5A623'},
+    {name:'Labor / Operator', val:laborCostMo, color:'#9F7AEA'},
+    {name:'CSR & Community', val:csrMo, color:'#38B2AC'},
+    {name:'Environmental', val:envMo, color:'#68D391'},
+    {name:'Overhead & G&A', val:overhead, color:'#FC8181'},
+    {name:'Insurance', val:insMo, color:'#63B3ED'},
+    {name:'Mobilisasi (amo.)', val:mobilAmo, color:'#F6AD55'},
+    {name:'Road Maintenance', val:roadMaintMo, color:'#B794F4'},
+    {name:'Depreciation', val:depreciationMo, color:'#76E4F7'},
+  ];
+  
+  // WC Scenarios
+  const wcScenarios=[
+    {term:'30 Hari', days:30},
+    {term:'45 Hari', days:45},
+    {term:'60 Hari', days:60},
+    {term:'90 Hari', days:90},
+    {term:'120 Hari', days:120},
+  ].map(s=>{
+    const wc_s = (totalCostMo*(s.days/30) + retReserve)*1.20;
+    return {...s, wc: wc_s};
+  });
+  
+  // Cashflow projection
+  const cfProjection=[];
+  let cumulative=-(gn('mobilizationCost')+gn('campCost'));
+  for(let m=1;m<=Math.min(dur,24);m++){
+    cumulative+=(netProfit_mo+depreciationMo);
+    cfProjection.push({m, monthly:netProfit_mo+depreciationMo, cumulative});
+  }
+  
+  return {
+    excBCM_hr, excBCM_mo, excTon_mo,
+    CT_truck, mf, dtOptimal, dtTon_mo,
+    production_mo, production_bcm,
+    costPerTon, costPerBCM,
+    fuelCostDT, lubCost, tireCostMo, repairMo, laborCostMo,
+    grossRevMo: revenue_mo, grossProfit, ebitda, ebit, netProfit_mo, netMargin,
+    npv, irr_annual, payback, roi,
+    wc, payTermDays,
+    p10, p50, p90, probProfit, probLoss, profits,
+    riskDims, riskTotal,
+    minBid, recommendedBid, aggressiveBid, premiumBid,
+    winProb, compPrice,
+    costBreakdown, wcScenarios, cfProjection,
+    totalManpower, totalCostMo,
+    tenderName: gs('tenderName'), clientName: gs('clientName'),
+    dur, production_mo, monthlyTgt,
+  };
+}
+
+// ── Risk scoring ──
+function computeRisk(){
+  const social = {'Sangat Aman':10,'Aman':8,'Sedang':5,'Berisiko':3,'Sangat Berisiko':1}[gs('socialCondition')]||8;
+  const strike = {'Rendah':9,'Sedang':5,'Tinggi':2}[gs('strikeRisk')]||9;
+  const permit = {'Aman':10,'Perlu Review':5,'Berisiko':2}[gs('permitCondition')]||10;
+  const iup = {'Aktif':10,'Hampir Expired':4,'Bermasalah':1}[gs('iupStatus')]||10;
+  const land = {'Bebas':10,'Sebagian':5,'Bermasalah':1}[gs('landStatus')]||10;
+  const road = {'Baik':9,'Sedang':5,'Buruk':2}[gs('roadAccess')]||9;
+  const roadCond = {'Excellent':10,'Good':8,'Fair':5,'Poor':3,'Very Poor':1}[gs('roadCondition')]||8;
+  
+  const mf = calcResults?.mf || 1.0;
+  const mfScore = mf>=0.9&&mf<=1.1?10:mf>=0.8&&mf<=1.2?7:4;
+  const margin = gn('bidTargetMargin');
+  const marginScore = margin>=20?10:margin>=15?8:margin>=10?6:margin>=5?4:2;
+  const payDays = {'Cash':10,'14 Hari':9,'30 Hari':8,'45 Hari':7,'60 Hari':5,'90 Hari':3,'120 Hari':1}[gs('paymentTerm')]||7;
+  
+  return [
+    {name:'Teknis', weight:0.25, score:(roadCond*2+(10-Math.min(gn('roadGrade')/1.5,10))+7+8)/4, desc:'Hauling road, equipment, SR'},
+    {name:'Finansial', weight:0.25, score:(marginScore+payDays+7+8)/4, desc:'Margin, payment term, NPV/IRR'},
+    {name:'Operasional', weight:0.20, score:(mfScore+7+8+7)/4, desc:'Fleet MF, fuel, availability'},
+    {name:'Sosial', weight:0.15, score:(social+strike+(10-Math.abs(social-strike)))/3, desc:'Masyarakat, pemalangan'},
+    {name:'Lingkungan', weight:0.15, score:(permit+iup+land+road)/4, desc:'Perizinan, IUP, lahan'},
+  ];
+}
+
+// ── Win probability ──
+function computeWinProb(myBid, compPrice, numComp){
+  if(compPrice<=0) return 50;
+  const ratio = myBid/compPrice;
+  let baseProb = ratio<=0.90?92:ratio<=0.95?82:ratio<=1.0?70:ratio<=1.05?55:ratio<=1.10?38:ratio<=1.20?22:10;
+  // Adjust for # competitors
+  const adjFactor = Math.pow(1/numComp, 0.7);
+  return Math.round(baseProb * (1 + adjFactor) / 1.5);
+}
+
+// ── Statistical helpers ──
+function normal(mu,sigma){ let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random(); return mu+sigma*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+function triangular(a,c,b){ const u=Math.random(); return u<(c-a)/(b-a)?a+Math.sqrt(u*(b-a)*(c-a)):b-Math.sqrt((1-u)*(b-a)*(b-c)); }
+function uniform(a,b){ return a+(b-a)*Math.random(); }
+function lognormal(mu,sigma){ return Math.exp(normal(Math.log(mu),sigma)); }
+function beta_approx(lo,hi){ return lo+(hi-lo)*Math.random(); }
+
+// ══════════════════════════════════════
+// RENDER RESULTS
+// ══════════════════════════════════════
+function fmt(n){ return new Intl.NumberFormat('id-ID').format(Math.round(n)); }
+function fmtB(n){ return 'Rp '+(n>=1e12?(n/1e12).toFixed(1)+' T':n>=1e9?(n/1e9).toFixed(1)+' M':n>=1e6?(n/1e6).toFixed(0)+' Jt':fmt(n)); }
+function fmtPct(n){ return n.toFixed(1)+'%'; }
+
+function renderResults(r){
+  document.getElementById('resultEmpty').style.display='none';
+  document.getElementById('resultContent').style.display='block';
+  document.getElementById('resultTenderName').textContent = r.tenderName + ' · ' + r.clientName;
+  
+  // Decision
+  const score = Math.round(r.riskDims.reduce((s,d)=>s+d.score*d.weight,0)*10);
+  const banner = document.getElementById('decisionBanner');
+  const icon = document.getElementById('decIcon');
+  const label = document.getElementById('decLabel');
+  const desc = document.getElementById('decDesc');
+  const ring = document.getElementById('scoreRing');
+  ring.textContent = score;
+  banner.className='decision-banner';
+  if(score>=80){
+    banner.classList.add('go'); icon.textContent='✅';
+    label.textContent='GO'; desc.textContent='Tender sangat layak diambil. Margin di atas target dan risk score kuat.';
+  } else if(score>=65){
+    banner.classList.add('cgo'); icon.textContent='⚠️';
+    label.textContent='CONDITIONAL GO'; desc.textContent='Tender layak dengan beberapa syarat negosiasi. Perhatikan payment term dan working capital.';
+  } else {
+    banner.classList.add('nogo'); icon.textContent='🚫';
+    label.textContent='NO GO'; desc.textContent='Risiko terlalu tinggi atau margin tidak memadai. Tidak direkomendasikan.';
+  }
+  
+  // KPIs
+  const marginCls = r.netMargin>=gn('targetMargin')?'green':r.netMargin>=5?'amber':'red';
+  document.getElementById('kpi_costTon').textContent='Rp '+fmt(r.costPerTon);
+  document.getElementById('kpi_revMonth').textContent=fmtB(r.grossRevMo);
+  const kpiMargin=document.getElementById('kpi_margin');
+  kpiMargin.textContent=fmtPct(r.netMargin); kpiMargin.className='kpi-value '+marginCls;
+  const kpiNPV=document.getElementById('kpi_npv');
+  kpiNPV.textContent=fmtB(r.npv); kpiNPV.className='kpi-value '+(r.npv>0?'green':'red');
+  const kpiIRR=document.getElementById('kpi_irr');
+  kpiIRR.textContent=fmtPct(r.irr_annual); kpiIRR.className='kpi-value '+(r.irr_annual>gn('interestRate')?'green':'amber');
+  document.getElementById('kpi_payback').textContent=r.payback+' bln';
+  document.getElementById('kpi_wc').textContent=fmtB(r.wc);
+  const kpiWin=document.getElementById('kpi_winprob');
+  kpiWin.textContent=r.winProb+'%'; kpiWin.className='kpi-value '+(r.winProb>=60?'green':r.winProb>=40?'amber':'red');
+  const kpiMF=document.getElementById('kpi_mf');
+  kpiMF.textContent=r.mf.toFixed(2); kpiMF.className='kpi-value '+(r.mf>=0.9&&r.mf<=1.1?'green':'amber');
+  document.getElementById('kpi_ct').textContent=r.CT_truck.toFixed(1)+' mnt';
+  document.getElementById('kpi_p50').textContent=fmtB(r.p50);
+  document.getElementById('kpi_manpower').textContent=r.totalManpower+' org';
+  
+  // Bid prices
+  const bidGrid=document.getElementById('bidGrid');
+  const bids=[
+    {type:'Minimum Bid',price:r.minBid,margin:gn('minMargin')},
+    {type:'Aggressive',price:r.aggressiveBid,margin:(gn('minMargin')+gn('desiredMargin'))/2},
+    {type:'Recommended ★',price:r.recommendedBid,margin:gn('desiredMargin'),rec:true},
+    {type:'Premium',price:r.premiumBid,margin:gn('stretchMargin')},
+  ];
+  bidGrid.innerHTML=bids.map(b=>`
+    <div class="bid-card ${b.rec?'recommended':''}">
+      <div class="bid-type">${b.type}</div>
+      <div class="bid-price">Rp ${fmt(Math.round(b.price))}</div>
+      <div class="bid-margin">margin ${b.margin.toFixed(1)}%</div>
+      <div class="bid-margin" style="margin-top:4px">win ~${computeWinProb(b.price,r.compPrice,gn('numCompetitors'))}%</div>
+    </div>`).join('');
+  
+  // Cost breakdown
+  const totalCost=r.costBreakdown.reduce((s,c)=>s+c.val,0);
+  const cbEl=document.getElementById('costBreakdown');
+  cbEl.innerHTML=r.costBreakdown.sort((a,b)=>b.val-a.val).map(c=>{
+    const pct=totalCost>0?(c.val/totalCost*100):0;
+    return `<div class="cost-item">
+      <div class="cost-label">${c.name}</div>
+      <div class="cost-bar-wrap"><div class="cost-bar" style="width:${pct}%;background:${c.color}"></div></div>
+      <div class="cost-pct">${pct.toFixed(1)}%</div>
+      <div class="cost-val">${fmtB(c.val)}</div>
+    </div>`;
+  }).join('');
+  
+  // Risk dimensions
+  const rg=document.getElementById('riskGrid');
+  rg.innerHTML=r.riskDims.map(d=>{
+    const s=Math.round(d.score*10)/10;
+    const pct=s*10;
+    const col=s>=7?'var(--green)':s>=5?'var(--amber)':'var(--red)';
+    return `<div class="risk-dim">
+      <div class="risk-dim-header">
+        <div class="risk-dim-name">${d.name}</div>
+        <div class="risk-dim-score" style="color:${col}">${s.toFixed(1)}/10</div>
+      </div>
+      <div class="risk-bar"><div class="risk-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="risk-weight">Bobot ${(d.weight*100).toFixed(0)}% · ${d.desc}</div>
+    </div>`;
+  }).join('');
+  
+  // WC Scenarios
+  const wcs=document.getElementById('wcScenarios');
+  wcs.innerHTML=r.wcScenarios.map(s=>`
+    <div class="kpi">
+      <div class="kpi-label">${s.term}</div>
+      <div class="kpi-value ${s.days<=45?'green':s.days<=90?'amber':'red'}">${fmtB(s.wc)}</div>
+      <div class="kpi-sub">+20% buffer</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════
+let charts={};
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+function renderCharts(r){
+  document.getElementById('chartsEmpty').style.display='none';
+  
+  const cOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9DC9A8',font:{size:11,family:'DM Mono'}}},tooltip:{backgroundColor:'#0F2416',borderColor:'#1DB954',borderWidth:1,titleColor:'#E8F5EC',bodyColor:'#9DC9A8'}},scales:{x:{ticks:{color:'#5A8A66',font:{size:10}},grid:{color:'rgba(29,185,84,0.08)'}},y:{ticks:{color:'#5A8A66',font:{size:10}},grid:{color:'rgba(29,185,84,0.08)'}}}};
+  
+  // 1. Revenue vs Cost
+  destroyChart('c1');
+  const months=r.cfProjection.map((_,i)=>'Bln '+(i+1));
+  charts['c1']=new Chart(document.getElementById('chartRevCost'),{type:'bar',data:{
+    labels:months,
+    datasets:[
+      {label:'Revenue',data:r.cfProjection.map(()=>r.grossRevMo/1e9),backgroundColor:'rgba(29,185,84,0.5)',borderColor:'#1DB954',borderWidth:1},
+      {label:'Total Cost',data:r.cfProjection.map(()=>r.totalCostMo/1e9),backgroundColor:'rgba(229,62,62,0.35)',borderColor:'#E53E3E',borderWidth:1},
+      {label:'Net Profit',data:r.cfProjection.map(()=>r.netProfit_mo/1e9),type:'line',borderColor:'#F5A623',pointRadius:2,tension:0.3,fill:false},
+    ]
+  },options:{...cOpts,plugins:{...cOpts.plugins,title:{display:true,text:'Miliar Rp',color:'#5A8A66',font:{size:10}}}}});
+  
+  // 2. Cost pie
+  destroyChart('c2');
+  charts['c2']=new Chart(document.getElementById('chartCostPie'),{type:'doughnut',data:{
+    labels:r.costBreakdown.map(c=>c.name),
+    datasets:[{data:r.costBreakdown.map(c=>c.val),backgroundColor:r.costBreakdown.map(c=>c.color),borderWidth:0,hoverOffset:4}]
+  },options:{...cOpts,cutout:'65%',scales:{}}});
+  
+  // 3. Cash flow
+  destroyChart('c3');
+  charts['c3']=new Chart(document.getElementById('chartCashflow'),{type:'line',data:{
+    labels:r.cfProjection.map(c=>'M'+c.m),
+    datasets:[
+      {label:'Kumulatif CF',data:r.cfProjection.map(c=>c.cumulative/1e9),borderColor:'#1DB954',fill:true,backgroundColor:'rgba(29,185,84,0.08)',tension:0.3},
+      {label:'CF Bulanan',data:r.cfProjection.map(c=>c.monthly/1e9),borderColor:'#F5A623',fill:false,tension:0.3,borderDash:[5,3]},
+    ]
+  },options:{...cOpts,plugins:{...cOpts.plugins,annotation:{annotations:{zero:{type:'line',yMin:0,yMax:0,borderColor:'rgba(229,62,62,0.5)',borderWidth:1}}}}}});
+  
+  // 4. Monte Carlo histogram
+  destroyChart('c4');
+  const histBins=30;
+  const minP=r.profits[0], maxP=r.profits[r.profits.length-1];
+  const binSize=(maxP-minP)/histBins;
+  const histData=Array(histBins).fill(0);
+  const histLabels=[];
+  for(let i=0;i<histBins;i++)histLabels.push(fmtB(minP+i*binSize));
+  r.profits.forEach(p=>{const bi=Math.min(histBins-1,Math.floor((p-minP)/binSize));histData[bi]++;});
+  charts['c4']=new Chart(document.getElementById('chartMonteCarlo'),{type:'bar',data:{
+    labels:histLabels,
+    datasets:[{label:'Frekuensi',data:histData,backgroundColor:histData.map((_,i)=>i*binSize+minP<0?'rgba(229,62,62,0.5)':'rgba(29,185,84,0.5)'),borderWidth:0}]
+  },options:{...cOpts,plugins:{...cOpts.plugins,legend:{display:false}},scales:{...cOpts.scales,x:{...cOpts.scales.x,ticks:{maxTicksLimit:5,color:'#5A8A66',font:{size:9}}}}}});
+  
+  // 5. Win probability curve
+  destroyChart('c5');
+  const bidRange=[0.80,0.85,0.90,0.95,1.00,1.05,1.10,1.15,1.20,1.25].map(f=>r.compPrice*f);
+  charts['c5']=new Chart(document.getElementById('chartWinProb'),{type:'line',data:{
+    labels:bidRange.map(p=>'Rp '+fmt(Math.round(p))),
+    datasets:[{label:'Win Probability (%)',data:bidRange.map(p=>computeWinProb(p,r.compPrice,gn('numCompetitors'))),borderColor:'#4299E1',fill:true,backgroundColor:'rgba(66,153,225,0.08)',tension:0.4,pointBackgroundColor:'#4299E1',pointRadius:4}]
+  },options:cOpts});
+  
+  // 6. WC by payment term
+  destroyChart('c6');
+  charts['c6']=new Chart(document.getElementById('chartWC'),{type:'bar',data:{
+    labels:r.wcScenarios.map(s=>s.term),
+    datasets:[{label:'Modal Kerja Min. (Miliar Rp)',data:r.wcScenarios.map(s=>s.wc/1e9),backgroundColor:r.wcScenarios.map(s=>s.days<=45?'rgba(29,185,84,0.6)':s.days<=90?'rgba(245,166,35,0.6)':'rgba(229,62,62,0.6)'),borderRadius:4}]
+  },options:{...cOpts,plugins:{...cOpts.plugins,legend:{display:false}}}});
+}
+
+// ══════════════════════════════════════
+// AI REPORT (generated locally)
+// ══════════════════════════════════════
+function renderReport(r){
+  const score=Math.round(r.riskDims.reduce((s,d)=>s+d.score*d.weight,0)*10);
+  const decision=score>=80?'GO':score>=65?'CONDITIONAL GO':'NO GO';
+  const decColor=score>=80?'var(--green)':score>=65?'var(--amber)':'var(--red)';
+  
+  const rEl=document.getElementById('reportContent');
+  rEl.style.display='block';
+  document.getElementById('reportEmpty').style.display='none';
+  
+  rEl.innerHTML=`
+    <div class="report-section">
+      <div class="report-section-title">1. Executive Summary</div>
+      <div class="report-text">
+        Berdasarkan analisis komprehensif terhadap tender <strong>${r.tenderName}</strong> dari klien <strong>${r.clientName}</strong>, AMTIS merekomendasikan keputusan <strong style="color:${decColor}">${decision}</strong> dengan Risk Score <strong>${score}/100</strong>.<br><br>
+        Proyek ini memiliki durasi ${r.dur} bulan dengan target produksi ${fmt(r.production_mo)} ton/bulan. All-in cost terhitung <strong>Rp ${fmt(r.costPerTon)}/ton</strong> dengan potensi margin bersih <strong>${fmtPct(r.netMargin)}</strong>. NPV proyek sebesar <strong>${fmtB(r.npv)}</strong> dengan IRR <strong>${fmtPct(r.irr_annual)}</strong>.<br><br>
+        Dari 10.000 simulasi Monte Carlo, probabilitas profit adalah <strong>${r.probProfit.toFixed(1)}%</strong> dengan P50 net profit bulanan <strong>${fmtB(r.p50)}</strong>. Harga penawaran yang direkomendasikan adalah <strong>Rp ${fmt(Math.round(r.recommendedBid))}/ton</strong> dengan estimasi peluang menang <strong>${r.winProb}%</strong>.
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">2. Technical Assessment</div>
+      <div class="report-text">
+        <strong>Fleet Productivity:</strong> Excavator ${gs('excModel')} dengan produktivitas <strong>${fmt(r.excBCM_hr)} BCM/jam</strong> per unit. Total kapasitas excavator ${fmt(r.excBCM_mo)} BCM/bulan untuk ${gn('excQty')} unit.<br><br>
+        <strong>Truck Cycle Time:</strong> ${gs('dtModel')} dengan cycle time <strong>${r.CT_truck.toFixed(1)} menit</strong>. Terdiri dari: loading ${(gn('cycleTime')/60).toFixed(1)} mnt, travel loaded ${(gn('hDistance')/gn('speedLoaded')*60).toFixed(1)} mnt, dumping 2.0 mnt, travel empty ${(gn('hDistance')/gn('speedEmpty')*60).toFixed(1)} mnt, queue+spot ${(gn('queueTime')+gn('spottingTime')).toFixed(1)} mnt.<br><br>
+        <strong>Fleet Match Factor:</strong> <span style="color:${r.mf>=0.9&&r.mf<=1.1?'var(--green)':'var(--amber)'}">${r.mf.toFixed(3)}</span> — ${r.mf>=0.9&&r.mf<=1.1?'OPTIMAL ✓':r.mf<0.9?'Truck kurang, excavator idle':'Truck berlebih, perlu dikurangi'}. Jumlah DT optimal: ${r.dtOptimal} unit (saat ini ${gn('dtQty')} unit).
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">3. Financial Assessment</div>
+      <div class="report-text">
+        Revenue bulanan: <strong>${fmtB(r.grossRevMo)}</strong> | Total cost: <strong>${fmtB(r.totalCostMo)}</strong> | Net profit: <strong style="color:${r.netProfit_mo>0?'var(--green)':'var(--red)'}">${fmtB(r.netProfit_mo)}/bulan</strong><br><br>
+        NPV @ ${gn('interestRate')}% p.a.: <strong style="color:${r.npv>0?'var(--green)':'var(--red)'}">${fmtB(r.npv)}</strong> | IRR: <strong>${fmtPct(r.irr_annual)}</strong> | Payback: <strong>${r.payback} bulan</strong><br><br>
+        <strong>⚠ Catatan payment term ${gs('paymentTerm')}:</strong> Modal kerja minimum yang harus disiapkan adalah <strong style="color:var(--amber)">${fmtB(r.wc)}</strong> (sudah termasuk buffer 20% dan retensi ${gn('retention')}%).
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">4. Risk Assessment — 5 Dimensi</div>
+      <div class="report-text">
+        ${r.riskDims.map(d=>`<strong>${d.name}</strong> (bobot ${(d.weight*100).toFixed(0)}%): Skor <strong>${(d.score*10).toFixed(0)}/100</strong> — ${d.desc}`).join('<br>')}
+        <br><br><strong>Risk Score Komposit: ${score}/100</strong>
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">5. SWOT Analysis</div>
+      <div class="swot-grid">
+        <div class="swot-cell s"><h5>STRENGTHS</h5><ul>
+          <li>Margin ${fmtPct(r.netMargin)} ${r.netMargin>=gn('targetMargin')?'di atas':'mendekati'} target</li>
+          <li>IRR ${fmtPct(r.irr_annual)} ${r.irr_annual>gn('interestRate')?'> cost of capital':'≈ cost of capital'}</li>
+          <li>Kondisi jalan: ${gs('roadCondition')}</li>
+          <li>Fleet ${r.mf>=0.9&&r.mf<=1.1?'match factor optimal':'tersedia'}</li>
+        </ul></div>
+        <div class="swot-cell w"><h5>WEAKNESSES</h5><ul>
+          <li>Working capital ${fmtB(r.wc)} cukup besar</li>
+          <li>Payback period ${r.payback} bulan</li>
+          <li>${gn('dtQty')!==r.dtOptimal?'Jumlah DT perlu dioptimasi':'Biaya mobilisasi signifikan'}</li>
+          <li>Volatilitas harga solar</li>
+        </ul></div>
+        <div class="swot-cell o"><h5>OPPORTUNITIES</h5><ul>
+          <li>Win probability ${r.winProb}% vs ${gn('numCompetitors')} kompetitor</li>
+          <li>Potensi revenue Rp ${fmtB(r.grossRevMo * r.dur)} total</li>
+          <li>Eskalasi harga tahunan ${gn('fuelEscalation')}%</li>
+          <li>Perpanjangan kontrak</li>
+        </ul></div>
+        <div class="swot-cell t"><h5>THREATS</h5><ul>
+          <li>Prob. rugi ${r.probLoss.toFixed(1)}% (Monte Carlo)</li>
+          <li>Payment term ${gs('paymentTerm')}</li>
+          <li>Kondisi sosial: ${gs('socialCondition')}</li>
+          <li>Potensi pemalangan: ${gs('strikeRisk')}</li>
+        </ul></div>
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">6. Monte Carlo — Analisis Probabilistik</div>
+      <div class="report-text">
+        Dari 10.000 simulasi dengan 7 variabel stokastik:<br><br>
+        P10 (Worst Realistic): <strong style="color:${r.p10>0?'var(--green)':'var(--red)'}">${fmtB(r.p10)}/bulan</strong><br>
+        P50 (Most Likely): <strong style="color:var(--green)">${fmtB(r.p50)}/bulan</strong><br>
+        P90 (Best Case): <strong style="color:var(--green)">${fmtB(r.p90)}/bulan</strong><br><br>
+        Probabilitas Profit: <strong style="color:var(--green)">${r.probProfit.toFixed(1)}%</strong> | Probabilitas Rugi: <strong style="color:${r.probLoss>20?'var(--red)':'var(--amber)'}"> ${r.probLoss.toFixed(1)}%</strong>
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">7. Bid Price Recommendation</div>
+      <div class="bid-grid">
+        <div class="bid-card"><div class="bid-type">Minimum Bid</div><div class="bid-price">Rp ${fmt(Math.round(r.minBid))}</div><div class="bid-margin">margin ${gn('minMargin').toFixed(1)}% · win ~${computeWinProb(r.minBid,r.compPrice,gn('numCompetitors'))}%</div></div>
+        <div class="bid-card"><div class="bid-type">Aggressive</div><div class="bid-price">Rp ${fmt(Math.round(r.aggressiveBid))}</div><div class="bid-margin">win ~${computeWinProb(r.aggressiveBid,r.compPrice,gn('numCompetitors'))}%</div></div>
+        <div class="bid-card recommended"><div class="bid-type">Recommended ★</div><div class="bid-price">Rp ${fmt(Math.round(r.recommendedBid))}</div><div class="bid-margin">margin ${gn('desiredMargin').toFixed(1)}% · win ~${r.winProb}%</div></div>
+        <div class="bid-card"><div class="bid-type">Premium</div><div class="bid-price">Rp ${fmt(Math.round(r.premiumBid))}</div><div class="bid-margin">margin ${gn('stretchMargin').toFixed(1)}% · win ~${computeWinProb(r.premiumBid,r.compPrice,gn('numCompetitors'))}%</div></div>
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">8. Strategi Cost Reduction</div>
+      <div class="report-text">
+        1. <strong>Optimasi Fuel Consumption:</strong> Implementasi eco-driving program, target penghematan 8-12% → estimasi saving ± ${fmtB(r.costBreakdown[0]?.val*0.10)}/bulan<br>
+        2. <strong>Fleet Match Factor:</strong> Sesuaikan jumlah DT ke ${r.dtOptimal} unit dari ${gn('dtQty')} unit → eliminasi idle time truck<br>
+        3. <strong>Tire Management:</strong> Program TKPH monitoring dan proper inflation → extend tire life 15-20%<br>
+        4. <strong>Preventive Maintenance:</strong> Jadwal PM ketat → kurangi breakdown 20% → saving repair cost ± ${fmtB(r.repairMo*0.15)}/bulan<br>
+        5. <strong>Negosiasi Payment:</strong> Minta DP ${gn('downPayment')}% + eskalasi solar terbuka → kurangi kebutuhan working capital<br>
+        6. <strong>Road Maintenance:</strong> Pengaspalan segmen kritis → speed up +15% → produktivitas meningkat
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">9. Negosiasi Strategy</div>
+      <div class="report-text">
+        <strong>Leverage Points:</strong><br>
+        • Pengalaman dan track record kontraktor<br>
+        • Ketersediaan fleet saat ini<br>
+        • Kemampuan mobilisasi cepat<br><br>
+        <strong>Key Terms yang WAJIB Dinegosiasikan:</strong><br>
+        ✓ Down payment minimum 10-15% dari kontrak<br>
+        ✓ Payment term maksimal 45 hari (saat ini ${gs('paymentTerm')})<br>
+        ✓ Eskalasi harga solar otomatis bila fluktuasi >10%<br>
+        ✓ Retensi maksimal 5% dengan release dalam 3 bulan setelah selesai<br>
+        ✓ Force majeure clause untuk cuaca ekstrem (>100mm/hari)
+      </div>
+    </div>
+    
+    <div class="report-section">
+      <div class="report-section-title">10. Final Recommendation — ${decision}</div>
+      <div class="report-text" style="font-size:1rem">
+        <strong style="color:${decColor};font-size:1.1rem">${decision}</strong> — Risk Score: ${score}/100<br><br>
+        <strong>Recommended Bid Price: Rp ${fmt(Math.round(r.recommendedBid))}/ton</strong><br>
+        Win Probability: ${r.winProb}% | Net Margin: ${fmtPct(r.netMargin)} | NPV: ${fmtB(r.npv)}<br><br>
+        <strong>Syarat-syarat kunci:</strong><br>
+        ✓ DP minimum ${gn('downPayment')}% sebelum mobilisasi<br>
+        ✓ Payment term tidak melebihi 45 hari<br>
+        ✓ Eskalasi solar wajib masuk klausul kontrak<br>
+        ✓ Siapkan modal kerja minimum ${fmtB(r.wc)}<br>
+        ${gn('dtQty')!==r.dtOptimal?`✓ Sesuaikan jumlah DT ke ${r.dtOptimal} unit<br>`:''}
+        ✓ Manpower plan: ${r.totalManpower} orang total
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:1.5rem;">
+      <button class="app-btn-calc" onclick="exportJSON()">⬇ Export JSON</button>
+      <button class="app-btn-sm" onclick="printReport()">🖨 Print</button>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════
+function exportJSON(){
+  if(!calcResults){showToast('⚠ Jalankan kalkulasi terlebih dahulu');return;}
+  const data={
+    meta:{generated:new Date().toISOString(),tool:'AMTIS v2.0',version:'2.0'},
+    tender:{name:calcResults.tenderName,client:calcResults.clientName,duration:calcResults.dur},
+    results:{
+      decision:{score:Math.round(calcResults.riskDims.reduce((s,d)=>s+d.score*d.weight,0)*10)},
+      financials:{costPerTon:calcResults.costPerTon,revenueMonthly:calcResults.grossRevMo,netMargin:calcResults.netMargin,npv:calcResults.npv,irr:calcResults.irr_annual,payback:calcResults.payback,workingCapital:calcResults.wc},
+      monteCarlo:{p10:calcResults.p10,p50:calcResults.p50,p90:calcResults.p90,probProfit:calcResults.probProfit,probLoss:calcResults.probLoss},
+      bidPrices:{minimum:calcResults.minBid,recommended:calcResults.recommendedBid,aggressive:calcResults.aggressiveBid,premium:calcResults.premiumBid},
+      riskScoring:calcResults.riskDims,
+      fleet:{matchFactor:calcResults.mf,truckCycleTime:calcResults.CT_truck,optimalTrucks:calcResults.dtOptimal},
+    }
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`AMTIS_${(calcResults.tenderName||'tender').replace(/\s+/g,'-')}_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  showToast('✅ JSON berhasil didownload');
+}
+
+function printReport(){
+  window.print();
+}
+
+// ══════════════════════════════════════
+// LOADING
+// ══════════════════════════════════════
+function showLoading(msg){
+  document.getElementById('loadingOverlay').classList.add('active');
+  document.getElementById('loadingText').textContent=msg||'Memproses...';
+}
+function updateLoading(msg){
+  document.getElementById('loadingText').textContent=msg;
+}
+function hideLoading(){
+  document.getElementById('loadingOverlay').classList.remove('active');
+}
+</script>
+</body>
+</html>

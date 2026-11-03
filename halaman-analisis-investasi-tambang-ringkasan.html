@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisis Investasi Tambang — Ringkasan Interaktif & Panduan Belajar</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --navy:#0F2340; --navy2:#1B3A63; --navy3:#274C7D;
+  --gold:#C9972C; --gold-dk:#A67816;
+  --terracotta:#B5502F;
+  --paper:#F7F3EA; --paper2:#EBE0C8;
+  --ink:#1A1A1A; --slate:#55606E;
+  --ok:#2E7D46; --neg:#B23A2E;
+  --radius:8px;
+  --font-display:'Lora',Georgia,serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}*{animation-duration:.001ms !important;transition-duration:.001ms !important;}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.65;}
+a{color:inherit;}
+::selection{background:var(--gold);color:#fff;}
+:focus-visible{outline:3px solid var(--navy3);outline-offset:2px;}
+h1,h2,h3,h4{font-family:var(--font-display);}
+
+/* ---------------- HERO ---------------- */
+.hero{position:relative;background:var(--navy);color:#EDE7D8;padding:58px 6vw 42px;border-bottom:8px solid var(--gold);overflow:hidden;}
+.hero::before{content:"";position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(100deg, rgba(255,255,255,.02) 0 2px, transparent 2px 60px),
+    radial-gradient(circle at 90% 10%, rgba(201,151,44,.20), transparent 42%);
+  pointer-events:none;}
+.hero-eyebrow{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.hero-eyebrow::before{content:"";width:24px;height:2px;background:var(--gold);}
+.hero h1{font-weight:700;font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.12;margin:0 0 6px;max-width:820px;}
+.hero .kicker{font-family:var(--font-body);font-weight:600;color:var(--gold);font-size:1rem;letter-spacing:.02em;margin-bottom:8px;}
+.hero p.lead{max-width:660px;color:#CFC7AE;font-size:1rem;margin:16px 0 8px;}
+.hero .credit{font-size:.85rem;color:#B9AF8F;font-style:italic;margin-top:18px;}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:900px;margin-top:26px;}
+@media (max-width:760px){.stat-row{grid-template-columns:repeat(2,1fr);}}
+.stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);padding:12px 14px;}
+.stat b{font-family:var(--font-display);font-size:1.3rem;color:var(--gold);display:block;}
+.stat span{font-size:.72rem;color:#B9AF8F;font-family:var(--font-mono);}
+.toc{position:relative;margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;}
+.toc a{text-decoration:none;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.13);border-radius:var(--radius);padding:10px 12px;color:#EDE7D8;transition:background .15s,border-color .15s,transform .15s;}
+.toc a:hover{background:rgba(201,151,44,.16);border-color:var(--gold);transform:translateY(-2px);}
+.toc .num{font-family:var(--font-mono);color:var(--gold);font-weight:600;font-size:.76rem;min-width:20px;}
+.toc .lbl{font-size:.82rem;font-weight:500;}
+.stripe{height:7px;background:repeating-linear-gradient(135deg,var(--gold) 0 15px,var(--navy) 15px 30px);}
+
+/* ---------------- LAYOUT ---------------- */
+.layout{display:grid;grid-template-columns:224px 1fr;max-width:1360px;margin:0 auto;}
+@media (max-width:900px){.layout{grid-template-columns:1fr;}}
+.chapter-nav{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:24px 0 24px 4px;border-right:1px solid var(--paper2);scrollbar-width:thin;}
+@media (max-width:900px){.chapter-nav{position:sticky;top:0;z-index:40;height:auto;width:100%;display:flex;overflow-x:auto;overflow-y:hidden;background:var(--paper);border-right:none;border-bottom:2px solid var(--ink);padding:10px;gap:6px;}}
+.chapter-nav a{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--navy2);font-family:var(--font-display);font-weight:600;text-transform:uppercase;font-size:.74rem;letter-spacing:.02em;padding:10px 13px;border-left:4px solid transparent;white-space:nowrap;transition:all .15s;}
+@media (max-width:900px){.chapter-nav a{border-left:none;border-bottom:4px solid transparent;}}
+.chapter-nav a:hover{background:var(--paper2);}
+.chapter-nav a.active{color:var(--ink);background:#F1E3BE;border-left-color:var(--gold);}
+@media (max-width:900px){.chapter-nav a.active{border-left:none;border-bottom-color:var(--gold);}}
+.chapter-nav a .tabnum{font-family:var(--font-mono);font-size:.68rem;opacity:.6;}
+
+main{padding:0 0 80px;}
+.chapter{padding:52px 6vw 16px;border-bottom:1px solid var(--paper2);scroll-margin-top:12px;}
+.chapter-head{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
+.chapter-tag{font-family:var(--font-mono);font-size:.72rem;color:#fff;background:var(--navy2);padding:4px 10px;border-radius:3px;letter-spacing:.05em;}
+.chapter h2{font-weight:700;font-size:clamp(1.4rem,2.8vw,2.1rem);margin:0;color:var(--ink);}
+.chapter .subtitle{color:var(--slate);font-size:.98rem;max-width:780px;margin:14px 0 26px;}
+
+h3.subhead{font-family:var(--font-display);font-weight:600;font-size:1.18rem;color:var(--navy);margin:30px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--paper2);}
+h3.subhead:first-of-type{margin-top:6px;}
+.theory p{margin:0 0 13px;font-size:.96rem;}
+.theory ul, .theory ol{margin:8px 0 14px;padding-left:22px;font-size:.96rem;}
+.theory li{margin-bottom:5px;}
+
+.formula-card{background:var(--navy);color:#EDE7D8;border-radius:var(--radius);padding:18px 20px;margin:16px 0 20px;}
+.formula-card .flabel{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.formula-card .fexpr{font-family:var(--font-mono);font-size:1.05rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:5px;padding:10px 14px;margin-bottom:10px;overflow-x:auto;}
+.formula-card .flegend{font-size:.82rem;color:#C9C2AA;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 16px;}
+.formula-card .flegend b{color:#EDE7D8;font-family:var(--font-mono);}
+
+.card{background:#fff;border:1px solid var(--paper2);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px;}
+.card h4{font-family:var(--font-display);font-weight:600;font-size:1.02rem;margin:0 0 10px;color:var(--navy2);display:flex;align-items:center;gap:8px;}
+.card h4::before{content:"";width:8px;height:8px;background:var(--gold);border-radius:2px;}
+
+.example{border-left:5px solid var(--navy3);background:#F0F3F8;border-radius:0 var(--radius) var(--radius) 0;padding:18px 22px;margin:18px 0;}
+.example .etag{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--navy3);font-weight:600;margin-bottom:6px;}
+.example h5{font-family:var(--font-display);font-size:1rem;margin:0 0 8px;color:var(--navy);}
+.example p{font-size:.92rem;margin:0 0 10px;}
+
+.casestudy{border-left:5px solid var(--terracotta);background:#FBF0E9;border-radius:0 var(--radius) var(--radius) 0;padding:18px 22px;margin:18px 0;}
+.casestudy .etag{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--terracotta);font-weight:600;margin-bottom:6px;}
+.casestudy h5{font-family:var(--font-display);font-size:1.05rem;margin:0 0 8px;color:var(--terracotta);}
+.casestudy p{font-size:.92rem;margin:0 0 10px;}
+
+details.reveal{margin-top:10px;}
+details.reveal summary{cursor:pointer;list-style:none;font-family:var(--font-mono);font-size:.8rem;color:#fff;background:var(--navy);display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:5px;font-weight:600;}
+details.reveal summary::-webkit-details-marker{display:none;}
+details.reveal summary::before{content:"▶";font-size:.7rem;}
+details.reveal[open] summary::before{content:"▼";}
+details.reveal[open] summary{background:var(--gold-dk);}
+.reveal-body{padding:14px 4px 4px;font-size:.92rem;}
+.reveal-body table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.86rem;}
+.reveal-body th,.reveal-body td{border:1px solid var(--paper2);padding:7px 9px;text-align:right;}
+.reveal-body th{background:var(--paper);font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;text-align:center;}
+.reveal-body td:first-child, .reveal-body th:first-child{text-align:left;}
+.reveal-body .final{font-weight:700;color:var(--ok);font-family:var(--font-mono);}
+
+.tip{border-left:4px solid var(--ok);background:#E7F3EA;padding:11px 14px;border-radius:0 4px 4px 0;font-size:.87rem;margin:14px 0;}
+.warn{border:2px dashed var(--neg);background:#FBEAEA;border-radius:4px;padding:13px 15px;font-size:.87rem;margin:14px 0;}
+
+/* Calculator widgets */
+.calc{background:var(--navy);border-radius:var(--radius);padding:20px 22px;margin:18px 0;color:#EDE7D8;}
+.calc .ctitle{font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gold);margin-bottom:4px;}
+.calc h4{font-family:var(--font-display);font-size:1.1rem;margin:0 0 14px;color:#fff;}
+.calc-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+@media (max-width:560px){.calc-row{grid-template-columns:1fr;}}
+.calc label{display:block;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;color:#B9AF8F;margin-bottom:4px;}
+.calc input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:5px;padding:8px 10px;font-family:var(--font-mono);font-size:.88rem;}
+.calc input:focus{outline:2px solid var(--gold);}
+.cf-rows{margin:10px 0;}
+.cf-row{display:grid;grid-template-columns:70px 1fr 32px;gap:8px;align-items:center;margin-bottom:6px;}
+.cf-row span{font-family:var(--font-mono);font-size:.76rem;color:#B9AF8F;}
+.cf-row button{background:rgba(255,80,80,.18);border:1px solid rgba(255,80,80,.4);color:#ffb3b3;border-radius:4px;cursor:pointer;font-size:.8rem;padding:2px 0;}
+.calc-btns{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.calc-btns button{font-family:var(--font-mono);font-size:.78rem;padding:9px 16px;border-radius:5px;cursor:pointer;border:1px solid var(--gold);background:var(--gold);color:var(--navy);font-weight:700;}
+.calc-btns button.secondary{background:transparent;color:var(--gold);}
+.calc-result{margin-top:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:14px 16px;}
+.calc-result .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;}
+.calc-result .rgrid div b{display:block;font-family:var(--font-display);font-size:1.25rem;}
+.calc-result .rgrid div span{font-family:var(--font-mono);font-size:.68rem;color:#B9AF8F;text-transform:uppercase;}
+.verdict{margin-top:10px;font-family:var(--font-mono);font-size:.82rem;padding:8px 12px;border-radius:5px;font-weight:600;}
+.verdict.go{background:rgba(46,125,70,.25);color:#8FE3A6;}
+.verdict.no{background:rgba(178,58,46,.25);color:#F3A79C;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media (max-width:820px){.grid2{grid-template-columns:1fr;}}
+
+.print-btn{font-family:var(--font-mono);font-size:.78rem;background:var(--gold);border:1px solid var(--gold-dk);color:var(--navy);padding:9px 16px;border-radius:4px;cursor:pointer;font-weight:700;}
+.print-btn:hover{background:var(--gold-dk);color:#fff;}
+
+footer{background:var(--navy);color:#B9AF8F;padding:36px 6vw;font-size:.83rem;}
+footer b{color:var(--gold);font-family:var(--font-display);}
+
+@media print{.chapter-nav,.stripe,.print-hide{display:none !important;}.layout{grid-template-columns:1fr;}.chapter{break-inside:avoid;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-eyebrow">Ringkasan Interaktif &amp; Panduan Belajar</div>
+  <div class="kicker">ANALISIS INVESTASI TAMBANG — JILID 1</div>
+  <h1>Pendekatan Logis dalam<br>Usaha Pertambangan</h1>
+  <p class="lead">Ringkasan poin-poin penting, teori mendalam, contoh soal terpandu, dan studi kasus tambahan dari 8 bab dasar analisis kelayakan investasi pertambangan — mulai dari konsep dasar valuasi sampai analisis rasio keuangan. Dilengkapi kalkulator kelayakan investasi interaktif.</p>
+  <p class="credit">Disusun oleh Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LScm., M.AIB.</p>
+
+  <div class="stat-row">
+    <div class="stat"><b>8</b><span>Bab Materi</span></div>
+    <div class="stat"><b>3</b><span>Kalkulator Interaktif</span></div>
+    <div class="stat"><b>16+</b><span>Contoh Soal &amp; Studi Kasus</span></div>
+    <div class="stat"><b>100%</b><span>Bisa Dipelajari Offline</span></div>
+  </div>
+
+  <nav class="toc" aria-label="Daftar isi">
+    <a href="#bab1"><span class="num">01</span><span class="lbl">Pengantar Investasi Tambang</span></a>
+    <a href="#bab2"><span class="num">02</span><span class="lbl">Konsep Dasar Investasi &amp; Valuasi</span></a>
+    <a href="#bab3"><span class="num">03</span><span class="lbl">Analisis Biaya &amp; Pendapatan</span></a>
+    <a href="#bab4"><span class="num">04</span><span class="lbl">Nilai Uang Terhadap Waktu</span></a>
+    <a href="#bab5"><span class="num">05</span><span class="lbl">Analisis Cashflow</span></a>
+    <a href="#bab6"><span class="num">06</span><span class="lbl">Indikator Kelayakan Investasi</span></a>
+    <a href="#bab7"><span class="num">07</span><span class="lbl">Pemilihan Alternatif Investasi</span></a>
+    <a href="#bab8"><span class="num">08</span><span class="lbl">Analisis Rasio Keuangan</span></a>
+  </nav>
+</header>
+<div class="stripe"></div>
+
+<div class="layout">
+  <nav class="chapter-nav" id="chapterNav" aria-label="Navigasi bab">
+    <a href="#bab1" data-tab="bab1"><span class="tabnum">01</span> Pengantar</a>
+    <a href="#bab2" data-tab="bab2"><span class="tabnum">02</span> Valuasi</a>
+    <a href="#bab3" data-tab="bab3"><span class="tabnum">03</span> Biaya</a>
+    <a href="#bab4" data-tab="bab4"><span class="tabnum">04</span> Nilai Waktu Uang</a>
+    <a href="#bab5" data-tab="bab5"><span class="tabnum">05</span> Cashflow</a>
+    <a href="#bab6" data-tab="bab6"><span class="tabnum">06</span> Kelayakan</a>
+    <a href="#bab7" data-tab="bab7"><span class="tabnum">07</span> Alternatif</a>
+    <a href="#bab8" data-tab="bab8"><span class="tabnum">08</span> Rasio Keuangan</a>
+  </nav>
+
+  <main>
+  <!-- ============ BAB 1 ============ -->
+  <section class="chapter" id="bab1">
+    <div class="chapter-head"><span class="chapter-tag">Bab 01</span><h2>Pengantar Investasi Tambang</h2></div>
+    <p class="subtitle">Mengapa industri pertambangan memerlukan analisis investasi yang ketat, dan apa yang membedakannya dari industri lain.</p>
+
+    <div class="theory">
+      <h3 class="subhead">Mengapa Analisis Investasi Krusial di Pertambangan</h3>
+      <p>Setiap industri pada dasarnya bertujuan memberikan pengembalian finansial (financial return) kepada pemilik modal. Namun industri pertambangan menempati posisi khusus: ia menuntut investasi awal yang sangat besar, jangka waktu pra-produksi yang panjang (eksplorasi, studi kelayakan, konstruksi bisa memakan bertahun-tahun sebelum satu ton pun terjual), dan menanggung risiko berlapis — risiko geologi (cadangan ternyata lebih kecil dari estimasi), risiko teknis (metode penambangan tidak sesuai kondisi lapangan), risiko ekonomi (harga komoditas anjlok), serta risiko politik/regulasi (perubahan kebijakan royalti, izin, atau tata ruang).</p>
+      <p>Karena kombinasi modal besar dan risiko tinggi inilah, keputusan "layak atau tidak layak" sebuah proyek tambang tidak bisa diambil berdasarkan intuisi semata. Diperlukan kerangka kuantitatif — perkiraan, penafsiran, dan peramalan yang sistematis — untuk menilai apakah proyek pantas dijalankan, ditunda, atau ditolak.</p>
+
+      <h3 class="subhead">Apa yang Membuat Tambang Berbeda dari Bisnis Lain</h3>
+      <ul>
+        <li><b>Sumber daya tak terbarukan (non-renewable) &amp; deplesi.</b> Setiap ton yang ditambang mengurangi cadangan yang tersisa secara permanen — berbeda dari pabrik yang bisa terus berproduksi selama ada bahan baku.</li>
+        <li><b>Ketidakpastian eksplorasi tinggi.</b> Biaya eksplorasi besar tidak menjamin ditemukannya cadangan yang secara komersial layak ditambang.</li>
+        <li><b>Padat modal &amp; berjangka panjang.</b> Dari eksplorasi hingga pengolahan, dibutuhkan investasi besar dengan periode pengembalian yang panjang.</li>
+        <li><b>Beroperasi di lokasi terpencil</b> dengan kewajiban pengelolaan lingkungan &amp; pasca-tambang yang ketat secara regulasi.</li>
+        <li><b>Kepemilikan sumber daya oleh negara.</b> Di Indonesia, seluruh bahan galian dikuasai negara; badan usaha beroperasi melalui izin/kontrak (mis. Kontrak Karya, Kontrak Kerja Sama, IUP) — bukan kepemilikan penuh atas cadangan.</li>
+      </ul>
+
+      <h3 class="subhead">Ekonomi Teknik sebagai Kerangka Berpikir</h3>
+      <p>Analisis investasi tambang berpijak pada <b>ekonomi teknik (engineering economics)</b> — cabang ilmu yang menyediakan teknik kuantitatif untuk memilih alternatif terbaik dari beberapa opsi yang secara teknis layak. Prosedurnya mengikuti alur logis: (1) mengenali &amp; merumuskan masalah, (2) merancang alternatif yang layak, (3) menyusun net cashflow tiap alternatif, (4) menetapkan kriteria pemilihan, (5) menganalisis &amp; membandingkan alternatif, (6) memilih alternatif terbaik, dan (7) memonitor kinerja aktual terhadap proyeksi.</p>
+      <p>Pemahaman terhadap seluruh kerangka ini juga membutuhkan bekal akuntansi keuangan pertambangan — di Indonesia dituangkan dalam <b>PSAK (Pernyataan Standar Akuntansi Keuangan)</b> yang disusun Ikatan Akuntan Indonesia, termasuk PSAK 33 yang mengatur akuntansi khusus aktivitas eksplorasi &amp; evaluasi sumber daya mineral. Bab-bab berikutnya akan membangun kerangka ini selangkah demi selangkah: dari konsep dasar investasi &amp; valuasi, klasifikasi biaya, nilai waktu uang, penyusunan cashflow, hingga indikator kelayakan &amp; analisis rasio keuangan.</p>
+
+      <div class="tip">Alur belajar yang disarankan: pelajari Bab 2–5 sebagai fondasi (konsep, biaya, nilai waktu uang, cashflow) sebelum masuk ke Bab 6–8 yang berisi alat pengambilan keputusan (NPV/IRR, pemilihan alternatif, rasio keuangan).</div>
+    </div>
+  </section>
+
+  <!-- ============ BAB 2 ============ -->
+  <section class="chapter" id="bab2">
+    <div class="chapter-head"><span class="chapter-tag">Bab 02</span><h2>Konsep Dasar Investasi &amp; Valuasi</h2></div>
+    <p class="subtitle">Fondasi berpikir tentang apa itu investasi, bagaimana ekonomi tambang bekerja, prinsip valuasi aset tambang, dan kerangka akuntansi PSAK 33.</p>
+
+    <div class="theory">
+      <h3 class="subhead">2.1 Konsep Dasar Investasi</h3>
+      <p>Investasi adalah pertukaran nilai uang saat ini yang pasti dengan harapan nilai uang di masa depan yang belum pasti. Definisi ini menyiratkan dua unsur inti: <b>waktu</b> (dana dikeluarkan sekarang, manfaat diterima nanti) dan <b>risiko</b> (manfaat masa depan tidak dijamin). Secara formal, investasi dapat dipahami sebagai proses menghasilkan kepemilikan aset dengan umur kepemilikan lebih dari 6 bulan, yang mensyaratkan empat unsur: komitmen dana untuk periode tertentu, harapan hasil di masa depan, ketidakpastian hasil tersebut, dan adanya alternatif penggunaan dana lain yang harus dikorbankan (opportunity cost).</p>
+      <p>Dalam praktik pertambangan, investasi bukan sekadar "membeli aset" — melainkan keseluruhan proses mulai dari eksplorasi, studi kelayakan, konstruksi infrastruktur, pembelian alat berat, hingga modal kerja untuk operasi produksi. Setiap tahap ini mengunci dana dalam jangka waktu yang berbeda-beda dengan tingkat ketidakpastian yang juga berbeda — investasi eksplorasi jauh lebih berisiko dibanding investasi penambahan alat produksi di tambang yang sudah berjalan.</p>
+
+      <h3 class="subhead">2.2 Ekonomi Tambang (Mining Economics)</h3>
+      <p>Ekonomi tambang mempelajari bagaimana keputusan alokasi sumber daya dibuat sepanjang siklus hidup tambang: eksplorasi → studi kelayakan → konstruksi → produksi → reklamasi/pasca-tambang. Karena cadangan bersifat deplesi, setiap keputusan produksi hari ini adalah keputusan tentang seberapa cepat "menghabiskan" aset yang tidak dapat digantikan — berbeda mendasar dari perusahaan manufaktur yang bisa terus membeli bahan baku.</p>
+      <p>Tiga karakteristik ekonomi tambang yang membedakannya dari sektor lain:</p>
+      <ul>
+        <li><b>Intensitas modal tinggi di muka (front-loaded capital).</b> Sebagian besar pengeluaran besar terjadi sebelum pendapatan pertama diterima.</li>
+        <li><b>Harga komoditas ditentukan pasar global</b> — perusahaan pada umumnya adalah price taker, bukan price maker, sehingga sensitivitas proyek terhadap asumsi harga jual sangat tinggi.</li>
+        <li><b>Kurva biaya per ton yang berubah sepanjang umur tambang</b> — semakin dalam/jauh material digali, umumnya stripping ratio &amp; biaya hauling naik, menekan margin di tahun-tahun akhir umur tambang.</li>
+      </ul>
+      <p>Indonesia sendiri berada pada posisi <i>moderate</i> (bukan top-tier) dalam cadangan mineral &amp; batubara dunia, dengan cadangan per kapita yang relatif kecil — sehingga isu <i>scarcity of resources</i> (kelangkaan sumber daya jangka panjang) menjadi pertimbangan strategis, bukan hanya pertimbangan finansial jangka pendek, dalam menilai kelayakan sebuah proyek tambang.</p>
+
+      <h3 class="subhead">2.3 Konsep Dasar Valuasi</h3>
+      <p>Valuasi adalah proses menentukan nilai ekonomis suatu aset, proyek, atau perusahaan tambang pada suatu titik waktu. Tiga pendekatan valuasi yang umum digunakan:</p>
+      <ul>
+        <li><b>Pendekatan Pendapatan (Income Approach)</b> — nilai aset ditentukan dari nilai sekarang (present value) proyeksi arus kas yang akan dihasilkannya di masa depan. Ini pendekatan paling relevan untuk tambang yang sudah memiliki rencana produksi &amp; cadangan terukur.</li>
+        <li><b>Pendekatan Pasar (Market Approach)</b> — membandingkan dengan transaksi jual-beli aset/perusahaan tambang sejenis yang telah terjadi di pasar (comparable transactions).</li>
+        <li><b>Pendekatan Biaya/Aset (Cost/Asset Approach)</b> — menjumlahkan biaya yang telah dikeluarkan untuk membangun/memperoleh aset (replacement cost), umumnya dipakai saat proyek belum menghasilkan arus kas yang bisa diproyeksikan secara andal (misal masih tahap eksplorasi awal).</li>
+      </ul>
+      <p>Pemilihan pendekatan valuasi bergantung pada tahap proyek: makin dini tahap (eksplorasi), makin besar bobot pendekatan biaya/pasar; makin matang tahap (produksi berjalan dengan cadangan terbukti), makin besar bobot pendekatan pendapatan karena arus kas masa depan dapat diproyeksikan lebih andal.</p>
+
+      <div class="formula-card">
+        <div class="flabel">Formula Dasar — Pendekatan Pendapatan</div>
+        <div class="fexpr">Nilai Aset = Σ [ CFₜ / (1 + i)ᵗ ]  untuk t = 1 sampai n</div>
+        <div class="flegend">
+          <div><b>CFₜ</b> = arus kas bersih pada tahun t</div>
+          <div><b>i</b> = tingkat diskonto (discount rate)</div>
+          <div><b>n</b> = sisa umur tambang/proyek (tahun)</div>
+        </div>
+      </div>
+
+      <h3 class="subhead">2.4 Akuntansi Keuangan Pertambangan (PSAK 33)</h3>
+      <p>PSAK 33 mengatur perlakuan akuntansi khusus untuk aktivitas pertambangan umum, yang secara konseptual sejalan dengan IFRS 6 (Exploration for and Evaluation of Mineral Resources) di tingkat internasional. Perlakuan akuntansi ini penting karena tambang memiliki pola pengeluaran &amp; pengakuan biaya yang berbeda dari industri manufaktur biasa, terutama pada empat tahap berikut:</p>
+      <ul>
+        <li><b>Biaya Eksplorasi</b> — dapat dikapitalisasi (dicatat sebagai aset) atau dibebankan langsung (expensed) tergantung kebijakan akuntansi entitas &amp; hasil eksplorasi; jika cadangan tidak ditemukan, biaya yang telah dikapitalisasi wajib dihapusbukukan (write-off).</li>
+        <li><b>Biaya Pengembangan &amp; Konstruksi</b> — dikapitalisasi sebagai aset tetap/aset tambang begitu keputusan investasi (kelayakan) diambil, dan mulai didepresiasi/diamortisasi ketika produksi komersial dimulai.</li>
+        <li><b>Biaya Produksi</b> — dibebankan sebagai beban pokok penjualan (cost of goods sold) periode berjalan, termasuk penyusutan aset produksi &amp; deplesi cadangan.</li>
+        <li><b>Biaya Pengelolaan Lingkungan &amp; Pasca-Tambang (reklamasi)</b> — diestimasi &amp; dicadangkan (provisi) sejak awal operasi, bukan dibebankan sekaligus di akhir umur tambang, sesuai prinsip pengakuan kewajiban ketika timbul.</li>
+      </ul>
+      <p>Bagi calon investor atau penyusun studi kelayakan, memahami PSAK 33 penting bukan sekadar untuk kepatuhan pelaporan, tetapi karena perlakuan kapitalisasi vs pembebanan langsung ini memengaruhi <i>timing</i> pengakuan biaya dalam laporan keuangan — yang pada gilirannya memengaruhi perhitungan pajak &amp; rasio keuangan yang dibahas di Bab 8.</p>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 2.1</div>
+      <h5>Memilih Pendekatan Valuasi yang Tepat</h5>
+      <p>PT Sumber Bara Lestari memiliki dua aset: (a) wilayah izin usaha pertambangan (WIUP) batubara yang baru selesai tahap eksplorasi awal tanpa cadangan terukur, dan (b) tambang batubara yang sudah beroperasi 3 tahun dengan cadangan terbukti &amp; rencana produksi 10 tahun ke depan. Pendekatan valuasi apa yang paling tepat untuk masing-masing aset, dan mengapa?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Aset (a) — WIUP eksplorasi awal:</b> gunakan <b>pendekatan biaya/aset (cost approach)</b>. Karena belum ada cadangan terukur, tidak mungkin memproyeksikan arus kas masa depan secara andal, sehingga nilai paling realistis adalah akumulasi biaya eksplorasi yang telah dikeluarkan (replacement cost), dikoreksi dengan faktor keberhasilan eksplorasi di wilayah sejenis.</p>
+          <p><b>Aset (b) — Tambang beroperasi dengan cadangan terbukti:</b> gunakan <b>pendekatan pendapatan (income approach)</b>. Karena tersedia rencana produksi 10 tahun &amp; data operasional aktual 3 tahun terakhir, arus kas masa depan dapat diproyeksikan dengan keyakinan yang jauh lebih tinggi, sehingga nilai sekarang (present value) dari proyeksi arus kas tersebut menjadi ukuran nilai yang paling relevan.</p>
+          <p><b>Prinsip umum:</b> semakin matang &amp; terverifikasi data operasional suatu aset tambang, semakin besar bobot yang diberikan pada pendekatan pendapatan dibanding pendekatan biaya.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 2.1 — Tambahan</div>
+      <h5>Kapitalisasi vs Pembebanan Biaya Eksplorasi</h5>
+      <p>PT Cahaya Mineral Nusantara mengeluarkan biaya eksplorasi sebesar Rp 12 miliar sepanjang tahun 2025 di dua blok berbeda: Blok A (Rp 7 miliar) berhasil menemukan cadangan bijih nikel yang secara teknis &amp; ekonomis layak ditambang, sedangkan Blok B (Rp 5 miliar) tidak menemukan cadangan yang layak dan kegiatan eksplorasi dihentikan. Bagaimana perlakuan akuntansi kedua biaya tersebut menurut prinsip PSAK 33, dan apa dampaknya terhadap laba tahun berjalan?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Blok A (Rp 7 miliar) — berhasil:</b> biaya eksplorasi dikapitalisasi sebagai aset eksplorasi &amp; evaluasi. Aset ini tidak langsung mengurangi laba tahun 2025; ia akan mulai diamortisasi setelah tambang mencapai tahap produksi komersial, dibebankan secara bertahap sepanjang umur tambang sesuai unit produksi (unit of production method).</p>
+          <p><b>Blok B (Rp 5 miliar) — gagal:</b> karena tidak ditemukan cadangan yang layak secara komersial, biaya yang sudah dikapitalisasi (jika ada) wajib dihapusbukukan (write-off) dan diakui sebagai beban eksplorasi tahun 2025 secara penuh.</p>
+          <table>
+            <tr><th>Pos</th><th>Blok A</th><th>Blok B</th></tr>
+            <tr><td>Perlakuan</td><td>Dikapitalisasi</td><td>Dibebankan (write-off)</td></tr>
+            <tr><td>Dampak ke Laba 2025</td><td>Rp 0 (belum ada amortisasi)</td><td>−Rp 5.000.000.000</td></tr>
+          </table>
+          <p class="final">Dampak bersih: laba tahun 2025 tertekan Rp 5 miliar akibat write-off Blok B, sementara Rp 7 miliar dari Blok A "tersimpan" di neraca sebagai aset dan baru memengaruhi laba tahun-tahun mendatang melalui amortisasi.</p>
+          <p><b>Pelajaran kunci:</b> keputusan eksplorasi yang gagal berdampak langsung &amp; seketika terhadap laba periode berjalan — inilah salah satu alasan mengapa laba akuntansi perusahaan eksplorasi cenderung sangat fluktuatif dari tahun ke tahun, terlepas dari kinerja operasional tambang yang sudah berproduksi.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <!-- ============ BAB 3 ============ -->
+  <section class="chapter" id="bab3">
+    <div class="chapter-head"><span class="chapter-tag">Bab 03</span><h2>Analisis Biaya &amp; Estimasi Pendapatan</h2></div>
+    <p class="subtitle">Klasifikasi biaya, komponen biaya khas industri tambang, dan cara membangun estimasi biaya &amp; pendapatan yang realistis.</p>
+
+    <div class="theory">
+      <h3 class="subhead">3.1 Klasifikasi Biaya</h3>
+      <p>Sebelum menyusun proyeksi cashflow, seluruh biaya proyek perlu diklasifikasikan secara konsisten. Tiga sistem klasifikasi yang paling relevan untuk analisis investasi tambang:</p>
+      <ul>
+        <li><b>Berdasarkan perilaku terhadap volume produksi:</b> <i>biaya tetap (fixed cost)</i> — tidak berubah signifikan terhadap volume produksi dalam rentang tertentu (mis. gaji staf tetap, sewa kantor, asuransi); <i>biaya variabel (variable cost)</i> — berubah proporsional terhadap volume (mis. bahan bakar, biaya peledakan per ton, royalti per ton); <i>biaya semi-variabel</i> — memiliki komponen tetap &amp; variabel sekaligus (mis. biaya pemeliharaan alat berat).</li>
+        <li><b>Berdasarkan keterlacakan ke objek biaya:</b> <i>biaya langsung (direct cost)</i> — dapat ditelusuri langsung ke aktivitas penambangan tertentu (mis. bahan bakar dump truck); <i>biaya tidak langsung (indirect/overhead cost)</i> — dibagi ke beberapa aktivitas (mis. biaya kantor pusat, keamanan area).</li>
+        <li><b>Berdasarkan tahap siklus hidup proyek:</b> biaya eksplorasi, biaya pengembangan &amp; konstruksi (capital expenditure/capex), biaya operasi produksi (operating expenditure/opex), dan biaya penutupan tambang &amp; reklamasi.</li>
+      </ul>
+      <p>Klasifikasi ini bukan sekadar latihan akademis — ia menentukan bagaimana biaya diperlakukan dalam analisis titik impas (BEP, Bab 6), bagaimana sensitivitas proyek terhadap perubahan volume produksi dihitung, dan bagaimana biaya dikapitalisasi vs dibebankan menurut PSAK 33 (Bab 2).</p>
+
+      <h3 class="subhead">3.2 Biaya dalam Industri Pertambangan</h3>
+      <p>Struktur biaya tambang memiliki komponen khas yang jarang ditemukan di industri lain:</p>
+      <ul>
+        <li><b>Biaya pembongkaran &amp; pemuatan (loading)</b> — pengupasan lapisan penutup (overburden/stripping) dan penggalian bahan galian, biasanya komponen biaya terbesar pada tambang terbuka.</li>
+        <li><b>Biaya pengangkutan (hauling)</b> — memindahkan material dari front penambangan ke stockpile/pelabuhan; sangat sensitif terhadap jarak angkut (haul distance) &amp; rasio kupas (stripping ratio).</li>
+        <li><b>Biaya pengolahan (processing)</b> — crushing, washing, atau beneficiation tergantung jenis komoditas.</li>
+        <li><b>Royalti &amp; iuran produksi</b> — pungutan negara yang umumnya dihitung persentase dari harga jual atau volume produksi, bersifat biaya variabel murni.</li>
+        <li><b>Biaya reklamasi &amp; pasca-tambang</b> — dicadangkan sepanjang umur tambang, bukan hanya dibayar di akhir.</li>
+        <li><b>Biaya modal alat berat (capex alat)</b> — baik dibeli maupun disewa; keputusan beli-vs-sewa alat menjadi salah satu keputusan investasi paling sering dijumpai di lapangan (dibahas lebih lanjut di Bab 7).</li>
+      </ul>
+
+      <h3 class="subhead">3.3 Estimasi Biaya</h3>
+      <p>Akurasi estimasi biaya sangat bergantung pada tahap studi proyek. Semakin matang tahap studi, semakin presisi estimasi yang bisa dihasilkan — namun juga semakin mahal &amp; lama proses estimasinya:</p>
+      <ul>
+        <li><b>Estimasi order-of-magnitude</b> (akurasi ±30–50%) — dipakai pada tahap konsep awal, biasanya berbasis rasio biaya per ton dari proyek sejenis.</li>
+        <li><b>Estimasi studi kelayakan awal (preliminary/pre-feasibility)</b> (akurasi ±20–30%) — berbasis desain tambang awal &amp; harga satuan dari vendor/data pasar.</li>
+        <li><b>Estimasi studi kelayakan rinci (definitive/bankable feasibility)</b> (akurasi ±10–15%) — berbasis desain teknik rinci, kuotasi vendor aktual, dan jadwal produksi tahun-per-tahun; inilah level akurasi yang dipakai untuk pengajuan pembiayaan ke bank/investor.</li>
+      </ul>
+      <p>Pendekatan umum untuk mengestimasi biaya operasi (opex) tahunan adalah menyusun <i>unit cost</i> per komponen (Rp/ton, Rp/bcm, Rp/km-ton) berdasarkan produktivitas alat &amp; harga input terkini, lalu mengalikannya dengan volume rencana produksi tahun tersebut — bukan sekadar mengambil rata-rata biaya historis tanpa penyesuaian terhadap rencana produksi yang berbeda.</p>
+
+      <div class="formula-card">
+        <div class="flabel">Estimasi Biaya Operasi per Ton</div>
+        <div class="fexpr">Total Opex Tahun-t = Σ (Unit Cost Komponen × Volume Rencana Komponen)</div>
+        <div class="flegend">
+          <div><b>Unit Cost</b> = biaya per satuan (Rp/ton, Rp/bcm, Rp/km)</div>
+          <div><b>Volume Rencana</b> = target produksi/aktivitas tahun t</div>
+        </div>
+      </div>
+
+      <h3 class="subhead">3.4 Estimasi Pendapatan</h3>
+      <p>Pendapatan proyek tambang pada dasarnya adalah fungsi dari tiga variabel: <b>volume produksi/penjualan</b>, <b>harga jual</b>, dan <b>kualitas/spesifikasi produk</b> (mis. kalori batubara, kadar bijih). Karena harga komoditas ditentukan pasar global, estimasi pendapatan harus mempertimbangkan skenario harga (base case, optimis, pesimis) — bukan angka tunggal — mengingat volatilitas harga komoditas bisa jadi variabel paling menentukan kelayakan proyek, jauh melebihi sensitivitas terhadap variasi biaya operasi.</p>
+      <p>Praktik yang baik adalah menyusun proyeksi pendapatan berbasis kontrak/offtake yang sudah ada (jika tersedia) untuk tahun-tahun awal, dan menggunakan asumsi harga konservatif (mis. rata-rata bergerak 3–5 tahun terakhir, bukan harga puncak siklus) untuk tahun-tahun berikutnya guna menghindari proyeksi yang terlalu optimis.</p>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 3.1</div>
+      <h5>Menghitung Total Opex &amp; Pendapatan Tahunan</h5>
+      <p>Sebuah tambang batubara merencanakan produksi 500.000 ton tahun depan dengan stripping ratio 8:1 (8 bcm overburden per ton batubara). Unit cost pembongkaran overburden Rp 28.000/bcm, unit cost penambangan batubara Rp 65.000/ton, dan unit cost hauling+processing Rp 45.000/ton. Harga jual batubara disepakati USD 75/ton (kurs Rp 15.800/USD). Hitung total opex &amp; total pendapatan tahun tersebut.</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <table>
+            <tr><th>Komponen</th><th>Perhitungan</th><th>Nilai (Rp)</th></tr>
+            <tr><td>Overburden</td><td>500.000 ton × 8 bcm/ton × Rp 28.000</td><td>112.000.000.000</td></tr>
+            <tr><td>Penambangan Batubara</td><td>500.000 ton × Rp 65.000</td><td>32.500.000.000</td></tr>
+            <tr><td>Hauling + Processing</td><td>500.000 ton × Rp 45.000</td><td>22.500.000.000</td></tr>
+            <tr><td class="final">Total Opex</td><td></td><td class="final">167.000.000.000</td></tr>
+          </table>
+          <table>
+            <tr><th>Pendapatan</th><th>Perhitungan</th><th>Nilai</th></tr>
+            <tr><td>Harga per ton (Rp)</td><td>USD 75 × Rp 15.800</td><td>Rp 1.185.000</td></tr>
+            <tr><td class="final">Total Pendapatan</td><td>500.000 ton × Rp 1.185.000</td><td class="final">Rp 592.500.000.000</td></tr>
+          </table>
+          <p><b>Margin operasi kotor</b> = Rp 592.500.000.000 − Rp 167.000.000.000 = <span class="final">Rp 425.500.000.000</span> (sebelum depresiasi, bunga, pajak, dan biaya korporat lainnya).</p>
+          <p><b>Catatan:</b> stripping ratio 8:1 adalah komponen biaya terbesar (67% dari total opex) — ini menegaskan mengapa stripping ratio menjadi salah satu variabel paling sensitif dalam kelayakan tambang batubara terbuka.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 3.1 — Tambahan</div>
+      <h5>Sensitivitas Biaya Hauling terhadap Jarak Angkut</h5>
+      <p>PT Borneo Andesit Perkasa mengelola tambang andesit dengan jarak angkut (haul distance) dari front tambang ke crusher sejauh 4 km. Biaya hauling saat ini Rp 18.000/ton dengan produktivitas dump truck 25 ton/rit dan siklus waktu 22 menit/rit. Manajemen mempertimbangkan membuka front baru yang menambah jarak angkut menjadi 7 km, dengan estimasi siklus waktu naik menjadi 34 menit/rit (produktivitas per rit tetap 25 ton). Berapa biaya hauling per ton di front baru jika biaya operasional dump truck tetap Rp 850.000/jam, dan apa implikasinya terhadap harga jual minimum yang dibutuhkan?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Langkah 1 — Rit per jam di front baru:</b> 60 menit ÷ 34 menit/rit = 1,76 rit/jam.</p>
+          <p><b>Langkah 2 — Produktivitas per jam:</b> 1,76 rit/jam × 25 ton/rit = 44 ton/jam.</p>
+          <p><b>Langkah 3 — Biaya hauling per ton:</b> Rp 850.000/jam ÷ 44 ton/jam = <span class="final">Rp 19.318/ton</span>.</p>
+          <table>
+            <tr><th>Front</th><th>Jarak</th><th>Siklus</th><th>Ton/Jam</th><th>Biaya/Ton</th></tr>
+            <tr><td>Existing</td><td>4 km</td><td>22 menit</td><td>68,2</td><td>Rp 12.463</td></tr>
+            <tr><td>Baru</td><td>7 km</td><td>34 menit</td><td>44,0</td><td>Rp 19.318</td></tr>
+          </table>
+          <p><b>Implikasi:</b> biaya hauling naik ~55% (dari ~Rp 12.463 menjadi ~Rp 19.318/ton) hanya karena penambahan jarak 3 km. Jika kontrak penjualan andesit memiliki margin tipis, kenaikan ini bisa membuat front baru tidak ekonomis kecuali harga jual dinaikkan atau efisiensi armada ditingkatkan (mis. menambah unit agar rit/jam per unit tetap terjaga, atau memperbaiki kondisi jalan angkut untuk memangkas waktu siklus).</p>
+          <p><b>Pelajaran kunci:</b> dalam bisnis hauling &amp; tambang terbuka, jarak angkut adalah salah satu variabel paling sensitif terhadap biaya — setiap keputusan membuka front baru atau memindahkan stockpile perlu disertai analisis ulang biaya hauling per ton, bukan diasumsikan sama dengan front lama.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ BAB 4 ============ -->
+  <section class="chapter" id="bab4">
+    <div class="chapter-head"><span class="chapter-tag">Bab 04</span><h2>Konsep Nilai Uang Terhadap Waktu</h2></div>
+    <p class="subtitle">Time value of money — mengapa Rp 1 juta hari ini tidak sama nilainya dengan Rp 1 juta lima tahun lagi, dan bagaimana bunga majemuk bekerja.</p>
+
+    <div class="theory">
+      <h3 class="subhead">4.1 Pengembalian Modal</h3>
+      <p>Setiap investasi mengharapkan pengembalian modal (return of capital) ditambah kompensasi atas waktu &amp; risiko yang ditanggung (return on capital). Return of capital adalah pengembalian pokok investasi itu sendiri, sedangkan return on capital adalah "upah" yang diminta investor karena mereka menunda konsumsi dananya &amp; menanggung ketidakpastian. Tingkat pengembalian minimum yang disyaratkan investor sebelum mau berinvestasi disebut <b>MARR (Minimum Attractive Rate of Return)</b> — angka inilah yang nantinya dipakai sebagai discount rate dalam perhitungan NPV di Bab 6.</p>
+
+      <h3 class="subhead">4.2 Nilai Waktu dari Uang</h3>
+      <p>Prinsip nilai waktu uang (time value of money) menyatakan bahwa satu rupiah yang diterima hari ini lebih bernilai daripada satu rupiah yang diterima di masa depan — karena rupiah hari ini bisa segera diinvestasikan &amp; menghasilkan bunga/keuntungan tambahan. Prinsip ini adalah fondasi dari seluruh teknik evaluasi investasi di buku ini: NPV, IRR, dan analisis nilai tahunan semuanya adalah cara berbeda untuk "menyamakan" nilai uang yang diterima pada waktu berbeda ke satu titik waktu yang sama (biasanya tahun ke-0).</p>
+      <p>Dua arah konversi nilai waktu uang yang paling sering dipakai:</p>
+      <ul>
+        <li><b>Future Value (FV)</b> — mencari nilai di masa depan dari sejumlah uang saat ini, dengan asumsi tingkat bunga tertentu (proses "membesarkan" nilai / compounding).</li>
+        <li><b>Present Value (PV)</b> — mencari nilai sekarang dari sejumlah uang yang akan diterima di masa depan (proses "mengecilkan" nilai / discounting) — inilah dasar perhitungan NPV.</li>
+      </ul>
+
+      <div class="formula-card">
+        <div class="flabel">Future Value &amp; Present Value (Bunga Majemuk)</div>
+        <div class="fexpr">FV = PV × (1 + i)ⁿ  &nbsp;|&nbsp;  PV = FV ÷ (1 + i)ⁿ</div>
+        <div class="flegend">
+          <div><b>PV</b> = nilai sekarang</div>
+          <div><b>FV</b> = nilai masa depan</div>
+          <div><b>i</b> = tingkat bunga per periode</div>
+          <div><b>n</b> = jumlah periode</div>
+        </div>
+      </div>
+
+      <h3 class="subhead">4.3 Tingkat Suku Bunga (Interest Rate)</h3>
+      <p>Suku bunga adalah "harga" dari penggunaan uang selama periode waktu tertentu, biasanya dinyatakan dalam persentase per tahun. Beberapa istilah penting yang sering tertukar:</p>
+      <ul>
+        <li><b>Suku bunga nominal</b> — tingkat bunga tahunan yang diumumkan, tanpa memperhitungkan frekuensi pemajemukan (compounding) dalam setahun.</li>
+        <li><b>Suku bunga efektif</b> — tingkat bunga aktual yang dibayar/diterima dalam setahun setelah memperhitungkan frekuensi pemajemukan (bulanan, triwulanan, dsb). Semakin sering dimajemukkan pada suku bunga nominal yang sama, semakin tinggi suku bunga efektifnya.</li>
+        <li><b>Discount rate</b> — suku bunga yang dipakai khusus untuk mendiskontokan arus kas masa depan ke nilai sekarang dalam analisis kelayakan investasi; bisa sama dengan MARR, biaya modal rata-rata tertimbang (WACC), atau tingkat bunga pinjaman tergantung konteks analisis.</li>
+      </ul>
+
+      <div class="formula-card">
+        <div class="flabel">Konversi Suku Bunga Nominal ke Efektif</div>
+        <div class="fexpr">i_efektif = (1 + r/m)^m − 1</div>
+        <div class="flegend">
+          <div><b>r</b> = suku bunga nominal tahunan</div>
+          <div><b>m</b> = frekuensi pemajemukan per tahun</div>
+        </div>
+      </div>
+
+      <h3 class="subhead">4.4 Suku Bunga (Interest Rate) dan Riba (Usury)</h3>
+      <p>Dalam konteks pembiayaan syariah yang relevan di Indonesia, penting membedakan antara konsep bunga (interest) dalam sistem konvensional dengan konsep bagi hasil (profit-sharing) dalam sistem syariah. Sistem bunga konvensional menetapkan tingkat pengembalian tetap di muka terlepas dari kinerja aktual usaha yang dibiayai, sedangkan sistem bagi hasil (mis. akad mudharabah/musyarakah) menetapkan nisbah (rasio bagi hasil) yang besarannya bergantung pada hasil usaha aktual — jika usaha untung besar, bagi hasil pemodal juga lebih besar, dan jika rugi, ditanggung bersama sesuai porsi yang disepakati (bukan dijamin tetap seperti bunga).</p>
+      <p>Bagi pelaku usaha tambang &amp; alat berat yang mempertimbangkan pembiayaan, pemahaman perbedaan ini penting bukan hanya dari sisi kepatuhan syariah, tetapi juga karena struktur risiko keduanya berbeda secara fundamental — memengaruhi bagaimana cashflow proyek harus disusun (dibahas lebih lanjut di Bab 5).</p>
+    </div>
+
+    <div class="calc">
+      <div class="ctitle">Kalkulator Interaktif</div>
+      <h4>Kalkulator Nilai Waktu Uang (FV / PV)</h4>
+      <div class="calc-row">
+        <div><label>Mode Perhitungan</label>
+          <select id="tvmMode" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:5px;padding:8px 10px;font-family:'JetBrains Mono';font-size:.88rem;">
+            <option value="fv">Hitung Future Value (FV) dari PV</option>
+            <option value="pv">Hitung Present Value (PV) dari FV</option>
+          </select>
+        </div>
+        <div><label id="tvmAmountLabel">Nilai Sekarang / PV (Rp)</label><input type="number" id="tvmAmount" value="100000000"></div>
+      </div>
+      <div class="calc-row">
+        <div><label>Suku Bunga per Tahun (%)</label><input type="number" id="tvmRate" value="10" step="0.1"></div>
+        <div><label>Jumlah Tahun (n)</label><input type="number" id="tvmYears" value="5"></div>
+      </div>
+      <div class="calc-btns"><button onclick="calcTVM()">Hitung</button></div>
+      <div class="calc-result" id="tvmResult" style="display:none;"></div>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 4.1</div>
+      <h5>Membandingkan Dua Skema Pembayaran</h5>
+      <p>Sebuah vendor alat berat menawarkan dua skema pembayaran untuk satu unit excavator: (A) bayar tunai sekarang Rp 3.200.000.000, atau (B) bayar Rp 3.800.000.000 tiga tahun dari sekarang tanpa cicilan. Jika perusahaan Anda memiliki MARR (tingkat pengembalian minimum yang disyaratkan) 12% per tahun, skema mana yang lebih menguntungkan?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p>Untuk membandingkan, samakan kedua skema ke nilai sekarang (present value) menggunakan MARR 12%.</p>
+          <p><b>Skema A:</b> PV = Rp 3.200.000.000 (sudah dalam nilai sekarang).</p>
+          <p><b>Skema B:</b> PV = Rp 3.800.000.000 ÷ (1 + 0,12)³ = Rp 3.800.000.000 ÷ 1,4049 = <span class="final">Rp 2.705.000.000</span> (dibulatkan).</p>
+          <table>
+            <tr><th>Skema</th><th>Nilai Nominal</th><th>Present Value (12%)</th></tr>
+            <tr><td>A — Tunai sekarang</td><td>Rp 3.200.000.000</td><td>Rp 3.200.000.000</td></tr>
+            <tr><td>B — Bayar 3 tahun lagi</td><td>Rp 3.800.000.000</td><td class="final">Rp 2.705.000.000</td></tr>
+          </table>
+          <p><b>Kesimpulan:</b> meskipun nominal Skema B terlihat jauh lebih besar (Rp 3,8 M vs Rp 3,2 M), dalam nilai sekarang Skema B justru <i>lebih murah</i> (Rp 2,705 M) karena perusahaan bisa menahan dana Rp 3,2 M selama 3 tahun &amp; menginvestasikannya pada tingkat 12%. <b>Skema B lebih menguntungkan</b> — selama perusahaan yakin bisa memenuhi kewajiban pembayaran di tahun ke-3 dan benar-benar memiliki alternatif investasi yang menghasilkan ≥12%/tahun selama periode tersebut.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 4.1 — Tambahan</div>
+      <h5>Pembiayaan Bank Konvensional vs Syariah untuk Pembelian Dump Truck</h5>
+      <p>PT Multi Hauling Kaltim membutuhkan pembiayaan Rp 2.000.000.000 untuk membeli 2 unit dump truck. Bank konvensional menawarkan pinjaman dengan bunga efektif 11%/tahun selama 4 tahun (angsuran tetap). Lembaga pembiayaan syariah menawarkan skema murabahah dengan margin keuntungan disepakati setara Rp 980.000.000 selama 4 tahun (margin tetap, bukan bunga mengambang). Manakah yang secara nilai sekarang (present value) dari total pembayaran lebih ringan, jika discount rate perusahaan 11%?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Skema Bank Konvensional:</b> total pembayaran = pokok + bunga efektif majemuk 11%/tahun selama 4 tahun ≈ Rp 2.000.000.000 × (1,11)⁴ = Rp 2.000.000.000 × 1,5181 = <span class="final">Rp 3.036.000.000</span> (total nominal dibayar selama 4 tahun, dicicil).</p>
+          <p><b>Skema Murabahah:</b> total pembayaran = pokok + margin tetap = Rp 2.000.000.000 + Rp 980.000.000 = <span class="final">Rp 2.980.000.000</span> (nominal, dicicil selama 4 tahun juga).</p>
+          <table>
+            <tr><th>Skema</th><th>Total Nominal Dibayar</th><th>Efektif per Tahun</th></tr>
+            <tr><td>Bank Konvensional</td><td>Rp 3.036.000.000</td><td>~11,0% majemuk</td></tr>
+            <tr><td>Murabahah Syariah</td><td>Rp 2.980.000.000</td><td>~10,7% setara tahunan</td></tr>
+          </table>
+          <p><b>Kesimpulan:</b> pada contoh ini, skema murabahah secara nominal sedikit lebih ringan (selisih ~Rp 56 juta) karena margin ditetapkan tetap di muka, bukan bunga majemuk berjalan. Namun angka ini sangat bergantung pada asumsi margin &amp; suku bunga aktual yang ditawarkan — poin pentingnya bukan "syariah selalu lebih murah", melainkan <b>setiap skema pembiayaan wajib disetarakan ke nilai sekarang (present value) atau total efektif tahunan yang sama</b> sebelum dibandingkan, karena struktur pembayaran nominal yang berbeda-beda mudah menyesatkan jika dibandingkan apa adanya.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <!-- ============ BAB 5 ============ -->
+  <section class="chapter" id="bab5">
+    <div class="chapter-head"><span class="chapter-tag">Bab 05</span><h2>Analisis Cashflow</h2></div>
+    <p class="subtitle">Bagaimana mengelola keuangan proyek, menyusun laporan keuangan, dan membangun tabel arus kas (cashflow) yang menjadi input utama Bab 6.</p>
+
+    <div class="theory">
+      <h3 class="subhead">5.1 Mengelola Keuangan</h3>
+      <p>Pengelolaan keuangan proyek tambang mencakup tiga fungsi utama: perencanaan (menyusun anggaran &amp; proyeksi), pengendalian (memonitor realisasi terhadap rencana), dan pelaporan (menyajikan kondisi keuangan kepada pemangku kepentingan). Bagi proyek tambang, tantangan tambahannya adalah rentang waktu yang panjang &amp; volatilitas harga komoditas — sehingga pengelolaan keuangan tidak bisa statis, melainkan harus diperbarui secara berkala seiring realisasi produksi &amp; pergerakan harga pasar.</p>
+
+      <h3 class="subhead">5.2 Laporan Keuangan</h3>
+      <p>Tiga laporan keuangan inti yang menjadi dasar analisis investasi:</p>
+      <ul>
+        <li><b>Neraca (Balance Sheet)</b> — potret posisi keuangan pada satu titik waktu: Aset = Liabilitas + Ekuitas. Aset dibagi aset lancar (current assets, mis. kas, piutang, persediaan) &amp; aset tetap (fixed assets, mis. alat berat, bangunan, aset tambang).</li>
+        <li><b>Laporan Laba/Rugi (Income Statement)</b> — kinerja operasional selama satu periode: Pendapatan − Beban Pokok Penjualan − Beban Operasional − Beban Bunga − Pajak = Laba Bersih. Dapat disusun dengan format langkah tunggal (single step) atau langkah ganda (multiple step) yang memisahkan laba kotor, laba operasi, dan laba bersih secara bertahap.</li>
+        <li><b>Laporan Arus Kas (Cashflow Statement)</b> — pergerakan kas aktual, dipisah menjadi tiga aktivitas: operasi (operating), investasi (investing), dan pendanaan (financing). Laporan ini paling relevan untuk analisis kelayakan investasi karena NPV &amp; IRR (Bab 6) dihitung dari <i>arus kas aktual</i>, bukan dari laba akuntansi yang mengandung item non-kas seperti depresiasi.</li>
+      </ul>
+      <p>Perbedaan mendasar antara laba akuntansi &amp; arus kas: laba akuntansi memasukkan depresiasi sebagai beban (mengurangi laba) meski tidak ada kas yang benar-benar keluar tahun itu, sementara pengeluaran investasi awal (capex) yang benar-benar menguras kas tidak langsung tercatat penuh sebagai beban pada laporan laba/rugi tahun terjadinya (baru muncul bertahap lewat depresiasi). Inilah sebabnya analisis kelayakan investasi selalu berbasis cashflow, bukan laba akuntansi.</p>
+
+      <h3 class="subhead">5.3 Arus Kas (Cashflow)</h3>
+      <p>Tabel cashflow proyek investasi umumnya disusun per tahun dengan struktur baku sebagai berikut:</p>
+      <div class="formula-card">
+        <div class="flabel">Struktur Cashflow Standar</div>
+        <div class="fexpr">Net Cashflow = (Pendapatan − Opex − Pajak) − Capex + Nilai Sisa (tahun terakhir)</div>
+        <div class="flegend">
+          <div><b>Capex</b> = pengeluaran investasi (tahun 0 dan/atau ekspansi)</div>
+          <div><b>Opex</b> = biaya operasi tahun berjalan</div>
+          <div><b>Nilai Sisa</b> = salvage value aset di akhir umur proyek</div>
+        </div>
+      </div>
+      <p>Dua pendekatan pembiayaan yang memengaruhi struktur cashflow:</p>
+      <ul>
+        <li><b>100% Equity Financing</b> — seluruh investasi didanai modal sendiri; cashflow lebih sederhana karena tidak ada pembayaran bunga &amp; cicilan pokok pinjaman.</li>
+        <li><b>Debt-Equity Financing</b> (mis. 50% ekuitas – 50% utang) — sebagian investasi didanai pinjaman; cashflow perlu memasukkan pembayaran bunga (mengurangi laba kena pajak, disebut <i>tax shield</i>) &amp; cicilan pokok pinjaman (bukan beban, tapi tetap mengurangi kas keluar).</li>
+      </ul>
+      <p>Struktur pembiayaan ini memengaruhi NPV &amp; IRR yang dihitung dari sudut pandang ekuitas (equity cashflow) — karena investor ekuitas hanya menanggung porsi dana yang benar-benar mereka setorkan, bukan total nilai proyek, sehingga IRR dari sudut pandang ekuitas pada pembiayaan campuran (leveraged) biasanya berbeda — dan pada kondisi tertentu bisa lebih tinggi — dibanding IRR proyek 100% ekuitas.</p>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 5.1</div>
+      <h5>Menyusun Net Cashflow Sederhana</h5>
+      <p>Sebuah proyek tambang mineral kecil membutuhkan investasi awal Rp 8.000.000.000 (tahun 0). Proyeksi pendapatan &amp; opex selama 4 tahun operasi: Tahun 1: pendapatan Rp 5.000.000.000, opex Rp 2.800.000.000; Tahun 2: pendapatan Rp 6.200.000.000, opex Rp 3.100.000.000; Tahun 3: pendapatan Rp 6.500.000.000, opex Rp 3.300.000.000; Tahun 4: pendapatan Rp 4.800.000.000, opex Rp 2.700.000.000 (ditambah nilai sisa alat Rp 900.000.000). Asumsikan pajak 22% dari laba operasi. Susun tabel net cashflow proyek ini.</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <table>
+            <tr><th>Tahun</th><th>Pendapatan</th><th>Opex</th><th>Laba Operasi</th><th>Pajak (22%)</th><th>Net Cashflow</th></tr>
+            <tr><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td><td>(8.000.000.000)</td></tr>
+            <tr><td>1</td><td>5.000.000.000</td><td>2.800.000.000</td><td>2.200.000.000</td><td>484.000.000</td><td>1.716.000.000</td></tr>
+            <tr><td>2</td><td>6.200.000.000</td><td>3.100.000.000</td><td>3.100.000.000</td><td>682.000.000</td><td>2.418.000.000</td></tr>
+            <tr><td>3</td><td>6.500.000.000</td><td>3.300.000.000</td><td>3.200.000.000</td><td>704.000.000</td><td>2.496.000.000</td></tr>
+            <tr><td>4</td><td>4.800.000.000</td><td>2.700.000.000</td><td>2.100.000.000</td><td>462.000.000</td><td class="final">2.538.000.000*</td></tr>
+          </table>
+          <p style="font-size:.82rem;color:#55606E;">*Tahun 4 = (2.100.000.000 − 462.000.000) + nilai sisa Rp 900.000.000 = Rp 2.538.000.000.</p>
+          <p><b>Total net cashflow selama 4 tahun operasi</b> = Rp 1.716.000.000 + 2.418.000.000 + 2.496.000.000 + 2.538.000.000 = <span class="final">Rp 9.168.000.000</span>, dibandingkan investasi awal Rp 8.000.000.000. Secara undiscounted, proyek ini surplus Rp 1.168.000.000 — namun kelayakan sebenarnya baru bisa disimpulkan setelah didiskontokan ke nilai sekarang (NPV) di Bab 6, karena Rp 1 pada tahun ke-4 tidak sama nilainya dengan Rp 1 hari ini.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 5.1 — Tambahan</div>
+      <h5>Dampak Struktur Pembiayaan terhadap Cashflow Ekuitas</h5>
+      <p>PT Andesit Perkasa membutuhkan investasi Rp 4.000.000.000 untuk membuka front tambang andesit baru. Dua opsi pembiayaan dipertimbangkan: (A) 100% modal sendiri, atau (B) 40% modal sendiri (Rp 1.600.000.000) + 60% pinjaman bank (Rp 2.400.000.000) dengan bunga 12%/tahun dibayar tahunan, pokok dilunasi sekaligus di tahun ke-3. Proyek menghasilkan laba operasi bersih (sebelum bunga &amp; pajak) rata-rata Rp 1.500.000.000/tahun selama 3 tahun, pajak 22%. Bandingkan cashflow ekuitas kedua opsi pada tahun 1.</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Opsi A — 100% Ekuitas:</b> Laba operasi Rp 1.500.000.000, pajak 22% = Rp 330.000.000, cashflow ekuitas tahun 1 = <span class="final">Rp 1.170.000.000</span>, dari modal sendiri Rp 4.000.000.000.</p>
+          <p><b>Opsi B — Campuran 40:60:</b> Bunga tahun 1 = Rp 2.400.000.000 × 12% = Rp 288.000.000. Laba sebelum pajak = Rp 1.500.000.000 − Rp 288.000.000 = Rp 1.212.000.000. Pajak 22% = Rp 266.640.000. Cashflow ekuitas tahun 1 = Rp 1.212.000.000 − Rp 266.640.000 = <span class="final">Rp 945.360.000</span>, tetapi ini dari modal sendiri yang jauh lebih kecil, yaitu Rp 1.600.000.000.</p>
+          <table>
+            <tr><th>Opsi</th><th>Modal Sendiri</th><th>Cashflow Ekuitas Th.1</th><th>Return terhadap Modal Sendiri</th></tr>
+            <tr><td>A — 100% Ekuitas</td><td>4.000.000.000</td><td>1.170.000.000</td><td>29,3%</td></tr>
+            <tr><td>B — 40:60 Leverage</td><td>1.600.000.000</td><td>945.360.000</td><td class="final">59,1%</td></tr>
+          </table>
+          <p><b>Kesimpulan:</b> meskipun cashflow ekuitas nominal Opsi B lebih kecil (karena harus membayar bunga), <i>return terhadap modal sendiri yang ditanamkan investor jauh lebih tinggi</i> — inilah efek <i>financial leverage</i>. Namun leverage adalah pedang bermata dua: pada tahun proyek merugi atau harga komoditas turun tajam, kewajiban bunga &amp; pokok pinjaman tetap harus dibayar terlepas dari kinerja proyek, sehingga risiko kebangkrutan (financial distress) pada Opsi B jauh lebih tinggi dibanding Opsi A. Keputusan struktur pembiayaan idealnya mempertimbangkan toleransi risiko perusahaan, bukan semata memaksimalkan return ekuitas.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <!-- ============ BAB 6 ============ -->
+  <section class="chapter" id="bab6">
+    <div class="chapter-head"><span class="chapter-tag">Bab 06</span><h2>Indikator Kelayakan Investasi</h2></div>
+    <p class="subtitle">Kriteria &amp; indikator kuantitatif untuk memutuskan layak/tidaknya sebuah proyek — NPV, IRR, PBP, PVR, B/C Ratio, dan titik impas (BEP).</p>
+
+    <div class="theory">
+      <h3 class="subhead">6.1 Kriteria Investasi</h3>
+      <p>Setiap indikator kelayakan investasi pada dasarnya menjawab pertanyaan yang sama dengan sudut pandang berbeda: <i>apakah manfaat yang dihasilkan proyek melebihi pengorbanan yang dibutuhkan, setelah memperhitungkan nilai waktu uang?</i> Karena sudut pandangnya berbeda-beda, satu indikator tunggal jarang cukup — praktik yang baik adalah menggunakan kombinasi beberapa indikator sekaligus (biasanya NPV + IRR + PBP) agar keputusan investasi lebih robust terhadap kelemahan masing-masing metode.</p>
+
+      <h3 class="subhead">6.2 Indikator Investasi</h3>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:18px 0 6px;">Net Present Value (NPV)</h4>
+      <p>NPV menghitung nilai sekarang bersih dari seluruh arus kas proyek (masuk dikurangi keluar) yang telah didiskontokan ke tahun ke-0 menggunakan discount rate (biasanya MARR). Proyek dinyatakan layak jika NPV &gt; 0 — artinya nilai sekarang dari manfaat yang diterima melebihi nilai sekarang dari pengorbanan yang dikeluarkan, sehingga proyek menciptakan nilai tambah di atas tingkat pengembalian minimum yang disyaratkan.</p>
+      <div class="formula-card">
+        <div class="flabel">Net Present Value</div>
+        <div class="fexpr">NPV = Σ [ CFₜ / (1 + i)ᵗ ]  −  Investasi Awal (t=0)</div>
+        <div class="flegend"><div><b>CFₜ</b> = net cashflow tahun t</div><div><b>i</b> = discount rate (MARR)</div></div>
+      </div>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:18px 0 6px;">Internal Rate of Return (IRR)</h4>
+      <p>IRR adalah tingkat discount rate yang membuat NPV proyek tepat sama dengan nol — dengan kata lain, tingkat pengembalian "internal" yang dihasilkan proyek itu sendiri. Proyek dinyatakan layak jika IRR &gt; MARR. IRR populer karena hasilnya berupa persentase yang mudah dibandingkan lintas proyek dengan skala berbeda, namun memiliki kelemahan: pada cashflow yang berganti tanda lebih dari sekali (mis. investasi tambahan besar di tahun tengah), IRR bisa menghasilkan lebih dari satu solusi matematis (multiple IRR) sehingga interpretasinya menjadi ambigu — dalam kasus ini, NPV tetap menjadi indikator yang lebih andal.</p>
+      <div class="formula-card">
+        <div class="flabel">Internal Rate of Return (dicari secara iteratif)</div>
+        <div class="fexpr">0 = Σ [ CFₜ / (1 + IRR)ᵗ ]  −  Investasi Awal</div>
+        <div class="flegend"><div>Dipecahkan dengan trial-error/interpolasi karena tidak ada rumus aljabar langsung</div></div>
+      </div>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:18px 0 6px;">Payback Period (PBP)</h4>
+      <p>PBP mengukur berapa lama waktu yang dibutuhkan agar akumulasi net cashflow menutup kembali investasi awal. Semakin pendek PBP, semakin cepat modal kembali &amp; semakin rendah eksposur terhadap risiko jangka panjang (mis. perubahan regulasi atau penurunan harga komoditas di tahun-tahun jauh ke depan). Kelemahan utama PBP: mengabaikan nilai waktu uang (kecuali memakai versi discounted payback period) dan mengabaikan seluruh cashflow yang terjadi setelah titik payback tercapai — sehingga PBP sebaiknya dipakai sebagai indikator pelengkap, bukan indikator utama.</p>
+      <div class="formula-card">
+        <div class="flabel">Payback Period</div>
+        <div class="fexpr">PBP = Tahun sebelum payback + (Sisa Investasi Belum Tertutup ÷ Net Cashflow Tahun Berikutnya)</div>
+      </div>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:18px 0 6px;">Profitability Value Ratio (PVR) &amp; Benefit/Cost Ratio (B/C-r)</h4>
+      <p>PVR (kadang disebut juga Profitability Index) mengukur efisiensi penggunaan modal — berapa nilai sekarang manfaat yang dihasilkan per rupiah investasi. B/C Ratio membandingkan nilai sekarang seluruh manfaat (benefit) terhadap nilai sekarang seluruh biaya (cost). Kedua indikator ini sangat berguna ketika membandingkan proyek dengan skala investasi berbeda-beda, karena NPV absolut cenderung bias terhadap proyek berskala besar.</p>
+      <div class="formula-card">
+        <div class="flabel">PVR &amp; B/C Ratio</div>
+        <div class="fexpr">PVR = NPV ÷ Investasi Awal &nbsp;|&nbsp; B/C-r = PV(Manfaat) ÷ PV(Biaya)</div>
+        <div class="flegend"><div>Layak jika PVR &gt; 0 dan B/C-r &gt; 1</div></div>
+      </div>
+
+      <h3 class="subhead">6.3 Titik Pulang Pokok (Break Even Point / BEP)</h3>
+      <p>BEP adalah titik volume produksi/penjualan di mana total pendapatan tepat sama dengan total biaya — tidak untung, tidak rugi. Di bawah titik ini perusahaan merugi, di atasnya perusahaan mulai memperoleh laba. BEP paling berguna untuk menilai risiko operasional: semakin rendah BEP relatif terhadap kapasitas produksi normal, semakin besar margin keamanan (margin of safety) yang dimiliki perusahaan terhadap fluktuasi volume produksi atau penurunan harga jual.</p>
+      <div class="formula-card">
+        <div class="flabel">Break Even Point</div>
+        <div class="fexpr">BEP (unit) = Biaya Tetap ÷ (Harga Jual per Unit − Biaya Variabel per Unit)</div>
+        <div class="flegend"><div><b>Harga − Variabel</b> = margin kontribusi per unit</div></div>
+      </div>
+
+      <h3 class="subhead">6.4 Merangkai Kriteria — Kapan Setiap Indikator Paling Berguna</h3>
+      <ul>
+        <li><b>NPV</b> — indikator utama untuk keputusan go/no-go pada satu proyek tunggal, dan satu-satunya indikator yang bisa dijumlahkan langsung antar-proyek independen (additive).</li>
+        <li><b>IRR</b> — mudah dikomunikasikan ke manajemen/investor sebagai "tingkat return proyek", tetapi hati-hati pada cashflow yang berganti tanda berkali-kali.</li>
+        <li><b>PBP</b> — pelengkap untuk menilai eksposur risiko waktu, terutama pada proyek dengan ketidakpastian regulasi/politik tinggi.</li>
+        <li><b>PVR/B/C-r</b> — berguna saat modal terbatas &amp; harus memilih kombinasi proyek yang memaksimalkan nilai per rupiah modal (capital rationing).</li>
+        <li><b>BEP</b> — alat operasional harian untuk memantau margin keamanan produksi, terpisah dari keputusan investasi jangka panjang.</li>
+      </ul>
+    </div>
+
+    <div class="calc">
+      <div class="ctitle">Kalkulator Interaktif</div>
+      <h4>Kalkulator Kelayakan Investasi (NPV · IRR · PBP)</h4>
+      <div class="calc-row">
+        <div><label>Investasi Awal / Tahun 0 (Rp)</label><input type="number" id="npvInvest" value="2000000000"></div>
+        <div><label>Discount Rate / MARR (%)</label><input type="number" id="npvRate" value="12" step="0.1"></div>
+      </div>
+      <div class="ctitle" style="margin-top:14px;">Net Cashflow per Tahun (Rp)</div>
+      <div class="cf-rows" id="cfRows"></div>
+      <div class="calc-btns">
+        <button class="secondary" onclick="addCFRow()" type="button">+ Tambah Tahun</button>
+        <button onclick="calcNPV()" type="button">Hitung Kelayakan</button>
+      </div>
+      <div class="calc-result" id="npvResult" style="display:none;"></div>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 6.1</div>
+      <h5>Menghitung NPV &amp; Menentukan Kelayakan</h5>
+      <p>Sebuah proyek tambang mineral membutuhkan investasi awal Rp 3.000.000.000 dan diproyeksikan menghasilkan net cashflow Rp 1.100.000.000/tahun selama 4 tahun. MARR yang disyaratkan 15%/tahun. Apakah proyek ini layak dijalankan?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <table>
+            <tr><th>Tahun</th><th>Cashflow</th><th>DF (15%)</th><th>PV</th></tr>
+            <tr><td>1</td><td>1.100.000.000</td><td>0,8696</td><td>956.560.000</td></tr>
+            <tr><td>2</td><td>1.100.000.000</td><td>0,7561</td><td>831.710.000</td></tr>
+            <tr><td>3</td><td>1.100.000.000</td><td>0,6575</td><td>723.250.000</td></tr>
+            <tr><td>4</td><td>1.100.000.000</td><td>0,5718</td><td>628.980.000</td></tr>
+            <tr><td class="final">Total PV Cashflow</td><td></td><td></td><td class="final">3.140.500.000</td></tr>
+          </table>
+          <p><b>NPV</b> = Rp 3.140.500.000 − Rp 3.000.000.000 = <span class="final">Rp 140.500.000</span> (positif).</p>
+          <p><b>Kesimpulan:</b> karena NPV &gt; 0, proyek ini <b>layak dijalankan</b> pada MARR 15% — proyek menghasilkan nilai tambah sebesar Rp 140,5 juta di atas tingkat pengembalian minimum yang disyaratkan. Namun margin kelayakannya relatif tipis (~4,7% dari investasi awal), sehingga sebaiknya dilengkapi analisis sensitivitas terhadap penurunan cashflow atau kenaikan MARR sebelum keputusan final diambil.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 6.2</div>
+      <h5>Menghitung Break Even Point (BEP)</h5>
+      <p>Sebuah unit pengolahan (crusher) andesit memiliki biaya tetap Rp 450.000.000/tahun (sewa lahan, gaji tetap, asuransi). Harga jual andesit olahan Rp 95.000/ton, dengan biaya variabel (bahan bakar, listrik, tenaga kerja borongan) Rp 62.000/ton. Berapa BEP dalam ton per tahun, dan berapa BEP dalam rupiah?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Margin kontribusi per ton</b> = Rp 95.000 − Rp 62.000 = Rp 33.000/ton.</p>
+          <p><b>BEP (unit)</b> = Rp 450.000.000 ÷ Rp 33.000 = <span class="final">13.636 ton/tahun</span> (dibulatkan).</p>
+          <p><b>BEP (rupiah)</b> = 13.636 ton × Rp 95.000 = <span class="final">Rp 1.295.454.545/tahun</span>.</p>
+          <p><b>Interpretasi:</b> jika kapasitas produksi normal crusher tersebut adalah 40.000 ton/tahun, maka BEP 13.636 ton hanya setara ~34% dari kapasitas — artinya perusahaan memiliki <i>margin of safety</i> yang cukup besar (~66%) sebelum mengalami kerugian, sehingga risiko operasional tergolong rendah selama volume penjualan bisa dijaga di atas titik tersebut.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="calc" style="margin-top:22px;">
+      <div class="ctitle">Kalkulator Interaktif</div>
+      <h4>Kalkulator Titik Pulang Pokok (BEP)</h4>
+      <div class="calc-row">
+        <div><label>Biaya Tetap per Tahun (Rp)</label><input type="number" id="bepFixed" value="450000000"></div>
+        <div><label>Harga Jual per Unit (Rp)</label><input type="number" id="bepPrice" value="95000"></div>
+      </div>
+      <div class="calc-row">
+        <div><label>Biaya Variabel per Unit (Rp)</label><input type="number" id="bepVar" value="62000"></div>
+        <div><label>Kapasitas Produksi Normal (unit/tahun) — opsional</label><input type="number" id="bepCap" value="40000"></div>
+      </div>
+      <div class="calc-btns"><button onclick="calcBEP()" type="button">Hitung BEP</button></div>
+      <div class="calc-result" id="bepResult" style="display:none;"></div>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 6.1 — Tambahan</div>
+      <h5>Kelayakan Investasi Front Tambang Andesit Baru (NPV, IRR, PBP Sekaligus)</h5>
+      <p>PT Golden Andesit Mining mempertimbangkan membuka front tambang andesit baru dengan investasi awal Rp 5.500.000.000 (crusher + akses jalan). Proyeksi net cashflow: Tahun 1: Rp 1.400.000.000; Tahun 2: Rp 1.900.000.000; Tahun 3: Rp 2.100.000.000; Tahun 4: Rp 2.000.000.000; Tahun 5: Rp 1.700.000.000 (termasuk nilai sisa). MARR perusahaan 14%. Hitung NPV, estimasi IRR, dan PBP proyek ini, lalu simpulkan kelayakannya.</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <table>
+            <tr><th>Tahun</th><th>Cashflow</th><th>DF (14%)</th><th>PV</th><th>Kumulatif</th></tr>
+            <tr><td>0</td><td>(5.500.000.000)</td><td>1,0000</td><td>(5.500.000.000)</td><td>(5.500.000.000)</td></tr>
+            <tr><td>1</td><td>1.400.000.000</td><td>0,8772</td><td>1.228.080.000</td><td>(4.271.920.000)</td></tr>
+            <tr><td>2</td><td>1.900.000.000</td><td>0,7695</td><td>1.462.050.000</td><td>(2.809.870.000)</td></tr>
+            <tr><td>3</td><td>2.100.000.000</td><td>0,6750</td><td>1.417.500.000</td><td>(1.392.370.000)</td></tr>
+            <tr><td>4</td><td>2.000.000.000</td><td>0,5921</td><td>1.184.200.000</td><td>(208.170.000)</td></tr>
+            <tr><td>5</td><td>1.700.000.000</td><td>0,5194</td><td>883.000.000</td><td class="final">674.830.000</td></tr>
+          </table>
+          <p><b>NPV (14%)</b> = <span class="final">Rp 674.830.000</span> (positif → proyek menambah nilai di atas MARR).</p>
+          <p><b>PBP (undiscounted, berbasis cashflow nominal):</b> akumulasi nominal (bukan PV) mencapai break-even antara tahun 3 &amp; 4: kumulatif nominal s.d. tahun 3 = −5.500 jt + 1.400 + 1.900 + 2.100 = −100 jt, sehingga PBP = 3 + (100.000.000 ÷ 2.000.000.000) = <span class="final">≈3,05 tahun</span>.</p>
+          <p><b>Estimasi IRR:</b> karena NPV pada 14% masih positif &amp; cukup besar relatif terhadap investasi (~12,3%), IRR proyek ini diperkirakan berada di kisaran <b>18–19%</b> (dapat diverifikasi dengan kalkulator NPV/IRR interaktif di atas — masukkan angka cashflow yang sama &amp; naikkan discount rate bertahap sampai NPV mendekati nol).</p>
+          <p><b>Kesimpulan gabungan:</b> ketiga indikator sepakat — NPV positif, IRR jauh di atas MARR 14%, dan PBP relatif cepat (~3 tahun dari total umur proyek 5 tahun). Front tambang baru ini <b>layak &amp; menarik untuk dijalankan</b>, dengan catatan asumsi harga jual &amp; volume produksi pada proyeksi cashflow tetap terjaga — sensitivitas terhadap penurunan harga jual andesit sebaiknya tetap diuji sebelum keputusan final.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+  <!-- ============ BAB 7 ============ -->
+  <section class="chapter" id="bab7">
+    <div class="chapter-head"><span class="chapter-tag">Bab 07</span><h2>Pemilihan Alternatif Investasi</h2></div>
+    <p class="subtitle">Bagaimana memilih di antara beberapa alternatif investasi yang bersaing — mutually exclusive vs non-mutually exclusive.</p>
+
+    <div class="theory">
+      <h3 class="subhead">7.1 Analisis Mutually Exclusive</h3>
+      <p>Dua atau lebih alternatif disebut <b>mutually exclusive (saling meniadakan)</b> jika memilih salah satu alternatif otomatis menggugurkan alternatif lainnya — misalnya memilih antara membeli dump truck merek X atau merek Y untuk kebutuhan yang sama; perusahaan hanya butuh satu, bukan keduanya. Prinsip pemilihan pada kondisi mutually exclusive:</p>
+      <ul>
+        <li>Jika seluruh alternatif memiliki NPV &gt; 0 (semuanya layak secara individual), <b>pilih alternatif dengan NPV tertinggi</b> — bukan otomatis IRR tertinggi, karena IRR bisa menyesatkan saat skala investasi antar-alternatif berbeda jauh.</li>
+        <li>Untuk alternatif dengan skala investasi berbeda, gunakan <b>analisis incremental (selisih)</b> — hitung cashflow selisih antara alternatif berinvestasi lebih besar dikurangi alternatif berinvestasi lebih kecil, lalu hitung IRR dari selisih tersebut (IRR incremental). Jika IRR incremental &gt; MARR, alternatif dengan investasi lebih besar layak dipilih; jika tidak, pilih alternatif dengan investasi lebih kecil.</li>
+        <li>Untuk alternatif dengan umur ekonomis berbeda, bandingkan menggunakan <b>Analisis Nilai Tahunan (Annual Value Analysis/ANT)</b> — menyetarakan seluruh alternatif ke nilai tahunan ekivalen, atau menyamakan periode analisis dengan kelipatan persekutuan umur masing-masing alternatif (repeated/common life analysis).</li>
+      </ul>
+
+      <h3 class="subhead">7.2 Analisis Non-Mutually Exclusive</h3>
+      <p>Sebaliknya, alternatif <b>non-mutually exclusive (independen)</b> adalah proyek-proyek yang bisa dipilih lebih dari satu sekaligus tanpa saling meniadakan — misalnya perusahaan mempertimbangkan lima proyek ekspansi berbeda &amp; bisa menjalankan beberapa di antaranya secara bersamaan, sepanjang dana tersedia. Dalam kondisi ini, keputusan berubah menjadi masalah <b>penjatahan modal (capital rationing)</b>: dengan dana terbatas, kombinasi proyek mana yang memaksimalkan total NPV portofolio?</p>
+      <p>Pendekatan yang umum dipakai:</p>
+      <ul>
+        <li><b>Ranking berdasarkan PVR/Profitability Index</b> — urutkan seluruh proyek independen berdasarkan NPV per rupiah investasi (dari tertinggi ke terendah), lalu pilih proyek berturut-turut sampai dana investasi habis.</li>
+        <li><b>Kombinasi optimal</b> — pada kasus yang lebih kompleks dengan banyak proyek &amp; kendala tambahan (sumber daya manusia, alat, dsb.), digunakan teknik optimasi (mis. integer programming) untuk mencari kombinasi proyek yang memaksimalkan total NPV dalam batasan sumber daya yang tersedia.</li>
+      </ul>
+      <p>Perbedaan mendasar mutually exclusive vs non-mutually exclusive sering menjadi sumber kesalahan analisis di lapangan — banyak praktisi keliru membandingkan IRR antar-proyek independen padahal seharusnya proyek independen dibandingkan berdasarkan kontribusi NPV terhadap total portofolio, bukan dipilih satu saja seperti pada kasus mutually exclusive.</p>
+
+      <div class="tip">Aturan praktis: tanyakan dulu "apakah memilih alternatif ini mencegah saya menjalankan alternatif lain?" — jika ya, gunakan kaidah mutually exclusive (pilih NPV tertinggi/IRR incremental); jika tidak, gunakan kaidah capital rationing (ranking PVR sampai dana habis).</div>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 7.1</div>
+      <h5>Analisis Incremental pada Alternatif Mutually Exclusive</h5>
+      <p>Dua alternatif excavator dipertimbangkan untuk kebutuhan yang sama (mutually exclusive). Excavator A: investasi Rp 2.800.000.000, net cashflow Rp 950.000.000/tahun selama 5 tahun. Excavator B: investasi Rp 3.600.000.000, net cashflow Rp 1.180.000.000/tahun selama 5 tahun. MARR 13%. Mana yang sebaiknya dipilih?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p><b>Langkah 1 — NPV masing-masing (faktor anuitas PV 13%, 5 tahun ≈ 3,5172):</b></p>
+          <p>NPV A = (950.000.000 × 3,5172) − 2.800.000.000 = 3.341.340.000 − 2.800.000.000 = <span class="final">Rp 541.340.000</span></p>
+          <p>NPV B = (1.180.000.000 × 3,5172) − 3.600.000.000 = 4.150.296.000 − 3.600.000.000 = <span class="final">Rp 550.296.000</span></p>
+          <p><b>Langkah 2 — Analisis Incremental (B − A):</b> selisih investasi = Rp 800.000.000, selisih cashflow tahunan = Rp 230.000.000/tahun.</p>
+          <p>NPV incremental = (230.000.000 × 3,5172) − 800.000.000 = 808.956.000 − 800.000.000 = <span class="final">Rp 8.956.000</span> (positif, meski tipis).</p>
+          <table>
+            <tr><th>Alternatif</th><th>Investasi</th><th>NPV</th></tr>
+            <tr><td>A</td><td>2.800.000.000</td><td>541.340.000</td></tr>
+            <tr><td>B</td><td>3.600.000.000</td><td class="final">550.296.000</td></tr>
+            <tr><td>Incremental (B−A)</td><td>800.000.000</td><td class="final">8.956.000</td></tr>
+          </table>
+          <p><b>Kesimpulan:</b> karena NPV B &gt; NPV A, dan NPV incremental dari investasi tambahan Rp 800 juta untuk upgrade ke Excavator B juga positif (meski tipis), <b>Excavator B sebaiknya dipilih</b>. Namun karena margin kelayakan incremental sangat tipis (~1,1% dari investasi tambahan), keputusan ini sensitif terhadap asumsi — jika ada faktor non-finansial seperti keterbatasan modal atau preferensi terhadap risiko lebih rendah, Excavator A (investasi lebih kecil, NPV hampir setara) bisa jadi pilihan yang lebih pruden.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 7.1 — Tambahan</div>
+      <h5>Beli vs Sewa Dump Truck — Keputusan Klasik di Bisnis Hauling</h5>
+      <p>PT Trans Hauling Nusantara mempertimbangkan menambah 1 unit dump truck untuk kontrak hauling batubara 5 tahun. Opsi Beli: harga unit Rp 1.850.000.000, biaya operasi &amp; perawatan Rp 420.000.000/tahun, nilai sisa akhir tahun ke-5 diperkirakan Rp 550.000.000. Opsi Sewa: biaya sewa all-in (termasuk perawatan) Rp 680.000.000/tahun, dibayar di muka tiap tahun, tanpa kepemilikan aset di akhir kontrak. MARR perusahaan 13%. Opsi mana yang lebih murah secara nilai sekarang (present value biaya)?</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <p>Karena kedua opsi ini tidak menghasilkan pendapatan langsung yang berbeda (unit dipakai untuk kontrak hauling yang sama), analisis dilakukan berbasis <b>minimisasi biaya (present value of cost)</b> — bukan NPV manfaat.</p>
+          <p><b>Opsi Beli:</b></p>
+          <table>
+            <tr><th>Tahun</th><th>Arus Kas</th><th>DF (13%)</th><th>PV</th></tr>
+            <tr><td>0</td><td>(1.850.000.000)</td><td>1,0000</td><td>(1.850.000.000)</td></tr>
+            <tr><td>1-5</td><td>(420.000.000)/th</td><td>3,5172 (anuitas)</td><td>(1.477.224.000)</td></tr>
+            <tr><td>5</td><td>+550.000.000 (nilai sisa)</td><td>0,5428</td><td>298.540.000</td></tr>
+            <tr><td class="final">Total PV Biaya (Beli)</td><td></td><td></td><td class="final">(3.028.684.000)</td></tr>
+          </table>
+          <p><b>Opsi Sewa:</b></p>
+          <table>
+            <tr><th>Komponen</th><th>Perhitungan</th><th>PV</th></tr>
+            <tr><td>Sewa tahunan (anuitas di muka)</td><td>680.000.000 × 3,5172 × 1,13 (anuitas due)</td><td class="final">(3.033.700.000)</td></tr>
+          </table>
+          <table>
+            <tr><th>Opsi</th><th>Total PV Biaya</th></tr>
+            <tr><td>Beli</td><td class="final">Rp 3.028.684.000</td></tr>
+            <tr><td>Sewa</td><td>Rp 3.033.700.000</td></tr>
+          </table>
+          <p><b>Kesimpulan:</b> pada asumsi ini, <b>opsi Beli sedikit lebih murah</b> secara present value biaya (selisih tipis ~Rp 5 juta), terutama berkat nilai sisa Rp 550 juta yang diterima di akhir tahun ke-5. Namun selisihnya sangat tipis, sehingga faktor non-finansial perlu dipertimbangkan: opsi Beli membutuhkan kas di muka Rp 1,85 miliar &amp; menanggung risiko pemeliharaan/nilai sisa aktual meleset dari estimasi, sedangkan opsi Sewa memberikan fleksibilitas arus kas (tidak perlu modal besar di depan) &amp; memindahkan risiko pemeliharaan ke pihak penyewa. Untuk perusahaan dengan keterbatasan modal kerja atau kontrak hauling yang belum pasti diperpanjang setelah 5 tahun, opsi Sewa yang secara finansial "hampir setara" ini justru bisa menjadi pilihan yang lebih rasional.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ BAB 8 ============ -->
+  <section class="chapter" id="bab8">
+    <div class="chapter-head"><span class="chapter-tag">Bab 08</span><h2>Analisis Rasio Keuangan</h2></div>
+    <p class="subtitle">Membaca kesehatan finansial perusahaan tambang melalui laporan keuangan &amp; rasio-rasio kunci.</p>
+
+    <div class="theory">
+      <h3 class="subhead">8.1 Laporan Keuangan sebagai Basis Analisis</h3>
+      <p>Analisis rasio keuangan mengubah angka-angka mentah di neraca &amp; laporan laba/rugi menjadi ukuran yang bisa dibandingkan — baik dibandingkan dengan periode sebelumnya (analisis tren/time series), dengan perusahaan sejenis (analisis cross-section/benchmark industri), maupun dengan target/standar internal perusahaan. Tanpa konteks pembanding ini, satu angka rasio tunggal (mis. "current ratio 1,8x") tidak banyak bermakna.</p>
+
+      <h3 class="subhead">8.2 Analisis Rasio Keuangan</h3>
+      <p>Empat kelompok rasio keuangan yang paling relevan dianalisis:</p>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:16px 0 6px;">Rasio Likuiditas (Liquidity Ratios)</h4>
+      <p>Mengukur kemampuan perusahaan memenuhi kewajiban jangka pendek (jatuh tempo &lt;1 tahun) menggunakan aset lancar.</p>
+      <div class="formula-card">
+        <div class="flabel">Current Ratio &amp; Quick Ratio</div>
+        <div class="fexpr">Current Ratio = Aset Lancar ÷ Liabilitas Lancar &nbsp;|&nbsp; Quick Ratio = (Aset Lancar − Persediaan) ÷ Liabilitas Lancar</div>
+      </div>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:16px 0 6px;">Rasio Solvabilitas / Leverage (Solvency Ratios)</h4>
+      <p>Mengukur seberapa besar perusahaan dibiayai utang dibanding modal sendiri, dan kemampuannya membayar kewajiban jangka panjang — krusial bagi perusahaan tambang yang umumnya padat modal &amp; bergantung pada pembiayaan eksternal.</p>
+      <div class="formula-card">
+        <div class="flabel">Debt to Equity Ratio (DER) &amp; Debt to Asset Ratio</div>
+        <div class="fexpr">DER = Total Liabilitas ÷ Total Ekuitas &nbsp;|&nbsp; Debt to Asset = Total Liabilitas ÷ Total Aset</div>
+      </div>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:16px 0 6px;">Rasio Profitabilitas (Profitability Ratios)</h4>
+      <p>Mengukur kemampuan perusahaan menghasilkan laba dari aktivitas operasinya — indikator paling langsung dari efektivitas manajemen dalam mengelola pendapatan &amp; biaya.</p>
+      <div class="formula-card">
+        <div class="flabel">Net Profit Margin, ROA &amp; ROE</div>
+        <div class="fexpr">NPM = Laba Bersih ÷ Pendapatan &nbsp;|&nbsp; ROA = Laba Bersih ÷ Total Aset &nbsp;|&nbsp; ROE = Laba Bersih ÷ Total Ekuitas</div>
+      </div>
+
+      <h4 style="font-family:var(--font-display);color:var(--navy2);margin:16px 0 6px;">Rasio Aktivitas (Activity/Efficiency Ratios)</h4>
+      <p>Mengukur seberapa efisien perusahaan memanfaatkan asetnya untuk menghasilkan pendapatan — relevan untuk menilai utilisasi armada alat berat &amp; efisiensi modal kerja.</p>
+      <div class="formula-card">
+        <div class="flabel">Asset Turnover &amp; Receivable Turnover</div>
+        <div class="fexpr">Asset Turnover = Pendapatan ÷ Total Aset &nbsp;|&nbsp; Receivable Turnover = Pendapatan ÷ Piutang Rata-rata</div>
+      </div>
+
+      <h3 class="subhead">8.3 Interpretasi Terpadu — "Termometer" Kesehatan Keuangan</h3>
+      <p>Rasio-rasio ini paling bermakna saat dibaca sebagai satu kesatuan cerita, bukan angka lepas. Perusahaan dengan current ratio tinggi tapi ROA rendah mungkin menyimpan kas/persediaan berlebihan yang tidak produktif. Perusahaan dengan ROE tinggi tapi DER juga sangat tinggi mungkin hanya "terlihat" profitabel karena leverage, bukan karena efisiensi operasional murni — sehingga ROE idealnya selalu dibaca berdampingan dengan DER untuk menilai apakah return tersebut berasal dari kinerja operasi atau sekadar dari struktur permodalan yang agresif.</p>
+    </div>
+
+    <div class="calc">
+      <div class="ctitle">Kalkulator Interaktif</div>
+      <h4>Kalkulator Rasio Keuangan Dasar</h4>
+      <div class="calc-row">
+        <div><label>Aset Lancar (Rp)</label><input type="number" id="rAset" value="4200000000"></div>
+        <div><label>Liabilitas Lancar (Rp)</label><input type="number" id="rLiab" value="2100000000"></div>
+      </div>
+      <div class="calc-row">
+        <div><label>Total Liabilitas (Rp)</label><input type="number" id="rTotLiab" value="6500000000"></div>
+        <div><label>Total Ekuitas (Rp)</label><input type="number" id="rEkuitas" value="5800000000"></div>
+      </div>
+      <div class="calc-row">
+        <div><label>Laba Bersih (Rp)</label><input type="number" id="rLaba" value="1350000000"></div>
+        <div><label>Pendapatan (Rp)</label><input type="number" id="rPendapatan" value="9200000000"></div>
+      </div>
+      <div class="calc-btns"><button onclick="calcRatio()" type="button">Hitung Rasio</button></div>
+      <div class="calc-result" id="ratioResult" style="display:none;"></div>
+    </div>
+
+    <div class="example">
+      <div class="etag">Contoh Soal 8.1</div>
+      <h5>Menghitung &amp; Menginterpretasi Rasio Dasar</h5>
+      <p>PT Sumber Andesit Jaya memiliki aset lancar Rp 3.500.000.000, liabilitas lancar Rp 2.200.000.000, total liabilitas Rp 5.800.000.000, total ekuitas Rp 4.200.000.000, laba bersih Rp 980.000.000, dan pendapatan Rp 7.600.000.000. Hitung current ratio, DER, NPM, dan ROE, lalu interpretasikan kesehatan finansial perusahaan secara singkat.</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <table>
+            <tr><th>Rasio</th><th>Perhitungan</th><th>Hasil</th></tr>
+            <tr><td>Current Ratio</td><td>3.500.000.000 ÷ 2.200.000.000</td><td>1,59x</td></tr>
+            <tr><td>DER</td><td>5.800.000.000 ÷ 4.200.000.000</td><td>1,38x</td></tr>
+            <tr><td>Net Profit Margin</td><td>980.000.000 ÷ 7.600.000.000</td><td>12,9%</td></tr>
+            <tr><td>ROE</td><td>980.000.000 ÷ 4.200.000.000</td><td class="final">23,3%</td></tr>
+          </table>
+          <p><b>Interpretasi:</b> Current ratio 1,59x menunjukkan perusahaan memiliki aset lancar 1,6 kali lipat kewajiban jangka pendeknya — cukup sehat &amp; berada di atas ambang aman umum (1,0–1,5x). DER 1,38x berarti porsi utang 38% lebih besar dari ekuitas — tergolong wajar untuk industri padat modal seperti tambang, selama arus kas operasi cukup untuk melayani kewajiban tersebut. NPM 12,9% &amp; ROE 23,3% menunjukkan profitabilitas yang solid — namun karena DER cukup tinggi, sebagian dari ROE 23,3% ini kemungkinan terdongkrak oleh efek leverage, bukan semata efisiensi operasional murni, sehingga perlu dicek lebih lanjut dengan ROA (Laba Bersih ÷ Total Aset) untuk melihat profitabilitas murni dari sisi aset, terlepas dari struktur pembiayaan.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="casestudy">
+      <div class="etag">Studi Kasus 8.1 — Tambahan</div>
+      <h5>Menilai Kesehatan Keuangan Perusahaan Jasa Hauling Tambang</h5>
+      <p>PT Karya Angkut Borneo, perusahaan jasa hauling batubara, melaporkan kondisi keuangan akhir tahun sebagai berikut: Aset Lancar Rp 5.100.000.000 (termasuk piutang Rp 3.200.000.000 dari satu klien tambang besar), Liabilitas Lancar Rp 3.800.000.000, Total Aset Rp 18.500.000.000 (didominasi armada dump truck), Total Liabilitas Rp 12.200.000.000, Total Ekuitas Rp 6.300.000.000, Pendapatan Rp 14.800.000.000, dan Laba Bersih Rp 1.180.000.000. Analisis kesehatan keuangan perusahaan &amp; identifikasi risiko utama yang perlu diwaspadai manajemen.</p>
+      <details class="reveal">
+        <summary>Lihat Pembahasan</summary>
+        <div class="reveal-body">
+          <table>
+            <tr><th>Rasio</th><th>Perhitungan</th><th>Hasil</th></tr>
+            <tr><td>Current Ratio</td><td>5.100.000.000 ÷ 3.800.000.000</td><td>1,34x</td></tr>
+            <tr><td>Quick Ratio (asumsi persediaan minim)</td><td>~sama dengan current ratio</td><td>~1,3x</td></tr>
+            <tr><td>DER</td><td>12.200.000.000 ÷ 6.300.000.000</td><td>1,94x</td></tr>
+            <tr><td>Debt to Asset</td><td>12.200.000.000 ÷ 18.500.000.000</td><td>65,9%</td></tr>
+            <tr><td>NPM</td><td>1.180.000.000 ÷ 14.800.000.000</td><td>8,0%</td></tr>
+            <tr><td>ROA</td><td>1.180.000.000 ÷ 18.500.000.000</td><td class="final">6,4%</td></tr>
+            <tr><td>ROE</td><td>1.180.000.000 ÷ 6.300.000.000</td><td class="final">18,7%</td></tr>
+          </table>
+          <p><b>Identifikasi risiko utama:</b></p>
+          <ul>
+            <li><b>Konsentrasi piutang tinggi</b> — Rp 3,2 miliar dari total piutang berasal dari satu klien saja, setara ~63% dari total aset lancar. Jika klien tersebut terlambat bayar atau bermasalah, likuiditas perusahaan akan langsung tertekan meski current ratio di atas kertas terlihat aman (1,34x).</li>
+            <li><b>Leverage cukup tinggi</b> — DER 1,94x &amp; Debt to Asset 65,9% berarti hampir dua pertiga aset dibiayai utang. Ini wajar untuk bisnis padat aset seperti hauling (armada dump truck umumnya dibiayai leasing/pinjaman), namun membuat perusahaan sensitif terhadap kenaikan suku bunga &amp; penurunan volume kontrak.</li>
+            <li><b>Gap ROA vs ROE cukup lebar</b> (6,4% vs 18,7%) — mengonfirmasi bahwa sebagian besar return ke pemegang saham berasal dari efek leverage, bukan semata efisiensi aset. Return murni dari aset (ROA 6,4%) tergolong tipis untuk bisnis padat modal seperti hauling armada berat.</li>
+          </ul>
+          <p><b>Rekomendasi:</b> manajemen sebaiknya (1) mendiversifikasi basis klien agar konsentrasi piutang tidak bertumpu pada satu kontraktor tambang, (2) memantau rasio cakupan bunga (interest coverage ratio) untuk memastikan laba operasi tetap memadai melayani beban bunga di tengah DER yang tinggi, dan (3) mengevaluasi utilisasi armada (rasio aktivitas) untuk mendorong ROA naik mendekati ROE — tanda efisiensi operasional yang membaik, bukan sekadar mengandalkan leverage.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="card print-hide">
+      <h4>Cetak / Simpan Sebagai PDF</h4>
+      <p style="font-size:.9rem;color:var(--slate);margin-bottom:12px;">Gunakan tombol di bawah untuk mencetak seluruh ringkasan ini atau menyimpannya sebagai PDF untuk belajar offline.</p>
+      <button class="print-btn" onclick="window.print()">🖨️ Cetak Halaman Ini</button>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<footer>
+  <b>ANALISIS INVESTASI TAMBANG — RINGKASAN INTERAKTIF</b>
+  <p style="margin:8px 0 0;max-width:680px;">Disusun oleh Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LScm., M.AIB. sebagai ringkasan &amp; panduan belajar mandiri. Seluruh contoh soal &amp; studi kasus pada halaman ini adalah ilustrasi tambahan untuk memperdalam pemahaman konsep, disusun secara independen dan tidak menggantikan studi kelayakan resmi untuk keputusan investasi aktual.</p>
+</footer>
+<script>
+/* ============ Currency formatting helper ============ */
+function fmtRp(n){
+  const neg = n < 0;
+  const v = Math.round(Math.abs(n)).toLocaleString('id-ID');
+  return (neg? "-Rp " : "Rp ") + v;
+}
+function fmtPct(n){ return n.toFixed(2) + "%"; }
+
+/* ============ 4.x — TVM Calculator ============ */
+document.getElementById('tvmMode').addEventListener('change', function(){
+  document.getElementById('tvmAmountLabel').textContent = this.value === 'fv' ? 'Nilai Sekarang / PV (Rp)' : 'Nilai Masa Depan / FV (Rp)';
+});
+function calcTVM(){
+  const mode = document.getElementById('tvmMode').value;
+  const amount = parseFloat(document.getElementById('tvmAmount').value) || 0;
+  const rate = (parseFloat(document.getElementById('tvmRate').value) || 0) / 100;
+  const years = parseFloat(document.getElementById('tvmYears').value) || 0;
+  const box = document.getElementById('tvmResult');
+  box.style.display = 'block';
+  if (mode === 'fv') {
+    const fv = amount * Math.pow(1+rate, years);
+    box.innerHTML = `<div class="rgrid">
+      <div><b>${fmtRp(amount)}</b><span>Nilai Sekarang (PV)</span></div>
+      <div><b style="color:#8FE3A6;">${fmtRp(fv)}</b><span>Nilai Masa Depan (FV)</span></div>
+      <div><b>${(rate*100).toFixed(1)}%</b><span>Suku Bunga / Tahun</span></div>
+      <div><b>${years}</b><span>Tahun</span></div>
+    </div>`;
+  } else {
+    const pv = amount / Math.pow(1+rate, years);
+    box.innerHTML = `<div class="rgrid">
+      <div><b>${fmtRp(amount)}</b><span>Nilai Masa Depan (FV)</span></div>
+      <div><b style="color:#8FE3A6;">${fmtRp(pv)}</b><span>Nilai Sekarang (PV)</span></div>
+      <div><b>${(rate*100).toFixed(1)}%</b><span>Suku Bunga / Tahun</span></div>
+      <div><b>${years}</b><span>Tahun</span></div>
+    </div>`;
+  }
+}
+
+/* ============ 6.x — NPV / IRR / PBP Calculator ============ */
+let cfCount = 0;
+function addCFRow(defaultVal){
+  cfCount++;
+  const row = document.createElement('div');
+  row.className = 'cf-row';
+  row.id = 'cfrow-' + cfCount;
+  row.innerHTML = `<span>Tahun ${cfCount}</span><input type="number" value="${defaultVal!==undefined?defaultVal:0}" id="cfval-${cfCount}"><button type="button" onclick="removeCFRow(${cfCount})">✕</button>`;
+  document.getElementById('cfRows').appendChild(row);
+}
+function removeCFRow(id){
+  const el = document.getElementById('cfrow-'+id);
+  if (el) el.remove();
+}
+function getCFValues(){
+  const rows = document.querySelectorAll('#cfRows .cf-row');
+  const vals = [];
+  rows.forEach(r=>{
+    const input = r.querySelector('input');
+    vals.push(parseFloat(input.value) || 0);
+  });
+  return vals;
+}
+function npvAt(rate, invest, cashflows){
+  let npv = -invest;
+  cashflows.forEach((cf, idx)=>{
+    npv += cf / Math.pow(1+rate, idx+1);
+  });
+  return npv;
+}
+function findIRR(invest, cashflows){
+  // bisection method between -0.9 and 3 (300%)
+  let lo = -0.9, hi = 3.0;
+  let fLo = npvAt(lo, invest, cashflows);
+  let fHi = npvAt(hi, invest, cashflows);
+  if (fLo * fHi > 0) return null; // no sign change, IRR not found in range
+  for (let i=0; i<100; i++){
+    const mid = (lo+hi)/2;
+    const fMid = npvAt(mid, invest, cashflows);
+    if (Math.abs(fMid) < 1e-6) return mid;
+    if (fLo * fMid < 0) { hi = mid; fHi = fMid; } else { lo = mid; fLo = fMid; }
+  }
+  return (lo+hi)/2;
+}
+function calcNPV(){
+  const invest = parseFloat(document.getElementById('npvInvest').value) || 0;
+  const rate = (parseFloat(document.getElementById('npvRate').value) || 0) / 100;
+  const cfs = getCFValues();
+  if (cfs.length === 0) { alert('Tambahkan minimal 1 tahun cashflow.'); return; }
+
+  const npv = npvAt(rate, invest, cfs);
+  const irr = findIRR(invest, cfs);
+
+  // Payback period (undiscounted)
+  let cum = -invest;
+  let pbp = null;
+  for (let i=0; i<cfs.length; i++){
+    const prevCum = cum;
+    cum += cfs[i];
+    if (cum >= 0 && pbp === null){
+      const frac = cfs[i] !== 0 ? (-prevCum)/cfs[i] : 0;
+      pbp = i + frac;
+    }
+  }
+
+  const box = document.getElementById('npvResult');
+  box.style.display = 'block';
+  const npvColor = npv >= 0 ? '#8FE3A6' : '#F3A79C';
+  box.innerHTML = `<div class="rgrid">
+      <div><b style="color:${npvColor};">${fmtRp(npv)}</b><span>NPV</span></div>
+      <div><b>${irr !== null ? fmtPct(irr*100) : 'N/A'}</b><span>IRR (estimasi)</span></div>
+      <div><b>${pbp !== null ? pbp.toFixed(2)+' th' : '> umur proyek'}</b><span>Payback Period</span></div>
+      <div><b>${cfs.length}</b><span>Tahun Proyeksi</span></div>
+    </div>
+    <div class="verdict ${npv>=0?'go':'no'}">${npv>=0 ? '✓ LAYAK — NPV positif, proyek menciptakan nilai di atas discount rate yang disyaratkan.' : '✕ TIDAK LAYAK — NPV negatif pada discount rate ini.'}</div>`;
+}
+
+/* ============ 6.3 — BEP Calculator ============ */
+function calcBEP(){
+  const fixed = parseFloat(document.getElementById('bepFixed').value) || 0;
+  const price = parseFloat(document.getElementById('bepPrice').value) || 0;
+  const varCost = parseFloat(document.getElementById('bepVar').value) || 0;
+  const cap = parseFloat(document.getElementById('bepCap').value) || 0;
+  const box = document.getElementById('bepResult');
+  box.style.display = 'block';
+
+  const contribution = price - varCost;
+  if (contribution <= 0) {
+    box.innerHTML = `<div class="verdict no">✕ Harga jual harus lebih besar dari biaya variabel per unit agar BEP dapat dihitung.</div>`;
+    return;
+  }
+  const bepUnit = fixed / contribution;
+  const bepRp = bepUnit * price;
+  const mos = cap > 0 ? ((cap - bepUnit) / cap) * 100 : null;
+
+  box.innerHTML = `<div class="rgrid">
+      <div><b>${Math.round(bepUnit).toLocaleString('id-ID')}</b><span>BEP (unit/tahun)</span></div>
+      <div><b>${fmtRp(bepRp)}</b><span>BEP (Rupiah/tahun)</span></div>
+      <div><b>${fmtRp(contribution)}</b><span>Margin Kontribusi/unit</span></div>
+      ${mos !== null ? `<div><b style="color:${mos>=0?'#8FE3A6':'#F3A79C'};">${mos.toFixed(1)}%</b><span>Margin of Safety</span></div>` : ''}
+    </div>`;
+}
+
+/* ============ 8.x — Financial Ratio Calculator ============ */
+function calcRatio(){
+  const aset = parseFloat(document.getElementById('rAset').value) || 0;
+  const liab = parseFloat(document.getElementById('rLiab').value) || 1;
+  const totLiab = parseFloat(document.getElementById('rTotLiab').value) || 0;
+  const ekuitas = parseFloat(document.getElementById('rEkuitas').value) || 1;
+  const laba = parseFloat(document.getElementById('rLaba').value) || 0;
+  const pendapatan = parseFloat(document.getElementById('rPendapatan').value) || 1;
+
+  const currentRatio = aset / liab;
+  const der = totLiab / ekuitas;
+  const npm = (laba / pendapatan) * 100;
+  const roe = (laba / ekuitas) * 100;
+
+  const box = document.getElementById('ratioResult');
+  box.style.display = 'block';
+  box.innerHTML = `<div class="rgrid">
+      <div><b>${currentRatio.toFixed(2)}x</b><span>Current Ratio</span></div>
+      <div><b>${der.toFixed(2)}x</b><span>Debt to Equity</span></div>
+      <div><b>${npm.toFixed(1)}%</b><span>Net Profit Margin</span></div>
+      <div><b>${roe.toFixed(1)}%</b><span>Return on Equity</span></div>
+    </div>
+    <div class="verdict ${currentRatio>=1 ? 'go':'no'}">${currentRatio>=1 ? '✓ Likuiditas jangka pendek terjaga (current ratio ≥ 1x).' : '✕ Waspada — aset lancar tidak mencukupi kewajiban jangka pendek.'}</div>`;
+}
+
+/* ============ Initialize default cashflow rows ============ */
+[900000000, 950000000, 1000000000, 1050000000].forEach(v => addCFRow(v));
+
+/* ============ Active chapter nav highlight ============ */
+const navLinks = [...document.querySelectorAll('#chapterNav a')];
+const sections = navLinks.map(a=>document.querySelector(a.getAttribute('href')));
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const id = '#'+entry.target.id;
+      navLinks.forEach(l=>l.classList.toggle('active', l.getAttribute('href')===id));
+    }
+  });
+},{rootMargin:"-40% 0px -50% 0px", threshold:0});
+sections.forEach(s=>s&&obs.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Analyst Pertambangan — Dari Permukaan ke Inti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --soil-black:#15130F;
+  --panel:#1E1B15;
+  --panel-2:#26221A;
+  --line:#3A3427;
+  --cat-yellow:#FFC72C;
+  --copper:#C97A3D;
+  --teal:#3FA593;
+  --text:#F3EEE2;
+  --text-muted:#B5AB96;
+  --danger:#E3583B;
+  --good:#5FB86B;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--soil-black);
+  color:var(--text);
+  font-family:'IBM Plex Sans',sans-serif;
+  line-height:1.6;
+  font-size:16px;
+}
+h1,h2,h3,h4,.display{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.02em;}
+code,.mono,pre{font-family:'IBM Plex Mono',monospace;}
+a{color:var(--cat-yellow);}
+::selection{background:var(--cat-yellow);color:var(--soil-black);}
+
+/* ---------- LAYOUT ---------- */
+.app{display:flex;min-height:100vh;}
+.core-log{
+  width:220px;flex-shrink:0;
+  background:linear-gradient(180deg,#1B1712,#100E0A);
+  border-right:1px solid var(--line);
+  padding:28px 0 28px 0;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.core-log .brand{padding:0 20px 22px 20px;border-bottom:1px solid var(--line);margin-bottom:10px;}
+.core-log .brand .eyebrow{font-size:11px;letter-spacing:0.14em;color:var(--copper);font-family:'Oswald',sans-serif;text-transform:uppercase;}
+.core-log .brand h1{font-size:19px;line-height:1.15;margin-top:6px;color:var(--text);}
+.depth-scale{position:relative;padding:18px 0 18px 20px;}
+.depth-scale::before{
+  content:"";position:absolute;left:29px;top:0;bottom:0;width:2px;
+  background:repeating-linear-gradient(180deg,var(--line) 0 6px, transparent 6px 12px);
+}
+.layer{
+  position:relative;display:flex;align-items:flex-start;gap:12px;
+  padding:16px 14px 16px 0;cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--text-muted);
+}
+.layer .dot{
+  width:18px;height:18px;border-radius:3px;flex-shrink:0;margin-top:2px;z-index:1;
+  border:2px solid var(--soil-black);outline:2px solid var(--line);
+  transition:.25s;
+}
+.layer[data-m="1"] .dot{background:#7C6A4C;}
+.layer[data-m="2"] .dot{background:#4C6A7C;}
+.layer[data-m="3"] .dot{background:#7C4C6E;}
+.layer[data-m="4"] .dot{background:#4C7C55;}
+.layer[data-m="5"] .dot{background:var(--copper);}
+.layer .meta{display:flex;flex-direction:column;}
+.layer .depth{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--copper);}
+.layer .name{font-family:'Oswald',sans-serif;font-size:13.5px;letter-spacing:.02em;color:var(--text-muted);margin-top:2px;text-transform:uppercase;}
+.layer.active .name{color:var(--cat-yellow);}
+.layer.active .dot{outline-color:var(--cat-yellow);transform:scale(1.15);}
+.layer:hover .name{color:var(--text);}
+
+.main{flex:1;min-width:0;}
+.hero{
+  padding:64px 48px 48px 48px;border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255,199,44,0.08), transparent 45%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 26px);
+}
+.hero .eyebrow{color:var(--cat-yellow);font-size:12.5px;letter-spacing:.16em;font-family:'Oswald',sans-serif;}
+.hero h2{font-size:clamp(30px,4vw,50px);margin:12px 0 18px 0;max-width:820px;line-height:1.05;}
+.hero p.lead{color:var(--text-muted);max-width:640px;font-size:16.5px;}
+.hero-stats{display:flex;gap:0;margin-top:32px;flex-wrap:wrap;border:1px solid var(--line);width:fit-content;}
+.hero-stats .stat{padding:16px 26px;border-right:1px solid var(--line);}
+.hero-stats .stat:last-child{border-right:none;}
+.hero-stats .stat b{display:block;font-family:'Oswald',sans-serif;font-size:24px;color:var(--cat-yellow);}
+.hero-stats .stat span{font-size:12px;color:var(--text-muted);}
+
+.content{padding:0 48px 80px 48px;}
+.module{display:none;padding-top:44px;animation:rise .35s ease;}
+.module.active{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.module-head{display:flex;align-items:baseline;gap:16px;border-bottom:2px solid var(--line);padding-bottom:18px;margin-bottom:26px;flex-wrap:wrap;}
+.module-head .num{font-family:'Oswald',sans-serif;font-size:44px;color:var(--panel-2);-webkit-text-stroke:1.5px var(--copper);color:transparent;}
+.module-head h3{font-size:clamp(22px,3vw,32px);color:var(--text);}
+.module-head .depth-tag{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--copper);border:1px solid var(--copper);padding:4px 10px;border-radius:20px;}
+
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:26px;}
+.subtab-btn{
+  background:var(--panel);border:1px solid var(--line);color:var(--text-muted);
+  padding:9px 16px;font-family:'Oswald',sans-serif;font-size:12.5px;letter-spacing:.03em;
+  text-transform:uppercase;cursor:pointer;border-radius:3px;
+}
+.subtab-btn.active{background:var(--cat-yellow);color:var(--soil-black);border-color:var(--cat-yellow);}
+.subtab-btn:hover:not(.active){border-color:var(--copper);color:var(--text);}
+
+.pane{display:none;}
+.pane.active{display:block;animation:rise .3s ease;}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:22px 24px;margin-bottom:18px;}
+.card h4{color:var(--cat-yellow);font-size:16px;margin-bottom:10px;}
+.card p{color:var(--text);margin-bottom:10px;}
+.card ul,.card ol{margin:8px 0 8px 20px;color:var(--text);}
+.card li{margin-bottom:6px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:900px){.grid2{grid-template-columns:1fr;}}
+
+.formula{
+  background:#0F0D09;border-left:3px solid var(--cat-yellow);border-radius:4px;
+  padding:14px 16px;margin:10px 0;font-family:'IBM Plex Mono',monospace;font-size:14.5px;color:#FFE9B0;overflow-x:auto;
+}
+.formula .desc{font-family:'IBM Plex Sans',sans-serif;color:var(--text-muted);font-size:13px;margin-top:6px;}
+
+pre.code{
+  background:#0F0D09;border:1px solid var(--line);border-radius:6px;padding:16px 18px;
+  overflow-x:auto;color:#CDE8DF;font-size:13.5px;margin:10px 0;
+}
+pre.code .kw{color:#FFC72C;}
+pre.code .fn{color:#7DD3C0;}
+pre.code .str{color:#E3A85C;}
+pre.code .cm{color:#7A7261;}
+
+.badge{display:inline-block;background:var(--panel-2);border:1px solid var(--line);color:var(--copper);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:2px 8px;border-radius:10px;margin-right:6px;}
+
+table.data{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px;}
+table.data th{background:var(--panel-2);color:var(--cat-yellow);text-align:left;padding:8px 10px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.03em;text-transform:uppercase;border-bottom:1px solid var(--line);}
+table.data td{padding:7px 10px;border-bottom:1px solid var(--line);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+table.data tr:hover td{background:rgba(255,199,44,0.04);}
+
+.case-box{border:1px solid var(--copper);background:rgba(201,122,61,0.06);border-radius:6px;padding:20px;margin-bottom:14px;}
+.case-box .tag{color:var(--copper);font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;}
+.answer-box{border:1px solid var(--teal);background:rgba(63,165,147,0.07);border-radius:6px;padding:20px;}
+.answer-box .tag{color:var(--teal);font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+@media(max-width:820px){.calc{grid-template-columns:1fr;}}
+.calc label{display:block;font-size:12.5px;color:var(--text-muted);margin:10px 0 4px 0;}
+.calc input{
+  width:100%;background:#0F0D09;border:1px solid var(--line);color:var(--text);
+  padding:9px 10px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:14px;
+}
+.calc input:focus{outline:none;border-color:var(--cat-yellow);}
+.result-tile{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:16px;text-align:center;}
+.result-tile b{display:block;font-family:'Oswald',sans-serif;font-size:26px;color:var(--cat-yellow);}
+.result-tile span{font-size:11.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px;}
+.result-grid.big{grid-template-columns:1fr;}
+.result-grid.big .result-tile b{font-size:38px;}
+
+/* sql playground */
+.qbtns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.qbtn{background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:8px 14px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;cursor:pointer;}
+.qbtn:hover{border-color:var(--cat-yellow);}
+.qbtn.active{background:var(--teal);border-color:var(--teal);color:#06120F;}
+
+/* chart */
+.chart-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.chart-wrap{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:18px;overflow-x:auto;}
+
+/* checklist */
+.checklist{list-style:none;margin:0;}
+.checklist li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);}
+.checklist li:last-child{border-bottom:none;}
+.checklist input{margin-top:4px;accent-color:var(--cat-yellow);width:16px;height:16px;flex-shrink:0;}
+.checklist .txt b{display:block;color:var(--text);}
+.checklist .txt span{font-size:13px;color:var(--text-muted);}
+.checklist li.done .txt b{color:var(--good);text-decoration:line-through;text-decoration-color:var(--line);}
+
+footer{
+  border-top:1px solid var(--line);padding:34px 48px;color:var(--text-muted);font-size:13px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center;
+}
+footer .author{color:var(--cat-yellow);font-family:'Oswald',sans-serif;letter-spacing:.02em;}
+
+@media(max-width:860px){
+  .app{flex-direction:column;}
+  .core-log{width:100%;height:auto;position:relative;overflow-x:auto;padding:16px;}
+  .depth-scale{display:flex;gap:6px;padding:10px 0;}
+  .depth-scale::before{display:none;}
+  .layer{width:auto;flex-direction:column;align-items:center;text-align:center;padding:8px;}
+  .hero,.content{padding-left:20px;padding-right:20px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===================== SIDEBAR: CORE LOG NAVIGATION ===================== -->
+  <nav class="core-log">
+    <div class="brand">
+      <div class="eyebrow">Log Inti Bor · Kurikulum</div>
+      <h1>Data Analyst<br>Pertambangan</h1>
+    </div>
+    <div class="depth-scale">
+      <button class="layer active" data-m="1" onclick="goModule(1)">
+        <span class="dot"></span>
+        <span class="meta"><span class="depth">0–10 m</span><span class="name">01 · Pengantar Industri</span></span>
+      </button>
+      <button class="layer" data-m="2" onclick="goModule(2)">
+        <span class="dot"></span>
+        <span class="meta"><span class="depth">10–30 m</span><span class="name">02 · Dasar SQL</span></span>
+      </button>
+      <button class="layer" data-m="3" onclick="goModule(3)">
+        <span class="dot"></span>
+        <span class="meta"><span class="depth">30–55 m</span><span class="name">03 · Power BI + SQL</span></span>
+      </button>
+      <button class="layer" data-m="4" onclick="goModule(4)">
+        <span class="dot"></span>
+        <span class="meta"><span class="depth">55–75 m</span><span class="name">04 · Visualisasi Data</span></span>
+      </button>
+      <button class="layer" data-m="5" onclick="goModule(5)">
+        <span class="dot"></span>
+        <span class="meta"><span class="depth">75–100 m</span><span class="name">05 · Automasi & Refresh</span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+    <header class="hero">
+      <div class="eyebrow">Program Pelatihan Terstruktur</div>
+      <h2>Menambang keahlian, satu lapisan pada satu waktu.</h2>
+      <p class="lead">Lima modul ini disusun seperti log inti bor: dimulai dari permukaan (mengenal industri & data produksi), lalu semakin dalam ke SQL, Power BI, visualisasi, hingga automasi laporan — dari nol sampai siap bekerja sebagai data analyst di industri pertambangan.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>5</b><span>Modul Bertingkat</span></div>
+        <div class="stat"><b>20+</b><span>Rumus &amp; KPI Tambang</span></div>
+        <div class="stat"><b>5</b><span>Studi Kasus Lapangan</span></div>
+        <div class="stat"><b>3</b><span>Simulasi Interaktif</span></div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- =========================================================
+           MODULE 1
+      ========================================================== -->
+      <section class="module active" id="m1">
+        <div class="module-head">
+          <span class="num">01</span>
+          <h3>Pengantar Industri Pertambangan &amp; Data Produksi</h3>
+          <span class="depth-tag">Fondasi</span>
+        </div>
+
+        <div class="subtabs" data-group="1">
+          <button class="subtab-btn active" onclick="goPane(1,'teori')">Teori</button>
+          <button class="subtab-btn" onclick="goPane(1,'rumus')">Rumus &amp; KPI</button>
+          <button class="subtab-btn" onclick="goPane(1,'langkah')">Alur Data</button>
+          <button class="subtab-btn" onclick="goPane(1,'tutorial')">Kalkulator OEE</button>
+          <button class="subtab-btn" onclick="goPane(1,'kasus')">Studi Kasus</button>
+        </div>
+
+        <div class="pane active" id="m1-teori">
+          <div class="card">
+            <h4>Rantai Nilai Pertambangan (Mining Value Chain)</h4>
+            <p>Sebelum bicara data, seorang data analyst tambang wajib paham dari mana data itu lahir. Rantai nilainya secara umum:</p>
+            <ol>
+              <li><b>Eksplorasi</b> — pemboran &amp; sampling untuk menemukan dan mengukur cadangan (reserve/resource).</li>
+              <li><b>Perencanaan Tambang (Mine Planning)</b> — menentukan urutan penambangan, target produksi, dan desain pit/tambang.</li>
+              <li><b>Penambangan (Mining)</b> — <i>drilling &amp; blasting</i> (pemboran-peledakan), <i>loading</i> (pemuatan), <i>hauling</i> (pengangkutan) — di sinilah sebagian besar data produksi harian lahir.</li>
+              <li><b>Pengolahan (Processing/Plant)</b> — crushing, milling, pemisahan mineral berharga dari material sisa.</li>
+              <li><b>Pengiriman &amp; Penjualan</b> — stockpile, quality control, pengapalan/pengiriman ke pembeli.</li>
+            </ol>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <h4>Jenis-jenis Data di Tambang</h4>
+              <ul>
+                <li><b>Data produksi</b> — tonase, jam kerja, cycle time alat, jarak angkut.</li>
+                <li><b>Data kualitas (grade/quality)</b> — kadar bijih, kadar air, kalori (khusus batubara).</li>
+                <li><b>Data peralatan (equipment/maintenance)</b> — jam operasi, downtime, jadwal servis.</li>
+                <li><b>Data geoteknik &amp; survey</b> — elevasi, volume galian, kestabilan lereng.</li>
+                <li><b>Data HSE &amp; lingkungan</b> — insiden, curah hujan, kualitas udara/air.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h4>Peran Data Analyst Tambang</h4>
+              <p>Menjembatani data mentah dari lapangan (dispatch system, alat berat, laboratorium) menjadi informasi yang dipakai Kepala Teknik Tambang, Superintendent, dan manajemen untuk mengambil keputusan: apakah target tercapai, alat mana yang perlu perbaikan, dan di mana kerugian produksi terjadi.</p>
+              <p>Tools inti: <span class="badge">SQL</span><span class="badge">Power BI</span><span class="badge">Excel</span><span class="badge">Dispatch System</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane" id="m1-rumus">
+          <div class="card">
+            <h4>KPI Produksi &amp; Efisiensi Alat</h4>
+            <p>Ini adalah rumus paling sering dipakai data analyst tambang. Kuasai ini dan 80% laporan harian akan terasa mudah.</p>
+
+            <div class="formula">Availability (A) = (Jam Kerja Terjadwal − Jam Downtime) ÷ Jam Kerja Terjadwal × 100%
+            <div class="desc">Mengukur seberapa lama alat "siap pakai" dibanding waktu yang direncanakan. Downtime = waktu rusak/perbaikan/menunggu part.</div></div>
+
+            <div class="formula">Utilization (U) = Jam Kerja Aktual ÷ (Jam Kerja Terjadwal − Jam Downtime) × 100%
+            <div class="desc">Dari waktu yang tersedia (setelah dikurangi downtime), berapa persen benar-benar dipakai bekerja (bukan idle/menunggu).</div></div>
+
+            <div class="formula">Performance Rate (P) = Tonase Aktual ÷ (Kapasitas Standar Alat × Jam Kerja Aktual) × 100%
+            <div class="desc">Membandingkan produktivitas nyata terhadap kapasitas standar pabrikan alat (ton/jam).</div></div>
+
+            <div class="formula">OEE (Overall Equipment Effectiveness) = A × U × P
+            <div class="desc">Satu angka gabungan efisiensi alat. OEE rendah artinya ada kebocoran di salah satu dari tiga komponen di atas — tugas analyst adalah menemukan yang mana.</div></div>
+
+            <div class="formula">Stripping Ratio (SR) = Volume Overburden/Waste (bcm) ÷ Tonase Ore (ton)
+            <div class="desc">Berapa bank cubic meter tanah penutup yang harus digali untuk mendapat 1 ton bijih. Makin tinggi SR, makin mahal biaya per ton.</div></div>
+
+            <div class="formula">Achievement (%) = Tonase Aktual ÷ Target Tonase × 100%</div>
+
+            <div class="formula">Cost per Ton = Total Biaya Operasi ÷ Total Tonase Produksi
+            <div class="desc">Indikator efisiensi biaya — dipakai untuk membandingkan performa antar shift, pit, atau periode.</div></div>
+
+            <div class="formula">Recovery (%) = Tonase Bijih Terambil ÷ Tonase Bijih dalam Cadangan × 100%
+            <div class="desc">Dipakai di sisi pengolahan (plant) — seberapa banyak mineral berharga berhasil "diselamatkan" dari proses.</div></div>
+
+            <div class="formula">Cycle Time Alat = Waktu Loading + Waktu Hauling + Waktu Dumping + Waktu Kembali (Return)
+            <div class="desc">Total waktu satu siklus dump truck. Semakin pendek cycle time, semakin banyak ritase (jumlah trip) per jam.</div></div>
+          </div>
+        </div>
+
+        <div class="pane" id="m1-langkah">
+          <div class="card">
+            <h4>Bagaimana Data Mengalir dari Lapangan ke Laporan</h4>
+            <ol>
+              <li><b>Input lapangan</b> — operator alat / pengawas mencatat via Dispatch System, RFID, atau form manual (jam mulai/selesai, tonase per ritase, alasan downtime).</li>
+              <li><b>Transfer &amp; penyimpanan</b> — data dikirim (otomatis via sistem, atau input manual) ke database terpusat (SQL Server/MySQL).</li>
+              <li><b>Pembersihan &amp; validasi (data cleaning)</b> — analyst memeriksa data ganda, nilai kosong, satuan yang salah.</li>
+              <li><b>Query &amp; agregasi</b> — menggunakan SQL untuk menjumlah, merata-ratakan, mengelompokkan per shift/alat/pit.</li>
+              <li><b>Pemodelan &amp; visualisasi</b> — data ditarik ke Power BI, dibuat relasi antar tabel, dan dihitung ulang jadi KPI (measure).</li>
+              <li><b>Distribusi laporan</b> — dashboard di-refresh otomatis dan dibagikan ke manajemen setiap shift/hari.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="pane" id="m1-tutorial">
+          <div class="card">
+            <h4>Simulasi: Kalkulator OEE Interaktif</h4>
+            <p>Coba ubah angka di bawah ini seperti data harian sungguhan dan lihat bagaimana Availability, Utilization, Performance, dan OEE berubah secara langsung.</p>
+            <div class="calc">
+              <div>
+                <label>Jam Kerja Terjadwal (jam)</label>
+                <input type="number" id="c_jr" value="16" oninput="calcOEE()">
+                <label>Jam Downtime (jam)</label>
+                <input type="number" id="c_dt" value="2" oninput="calcOEE()">
+                <label>Jam Kerja Aktual (jam)</label>
+                <input type="number" id="c_ja" value="12.5" oninput="calcOEE()">
+                <label>Kapasitas Standar Alat (ton/jam)</label>
+                <input type="number" id="c_kap" value="450" oninput="calcOEE()">
+                <label>Tonase Aktual (ton)</label>
+                <input type="number" id="c_ton" value="4200" oninput="calcOEE()">
+                <label>Target Tonase (ton)</label>
+                <input type="number" id="c_tgt" value="5000" oninput="calcOEE()">
+              </div>
+              <div>
+                <div class="result-grid">
+                  <div class="result-tile"><b id="r_a">–</b><span>Availability</span></div>
+                  <div class="result-tile"><b id="r_u">–</b><span>Utilization</span></div>
+                  <div class="result-tile"><b id="r_p">–</b><span>Performance</span></div>
+                  <div class="result-tile"><b id="r_ach">–</b><span>Achievement</span></div>
+                </div>
+                <div class="result-grid big">
+                  <div class="result-tile" style="border-color:var(--cat-yellow);"><b id="r_oee">–</b><span>OEE Keseluruhan</span></div>
+                </div>
+                <p id="r_note" style="color:var(--text-muted);font-size:13px;margin-top:12px;"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane" id="m1-kasus">
+          <div class="case-box">
+            <div class="tag">Studi Kasus 1.1</div>
+            <p><b>PT Tambang Makmur</b> memiliki 1 unit excavator PC2000 (kapasitas standar 450 ton/jam) dengan jadwal kerja 16 jam/hari. Kemarin tercatat: downtime 2 jam (masalah hidrolik), jam kerja aktual hanya 11 jam (3 jam idle karena menunggu dump truck), dan tonase aktual 3.850 ton dari target 5.500 ton.</p>
+            <p>Pertanyaan: <b>Faktor mana (Availability, Utilization, atau Performance) yang paling besar menyebabkan kerugian produksi? Apa rekomendasinya?</b></p>
+          </div>
+          <div class="answer-box">
+            <div class="tag">Pembahasan</div>
+            <p>A = (16−2)/16 = <b>87,5%</b> — cukup baik, alat memang siap pakai.</p>
+            <p>U = 11/(16−2) = 11/14 = <b>78,6%</b> — ini titik lemahnya: 3 jam waktu tersedia terbuang jadi idle, bukan downtime mesin.</p>
+            <p>P = 3.850 ÷ (450×11) = 3.850/4.950 = <b>77,8%</b> — juga di bawah standar, kemungkinan cycle time memanjang akibat menunggu truck yang sama.</p>
+            <p>OEE = 0,875 × 0,786 × 0,778 ≈ <b>53,5%</b>. Akar masalah sebenarnya bukan pada excavator itu sendiri, melainkan <b>kekurangan unit dump truck (matching factor rendah)</b> — excavator sering menganggur menunggu truck datang. Rekomendasi: audit rasio truck:excavator, evaluasi jarak haul, dan pertimbangkan penambahan unit truck atau perbaikan rute.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           MODULE 2
+      ========================================================== -->
+      <section class="module" id="m2">
+        <div class="module-head">
+          <span class="num">02</span>
+          <h3>Dasar-dasar SQL untuk Data Pertambangan</h3>
+          <span class="depth-tag">Query &amp; Agregasi</span>
+        </div>
+
+        <div class="subtabs" data-group="2">
+          <button class="subtab-btn active" onclick="goPane(2,'teori')">Teori</button>
+          <button class="subtab-btn" onclick="goPane(2,'sintaks')">Sintaks Kunci</button>
+          <button class="subtab-btn" onclick="goPane(2,'tutorial')">Playground SQL</button>
+          <button class="subtab-btn" onclick="goPane(2,'kasus')">Studi Kasus</button>
+        </div>
+
+        <div class="pane active" id="m2-teori">
+          <div class="card">
+            <h4>Struktur Database Produksi Tambang (Contoh)</h4>
+            <p>Bayangkan database tambang punya beberapa tabel yang saling berhubungan (relasional):</p>
+            <ul>
+              <li><span class="badge">tbl_produksi</span> — 1 baris = 1 catatan produksi per shift per unit alat (tanggal, shift, unit, tonase, jam kerja, downtime).</li>
+              <li><span class="badge">tbl_alat</span> — daftar master unit alat (id_unit, jenis alat, kapasitas standar).</li>
+              <li><span class="badge">tbl_operator</span> — daftar operator (id_operator, nama, sertifikasi).</li>
+              <li><span class="badge">tbl_kualitas</span> — hasil sampling kadar bijih per shift/pit.</li>
+            </ul>
+            <p>Data analyst tambang bekerja dengan SQL untuk <b>menarik, memfilter, dan meringkas</b> jutaan baris data mentah ini menjadi angka yang bisa dibaca manajemen dalam hitungan detik — jauh lebih cepat dan konsisten dibanding rekap manual di Excel.</p>
+          </div>
+        </div>
+
+        <div class="pane" id="m2-sintaks">
+          <div class="card">
+            <h4>1. SELECT, WHERE, ORDER BY — Fondasi</h4>
+            <pre class="code"><span class="kw">SELECT</span> tanggal, unit, alat, tonase
+<span class="kw">FROM</span> tbl_produksi
+<span class="kw">WHERE</span> tanggal <span class="kw">BETWEEN</span> <span class="str">'2026-08-01'</span> <span class="kw">AND</span> <span class="str">'2026-08-31'</span>
+  <span class="kw">AND</span> material = <span class="str">'Ore'</span>
+<span class="kw">ORDER BY</span> tonase <span class="kw">DESC</span>;
+<span class="cm">-- Mengambil seluruh catatan produksi ore bulan Agustus, diurutkan dari tonase terbesar</span></pre>
+          </div>
+          <div class="card">
+            <h4>2. Fungsi Agregasi + GROUP BY</h4>
+            <pre class="code"><span class="kw">SELECT</span> unit,
+       <span class="fn">SUM</span>(tonase) <span class="kw">AS</span> total_tonase,
+       <span class="fn">AVG</span>(downtime_jam) <span class="kw">AS</span> rata_downtime,
+       <span class="fn">COUNT</span>(*) <span class="kw">AS</span> jumlah_shift
+<span class="kw">FROM</span> tbl_produksi
+<span class="kw">GROUP BY</span> unit
+<span class="kw">ORDER BY</span> total_tonase <span class="kw">DESC</span>;
+<span class="cm">-- Total & rata-rata per unit alat, untuk membandingkan performa antar alat</span></pre>
+            <p style="color:var(--text-muted);font-size:13px;">Fungsi wajib hafal: <code>SUM()</code>, <code>AVG()</code>, <code>COUNT()</code>, <code>MAX()</code>, <code>MIN()</code>.</p>
+          </div>
+          <div class="card">
+            <h4>3. JOIN — Menggabungkan Tabel</h4>
+            <pre class="code"><span class="kw">SELECT</span> p.tanggal, p.unit, a.jenis_alat, a.kapasitas_standar, p.tonase
+<span class="kw">FROM</span> tbl_produksi p
+<span class="kw">INNER JOIN</span> tbl_alat a <span class="kw">ON</span> p.unit = a.id_unit
+<span class="kw">WHERE</span> a.jenis_alat = <span class="str">'Excavator'</span>;
+<span class="cm">-- Menggabungkan data produksi dengan data master alat</span></pre>
+          </div>
+          <div class="card">
+            <h4>4. CASE WHEN — Logika Kondisional</h4>
+            <pre class="code"><span class="kw">SELECT</span> unit,
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> tonase &gt;= target <span class="kw">THEN</span> <span class="str">'Tercapai'</span>
+    <span class="kw">WHEN</span> tonase &gt;= target*0.9 <span class="kw">THEN</span> <span class="str">'Mendekati'</span>
+    <span class="kw">ELSE</span> <span class="str">'Di Bawah Target'</span>
+  <span class="kw">END</span> <span class="kw">AS</span> status_capaian
+<span class="kw">FROM</span> tbl_produksi;</pre>
+          </div>
+          <div class="card">
+            <h4>5. Subquery &amp; Window Function (Level Lanjut)</h4>
+            <pre class="code"><span class="cm">-- Cari unit dengan tonase di atas rata-rata seluruh unit</span>
+<span class="kw">SELECT</span> unit, <span class="fn">SUM</span>(tonase) <span class="kw">AS</span> total
+<span class="kw">FROM</span> tbl_produksi
+<span class="kw">GROUP BY</span> unit
+<span class="kw">HAVING</span> <span class="fn">SUM</span>(tonase) &gt; (<span class="kw">SELECT</span> <span class="fn">AVG</span>(tonase) <span class="kw">FROM</span> tbl_produksi);
+
+<span class="cm">-- Ranking unit berdasarkan tonase per hari (window function)</span>
+<span class="kw">SELECT</span> tanggal, unit, tonase,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> tanggal <span class="kw">ORDER BY</span> tonase <span class="kw">DESC</span>) <span class="kw">AS</span> peringkat
+<span class="kw">FROM</span> tbl_produksi;</pre>
+          </div>
+        </div>
+
+        <div class="pane" id="m2-tutorial">
+          <div class="card">
+            <h4>Playground SQL — Coba di Data Sungguhan</h4>
+            <p>Berikut sample data produksi 12 shift. Klik salah satu query untuk melihat hasilnya seperti sungguhan dijalankan di database.</p>
+            <div class="qbtns">
+              <button class="qbtn active" onclick="runQuery('q1',this)">Total tonase per unit</button>
+              <button class="qbtn" onclick="runQuery('q2',this)">Rata-rata downtime per shift</button>
+              <button class="qbtn" onclick="runQuery('q3',this)">Produksi di bawah target</button>
+              <button class="qbtn" onclick="runQuery('q4',this)">3 performa terendah (achievement %)</button>
+            </div>
+            <pre class="code" id="q_sql"></pre>
+            <div id="q_result"></div>
+          </div>
+        </div>
+
+        <div class="pane" id="m2-kasus">
+          <div class="case-box">
+            <div class="tag">Studi Kasus 2.1</div>
+            <p>Superintendent produksi minta laporan: <b>"Shift mana yang paling sering mengalami downtime tinggi, dan alat apa penyebab utamanya?"</b> Tuliskan query SQL untuk menjawabnya, dengan asumsi ada kolom <code>alasan_downtime</code> di <code>tbl_produksi</code>.</p>
+          </div>
+          <div class="answer-box">
+            <div class="tag">Pembahasan</div>
+            <pre class="code"><span class="kw">SELECT</span> shift, alasan_downtime,
+       <span class="fn">COUNT</span>(*) <span class="kw">AS</span> jumlah_kejadian,
+       <span class="fn">SUM</span>(downtime_jam) <span class="kw">AS</span> total_jam_downtime
+<span class="kw">FROM</span> tbl_produksi
+<span class="kw">GROUP BY</span> shift, alasan_downtime
+<span class="kw">ORDER BY</span> total_jam_downtime <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> 5;</pre>
+            <p>Query ini mengelompokkan downtime berdasarkan <i>shift</i> dan <i>alasan</i>, lalu mengurutkan dari total jam terbesar — sehingga langsung terlihat kombinasi shift + penyebab yang paling banyak menggerus jam produktif. Dari sini analyst bisa merekomendasikan tindakan spesifik (misal: jika penyebab dominan "menunggu spare part" di shift malam, mungkin perlu stok part di gudang shift malam).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           MODULE 3
+      ========================================================== -->
+      <section class="module" id="m3">
+        <div class="module-head">
+          <span class="num">03</span>
+          <h3>Power BI &amp; Integrasi SQL</h3>
+          <span class="depth-tag">Pemodelan Data</span>
+        </div>
+
+        <div class="subtabs" data-group="3">
+          <button class="subtab-btn active" onclick="goPane(3,'teori')">Teori</button>
+          <button class="subtab-btn" onclick="goPane(3,'dax')">DAX &amp; Power Query</button>
+          <button class="subtab-btn" onclick="goPane(3,'langkah')">Langkah Membangun</button>
+          <button class="subtab-btn" onclick="goPane(3,'kasus')">Studi Kasus</button>
+        </div>
+
+        <div class="pane active" id="m3-teori">
+          <div class="card">
+            <h4>Arsitektur Power BI</h4>
+            <div class="grid2">
+              <div>
+                <ul>
+                  <li><b>Power Query (Get &amp; Transform)</b> — tempat menyambungkan ke SQL Server/database dan membersihkan data (mengubah tipe kolom, menghapus duplikat, pivot/unpivot).</li>
+                  <li><b>Data Model</b> — tempat mengatur relasi antar tabel (skema bintang / star schema).</li>
+                  <li><b>DAX (Data Analysis Expressions)</b> — bahasa formula untuk membuat measure/KPI seperti OEE, Achievement %, dsb.</li>
+                  <li><b>Report</b> — kanvas visualisasi (chart, kartu KPI, slicer/filter).</li>
+                </ul>
+              </div>
+              <div>
+                <p><b>Import vs DirectQuery:</b></p>
+                <ul>
+                  <li><b>Import</b> — data disalin ke Power BI, sangat cepat, tapi butuh refresh berkala.</li>
+                  <li><b>DirectQuery</b> — Power BI mengambil data langsung dari SQL setiap kali dibuka, selalu real-time, tapi kecepatan tergantung performa database.</li>
+                </ul>
+                <p>Untuk laporan produksi harian tambang, kombinasi umum: <b>Import + scheduled refresh</b> tiap beberapa jam (dibahas di Modul 5).</p>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h4>Star Schema untuk Data Produksi</h4>
+            <p>Model data yang direkomendasikan:</p>
+            <ul>
+              <li><b>Fact_Produksi</b> (tabel fakta) — baris transaksi harian: tonase, jam kerja, downtime.</li>
+              <li><b>Dim_Alat</b>, <b>Dim_Tanggal</b>, <b>Dim_Operator</b>, <b>Dim_Pit</b> (tabel dimensi) — untuk memfilter dan mengelompokkan fact table dari berbagai sudut.</li>
+            </ul>
+            <p>Struktur ini membuat dashboard cepat dan fleksibel — pengguna bisa filter berdasarkan tanggal, jenis alat, atau pit tanpa mengubah query dasar.</p>
+          </div>
+        </div>
+
+        <div class="pane" id="m3-dax">
+          <div class="card">
+            <h4>Measure DAX yang Wajib Dikuasai</h4>
+            <pre class="code"><span class="cm">// Total Tonase</span>
+Total Tonase = <span class="fn">SUM</span>(Fact_Produksi[tonase])
+
+<span class="cm">// Achievement % terhadap target</span>
+Achievement % =
+<span class="fn">DIVIDE</span>(
+    [Total Tonase],
+    <span class="fn">SUM</span>(Fact_Produksi[target]),
+    0
+)
+
+<span class="cm">// Availability (measure gabungan)</span>
+Availability % =
+<span class="fn">DIVIDE</span>(
+    <span class="fn">SUM</span>(Fact_Produksi[jam_rencana]) - <span class="fn">SUM</span>(Fact_Produksi[jam_downtime]),
+    <span class="fn">SUM</span>(Fact_Produksi[jam_rencana]),
+    0
+)
+
+<span class="cm">// OEE gabungan menggunakan CALCULATE & FILTER</span>
+OEE % = [Availability %] * [Utilization %] * [Performance %]
+
+<span class="cm">// Total tonase bulan berjalan (Month-to-Date)</span>
+Tonase MTD =
+<span class="fn">CALCULATE</span>(
+    [Total Tonase],
+    <span class="fn">DATESMTD</span>('Dim_Tanggal'[Tanggal])
+)</pre>
+            <p style="color:var(--text-muted);font-size:13px;">Fungsi kunci: <code>SUM</code>, <code>DIVIDE</code> (aman dari error pembagian nol), <code>CALCULATE</code> (mengubah konteks filter), <code>FILTER</code>, <code>ALL</code>, <code>SUMX</code> (agregasi per baris), <code>RELATED</code> (menarik kolom dari tabel dimensi).</p>
+          </div>
+          <div class="card">
+            <h4>Contoh Power Query (M) — Membersihkan Data</h4>
+            <pre class="code">= <span class="fn">Table.SelectRows</span>(
+    Source,
+    <span class="kw">each</span> [tonase] &lt;&gt; <span class="kw">null</span> <span class="kw">and</span> [tonase] &gt; 0
+  )
+<span class="cm">// Menghapus baris dengan tonase kosong atau negatif sebelum masuk ke Data Model</span></pre>
+          </div>
+        </div>
+
+        <div class="pane" id="m3-langkah">
+          <div class="card">
+            <h4>Langkah Membangun Dashboard dari SQL ke Power BI</h4>
+            <ol>
+              <li><b>Get Data → SQL Server.</b> Masukkan nama server &amp; database, pilih Import atau DirectQuery.</li>
+              <li><b>Power Query Editor.</b> Pilih tabel yang diperlukan (fact &amp; dimension), buang kolom tidak relevan, atur tipe data (Date, Whole Number, Decimal).</li>
+              <li><b>Load ke Data Model.</b> Di tab Model, tarik relasi dari <code>Fact_Produksi[id_unit]</code> ke <code>Dim_Alat[id_unit]</code> (dan seterusnya untuk tanggal, operator).</li>
+              <li><b>Buat Measure.</b> New Measure → tulis formula DAX (lihat tab DAX di atas).</li>
+              <li><b>Susun Report.</b> Tambahkan kartu KPI (card visual) untuk Total Tonase &amp; OEE, bar chart untuk perbandingan antar unit, line chart untuk tren harian.</li>
+              <li><b>Tambahkan Slicer.</b> Filter interaktif untuk tanggal, shift, dan jenis alat agar pengguna bisa eksplorasi sendiri.</li>
+              <li><b>Publish ke Power BI Service</b> agar bisa diakses tim dan dijadwalkan refresh otomatis (lanjut ke Modul 5).</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="pane" id="m3-kasus">
+          <div class="case-box">
+            <div class="tag">Studi Kasus 3.1</div>
+            <p>Manajemen ingin melihat <b>tren Achievement % per minggu</b>, tapi tabel <code>Fact_Produksi</code> hanya punya data harian. Bagaimana Anda membuat visual mingguan tanpa mengubah struktur tabel sumber?</p>
+          </div>
+          <div class="answer-box">
+            <div class="tag">Pembahasan</div>
+            <p>Solusinya bukan mengubah tabel fakta, tapi memanfaatkan <b>Dim_Tanggal (date table)</b> yang sudah punya kolom "Minggu ke-" atau "ISO Week". Buat measure baru:</p>
+            <pre class="code">Tonase Mingguan =
+<span class="fn">CALCULATE</span>(
+    [Total Tonase],
+    <span class="fn">ALLEXCEPT</span>(Fact_Produksi, 'Dim_Tanggal'[Minggu])
+)</pre>
+            <p>Lalu gunakan kolom <code>Dim_Tanggal[Minggu]</code> sebagai sumbu-X pada line chart. Power BI otomatis mengagregasi data harian menjadi mingguan berkat relasi Dim_Tanggal — tanpa perlu mengubah satu baris pun di database sumber.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           MODULE 4
+      ========================================================== -->
+      <section class="module" id="m4">
+        <div class="module-head">
+          <span class="num">04</span>
+          <h3>Visualisasi Data Produksi</h3>
+          <span class="depth-tag">Komunikasi Data</span>
+        </div>
+
+        <div class="subtabs" data-group="4">
+          <button class="subtab-btn active" onclick="goPane(4,'teori')">Teori</button>
+          <button class="subtab-btn" onclick="goPane(4,'panduan')">Memilih Chart</button>
+          <button class="subtab-btn" onclick="goPane(4,'tutorial')">Demo Interaktif</button>
+          <button class="subtab-btn" onclick="goPane(4,'kasus')">Studi Kasus</button>
+        </div>
+
+        <div class="pane active" id="m4-teori">
+          <div class="card">
+            <h4>Prinsip Dashboard yang Baik</h4>
+            <ul>
+              <li><b>Data-ink ratio tinggi</b> — hilangkan elemen dekoratif yang tidak menambah informasi (gridlines berlebih, 3D chart, bayangan).</li>
+              <li><b>Satu tujuan per visual</b> — jangan gabungkan terlalu banyak metrik dalam satu chart hingga sulit dibaca dalam 5 detik.</li>
+              <li><b>Warna sebagai sinyal, bukan hiasan</b> — gunakan merah/kuning/hijau konsisten untuk status "di bawah target / mendekati / tercapai", bukan warna acak per kategori.</li>
+              <li><b>Urutan sesuai kepentingan bisnis</b> — KPI paling penting (OEE, Achievement) di kiri-atas, detail pendukung di bawah.</li>
+              <li><b>Konteks pembanding</b> — angka tanpa target/rata-rata historis sulit dimaknai; selalu tampilkan pembanding.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pane" id="m4-panduan">
+          <div class="card">
+            <h4>Memilih Jenis Chart untuk Data Tambang</h4>
+            <table class="data">
+              <tr><th>Kebutuhan</th><th>Chart</th><th>Contoh Pemakaian</th></tr>
+              <tr><td>Tren dari waktu ke waktu</td><td>Line chart</td><td>Tonase harian sebulan</td></tr>
+              <tr><td>Perbandingan antar kategori</td><td>Bar / column chart</td><td>Tonase per unit alat</td></tr>
+              <tr><td>Progres terhadap target</td><td>Gauge / KPI card</td><td>Achievement % hari ini</td></tr>
+              <tr><td>Pola waktu × kategori</td><td>Heatmap</td><td>Downtime per jam per unit</td></tr>
+              <tr><td>Jadwal &amp; durasi kegiatan</td><td>Gantt chart</td><td>Jadwal maintenance alat</td></tr>
+              <tr><td>Komposisi bagian dari keseluruhan</td><td>Stacked bar / donut</td><td>Alasan downtime (proporsi)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="pane" id="m4-tutorial">
+          <div class="card">
+            <h4>Demo: Dashboard Produksi Interaktif</h4>
+            <p>Pilih metrik untuk melihat bagaimana chart dan insight berubah — persis logika slicer pada Power BI.</p>
+            <div class="chart-controls">
+              <button class="qbtn active" onclick="renderChart('tonase',this)">Total Tonase per Unit</button>
+              <button class="qbtn" onclick="renderChart('downtime',this)">Rata-rata Downtime (jam)</button>
+              <button class="qbtn" onclick="renderChart('achievement',this)">Achievement % per Unit</button>
+            </div>
+            <div class="chart-wrap"><svg id="chartSvg" width="100%" height="280" viewBox="0 0 720 280"></svg></div>
+            <p id="chartInsight" style="color:var(--text-muted);font-size:13px;margin-top:10px;"></p>
+          </div>
+        </div>
+
+        <div class="pane" id="m4-kasus">
+          <div class="case-box">
+            <div class="tag">Studi Kasus 4.1</div>
+            <p>Dashboard menunjukkan tonase harian tiba-tiba turun 40% pada tanggal tertentu, padahal jumlah alat dan jam kerja normal. Visual apa yang Anda tambahkan untuk membantu tim <b>menemukan akar masalah dengan cepat</b>?</p>
+          </div>
+          <div class="answer-box">
+            <div class="tag">Pembahasan</div>
+            <p>Satu line chart tren saja tidak cukup untuk diagnosis — ia hanya menunjukkan <i>bahwa</i> ada masalah, bukan <i>mengapa</i>. Tambahkan:</p>
+            <ul>
+              <li><b>Breakdown per unit</b> (bar chart) pada tanggal tersebut — apakah penurunan merata di semua alat atau hanya 1-2 unit?</li>
+              <li><b>Heatmap alasan downtime</b> — untuk melihat apakah ada lonjakan jenis downtime tertentu (misal cuaca/hujan) pada hari itu.</li>
+              <li><b>Overlay data curah hujan</b> jika tersedia — di tambang terbuka, hujan deras sering jadi penyebab dominan penurunan produksi mendadak.</li>
+            </ul>
+            <p>Prinsipnya: dashboard yang baik tidak berhenti di "apa yang terjadi", tapi menyediakan jalur drill-down menuju "mengapa terjadi".</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================
+           MODULE 5
+      ========================================================== -->
+      <section class="module" id="m5">
+        <div class="module-head">
+          <span class="num">05</span>
+          <h3>Automasi &amp; Refresh Data</h3>
+          <span class="depth-tag">Inti · Produksi Skala Penuh</span>
+        </div>
+
+        <div class="subtabs" data-group="5">
+          <button class="subtab-btn active" onclick="goPane(5,'teori')">Teori</button>
+          <button class="subtab-btn" onclick="goPane(5,'langkah')">Setup Refresh</button>
+          <button class="subtab-btn" onclick="goPane(5,'tutorial')">Checklist Interaktif</button>
+          <button class="subtab-btn" onclick="goPane(5,'kasus')">Studi Kasus</button>
+        </div>
+
+        <div class="pane active" id="m5-teori">
+          <div class="card">
+            <h4>Mengapa Automasi Penting</h4>
+            <p>Laporan yang dibuat manual setiap hari rawan telat dan salah ketik — padahal keputusan operasional tambang (kirim truck tambahan, panggil teknisi, hentikan pit karena hujan) butuh data yang <b>selalu terbaru</b>. Automasi mengubah dashboard dari "laporan kemarin" menjadi "kondisi hari ini".</p>
+            <h4 style="margin-top:16px;">Arsitektur Pipeline Otomatis</h4>
+            <p><code>Sumber Data (Dispatch System / SQL Server on-premise)</code> → <code>Data Gateway</code> → <code>Dataset Power BI</code> → <code>Scheduled Refresh</code> → <code>Report/Dashboard live</code> → <code>Distribusi (Teams/Email/WhatsApp via Power Automate)</code></p>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <h4>Scheduled Refresh</h4>
+              <p>Power BI Service menarik ulang data dari sumber pada jadwal yang ditentukan (misal setiap 3 jam), cocok untuk laporan produksi shift.</p>
+            </div>
+            <div class="card">
+              <h4>Incremental Refresh</h4>
+              <p>Untuk tabel besar (jutaan baris histori), hanya partisi data terbaru yang di-refresh — bukan seluruh tabel — sehingga jauh lebih cepat dan hemat resource.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pane" id="m5-langkah">
+          <div class="card">
+            <h4>Langkah Setup Scheduled Refresh (SQL Server On-Premise → Power BI Service)</h4>
+            <ol>
+              <li>Install <b>On-premises Data Gateway</b> di server yang punya akses ke database SQL tambang.</li>
+              <li>Daftarkan gateway ke akun Power BI Service organisasi, dan tambahkan koneksi data source (server + database + kredensial).</li>
+              <li>Publish laporan dari Power BI Desktop ke Power BI Service (<i>Publish</i> → pilih workspace).</li>
+              <li>Di Power BI Service, buka <i>Dataset Settings</i> → <i>Gateway connection</i> → hubungkan ke gateway yang sudah didaftarkan.</li>
+              <li>Aktifkan <i>Scheduled Refresh</i>, atur frekuensi (misal 3× sehari sesuai jadwal shift) dan zona waktu.</li>
+              <li>Untuk tabel historis besar, konfigurasi <i>Incremental Refresh policy</i> di Power BI Desktop sebelum publish (misal: simpan 2 tahun, refresh hanya 7 hari terakhir).</li>
+              <li>Uji dengan <i>Refresh Now</i>, periksa riwayat refresh untuk memastikan tidak ada error kredensial/koneksi.</li>
+              <li>Siapkan notifikasi otomatis dengan <b>Power Automate</b> (misal: kirim ringkasan Achievement % harian ke grup WhatsApp/Teams setiap pukul 07:00).</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="pane" id="m5-tutorial">
+          <div class="card">
+            <h4>Checklist Interaktif — Sebelum Dashboard Dianggap "Siap Produksi"</h4>
+            <ul class="checklist" id="checklist"></ul>
+          </div>
+        </div>
+
+        <div class="pane" id="m5-kasus">
+          <div class="case-box">
+            <div class="tag">Studi Kasus 5.1</div>
+            <p>Tim shift malam sering terlambat menerima laporan produksi karena harus menunggu analyst membuka laptop dan export manual. Bagaimana Anda merancang automasi agar laporan sampai <b>tanpa campur tangan manusia</b> setiap pergantian shift?</p>
+          </div>
+          <div class="answer-box">
+            <div class="tag">Pembahasan</div>
+            <ol>
+              <li>Pastikan dataset di Power BI Service memakai <b>scheduled refresh</b> tepat sebelum jam pergantian shift (misal pukul 06:50, 14:50, 22:50 untuk shift pukul 07:00/15:00/23:00).</li>
+              <li>Buat alur di <b>Power Automate</b> dengan trigger "Recurrence" yang berjalan beberapa menit setelah refresh selesai.</li>
+              <li>Alur tersebut mengambil nilai measure kunci (Total Tonase, Achievement %, OEE) lewat konektor Power BI, lalu memformatnya jadi pesan singkat.</li>
+              <li>Kirim otomatis ke grup Teams/WhatsApp Business API/email distribusi shift terkait.</li>
+              <li>Tambahkan kondisi <i>alert</i>: jika Achievement % di bawah 80%, tandai pesan sebagai prioritas/tambahkan mention ke Superintendent.</li>
+            </ol>
+            <p>Hasilnya: laporan sampai otomatis, konsisten, dan bahkan bisa memicu eskalasi otomatis saat performa di bawah ambang batas — tanpa menunggu analyst standby 24 jam.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer>
+      <span>Materi pelatihan Data Analyst Pertambangan — teori, rumus, tutorial, dan studi kasus disusun bertingkat dari dasar hingga mahir.</span>
+      <span>Dibuat oleh <span class="author">Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.</span></span>
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ===================== NAVIGATION ===================== */
+function goModule(n){
+  document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
+  document.getElementById('m'+n).classList.add('active');
+  document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active'));
+  document.querySelector('.layer[data-m="'+n+'"]').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goPane(group,name){
+  const mod = document.getElementById('m'+group);
+  mod.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  mod.querySelector('#m'+group+'-'+name).classList.add('active');
+  mod.querySelectorAll('.subtabs[data-group="'+group+'"] .subtab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+/* ===================== SAMPLE DATA ===================== */
+const sampleData = [
+  {tgl:'2026-08-01',shift:'Shift 1',unit:'EX-01',alat:'Excavator PC2000',material:'Ore', jr:16,ja:14, dt:1, tonase:5200, target:5500, kap:450},
+  {tgl:'2026-08-01',shift:'Shift 2',unit:'EX-01',alat:'Excavator PC2000',material:'Ore', jr:16,ja:12.5,dt:2, tonase:4200, target:5500, kap:450},
+  {tgl:'2026-08-01',shift:'Shift 1',unit:'EX-02',alat:'Excavator PC1250',material:'Waste',jr:16,ja:13, dt:1.5,tonase:3100, target:3600, kap:300},
+  {tgl:'2026-08-01',shift:'Shift 2',unit:'EX-02',alat:'Excavator PC1250',material:'Waste',jr:16,ja:11, dt:3, tonase:2500, target:3600, kap:300},
+  {tgl:'2026-08-02',shift:'Shift 1',unit:'EX-01',alat:'Excavator PC2000',material:'Ore', jr:16,ja:15, dt:0.5,tonase:5600, target:5500, kap:450},
+  {tgl:'2026-08-02',shift:'Shift 2',unit:'EX-01',alat:'Excavator PC2000',material:'Ore', jr:16,ja:11, dt:3, tonase:3800, target:5500, kap:450},
+  {tgl:'2026-08-02',shift:'Shift 1',unit:'EX-02',alat:'Excavator PC1250',material:'Waste',jr:16,ja:14, dt:1, tonase:3900, target:3600, kap:300},
+  {tgl:'2026-08-02',shift:'Shift 2',unit:'DT-05',alat:'Dump Truck HD785',material:'Ore', jr:16,ja:13.5,dt:1, tonase:2100, target:2400, kap:120},
+  {tgl:'2026-08-03',shift:'Shift 1',unit:'DT-05',alat:'Dump Truck HD785',material:'Ore', jr:16,ja:15, dt:0.5,tonase:2450, target:2400, kap:120},
+  {tgl:'2026-08-03',shift:'Shift 2',unit:'DT-07',alat:'Dump Truck HD785',material:'Waste',jr:16,ja:9,  dt:4, tonase:1300, target:2400, kap:120},
+  {tgl:'2026-08-03',shift:'Shift 1',unit:'EX-01',alat:'Excavator PC2000',material:'Ore', jr:16,ja:14.5,dt:1, tonase:5400, target:5500, kap:450},
+  {tgl:'2026-08-03',shift:'Shift 2',unit:'EX-02',alat:'Excavator PC1250',material:'Waste',jr:16,ja:12, dt:2, tonase:3300, target:3600, kap:300},
+];
+
+/* ===================== OEE CALCULATOR ===================== */
+function calcOEE(){
+  const jr = parseFloat(document.getElementById('c_jr').value)||0;
+  const dt = parseFloat(document.getElementById('c_dt').value)||0;
+  const ja = parseFloat(document.getElementById('c_ja').value)||0;
+  const kap = parseFloat(document.getElementById('c_kap').value)||0;
+  const ton = parseFloat(document.getElementById('c_ton').value)||0;
+  const tgt = parseFloat(document.getElementById('c_tgt').value)||0;
+
+  const avail = jr>0 ? ((jr-dt)/jr)*100 : 0;
+  const util = (jr-dt)>0 ? (ja/(jr-dt))*100 : 0;
+  const perf = (kap*ja)>0 ? (ton/(kap*ja))*100 : 0;
+  const oee = (avail/100)*(util/100)*(perf/100)*100;
+  const ach = tgt>0 ? (ton/tgt)*100 : 0;
+
+  document.getElementById('r_a').textContent = avail.toFixed(1)+'%';
+  document.getElementById('r_u').textContent = util.toFixed(1)+'%';
+  document.getElementById('r_p').textContent = perf.toFixed(1)+'%';
+  document.getElementById('r_ach').textContent = ach.toFixed(1)+'%';
+  document.getElementById('r_oee').textContent = oee.toFixed(1)+'%';
+
+  let note = '';
+  const vals = {Availability:avail,Utilization:util,Performance:perf};
+  const worst = Object.keys(vals).reduce((a,b)=> vals[a]<vals[b]?a:b);
+  if(oee < 60){ note = 'OEE di bawah 60% — komponen paling lemah saat ini adalah '+worst+'. Fokuskan investigasi di sana terlebih dahulu.'; }
+  else if(oee < 80){ note = 'OEE cukup baik namun masih ada ruang perbaikan pada '+worst+'.'; }
+  else { note = 'OEE sangat baik — pertahankan performa ini.'; }
+  document.getElementById('r_note').textContent = note;
+}
+calcOEE();
+
+/* ===================== SQL PLAYGROUND ===================== */
+const queries = {
+  q1: {
+    sql: "SELECT unit, SUM(tonase) AS total_tonase\nFROM tbl_produksi\nGROUP BY unit\nORDER BY total_tonase DESC;",
+    run: () => {
+      const map = {};
+      sampleData.forEach(r=>{ map[r.unit] = (map[r.unit]||0) + r.tonase; });
+      return {cols:['unit','total_tonase'], rows: Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([unit,t])=>[unit,t.toLocaleString('id-ID')])};
+    }
+  },
+  q2: {
+    sql: "SELECT shift, AVG(dt) AS rata_downtime_jam\nFROM tbl_produksi\nGROUP BY shift;",
+    run: () => {
+      const map = {};
+      sampleData.forEach(r=>{ (map[r.shift]=map[r.shift]||[]).push(r.dt); });
+      return {cols:['shift','rata_downtime_jam'], rows: Object.entries(map).map(([s,arr])=>[s,(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(2)])};
+    }
+  },
+  q3: {
+    sql: "SELECT tgl, unit, tonase, target\nFROM tbl_produksi\nWHERE tonase < target;",
+    run: () => {
+      const rows = sampleData.filter(r=>r.tonase<r.target).map(r=>[r.tgl,r.unit,r.tonase,r.target]);
+      return {cols:['tgl','unit','tonase','target'], rows};
+    }
+  },
+  q4: {
+    sql: "SELECT unit, alat, ROUND(tonase/target*100,1) AS achievement_pct\nFROM tbl_produksi\nORDER BY achievement_pct ASC\nLIMIT 3;",
+    run: () => {
+      const rows = sampleData.map(r=>[r.unit,r.alat,(r.tonase/r.target*100).toFixed(1)+'%'])
+        .sort((a,b)=> parseFloat(a[2])-parseFloat(b[2])).slice(0,3);
+      return {cols:['unit','alat','achievement_pct'], rows};
+    }
+  }
+};
+function runQuery(id, btn){
+  document.querySelectorAll('#m2-tutorial .qbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('q_sql').textContent = queries[id].sql;
+  const {cols, rows} = queries[id].run();
+  let html = '<table class="data"><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>';
+  rows.forEach(r=> html += '<tr>'+r.map(v=>'<td>'+v+'</td>').join('')+'</tr>');
+  html += '</table>';
+  document.getElementById('q_result').innerHTML = html;
+}
+runQuery('q1', document.querySelector('#m2-tutorial .qbtn'));
+
+/* ===================== CHART DEMO ===================== */
+function aggregateByUnit(metric){
+  const map = {};
+  sampleData.forEach(r=>{
+    if(!map[r.unit]) map[r.unit] = {tonase:0,dtSum:0,count:0,achSum:0};
+    map[r.unit].tonase += r.tonase;
+    map[r.unit].dtSum += r.dt;
+    map[r.unit].achSum += (r.tonase/r.target*100);
+    map[r.unit].count += 1;
+  });
+  return Object.entries(map).map(([unit,v])=>{
+    let val;
+    if(metric==='tonase') val = v.tonase;
+    else if(metric==='downtime') val = v.dtSum/v.count;
+    else val = v.achSum/v.count;
+    return {unit, val};
+  });
+}
+function renderChart(metric, btn){
+  if(btn){
+    document.querySelectorAll('#m4-tutorial .qbtn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const data = aggregateByUnit(metric);
+  const svg = document.getElementById('chartSvg');
+  const max = Math.max(...data.map(d=>d.val)) * 1.15;
+  const barW = 640/data.length - 20;
+  let bars = '';
+  data.forEach((d,i)=>{
+    const h = (d.val/max)*200;
+    const x = 40 + i*(barW+20);
+    const y = 230 - h;
+    const color = metric==='downtime' ? (d.val>2.5?'#E3583B':'#3FA593') : (d.val<90?'#E3583B':'#5FB86B');
+    bars += `<rect x="${x}" y="${y}" width="${barW}" height="${h}" fill="${color}" rx="3"></rect>`;
+    bars += `<text x="${x+barW/2}" y="${y-8}" fill="#F3EEE2" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">${metric==='tonase'?d.val.toLocaleString('id-ID'):d.val.toFixed(1)+(metric==='achievement'?'%':'j')}</text>`;
+    bars += `<text x="${x+barW/2}" y="250" fill="#B5AB96" font-size="12" text-anchor="middle" font-family="IBM Plex Mono">${d.unit}</text>`;
+  });
+  bars += `<line x1="30" y1="230" x2="690" y2="230" stroke="#3A3427" stroke-width="1"></line>`;
+  svg.innerHTML = bars;
+
+  const labels = {tonase:'Total Tonase (ton)', downtime:'Rata-rata Downtime (jam)', achievement:'Achievement (%)'};
+  let insight = '';
+  if(metric==='tonase'){
+    const top = data.reduce((a,b)=>a.val>b.val?a:b);
+    insight = 'Insight: '+top.unit+' menyumbang tonase terbesar pada periode ini — kandidat prioritas untuk dijaga uptime-nya.';
+  } else if(metric==='downtime'){
+    const worst = data.reduce((a,b)=>a.val>b.val?a:b);
+    insight = 'Insight: '+worst.unit+' memiliki rata-rata downtime tertinggi ('+worst.val.toFixed(1)+' jam) — perlu investigasi maintenance.';
+  } else {
+    const worst = data.reduce((a,b)=>a.val<b.val?a:b);
+    insight = 'Insight: '+worst.unit+' memiliki Achievement % terendah ('+worst.val.toFixed(1)+'%) — periksa faktor Availability/Utilization/Performance-nya.';
+  }
+  document.getElementById('chartInsight').textContent = labels[metric]+' — '+insight;
+}
+renderChart('tonase', document.querySelector('#m4-tutorial .qbtn'));
+
+/* ===================== CHECKLIST ===================== */
+const checklistItems = [
+  ['Sumber data tervalidasi','Data dari dispatch system sudah dicek tidak ada duplikat/nilai kosong.'],
+  ['Gateway aktif & tersambung','On-premises Data Gateway terpasang dan status "online" di Power BI Service.'],
+  ['Kredensial data source tersimpan aman','Menggunakan service account, bukan akun pribadi analyst.'],
+  ['Jadwal refresh sesuai shift','Refresh diatur sebelum jam pergantian shift, bukan sesudahnya.'],
+  ['Incremental refresh untuk tabel besar','Tabel histori >1 juta baris memakai kebijakan incremental refresh.'],
+  ['Riwayat refresh dipantau','Tidak ada error pada 7 hari terakhir di Refresh History.'],
+  ['Alert / notifikasi otomatis siap','Power Automate terpasang untuk mengirim ringkasan & alert threshold.'],
+  ['Akses report sudah diatur','Role-level security memastikan tiap departemen hanya lihat data relevan.'],
+];
+const cl = document.getElementById('checklist');
+checklistItems.forEach((item,i)=>{
+  const li = document.createElement('li');
+  li.innerHTML = `<input type="checkbox" id="chk${i}"><span class="txt"><b>${item[0]}</b><span>${item[1]}</span></span>`;
+  li.querySelector('input').addEventListener('change', e=> li.classList.toggle('done', e.target.checked));
+  cl.appendChild(li);
+});
+</script>
+</body>
+</html>

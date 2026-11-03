@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademi WMI & CSA — Dari Nol Hingga Mahir</title>
+<style>
+:root{
+  --ink:#0B1220;
+  --panel:#101A2E;
+  --panel2:#152238;
+  --line:#28374F;
+  --paper:#F6F2E7;
+  --paper-line:#DCD3BC;
+  --gold:#C9A24B;
+  --gold-soft:#E4C878;
+  --teal:#4FA88A;
+  --red:#C1594A;
+  --text:#E9E6DC;
+  --muted:#93A0BA;
+  --serif:'Source Serif 4','Georgia',serif;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono','Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--ink);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--gold);color:var(--ink);}
+
+/* ---------- Ticker ---------- */
+.ticker-wrap{
+  background:var(--panel2);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  white-space:nowrap;
+  padding:8px 0;
+  position:sticky;top:0;z-index:100;
+}
+.ticker{
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:.02em;
+  color:var(--muted);
+  animation:scroll-left 38s linear infinite;
+}
+.ticker span{margin-right:38px;}
+.ticker span b{color:var(--gold-soft);font-weight:600;}
+.ticker .up{color:var(--teal);}
+.ticker .down{color:var(--red);}
+@keyframes scroll-left{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@media (prefers-reduced-motion: reduce){.ticker{animation:none;}}
+
+/* ---------- Layout ---------- */
+.shell{display:flex;min-height:100vh;}
+nav.side{
+  width:270px;flex-shrink:0;
+  background:var(--panel);
+  border-right:1px solid var(--line);
+  padding:28px 0;
+  position:sticky;top:37px;
+  height:calc(100vh - 37px);
+  overflow-y:auto;
+}
+nav.side::-webkit-scrollbar{width:6px;}
+nav.side::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+.brand{padding:0 24px 22px;border-bottom:1px solid var(--line);margin-bottom:18px;}
+.brand .mark{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--gold-soft);}
+.brand .sub{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+.navgroup{padding:0 12px;margin-bottom:6px;}
+.navgroup .label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:14px 12px 6px;}
+.navlink{
+  display:flex;gap:10px;align-items:baseline;
+  padding:8px 12px;border-radius:6px;
+  font-size:13.5px;color:var(--text);text-decoration:none;
+  cursor:pointer;transition:background .15s;
+}
+.navlink:hover{background:var(--panel2);}
+.navlink .num{font-family:var(--mono);color:var(--gold);font-size:11px;width:20px;flex-shrink:0;}
+
+main{flex:1;min-width:0;}
+.section{padding:64px 56px;border-bottom:1px solid var(--line);max-width:980px;}
+@media (max-width:900px){
+  nav.side{display:none;}
+  .section{padding:40px 22px;}
+}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;
+}
+h1{font-family:var(--serif);font-size:clamp(34px,5vw,58px);font-weight:600;line-height:1.05;letter-spacing:-.01em;}
+h2{font-family:var(--serif);font-size:clamp(26px,3vw,36px);font-weight:600;margin-bottom:14px;color:var(--paper);}
+h3{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:8px;}
+p{color:var(--muted);max-width:66ch;}
+p b, li b{color:var(--text);}
+a{color:var(--gold-soft);}
+
+/* ---------- Hero ---------- */
+.hero{padding-top:70px;padding-bottom:60px;}
+.hero p.lead{font-size:17px;color:var(--muted);margin-top:20px;max-width:60ch;}
+.hero-stats{display:flex;gap:34px;margin-top:38px;flex-wrap:wrap;}
+.hero-stats .stat b{display:block;font-family:var(--serif);font-size:30px;color:var(--gold-soft);}
+.hero-stats .stat span{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.hero-cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;}
+.btn{
+  font-family:var(--sans);font-weight:600;font-size:14px;
+  padding:13px 22px;border-radius:8px;border:1px solid transparent;
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary{background:var(--gold);color:#1a1305;}
+.btn-primary:hover{background:var(--gold-soft);}
+.btn-ghost{border-color:var(--line);color:var(--text);background:transparent;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-soft);}
+
+/* ---------- Module accordion (paper card look) ---------- */
+.module{
+  background:var(--paper);color:#20180a;
+  border:1px solid var(--paper-line);
+  border-radius:4px;
+  margin-bottom:16px;
+  overflow:hidden;
+}
+.module summary{
+  list-style:none;cursor:pointer;
+  padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  font-family:var(--serif);font-weight:600;font-size:18px;
+}
+.module summary::-webkit-details-marker{display:none;}
+.module summary .plus{font-family:var(--mono);font-size:18px;color:#8a6b1f;transition:transform .2s;}
+.module[open] summary .plus{transform:rotate(45deg);}
+.module summary .tag{font-family:var(--mono);font-size:10px;color:#8a6b1f;text-transform:uppercase;letter-spacing:.1em;font-weight:500;}
+.module-body{padding:0 24px 26px;border-top:1px solid var(--paper-line);}
+.module-body p{color:#41371e;max-width:none;}
+.module-body h4{font-family:var(--serif);font-size:15.5px;margin:18px 0 6px;color:#1a1305;}
+.module-body ul, .module-body ol{margin:8px 0 14px 20px;color:#41371e;}
+.module-body li{margin-bottom:6px;}
+.formula{
+  font-family:var(--mono);background:#EAE2CC;border:1px solid var(--paper-line);
+  padding:12px 16px;border-radius:4px;margin:12px 0;font-size:13.5px;color:#1a1305;overflow-x:auto;
+}
+.callout{
+  background:#fff;border-left:3px solid var(--gold);padding:12px 16px;margin:14px 0;border-radius:2px;
+  font-size:14px;color:#41371e;
+}
+.example-box{
+  background:#1B2740;color:var(--text);border-radius:6px;padding:16px 18px;margin:14px 0;
+  font-size:13.5px;
+}
+.example-box .lbl{font-family:var(--mono);font-size:10px;color:var(--gold-soft);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+@media(max-width:700px){.two-col{grid-template-columns:1fr;}}
+.mini-card{background:#fff;border:1px solid var(--paper-line);border-radius:4px;padding:14px 16px;}
+.mini-card b{display:block;font-family:var(--serif);margin-bottom:4px;}
+.mini-card{font-size:13px;color:#41371e;}
+
+table.compare{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+table.compare th, table.compare td{border:1px solid var(--paper-line);padding:8px 10px;text-align:left;}
+table.compare th{background:#EAE2CC;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;}
+
+/* ---------- Filter chips ---------- */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 30px;}
+.chip{
+  font-family:var(--mono);font-size:11.5px;padding:7px 14px;border-radius:20px;
+  border:1px solid var(--line);color:var(--muted);cursor:pointer;background:transparent;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.chip.active{background:var(--gold);color:#1a1305;border-color:var(--gold);font-weight:600;}
+
+/* ---------- Quiz cards ---------- */
+.qcard{
+  background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+  padding:22px 24px;margin-bottom:16px;
+}
+.qcard .qmeta{font-family:var(--mono);font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.qcard .qtext{font-size:15.5px;color:var(--text);margin-bottom:16px;line-height:1.55;}
+.opt{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:11px 14px;border:1px solid var(--line);border-radius:6px;margin-bottom:8px;
+  cursor:pointer;font-size:14px;transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--gold);}
+.opt .k{font-family:var(--mono);color:var(--gold-soft);font-weight:600;flex-shrink:0;}
+.opt.correct{border-color:var(--teal);background:rgba(79,168,138,.12);}
+.opt.wrong{border-color:var(--red);background:rgba(193,89,74,.12);}
+.opt.disabled{cursor:default;}
+.explain{
+  display:none;margin-top:14px;padding:14px 16px;background:var(--ink);border-left:3px solid var(--gold);
+  border-radius:4px;font-size:13.5px;color:var(--muted);
+}
+.explain.show{display:block;}
+.explain b{color:var(--text);}
+
+/* ---------- Exam mode ---------- */
+.exam-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:16px 20px;margin-bottom:20px;
+  flex-wrap:wrap;gap:12px;
+}
+.exam-bar .score{font-family:var(--mono);font-size:14px;}
+.exam-bar .score b{color:var(--gold-soft);font-size:20px;}
+#examResult{display:none;}
+
+/* ---------- Interview prep ---------- */
+.qa-item{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:12px;}
+.qa-item .q{font-weight:600;color:var(--gold-soft);margin-bottom:8px;font-size:14.5px;}
+.qa-item .a{color:var(--muted);font-size:13.5px;}
+.checklist{list-style:none;margin:14px 0;}
+.checklist li{padding:9px 0 9px 30px;position:relative;font-size:14px;color:var(--muted);border-bottom:1px dashed var(--line);}
+.checklist li::before{content:"□";position:absolute;left:0;color:var(--gold);font-size:16px;}
+
+/* ---------- Footer / download ---------- */
+.download-strip{
+  background:var(--panel2);border:1px solid var(--gold);border-radius:10px;
+  padding:30px 32px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+}
+footer{padding:40px 56px;font-family:var(--mono);font-size:11px;color:var(--muted);text-align:center;}
+
+@media print{
+  nav.side, .ticker-wrap, .btn, .chips, .exam-bar{display:none !important;}
+  body{background:#fff;color:#000;}
+  .section{border:none;page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <div class="ticker" id="tickerTrack"></div>
+</div>
+
+<div class="shell">
+  <nav class="side">
+    <div class="brand">
+      <div class="mark">Akademi WMI · CSA</div>
+      <div class="sub">Kurikulum Sertifikasi Pasar Modal</div>
+    </div>
+    <div class="navgroup">
+      <div class="label">Mulai</div>
+      <a class="navlink" href="#hero"><span class="num">00</span>Beranda</a>
+    </div>
+    <div class="navgroup">
+      <div class="label">Modul Teori</div>
+      <a class="navlink" href="#m1"><span class="num">01</span>Dasar Pasar Modal & Peran WMI/CSA</a>
+      <a class="navlink" href="#m2"><span class="num">02</span>Analisis Fundamental & Valuasi</a>
+      <a class="navlink" href="#m3"><span class="num">03</span>Analisis Teknikal</a>
+      <a class="navlink" href="#m4"><span class="num">04</span>Teori Portofolio Modern (MPT)</a>
+      <a class="navlink" href="#m5"><span class="num">05</span>Benchmarking</a>
+      <a class="navlink" href="#m6"><span class="num">06</span>Backtesting</a>
+      <a class="navlink" href="#m7"><span class="num">07</span>Rebalancing</a>
+      <a class="navlink" href="#m8"><span class="num">08</span>Profil Risiko & Suitability</a>
+      <a class="navlink" href="#m9"><span class="num">09</span>Etika & Kode Perilaku</a>
+      <a class="navlink" href="#m10"><span class="num">10</span>Praktik Vanguard/BlackRock/JPM</a>
+    </div>
+    <div class="navgroup">
+      <div class="label">Latihan</div>
+      <a class="navlink" href="#bank"><span class="num">✎</span>Bank Soal & Pembahasan</a>
+      <a class="navlink" href="#exam"><span class="num">⏱</span>Simulasi Ujian</a>
+    </div>
+    <div class="navgroup">
+      <div class="label">Sertifikasi</div>
+      <a class="navlink" href="#bnsp"><span class="num">⚑</span>Persiapan LSP BNSP</a>
+      <a class="navlink" href="#download"><span class="num">↓</span>Unduh Halaman Ini</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="section hero" id="hero">
+      <div class="eyebrow">Wakil Manajer Investasi (WMI) · Certified Securities Analyst (CSA)</div>
+      <h1>Belajar mengelola<br>uang orang lain<br>dengan disiplin.</h1>
+      <p class="lead">Kurikulum lengkap dari dasar pasar modal hingga metodologi yang dipakai meja investasi Vanguard, BlackRock, JP Morgan, dan Morgan Stanley — benchmarking, backtesting, rebalancing, profil risiko — plus bank soal dan simulasi wawancara LSP BNSP.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>10</b><span>Modul Teori</span></div>
+        <div class="stat"><b>45+</b><span>Soal & Pembahasan</span></div>
+        <div class="stat"><b>1</b><span>Simulasi Ujian Acak</span></div>
+        <div class="stat"><b>20</b><span>Pertanyaan Wawancara BNSP</span></div>
+      </div>
+      <div class="hero-cta">
+        <a href="#m1" class="btn btn-primary">Mulai dari Modul 01 →</a>
+        <a href="#bank" class="btn btn-ghost">Langsung ke Bank Soal</a>
+      </div>
+    </section>
+
+    <!-- MODULE 1 -->
+    <section class="section" id="m1">
+      <div class="eyebrow">Modul 01</div>
+      <h2>Dasar Pasar Modal & Peran WMI / CSA</h2>
+      <p>Fondasi wajib sebelum masuk ke matematika portofolio: struktur regulasi, siapa yang boleh melakukan apa, dan tanggung jawab hukum seorang Wakil Manajer Investasi.</p>
+
+      <details class="module" open>
+        <summary>Struktur Regulasi Pasar Modal Indonesia <span class="plus">+</span></summary>
+        <div class="module-body">
+          <p>Pasar modal Indonesia diatur oleh <b>OJK (Otoritas Jasa Keuangan)</b> berdasarkan UU No. 8 Tahun 1995 tentang Pasar Modal, yang kemudian disesuaikan oleh UU No. 4 Tahun 2023 (UU P2SK). Tiga izin orang perseorangan yang paling relevan:</p>
+          <table class="compare">
+            <tr><th>Izin</th><th>Kepanjangan</th><th>Ruang Lingkup</th></tr>
+            <tr><td>WPPE</td><td>Wakil Perantara Pedagang Efek</td><td>Transaksi jual-beli efek untuk nasabah (broker-dealer)</td></tr>
+            <tr><td>WPEE</td><td>Wakil Penjamin Emisi Efek</td><td>Underwriting penerbitan efek (IPO, obligasi)</td></tr>
+            <tr><td>WMI</td><td>Wakil Manajer Investasi</td><td>Mengelola portofolio efek nasabah/reksa dana secara diskresioner</td></tr>
+          </table>
+          <div class="callout">WMI adalah izin yang memberi wewenang membuat keputusan investasi <b>atas nama orang lain</b> — ini yang membedakannya dari analis biasa yang hanya memberi rekomendasi.</div>
+          <h4>Tanggung Jawab Fidusia (Fiduciary Duty)</h4>
+          <ul>
+            <li><b>Duty of care</b> — bertindak dengan kehati-hatian dan kompetensi profesional yang wajar.</li>
+            <li><b>Duty of loyalty</b> — kepentingan klien didahulukan di atas kepentingan pribadi atau perusahaan.</li>
+            <li><b>Suitability</b> — rekomendasi/keputusan harus sesuai profil risiko dan tujuan klien (lihat Modul 08).</li>
+            <li><b>Disclosure</b> — keterbukaan biaya, konflik kepentingan, dan risiko produk.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module">
+        <summary>Peran CSA (Certified Securities Analyst) <span class="plus">+</span></summary>
+        <div class="module-body">
+          <p>CSA adalah sertifikasi profesi analis pasar modal yang menilai kompetensi riset — menyusun rekomendasi beli/tahan/jual berbasis data, bukan mengelola dana secara langsung. Kompetensi inti yang diuji:</p>
+          <ol>
+            <li>Membaca dan menganalisis laporan keuangan emiten (neraca, laba rugi, arus kas).</li>
+            <li>Menyusun valuasi (DCF, relative valuation, dividend discount model).</li>
+            <li>Menulis riset ekuitas yang objektif dan dapat dipertanggungjawabkan.</li>
+            <li>Memahami makroekonomi (suku bunga, inflasi, nilai tukar) dan dampaknya ke sektor/emiten.</li>
+            <li>Menjaga independensi riset dari kepentingan trading desk atau investment banking (Chinese wall).</li>
+          </ol>
+          <div class="callout">Analogi CFA: WMI ≈ portfolio manager, CSA ≈ equity/credit research analyst. Keduanya saling melengkapi dalam rantai keputusan investasi sebuah manajer aset.</div>
+        </div>
+      </details>
+
+      <details class="module">
+        <summary>Instrumen Pasar Modal yang Wajib Dikuasai <span class="plus">+</span></summary>
+        <div class="module-body">
+          <div class="two-col">
+            <div class="mini-card"><b>Ekuitas</b>Saham biasa & preferen, right issue, waran, ETF saham.</div>
+            <div class="mini-card"><b>Pendapatan Tetap</b>Obligasi korporasi, SUN/ORI/SBR, sukuk, reksa dana pendapatan tetap.</div>
+            <div class="mini-card"><b>Pasar Uang</b>SBI/SRBI, deposito, commercial paper — untuk likuiditas & kelas kas.</div>
+            <div class="mini-card"><b>Derivatif & Alternatif</b>Kontrak berjangka indeks, opsi, REITs (DIRE), reksa dana penyertaan terbatas.</div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 2 -->
+    <section class="section" id="m2">
+      <div class="eyebrow">Modul 02</div>
+      <h2>Analisis Fundamental & Valuasi</h2>
+      <p>Cara profesional menilai apakah harga saham "murah" atau "mahal" relatif terhadap nilai bisnisnya.</p>
+
+      <details class="module" open>
+        <summary>Rasio Keuangan Kunci <span class="plus">+</span></summary>
+        <div class="module-body">
+          <table class="compare">
+            <tr><th>Rasio</th><th>Rumus</th><th>Kegunaan</th></tr>
+            <tr><td>ROE</td><td>Laba Bersih / Ekuitas</td><td>Efisiensi menghasilkan laba dari modal pemegang saham</td></tr>
+            <tr><td>ROA</td><td>Laba Bersih / Total Aset</td><td>Efisiensi penggunaan seluruh aset</td></tr>
+            <tr><td>DER</td><td>Total Utang / Ekuitas</td><td>Tingkat leverage/risiko struktur modal</td></tr>
+            <tr><td>Current Ratio</td><td>Aset Lancar / Liabilitas Lancar</td><td>Likuiditas jangka pendek</td></tr>
+            <tr><td>NPM</td><td>Laba Bersih / Pendapatan</td><td>Margin profitabilitas inti</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <details class="module">
+        <summary>Metode Valuasi <span class="plus">+</span></summary>
+        <div class="module-body">
+          <h4>1. Discounted Cash Flow (DCF)</h4>
+          <div class="formula">Nilai Perusahaan = Σ [FCFₜ / (1+r)ᵗ] + Terminal Value / (1+r)ⁿ</div>
+          <p>FCF diproyeksikan 5–10 tahun, didiskon dengan WACC (biaya modal tertimbang). Terminal value memakai model pertumbuhan Gordon: TV = FCFₙ₊₁ / (r − g).</p>
+          <h4>2. Dividend Discount Model (DDM)</h4>
+          <div class="formula">P₀ = D₁ / (r − g)</div>
+          <p>Cocok untuk emiten dengan kebijakan dividen stabil (mis. perbankan besar, utilitas).</p>
+          <h4>3. Relative Valuation (Multiples)</h4>
+          <p>Membandingkan P/E, P/BV, EV/EBITDA emiten terhadap rata-rata sektor atau peer group. Cepat digunakan namun rawan bias jika peer tidak sebanding.</p>
+          <div class="example-box">
+            <div class="lbl">Contoh Perhitungan</div>
+            Saham BBCA: EPS = Rp340, harga pasar = Rp10.200. P/E = 10.200/340 = <b>30x</b>. Jika rata-rata P/E sektor perbankan besar 22x, maka BBCA diperdagangkan pada premium — analis perlu menjelaskan apakah premium wajar (ROE lebih tinggi, kualitas aset lebih baik) atau overvalued.
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 3 -->
+    <section class="section" id="m3">
+      <div class="eyebrow">Modul 03</div>
+      <h2>Analisis Teknikal</h2>
+      <p>Pelengkap analisis fundamental untuk timing entry/exit — wajib dipahami meski WMI umumnya berbasis fundamental jangka menengah-panjang.</p>
+      <details class="module" open>
+        <summary>Konsep Inti <span class="plus">+</span></summary>
+        <div class="module-body">
+          <ul>
+            <li><b>Trend</b> — uptrend/downtrend/sideways, ditandai higher-high/higher-low atau sebaliknya.</li>
+            <li><b>Support & Resistance</b> — level harga di mana tekanan beli/jual historis signifikan.</li>
+            <li><b>Moving Average (MA)</b> — MA50 & MA200; golden cross (MA50 memotong ke atas MA200) dianggap sinyal bullish.</li>
+            <li><b>RSI (Relative Strength Index)</b> — di atas 70 overbought, di bawah 30 oversold.</li>
+            <li><b>Volume</b> — konfirmasi kekuatan pergerakan harga; breakout tanpa volume rawan palsu.</li>
+          </ul>
+          <div class="callout">Di industri aset manajemen institusional, analisis teknikal jarang jadi dasar keputusan utama — lebih sering dipakai trading desk untuk eksekusi, bukan oleh portfolio manager untuk keputusan alokasi.</div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 4 -->
+    <section class="section" id="m4">
+      <div class="eyebrow">Modul 04</div>
+      <h2>Teori Portofolio Modern (MPT)</h2>
+      <p>Kerangka matematis di balik cara Vanguard dan BlackRock membangun portofolio — inti dari ujian CFA Level 1–2 dan menjadi dasar wajib WMI.</p>
+      <details class="module" open>
+        <summary>Markowitz, Efficient Frontier & CAPM <span class="plus">+</span></summary>
+        <div class="module-body">
+          <h4>Diversifikasi</h4>
+          <p>Risiko portofolio bukan rata-rata risiko aset individu, melainkan fungsi dari korelasi antar-aset. Semakin rendah korelasi, semakin besar manfaat diversifikasi.</p>
+          <div class="formula">σₚ² = w₁²σ₁² + w₂²σ₂² + 2w₁w₂ρ₁,₂σ₁σ₂</div>
+          <h4>Efficient Frontier</h4>
+          <p>Kumpulan portofolio yang menawarkan ekspektasi return tertinggi untuk setiap level risiko tertentu. Portofolio di bawah garis ini dianggap tidak efisien.</p>
+          <h4>Capital Asset Pricing Model (CAPM)</h4>
+          <div class="formula">E(Rᵢ) = Rf + βᵢ × (E(Rm) − Rf)</div>
+          <p>Return yang diharapkan investor sebanding dengan risiko sistematis (beta) terhadap pasar. Rf = risk-free rate (mis. yield SUN 10 tahun), E(Rm) = ekspektasi return pasar.</p>
+          <div class="example-box">
+            <div class="lbl">Contoh</div>
+            Rf = 6.5%, ekspektasi return IHSG = 12%, β saham = 1.2.<br>
+            E(R) = 6.5% + 1.2 × (12% − 6.5%) = 6.5% + 6.6% = <b>13.1%</b>
+          </div>
+          <h4>Sharpe Ratio — Mengukur Return per Unit Risiko</h4>
+          <div class="formula">Sharpe = (Rp − Rf) / σp</div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 5: BENCHMARKING -->
+    <section class="section" id="m5">
+      <div class="eyebrow">Modul 05</div>
+      <h2>Benchmarking</h2>
+      <p>Cara manajer investasi profesional membuktikan bahwa kinerja mereka benar-benar bernilai tambah, bukan sekadar mengikuti arus pasar.</p>
+
+      <details class="module" open>
+        <summary>Apa itu Benchmark? <span class="plus">+</span></summary>
+        <div class="module-body">
+          <p><b>Benchmark</b> adalah tolok ukur — biasanya indeks pasar — yang digunakan untuk menilai kinerja relatif suatu portofolio. Tanpa benchmark, return absolut portofolio tidak bermakna: return 8% terdengar bagus, tapi buruk jika benchmark naik 15%.</p>
+          <h4>Karakteristik Benchmark yang Baik (SAMURAI Criteria — dipakai CFA Institute)</h4>
+          <ul>
+            <li><b>S</b>pecified in advance — ditentukan sebelum periode pengukuran, bukan setelahnya.</li>
+            <li><b>A</b>ppropriate — sesuai gaya dan mandat investasi manajer.</li>
+            <li><b>M</b>easurable — datanya dapat dihitung secara rutin dan tepat waktu.</li>
+            <li><b>U</b>nambiguous — komposisi dan bobot konstituen jelas.</li>
+            <li><b>R</b>eflective of current investment opinions — manajer punya pandangan/pengetahuan terkini atas konstituennya.</li>
+            <li><b>A</b>ccountable — manajer bersedia bertanggung jawab atas deviasi terhadapnya.</li>
+            <li><b>I</b>nvestable — secara teori bisa direplikasi dengan membeli seluruh konstituennya.</li>
+          </ul>
+          <h4>Contoh Benchmark Umum</h4>
+          <table class="compare">
+            <tr><th>Kelas Aset</th><th>Benchmark Indonesia</th><th>Benchmark Global (contoh manajer besar)</th></tr>
+            <tr><td>Saham Large Cap</td><td>IHSG, LQ45, IDX30</td><td>MSCI World, S&P 500 (Vanguard 500 Index Fund)</td></tr>
+            <tr><td>Obligasi Pemerintah</td><td>INDOBeX Government</td><td>Bloomberg Global Aggregate Bond Index</td></tr>
+            <tr><td>Pasar Berkembang</td><td>—</td><td>MSCI Emerging Markets (dipakai BlackRock iShares EEM)</td></tr>
+            <tr><td>Balanced/Multi-Asset</td><td>Kombinasi custom 60/40</td><td>60% MSCI ACWI / 40% Bloomberg Agg</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <details class="module">
+        <summary>Mengukur Kinerja Relatif: Alpha, Tracking Error, Information Ratio <span class="plus">+</span></summary>
+        <div class="module-body">
+          <h4>Alpha (Jensen's Alpha)</h4>
+          <div class="formula">α = Rp − [Rf + β(Rm − Rf)]</div>
+          <p>Alpha positif berarti manajer menghasilkan return di atas yang diprediksi risiko sistematisnya — inilah yang dijual manajer aktif seperti Fidelity atau sebagian strategi aktif Morgan Stanley Investment Management.</p>
+          <h4>Tracking Error</h4>
+          <div class="formula">TE = standar deviasi dari (Rp − Rbenchmark)</div>
+          <p>Mengukur seberapa jauh portofolio menyimpang dari benchmark. Reksa dana indeks (Vanguard, iShares BlackRock) menargetkan TE serendah mungkin (&lt;0.5%); reksa dana aktif menerima TE lebih tinggi sebagai konsekuensi mengejar alpha.</p>
+          <h4>Information Ratio</h4>
+          <div class="formula">IR = (Rp − Rbenchmark) / Tracking Error</div>
+          <p>IR mengukur konsistensi skill manajer menghasilkan excess return per unit risiko aktif yang diambil. IR &gt; 0.5 umumnya dianggap baik dalam industri.</p>
+          <div class="callout">Best practice ala JP Morgan Asset Management: setiap mandat portofolio wajib punya benchmark tertulis di Investment Policy Statement (IPS), dievaluasi minimal setiap kuartal, dan dilaporkan transparan ke klien beserta atribusi kinerjanya.</div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 6: BACKTESTING -->
+    <section class="section" id="m6">
+      <div class="eyebrow">Modul 06</div>
+      <h2>Backtesting</h2>
+      <p>Menguji apakah sebuah strategi investasi benar-benar bekerja secara historis, sebelum modal riil dipertaruhkan.</p>
+
+      <details class="module" open>
+        <summary>Apa itu Backtesting dan Mengapa Penting <span class="plus">+</span></summary>
+        <div class="module-body">
+          <p><b>Backtesting</b> adalah proses mensimulasikan kinerja sebuah strategi atau model investasi menggunakan data historis, untuk memperkirakan bagaimana strategi tersebut akan berperilaku di masa depan. Ini adalah tahap wajib sebelum quant desk di BlackRock Aladdin atau tim factor investing JP Morgan meluncurkan strategi baru.</p>
+          <h4>Langkah-Langkah Backtesting yang Benar</h4>
+          <ol>
+            <li><b>Definisikan hipotesis & aturan strategi</b> secara presisi (sinyal masuk, keluar, ukuran posisi, universe saham).</li>
+            <li><b>Kumpulkan data historis bersih</b> — harga, volume, fundamental — bebas dari survivorship bias.</li>
+            <li><b>Bagi data: in-sample vs out-of-sample</b> — strategi dikalibrasi di satu periode, diuji di periode lain yang belum "dilihat".</li>
+            <li><b>Jalankan simulasi</b> dengan asumsi realistis: biaya transaksi, slippage, likuiditas.</li>
+            <li><b>Hitung metrik kinerja & risiko</b> (lihat di bawah).</li>
+            <li><b>Walk-forward testing</b> — uji ulang secara bergulir di beberapa periode untuk memastikan strategi tidak hanya bekerja di satu rezim pasar.</li>
+            <li><b>Stress test</b> pada periode krisis historis (2008, Maret 2020, taper tantrum 2013).</li>
+          </ol>
+          <h4>Jebakan Umum (Bias) dalam Backtesting</h4>
+          <table class="compare">
+            <tr><th>Bias</th><th>Penjelasan</th></tr>
+            <tr><td>Survivorship Bias</td><td>Hanya memakai emiten yang masih listing saat ini, mengabaikan yang delisting/bangkrut — hasil jadi terlalu optimis.</td></tr>
+            <tr><td>Look-Ahead Bias</td><td>Memakai informasi yang sebenarnya belum tersedia pada tanggal simulasi (mis. laporan keuangan final sebelum tanggal rilis resmi).</td></tr>
+            <tr><td>Overfitting</td><td>Strategi "dipas-paskan" terlalu detail ke data historis sehingga tidak generalizable ke masa depan.</td></tr>
+            <tr><td>Data Snooping</td><td>Menguji ratusan variasi strategi pada data yang sama hingga satu "kebetulan" terlihat profitable.</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <details class="module">
+        <summary>Metrik Evaluasi Backtest <span class="plus">+</span></summary>
+        <div class="module-body">
+          <div class="formula">CAGR = (Nilai Akhir / Nilai Awal)^(1/n tahun) − 1</div>
+          <div class="formula">Sharpe Ratio = (Return Tahunan − Risk-Free Rate) / Volatilitas Tahunan</div>
+          <div class="formula">Sortino Ratio = (Return − Rf) / Downside Deviation  (hanya menghukum volatilitas negatif)</div>
+          <div class="formula">Maximum Drawdown = (Nilai Puncak − Nilai Terendah Berikutnya) / Nilai Puncak</div>
+          <div class="formula">Calmar Ratio = CAGR / |Maximum Drawdown|</div>
+          <div class="example-box">
+            <div class="lbl">Contoh Interpretasi</div>
+            Strategi A: CAGR 18%, Max Drawdown −35%. Strategi B: CAGR 14%, Max Drawdown −12%.<br>
+            Calmar A = 18/35 = 0.51 · Calmar B = 14/12 = 1.17.<br>
+            Meski return absolut Strategi A lebih tinggi, Strategi B lebih efisien secara risiko — inilah alasan komite investasi sering memilih strategi dengan drawdown lebih terkendali, bukan sekadar return tertinggi.
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 7: REBALANCING -->
+    <section class="section" id="m7">
+      <div class="eyebrow">Modul 07</div>
+      <h2>Rebalancing</h2>
+      <p>Disiplin menjaga portofolio tetap selaras dengan target alokasi aset — inti dari proses "sell high, buy low" yang sistematis.</p>
+
+      <details class="module" open>
+        <summary>Mengapa dan Kapan Rebalancing Dilakukan <span class="plus">+</span></summary>
+        <div class="module-body">
+          <p>Seiring waktu, kelas aset yang berkinerja baik akan membesar porsinya melebihi target (<i>drift</i>), membuat profil risiko portofolio bergeser tanpa disadari klien. Rebalancing mengembalikannya ke target strategis (Strategic Asset Allocation/SAA).</p>
+          <h4>Strategi Rebalancing</h4>
+          <table class="compare">
+            <tr><th>Metode</th><th>Cara Kerja</th><th>Contoh Penerapan Industri</th></tr>
+            <tr><td>Calendar Rebalancing</td><td>Dilakukan pada interval tetap (bulanan/kuartalan/tahunan)</td><td>Umum di reksa dana ritel — sederhana, biaya administrasi rendah</td></tr>
+            <tr><td>Threshold/Corridor Rebalancing</td><td>Dipicu saat bobot aset menyimpang melebihi ambang batas (mis. ±5%)</td><td>Dipakai banyak strategi model portfolio institusional (mis. BlackRock Target Allocation)</td></tr>
+            <tr><td>Hybrid</td><td>Dicek berkala, tapi hanya dieksekusi jika deviasi melewati threshold</td><td>Praktik umum wealth management seperti Morgan Stanley Wealth Management</td></tr>
+          </table>
+          <div class="example-box">
+            <div class="lbl">Contoh Perhitungan Threshold Rebalancing</div>
+            Target alokasi: 60% saham / 40% obligasi. Threshold ±5%.<br>
+            Setelah saham naik tajam, portofolio bergeser jadi 68% saham / 32% obligasi → melewati batas 65%, maka <b>trigger rebalancing</b>: jual saham & beli obligasi hingga kembali ke 60/40.
+          </div>
+          <h4>Pertimbangan Praktis</h4>
+          <ul>
+            <li><b>Biaya transaksi & pajak</b> — rebalancing terlalu sering menggerus return bersih; sebagian manajer memakai arus kas baru (setoran/dividen) untuk rebalancing tanpa harus menjual aset (cash-flow rebalancing).</li>
+            <li><b>Tax-loss harvesting</b> — di pasar dengan pajak capital gain, posisi rugi dijual untuk offset pajak sebelum dibeli kembali instrumen serupa (dipraktikkan luas oleh Vanguard Personal Advisor & Morgan Stanley di pasar AS).</li>
+            <li><b>Likuiditas instrumen</b> — aset ilikuid (properti, private equity) sulit di-rebalance secara presisi dan cepat.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 8: RISK PROFILE -->
+    <section class="section" id="m8">
+      <div class="eyebrow">Modul 08</div>
+      <h2>Profil Risiko & Suitability</h2>
+      <p>Sebelum satu rupiah pun diinvestasikan, WMI wajib memahami siapa yang dilayaninya — ini adalah kewajiban hukum sekaligus etis.</p>
+
+      <details class="module" open>
+        <summary>Risk Tolerance vs Risk Capacity vs Risk Required <span class="plus">+</span></summary>
+        <div class="module-body">
+          <table class="compare">
+            <tr><th>Konsep</th><th>Definisi</th><th>Contoh</th></tr>
+            <tr><td>Risk Tolerance</td><td>Kesediaan psikologis klien menanggung fluktuasi nilai portofolio</td><td>Klien merasa cemas saat portofolio turun 10%</td></tr>
+            <tr><td>Risk Capacity</td><td>Kemampuan finansial objektif menanggung kerugian tanpa mengganggu tujuan hidup</td><td>Klien dengan penghasilan stabil & horizon 20 tahun punya kapasitas tinggi</td></tr>
+            <tr><td>Risk Required</td><td>Tingkat risiko yang dibutuhkan agar tujuan finansial tercapai secara matematis</td><td>Butuh return 9%/tahun untuk pensiun sesuai target → perlu porsi saham lebih besar</td></tr>
+          </table>
+          <div class="callout">Prinsip suitability: ketika ketiganya berbeda, WMI mengambil <b>yang paling konservatif</b> di antara tolerance dan capacity sebagai batas atas risiko portofolio klien.</div>
+          <h4>Faktor dalam Kuesioner Profil Risiko (KYC)</h4>
+          <ul>
+            <li>Usia & horizon investasi</li>
+            <li>Tujuan investasi (pensiun, pendidikan anak, pertumbuhan kekayaan)</li>
+            <li>Pengalaman investasi sebelumnya</li>
+            <li>Stabilitas dan sumber pendapatan</li>
+            <li>Kebutuhan likuiditas jangka pendek</li>
+            <li>Reaksi hipotetis terhadap penurunan pasar (loss aversion test)</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="module">
+        <summary>Contoh Alokasi Aset per Profil Risiko <span class="plus">+</span></summary>
+        <div class="module-body">
+          <table class="compare">
+            <tr><th>Profil</th><th>Saham</th><th>Obligasi</th><th>Kas/Pasar Uang</th><th>Karakteristik Klien</th></tr>
+            <tr><td>Konservatif</td><td>10–25%</td><td>55–70%</td><td>10–20%</td><td>Horizon pendek, prioritas capital preservation</td></tr>
+            <tr><td>Moderat</td><td>40–55%</td><td>35–45%</td><td>5–15%</td><td>Horizon menengah, seimbang antara growth & stabilitas</td></tr>
+            <tr><td>Agresif</td><td>70–90%</td><td>5–20%</td><td>0–10%</td><td>Horizon panjang (&gt;10 tahun), toleransi volatilitas tinggi</td></tr>
+          </table>
+          <p>Kerangka ini mirip dengan model "target date fund" Vanguard: alokasi saham otomatis menurun seiring mendekatnya usia pensiun (glide path).</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 9: ETHICS -->
+    <section class="section" id="m9">
+      <div class="eyebrow">Modul 09</div>
+      <h2>Etika & Kode Perilaku Profesi</h2>
+      <p>Kompetensi teknis tanpa integritas tidak lolos ujian sertifikasi maupun kepercayaan klien.</p>
+      <details class="module" open>
+        <summary>Prinsip Kode Etik WMI/CSA <span class="plus">+</span></summary>
+        <div class="module-body">
+          <ul>
+            <li><b>Integritas & objektivitas</b> — rekomendasi/keputusan bebas dari konflik kepentingan pribadi.</li>
+            <li><b>Kerahasiaan data nasabah</b> — dilarang menyalahgunakan data KYC atau posisi portofolio klien.</li>
+            <li><b>Larangan insider trading & front running</b> — dilarang bertransaksi lebih dulu memanfaatkan order klien.</li>
+            <li><b>Kepatuhan terhadap Investment Policy Statement (IPS)</b> — keputusan investasi tidak boleh menyimpang dari mandat tertulis.</li>
+            <li><b>Pelaporan & keterbukaan biaya</b> — seluruh fee (management fee, performance fee) diungkap transparan.</li>
+            <li><b>Kompetensi berkelanjutan</b> — wajib mengikuti pendidikan profesi lanjutan (PPL/CPD) sesuai ketentuan OJK/asosiasi profesi.</li>
+          </ul>
+          <div class="callout">Kerangka ini paralel dengan CFA Institute Code of Ethics and Standards of Professional Conduct — banyak materi ujian WMI/CSA Indonesia terinspirasi struktur serupa.</div>
+        </div>
+      </details>
+    </section>
+
+    <!-- MODULE 10 -->
+    <section class="section" id="m10">
+      <div class="eyebrow">Modul 10</div>
+      <h2>Bagaimana Manajer Aset Kelas Dunia Bekerja</h2>
+      <p>Menghubungkan teori di atas dengan praktik nyata di meja investasi global.</p>
+      <details class="module" open>
+        <summary>Vanguard, BlackRock, JP Morgan, Morgan Stanley — Perbandingan Pendekatan <span class="plus">+</span></summary>
+        <div class="module-body">
+          <table class="compare">
+            <tr><th>Perusahaan</th><th>Filosofi Inti</th><th>Ciri Khas Proses</th></tr>
+            <tr><td>Vanguard</td><td>Low-cost passive indexing</td><td>Mayoritas dana di reksa dana indeks & ETF, fokus meminimalkan tracking error dan biaya (expense ratio), struktur kepemilikan mutual (dimiliki pemegang unit sendiri)</td></tr>
+            <tr><td>BlackRock</td><td>Skala + teknologi risk management</td><td>Platform Aladdin untuk analitik risiko portofolio real-time; kombinasi iShares (pasif) & strategi aktif/factor investing</td></tr>
+            <tr><td>JP Morgan Asset Mgmt</td><td>Riset fundamental terintegrasi multi-aset</td><td>Guide to the Markets — publikasi kuartalan yang memetakan valuasi & siklus makro untuk strategi asset allocation</td></tr>
+            <tr><td>Morgan Stanley IM</td><td>High-conviction active & wealth advisory</td><td>Portofolio terkonsentrasi berbasis riset mendalam (mis. tim Counterpoint Global), kuat di segmen wealth management personal</td></tr>
+          </table>
+          <h4>Elemen Proses yang Selalu Ada di Institusi Besar</h4>
+          <ol>
+            <li><b>Investment Policy Statement (IPS)</b> tertulis untuk setiap mandat klien.</li>
+            <li><b>Komite investasi</b> yang mengawasi keputusan alokasi aset, bukan keputusan individu semata.</li>
+            <li><b>Independent risk management</b> — tim risiko terpisah dari tim portfolio manager (three lines of defense).</li>
+            <li><b>Performance attribution</b> rutin — memisahkan sumber return dari alokasi aset vs pemilihan sekuritas vs faktor pasar.</li>
+            <li><b>Compliance & audit</b> berkala terhadap batasan mandat (concentration limit, tracking error limit).</li>
+          </ol>
+        </div>
+      </details>
+    </section>
+
+    <!-- BANK SOAL -->
+    <section class="section" id="bank">
+      <div class="eyebrow">Latihan</div>
+      <h2>Bank Soal & Pembahasan</h2>
+      <p>Klik jawaban untuk melihat apakah benar, lalu baca pembahasannya. Gunakan filter kategori untuk fokus latihan pada topik tertentu.</p>
+      <div class="chips" id="chipRow"></div>
+      <div id="questionList"></div>
+    </section>
+
+    <!-- EXAM SIMULATION -->
+    <section class="section" id="exam">
+      <div class="eyebrow">Simulasi</div>
+      <h2>Simulasi Ujian Acak</h2>
+      <p>20 soal diambil acak dari seluruh bank soal — mensimulasikan tekanan ujian sertifikasi sebenarnya. Skor Anda dihitung otomatis di akhir sesi (tidak tersimpan setelah halaman ditutup).</p>
+      <div class="exam-bar">
+        <div class="score">Skor: <b id="examScore">0</b> / <span id="examTotal">0</span> dijawab</div>
+        <button class="btn btn-primary" onclick="startExam()">Mulai / Ulangi Simulasi</button>
+      </div>
+      <div id="examList"></div>
+      <div id="examResult" class="qcard">
+        <div class="qmeta">Hasil Akhir</div>
+        <div class="qtext" id="examResultText"></div>
+      </div>
+    </section>
+
+    <!-- BNSP PREP -->
+    <section class="section" id="bnsp">
+      <div class="eyebrow">Sertifikasi Profesi</div>
+      <h2>Persiapan Ujian & Wawancara LSP BNSP</h2>
+      <p>Sertifikasi WMI/CSA di Indonesia dijalankan melalui skema Lembaga Sertifikasi Profesi (LSP) yang diakreditasi BNSP, biasanya bermitra dengan asosiasi profesi pasar modal. Uji kompetensi terdiri dari tiga metode: verifikasi portofolio (APL), tes tertulis, dan wawancara/observasi langsung oleh asesor.</p>
+
+      <h3 style="margin-top:28px;">Dokumen yang Perlu Disiapkan</h3>
+      <ul class="checklist">
+        <li>Formulir APL-01 (permohonan sertifikasi) dan APL-02 (asesmen mandiri) terisi lengkap</li>
+        <li>Portofolio bukti kompetensi: laporan riset, contoh analisis portofolio, sertifikat pelatihan terkait</li>
+        <li>Bukti pengalaman kerja/magang di bidang pasar modal (jika ada)</li>
+        <li>KTP, ijazah terakhir, pas foto sesuai ketentuan LSP</li>
+        <li>Ringkasan CV yang menonjolkan proyek analisis atau pengelolaan portofolio yang pernah dikerjakan</li>
+      </ul>
+
+      <h3 style="margin-top:30px;">Contoh Pertanyaan Wawancara & Cara Menjawabnya</h3>
+      <div class="qa-item">
+        <div class="q">1. Jelaskan bagaimana Anda akan menentukan profil risiko seorang klien baru.</div>
+        <div class="a">Jawaban kuat menyebutkan proses KYC terstruktur: kuesioner risk tolerance, analisis risk capacity dari kondisi finansial objektif klien, horizon investasi, dan tujuan spesifik — lalu menjelaskan prinsip mengambil batas risiko yang paling konservatif di antara tolerance dan capacity, sesuai kewajiban suitability.</div>
+      </div>
+      <div class="qa-item">
+        <div class="q">2. Bagaimana Anda menjelaskan konsep tracking error kepada klien awam?</div>
+        <div class="a">Jelaskan dengan analogi sederhana: "seberapa jauh mobil kita menyimpang dari rute GPS (benchmark)". Sebutkan bahwa tracking error rendah cocok untuk strategi pasif, sedangkan tracking error yang lebih tinggi dapat diterima jika disertai alpha positif yang konsisten.</div>
+      </div>
+      <div class="qa-item">
+        <div class="q">3. Ceritakan pengalaman Anda melakukan analisis emiten — bagaimana proses valuasinya?</div>
+        <div class="a">Gunakan struktur STAR (Situation, Task, Action, Result). Sebutkan metode valuasi yang dipakai (DCF/relative valuation), asumsi kunci, dan bagaimana kesimpulan riset digunakan dalam keputusan nyata.</div>
+      </div>
+      <div class="qa-item">
+        <div class="q">4. Apa yang akan Anda lakukan jika instruksi atasan bertentangan dengan kepentingan terbaik klien?</div>
+        <div class="a">Asesor menilai integritas etis. Jawaban ideal: merujuk pada kode etik dan fiduciary duty, mengeskalasi ke compliance/komite investasi, mendokumentasikan keberatan secara tertulis, dan tidak mengeksekusi instruksi yang jelas melanggar suitability atau IPS klien.</div>
+      </div>
+      <div class="qa-item">
+        <div class="q">5. Bagaimana Anda mengelola portofolio saat pasar mengalami koreksi tajam?</div>
+        <div class="a">Tekankan proses, bukan reaksi emosional: merujuk kembali ke IPS, mengecek apakah deviasi alokasi memicu threshold rebalancing, mengevaluasi apakah tesis investasi jangka panjang masih valid, dan berkomunikasi proaktif dengan klien untuk mencegah keputusan panik.</div>
+      </div>
+      <div class="qa-item">
+        <div class="q">6. Jelaskan perbedaan risk tolerance dan risk capacity dengan contoh nyata.</div>
+        <div class="a">Berikan contoh kontras: klien muda bergaji tinggi dan stabil (risk capacity tinggi) namun cemas berlebihan saat market turun (risk tolerance rendah) — WMI harus menyeimbangkan keduanya, bukan hanya mengikuti salah satu.</div>
+      </div>
+
+      <h3 style="margin-top:30px;">Tips Menghadapi Uji Observasi/Praktik Asesor</h3>
+      <ul class="checklist">
+        <li>Selalu verbalisasi proses berpikir Anda — asesor menilai metodologi, bukan hanya jawaban akhir</li>
+        <li>Rujuk selalu ke dokumen resmi (IPS, kebijakan suitability) saat menjawab skenario etika</li>
+        <li>Gunakan istilah baku industri (bukan slang trading) selama wawancara formal</li>
+        <li>Siapkan 1–2 studi kasus nyata dari pengalaman Anda sebagai contoh konkret kompetensi</li>
+        <li>Latih menjelaskan konsep teknis (Sharpe ratio, tracking error) dalam bahasa yang bisa dipahami klien awam — ini sering jadi indikator penilaian komunikasi</li>
+      </ul>
+    </section>
+
+    <!-- DOWNLOAD -->
+    <section class="section" id="download">
+      <div class="eyebrow">Simpan untuk Belajar Offline</div>
+      <div class="download-strip">
+        <div>
+          <h3 style="margin-bottom:6px;">Unduh seluruh halaman ini</h3>
+          <p style="margin:0;">File HTML ini sudah lengkap — teori, bank soal, dan simulasi ujian — dan dapat dibuka kembali tanpa koneksi internet, atau dicetak ke PDF untuk dibawa saat belajar offline.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="window.print()">Cetak / Simpan sebagai PDF</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      AKADEMI WMI · CSA — MATERI PEMBELAJARAN MANDIRI · BUKAN PENGGANTI KURIKULUM RESMI LSP/OJK/ASOSIASI PROFESI
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ---------------- Ticker content ---------------- */
+const tickerItems = [
+  "IHSG <span class='up'>+0.8%</span>", "LQ45 <span class='up'>+0.6%</span>", "Yield SUN 10Y <b>6.85%</b>",
+  "USD/IDR <b>15.920</b>", "Tracking Error target <b>&lt;0.50%</b>", "Sharpe Ratio benchmark 60/40 <b>0.71</b>",
+  "Rebalancing threshold <b>±5%</b>", "CAGR strategi model <b>11.2%</b>", "Max Drawdown historis <b>-18.4%</b>",
+  "WMI · CSA Exam Prep", "Information Ratio target <b>&gt;0.5</b>", "CAPM E(R) contoh <b>13.1%</b>"
+];
+document.getElementById('tickerTrack').innerHTML =
+  tickerItems.map(t=>`<span>${t}</span>`).join('') + tickerItems.map(t=>`<span>${t}</span>`).join('');
+
+/* ---------------- Question Bank ---------------- */
+const QBANK = [
+{cat:"Regulasi & Peran", q:"Izin apa yang secara spesifik memberi wewenang mengelola portofolio efek nasabah secara diskresioner di Indonesia?", opts:["WPPE","WPEE","WMI","CSA"], correct:2, exp:"WMI (Wakil Manajer Investasi) adalah izin OJK yang secara khusus memberi wewenang membuat keputusan investasi atas nama klien secara diskresioner, berbeda dari WPPE (transaksi jual-beli) dan WPEE (underwriting)."},
+{cat:"Regulasi & Peran", q:"Prinsip 'kepentingan klien didahulukan di atas kepentingan pribadi' dalam fiduciary duty disebut sebagai...", opts:["Duty of care","Duty of loyalty","Suitability","Disclosure"], correct:1, exp:"Duty of loyalty secara spesifik menekankan bahwa kepentingan klien harus didahulukan; duty of care lebih berkaitan dengan kehati-hatian dan kompetensi profesional."},
+{cat:"Regulasi & Peran", q:"Otoritas mana yang mengawasi pasar modal Indonesia?", opts:["Bank Indonesia","OJK","LPS","Kementerian Keuangan"], correct:1, exp:"OJK (Otoritas Jasa Keuangan) adalah regulator pasar modal, perbankan, dan IKNB di Indonesia berdasarkan UU No. 8/1995 jo. UU P2SK."},
+{cat:"Analisis Fundamental", q:"Sebuah emiten memiliki EPS Rp500 dan harga saham Rp7.500. Berapa P/E ratio-nya?", opts:["10x","12x","15x","20x"], correct:2, exp:"P/E = Harga / EPS = 7.500 / 500 = 15x."},
+{cat:"Analisis Fundamental", q:"Rasio yang mengukur efisiensi perusahaan menghasilkan laba dari modal pemegang saham adalah...", opts:["ROA","ROE","DER","NPM"], correct:1, exp:"ROE (Return on Equity) = Laba Bersih / Ekuitas, secara spesifik mengukur pengembalian atas modal pemegang saham."},
+{cat:"Analisis Fundamental", q:"Dalam model Dividend Discount Model (DDM) Gordon Growth, jika D1 = Rp200, r = 12%, dan g = 4%, berapa nilai wajar saham?", opts:["Rp1.667","Rp2.500","Rp3.333","Rp5.000"], correct:1, exp:"P0 = D1/(r-g) = 200/(0.12-0.04) = 200/0.08 = Rp2.500."},
+{cat:"Analisis Fundamental", q:"DER (Debt to Equity Ratio) yang tinggi mengindikasikan...", opts:["Likuiditas tinggi","Leverage/risiko struktur modal tinggi","Profitabilitas tinggi","Efisiensi aset tinggi"], correct:1, exp:"DER = Total Utang/Ekuitas mengukur seberapa besar perusahaan dibiayai utang relatif terhadap modal sendiri — semakin tinggi, semakin besar risiko keuangan."},
+{cat:"Analisis Teknikal", q:"Kondisi 'golden cross' terjadi ketika...", opts:["MA200 memotong ke atas MA50","MA50 memotong ke atas MA200","RSI menembus 70","Volume turun drastis"], correct:1, exp:"Golden cross adalah sinyal bullish ketika moving average jangka pendek (MA50) memotong ke atas moving average jangka panjang (MA200)."},
+{cat:"Analisis Teknikal", q:"RSI di atas 70 umumnya mengindikasikan kondisi...", opts:["Oversold","Overbought","Netral","Breakout volume"], correct:1, exp:"RSI > 70 dianggap overbought (potensi jenuh beli), sedangkan RSI < 30 dianggap oversold."},
+{cat:"Teori Portofolio", q:"Menurut CAPM, jika Rf=5%, return pasar ekspektasi=11%, dan beta saham=1.5, berapa expected return saham tersebut?", opts:["11%","14%","16%","18%"], correct:1, exp:"E(R) = Rf + β(Rm-Rf) = 5% + 1.5×(11%-5%) = 5% + 9% = 14%."},
+{cat:"Teori Portofolio", q:"Manfaat diversifikasi dalam portofolio paling besar ketika korelasi antar aset...", opts:["Mendekati +1","Mendekati 0 atau negatif","Sama dengan volatilitas pasar","Tidak relevan"], correct:1, exp:"Semakin rendah (atau negatif) korelasi antar aset, semakin besar potensi pengurangan risiko portofolio melalui diversifikasi, sesuai rumus varians portofolio Markowitz."},
+{cat:"Teori Portofolio", q:"Sharpe Ratio dihitung dengan membagi excess return portofolio terhadap...", opts:["Beta","Tracking error","Standar deviasi (volatilitas) portofolio","Maximum drawdown"], correct:2, exp:"Sharpe Ratio = (Rp - Rf) / standar deviasi portofolio — mengukur return per unit risiko total."},
+{cat:"Teori Portofolio", q:"Efficient Frontier menggambarkan...", opts:["Semua portofolio yang mungkin dibentuk","Portofolio dengan risiko terendah tanpa memandang return","Portofolio dengan return tertinggi untuk setiap level risiko tertentu","Portofolio yang hanya berisi saham blue chip"], correct:2, exp:"Efficient frontier adalah kumpulan portofolio optimal yang menawarkan return ekspektasi tertinggi untuk setiap tingkat risiko, hasil optimasi Markowitz."},
+{cat:"Benchmarking", q:"Kriteria benchmark 'SAMURAI' dari CFA Institute mensyaratkan benchmark harus ditentukan...", opts:["Setelah periode pengukuran berakhir","Sebelum periode pengukuran dimulai","Oleh regulator","Oleh klien saja"], correct:1, exp:"'Specified in advance' berarti benchmark harus ditetapkan sebelum periode evaluasi kinerja dimulai, agar tidak ada bias pemilihan benchmark yang menguntungkan hasil setelah fakta."},
+{cat:"Benchmarking", q:"Reksa dana indeks yang meniru IHSG dengan return -0.2% saat IHSG +0.1% dalam satu hari mencerminkan adanya...", opts:["Alpha positif","Tracking error","Risk capacity","Rebalancing threshold"], correct:1, exp:"Selisih antara return portofolio dan benchmark yang bervariasi dari waktu ke waktu tercermin dalam tracking error — semakin kecil untuk dana indeks yang baik."},
+{cat:"Benchmarking", q:"Information Ratio dihitung dengan membagi excess return terhadap benchmark dengan...", opts:["Beta portofolio","Tracking error","Sharpe ratio benchmark","Maximum drawdown"], correct:1, exp:"IR = (Rp - Rbenchmark) / Tracking Error, mengukur konsistensi skill manajer aktif menghasilkan excess return."},
+{cat:"Benchmarking", q:"Manakah benchmark yang PALING sesuai untuk reksa dana saham blue chip Indonesia?", opts:["Bloomberg Global Aggregate Bond Index","LQ45","MSCI Emerging Markets","INDOBeX Government"], correct:1, exp:"LQ45 berisi 45 saham dengan likuiditas dan kapitalisasi besar di BEI, menjadikannya benchmark yang paling relevan (appropriate) untuk strategi blue chip domestik."},
+{cat:"Backtesting", q:"Bias yang terjadi ketika backtest hanya menggunakan emiten yang masih listing hingga saat ini disebut...", opts:["Look-ahead bias","Survivorship bias","Overfitting","Data snooping"], correct:1, exp:"Survivorship bias membuat hasil backtest terlalu optimis karena mengabaikan emiten yang delisting/bangkrut sepanjang periode pengujian."},
+{cat:"Backtesting", q:"Menggunakan data laporan keuangan yang baru dipublikasikan sebulan setelah tanggal simulasi seolah sudah tersedia pada tanggal simulasi disebut...", opts:["Survivorship bias","Look-ahead bias","Overfitting","Walk-forward testing"], correct:1, exp:"Look-ahead bias terjadi saat simulasi memakai informasi yang secara faktual belum tersedia pada waktu keputusan seharusnya dibuat."},
+{cat:"Backtesting", q:"Strategi dengan CAGR 20% dan Max Drawdown -40% dibandingkan strategi CAGR 15% dan Max Drawdown -10%. Berdasarkan Calmar Ratio, strategi mana lebih efisien secara risiko?", opts:["Strategi pertama (CAGR 20%)","Strategi kedua (CAGR 15%)","Sama saja","Tidak bisa ditentukan"], correct:1, exp:"Calmar 1 = 20/40 = 0.5. Calmar 2 = 15/10 = 1.5. Strategi kedua jauh lebih efisien meski return absolutnya lebih rendah."},
+{cat:"Backtesting", q:"Menguji ratusan variasi parameter strategi pada data historis yang sama hingga menemukan satu kombinasi yang 'kebetulan' profitable disebut...", opts:["Walk-forward testing","Data snooping","Stress testing","Cash-flow rebalancing"], correct:1, exp:"Data snooping adalah praktik mencari-cari kombinasi parameter yang profitable secara historis tanpa dasar ekonomi yang kuat, berisiko tinggi overfitting."},
+{cat:"Backtesting", q:"Downside deviation digunakan sebagai pembagi pada rasio kinerja bernama...", opts:["Sharpe Ratio","Sortino Ratio","Information Ratio","Calmar Ratio"], correct:1, exp:"Sortino Ratio hanya menghukum volatilitas negatif (downside deviation), berbeda dari Sharpe Ratio yang menghukum seluruh volatilitas termasuk yang positif."},
+{cat:"Rebalancing", q:"Portofolio dengan target 60% saham/40% obligasi memakai threshold ±5%. Jika saat ini alokasi menjadi 66% saham/34% obligasi, apa yang terjadi?", opts:["Trigger rebalancing karena melewati batas 65%","Tidak perlu rebalancing karena masih dalam batas","Portofolio harus dilikuidasi total","Threshold hanya berlaku untuk obligasi"], correct:0, exp:"Batas atas toleransi = 60%+5% = 65%. Karena alokasi saham 66% melewati batas ini, threshold rebalancing terpicu untuk menjual sebagian saham dan membeli obligasi."},
+{cat:"Rebalancing", q:"Rebalancing yang dilakukan pada interval tetap seperti setiap akhir kuartal disebut...", opts:["Threshold rebalancing","Calendar rebalancing","Cash-flow rebalancing","Tax-loss harvesting"], correct:1, exp:"Calendar rebalancing dilakukan berdasarkan jadwal waktu tetap, terlepas dari seberapa besar deviasi alokasi terjadi."},
+{cat:"Rebalancing", q:"Strategi memanfaatkan setoran dana baru atau dividen untuk mengembalikan alokasi ke target tanpa menjual aset yang ada disebut...", opts:["Threshold rebalancing","Cash-flow rebalancing","Tax-loss harvesting","Calendar rebalancing"], correct:1, exp:"Cash-flow rebalancing menggunakan arus kas masuk baru (bukan penjualan aset) untuk menyeimbangkan kembali alokasi — efisien dari sisi biaya transaksi dan pajak."},
+{cat:"Rebalancing", q:"Menjual posisi yang sedang rugi untuk mengurangi kewajiban pajak capital gain sebelum membeli kembali instrumen serupa disebut...", opts:["Tax-loss harvesting","Threshold rebalancing","Look-ahead bias","Data snooping"], correct:0, exp:"Tax-loss harvesting adalah teknik memanfaatkan kerugian yang belum direalisasi untuk mengoffset pajak atas capital gain, umum dipraktikkan di manajemen kekayaan pasar yang mengenakan pajak capital gain."},
+{cat:"Profil Risiko", q:"Kemampuan finansial objektif klien menanggung kerugian tanpa mengganggu tujuan hidupnya disebut...", opts:["Risk tolerance","Risk capacity","Risk required","Risk premium"], correct:1, exp:"Risk capacity adalah ukuran objektif kemampuan finansial, berbeda dari risk tolerance yang bersifat psikologis/subjektif."},
+{cat:"Profil Risiko", q:"Jika risk tolerance klien rendah namun risk capacity-nya tinggi, prinsip suitability mengarahkan WMI untuk...", opts:["Mengikuti risk capacity karena lebih objektif","Mengambil batas risiko yang lebih konservatif di antara keduanya","Mengabaikan risk tolerance sepenuhnya","Memaksimalkan alokasi saham"], correct:1, exp:"Prinsip suitability mengambil pendekatan konservatif — ketika tolerance dan capacity berbeda, batas risiko portofolio mengikuti yang lebih rendah untuk melindungi kenyamanan sekaligus keamanan finansial klien."},
+{cat:"Profil Risiko", q:"Untuk klien dengan profil risiko konservatif, alokasi saham yang umum direkomendasikan berada pada kisaran...", opts:["10-25%","40-55%","70-90%","90-100%"], correct:0, exp:"Profil konservatif menekankan capital preservation dengan porsi saham rendah (10-25%) dan dominasi obligasi/kas untuk stabilitas."},
+{cat:"Profil Risiko", q:"Model 'target date fund' yang mengurangi porsi saham secara otomatis mendekati usia pensiun disebut...", opts:["Static allocation","Glide path","Threshold rebalancing","Tax-loss harvesting"], correct:1, exp:"Glide path adalah lintasan penurunan alokasi risiko (saham) secara bertahap seiring mendekatnya target date, seperti dipraktikkan Vanguard Target Retirement Funds."},
+{cat:"Etika Profesi", q:"Bertransaksi lebih dulu memanfaatkan informasi order klien sebelum order tersebut dieksekusi disebut...", opts:["Front running","Rebalancing","Benchmarking","Diversifikasi"], correct:0, exp:"Front running adalah pelanggaran etika serius: memanfaatkan informasi order klien untuk keuntungan pribadi sebelum order klien dieksekusi di pasar."},
+{cat:"Etika Profesi", q:"Dokumen tertulis yang mengikat mandat investasi, batasan risiko, dan tujuan klien disebut...", opts:["Prospektus","Investment Policy Statement (IPS)","Term sheet","Fund fact sheet"], correct:1, exp:"IPS adalah dokumen formal yang mendefinisikan tujuan, batasan, dan benchmark investasi klien — acuan utama WMI dalam mengambil keputusan portofolio."},
+{cat:"Etika Profesi", q:"Pemisahan tim riset dari tim trading/investment banking untuk menjaga independensi disebut...", opts:["Chinese wall","Glide path","Cash-flow rebalancing","Calmar ratio"], correct:0, exp:"Chinese wall adalah pembatas informasi/organisasi untuk mencegah konflik kepentingan antar divisi, wajib dijaga oleh analis (CSA) yang independen."},
+{cat:"Praktik Industri", q:"Filosofi inti Vanguard yang paling menonjol dalam industri manajemen aset adalah...", opts:["High-conviction active investing","Low-cost passive indexing","Private equity leverage tinggi","Trading algoritmik frekuensi tinggi"], correct:1, exp:"Vanguard dikenal luas dengan filosofi indeks pasif berbiaya rendah, didukung struktur kepemilikan mutual yang menyelaraskan kepentingan dengan pemegang unit."},
+{cat:"Praktik Industri", q:"Platform analitik risiko portofolio real-time yang menjadi ciri khas BlackRock bernama...", opts:["Bloomberg Terminal","Aladdin","Guide to the Markets","Counterpoint Global"], correct:1, exp:"Aladdin (Asset, Liability, Debt and Derivative Investment Network) adalah platform manajemen risiko dan portofolio milik BlackRock yang juga dilisensikan ke banyak institusi lain."},
+{cat:"Praktik Industri", q:"Publikasi kuartalan yang memetakan valuasi dan siklus makro untuk strategi alokasi aset adalah ciri khas dari...", opts:["JP Morgan Asset Management (Guide to the Markets)","Vanguard","Morgan Stanley Counterpoint Global","BlackRock iShares"], correct:0, exp:"'Guide to the Markets' adalah publikasi riset kuartalan JP Morgan Asset Management yang menjadi rujukan luas industri untuk analisis valuasi dan siklus pasar."},
+{cat:"Praktik Industri", q:"Pemisahan fungsi antara tim yang mengambil risiko, tim yang mengawasi risiko, dan fungsi audit independen dikenal sebagai prinsip...", opts:["Three lines of defense","Chinese wall","Glide path","SAMURAI criteria"], correct:0, exp:"Three lines of defense adalah kerangka tata kelola risiko institusional: (1) unit bisnis pengambil risiko, (2) fungsi manajemen risiko/kepatuhan independen, (3) audit internal — dipraktikkan luas di manajer aset besar."},
+{cat:"Analisis Fundamental", q:"EV/EBITDA lebih disukai dibanding P/E ketika membandingkan perusahaan dengan struktur permodalan (leverage) yang berbeda karena...", opts:["EV/EBITDA mengabaikan pengaruh struktur modal dan pajak","P/E selalu lebih akurat","EV/EBITDA hanya berlaku untuk bank","P/E mengabaikan laba bersih"], correct:0, exp:"EV/EBITDA menghitung nilai perusahaan sebelum bunga, pajak, depresiasi & amortisasi, sehingga lebih netral terhadap perbedaan struktur modal antar perusahaan dibanding P/E yang berbasis laba bersih (setelah bunga & pajak)."},
+{cat:"Teori Portofolio", q:"Risiko yang dapat dihilangkan sepenuhnya melalui diversifikasi disebut risiko...", opts:["Sistematis","Tidak sistematis (spesifik perusahaan)","Pasar","Suku bunga"], correct:1, exp:"Risiko tidak sistematis (unsystematic/idiosyncratic risk) adalah risiko spesifik satu perusahaan/sektor yang dapat dihilangkan melalui diversifikasi; risiko sistematis (pasar) tidak dapat dihilangkan."},
+{cat:"Benchmarking", q:"Sebuah manajer aktif memiliki return tahunan 14% dengan benchmark 11%, dan tracking error 4%. Berapa Information Ratio-nya?", opts:["0.75","1.375","2.75","0.36"], correct:0, exp:"IR = (14%-11%)/4% = 3%/4% = 0.75 — dianggap baik karena di atas ambang umum 0.5."},
+{cat:"Backtesting", q:"Tujuan utama out-of-sample testing dalam backtesting adalah...", opts:["Mempercepat proses simulasi","Menguji strategi pada data yang belum digunakan untuk kalibrasi, mendeteksi overfitting","Mengurangi biaya transaksi","Menghitung dividen historis"], correct:1, exp:"Out-of-sample testing menguji apakah strategi tetap bekerja pada data yang tidak digunakan saat kalibrasi awal — cara utama mendeteksi overfitting."},
+{cat:"Rebalancing", q:"Kelemahan utama calendar rebalancing dibanding threshold rebalancing adalah...", opts:["Selalu lebih mahal secara pajak","Bisa memicu transaksi yang tidak perlu (biaya) meski deviasi alokasi masih kecil, atau sebaliknya telat merespons deviasi besar","Tidak bisa diterapkan pada reksa dana","Hanya berlaku untuk obligasi"], correct:1, exp:"Calendar rebalancing tidak sensitif terhadap besarnya deviasi aktual — bisa memicu transaksi meski deviasi kecil (biaya sia-sia) atau membiarkan deviasi besar menumpuk di antara jadwal."},
+];
+
+/* ---------------- Render Question Bank ---------------- */
+const categories = ["Semua", ...new Set(QBANK.map(q=>q.cat))];
+const chipRow = document.getElementById('chipRow');
+let activeCat = "Semua";
+categories.forEach(c=>{
+  const chip = document.createElement('button');
+  chip.className = 'chip' + (c==="Semua" ? ' active' : '');
+  chip.textContent = c;
+  chip.onclick = ()=>{ activeCat = c; renderBank(); document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); chip.classList.add('active'); };
+  chipRow.appendChild(chip);
+});
+
+function renderBank(){
+  const list = document.getElementById('questionList');
+  list.innerHTML = '';
+  const filtered = QBANK.filter(q => activeCat==="Semua" || q.cat===activeCat);
+  filtered.forEach((q, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="qmeta">${q.cat} · Soal ${idx+1}</div>
+      <div class="qtext">${q.q}</div>
+      <div class="opts"></div>
+      <div class="explain"><b>Pembahasan:</b> ${q.exp}</div>
+    `;
+    const optsWrap = card.querySelector('.opts');
+    const explain = card.querySelector('.explain');
+    const letters = ['A','B','C','D'];
+    q.opts.forEach((opt, i)=>{
+      const o = document.createElement('div');
+      o.className = 'opt';
+      o.innerHTML = `<span class="k">${letters[i]}</span><span>${opt}</span>`;
+      o.onclick = ()=>{
+        if(o.classList.contains('locked')) return;
+        [...optsWrap.children].forEach(el=>el.classList.add('disabled','locked'));
+        if(i === q.correct){ o.classList.add('correct'); }
+        else { o.classList.add('wrong'); optsWrap.children[q.correct].classList.add('correct'); }
+        explain.classList.add('show');
+      };
+      optsWrap.appendChild(o);
+    });
+    list.appendChild(card);
+  });
+}
+renderBank();
+
+/* ---------------- Exam Simulation ---------------- */
+let examQuestions = [];
+let examScore = 0;
+let examAnswered = 0;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function startExam(){
+  examQuestions = shuffle(QBANK).slice(0, 20);
+  examScore = 0;
+  examAnswered = 0;
+  document.getElementById('examScore').textContent = '0';
+  document.getElementById('examTotal').textContent = '0';
+  document.getElementById('examResult').classList.remove('show');
+  document.getElementById('examResult').style.display = 'none';
+
+  const list = document.getElementById('examList');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  examQuestions.forEach((q, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="qmeta">${q.cat} · Soal ${idx+1} dari 20</div>
+      <div class="qtext">${q.q}</div>
+      <div class="opts"></div>
+      <div class="explain"><b>Pembahasan:</b> ${q.exp}</div>
+    `;
+    const optsWrap = card.querySelector('.opts');
+    const explain = card.querySelector('.explain');
+    q.opts.forEach((opt, i)=>{
+      const o = document.createElement('div');
+      o.className = 'opt';
+      o.innerHTML = `<span class="k">${letters[i]}</span><span>${opt}</span>`;
+      o.onclick = ()=>{
+        if(o.classList.contains('locked')) return;
+        [...optsWrap.children].forEach(el=>el.classList.add('disabled','locked'));
+        examAnswered++;
+        if(i === q.correct){ o.classList.add('correct'); examScore++; }
+        else { o.classList.add('wrong'); optsWrap.children[q.correct].classList.add('correct'); }
+        explain.classList.add('show');
+        document.getElementById('examScore').textContent = examScore;
+        document.getElementById('examTotal').textContent = examAnswered;
+        if(examAnswered === examQuestions.length){
+          const res = document.getElementById('examResult');
+          const pct = Math.round((examScore/examQuestions.length)*100);
+          let verdict = pct>=80 ? "Sangat siap — pertahankan ritme belajar ini." : pct>=60 ? "Cukup baik, tapi ulangi modul dengan skor terendah sebelum ujian sesungguhnya." : "Perlu pengulangan menyeluruh pada modul teori sebelum mencoba simulasi lagi.";
+          document.getElementById('examResultText').innerHTML = `Anda menjawab benar <b>${examScore} dari ${examQuestions.length}</b> soal (${pct}%). ${verdict}`;
+          res.style.display = 'block';
+        }
+      };
+      optsWrap.appendChild(o);
+    });
+    list.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>

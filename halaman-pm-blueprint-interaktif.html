@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM Blueprint — 6 Metodologi Project Management Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0C2540; --bg-2:#0F2E4E;
+  --panel:#123863; --panel-2:#164873; --panel-3:#1C5788;
+  --text:#EAF3FA; --muted:#9FC1DB; --muted-2:#6D8CAA;
+  --cyan:#4FD1E8; --orange:#FF8A3D; --green:#3ECF8E; --red:#FF6B6B; --yellow:#F2C744;
+  --border:rgba(255,255,255,.14); --border-soft:rgba(255,255,255,.08);
+  --radius:10px;
+  --display:'Space Grotesk',sans-serif; --sans:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    repeating-linear-gradient(0deg, rgba(79,209,232,.045) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgba(79,209,232,.045) 0 1px, transparent 1px 34px),
+    linear-gradient(180deg,var(--bg-2),var(--bg) 60%);
+  color:var(--text); font-family:var(--sans); min-height:100vh; -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--orange); color:#1a0f00;}
+h1,h2,h3,h4{font-family:var(--display); margin:0;}
+p{line-height:1.65;}
+.hidden{display:none !important;}
+button{font-family:var(--sans); cursor:pointer;}
+input,select{font-family:var(--mono);}
+
+/* ===== NAV ===== */
+#topnav{
+  position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+  gap:14px; padding:12px 26px; background:rgba(12,37,64,.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border); flex-wrap:wrap;
+}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:16px;}
+.brand .sq{width:12px;height:12px; border:2px solid var(--cyan); transform:rotate(45deg);}
+.tabs{display:flex; gap:4px; flex-wrap:wrap;}
+.tabbtn{
+  background:transparent; border:1px solid transparent; color:var(--muted); padding:8px 13px;
+  border-radius:6px; font-size:13px; font-weight:600; white-space:nowrap;
+}
+.tabbtn:hover{color:var(--text); border-color:var(--border);}
+.tabbtn.active{background:var(--panel-2); color:var(--cyan); border-color:var(--cyan);}
+#scoreWidget{
+  font-family:var(--mono); font-size:12.5px; background:var(--panel); border:1px solid var(--border);
+  padding:7px 14px; border-radius:20px; color:var(--yellow); white-space:nowrap;
+}
+
+/* ===== PAGE / LAYOUT ===== */
+.page{max-width:1100px; margin:0 auto; padding:50px 26px 100px;}
+.eyebrow{
+  font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--orange);
+  display:flex; align-items:center; gap:8px; margin-bottom:14px;
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--orange);}
+.page h2.title{font-size:clamp(28px,4vw,42px); margin-bottom:10px; letter-spacing:-.01em;}
+.page .subtitle{color:var(--muted); font-size:15.5px; max-width:640px; margin-bottom:34px;}
+
+.block{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:28px 30px; margin-bottom:26px;}
+.block h3{font-size:19px; margin-bottom:14px; display:flex; align-items:center; gap:10px;}
+.block h3 .num{
+  width:26px;height:26px;border-radius:6px; background:var(--panel-3); display:flex; align-items:center;
+  justify-content:center; font-family:var(--mono); font-size:13px; color:var(--cyan); flex-shrink:0;
+}
+.theory-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+.theory-grid .col h4{font-size:14px; color:var(--cyan); margin-bottom:8px; font-family:var(--mono); text-transform:uppercase; letter-spacing:.06em;}
+.theory-grid ul{margin:0; padding-left:18px; color:var(--muted); font-size:14.5px; line-height:1.75;}
+.theory-grid p{color:var(--muted); font-size:14.5px;}
+.refbox{
+  margin-top:16px; font-size:12.5px; color:var(--muted-2); border-left:2px solid var(--orange);
+  padding:9px 14px; background:var(--panel-2); border-radius:0 8px 8px 0; line-height:1.6;
+}
+.case-block{background:var(--panel-2); border-left:3px solid var(--green);}
+.case-block .tag{
+  display:inline-block; font-family:var(--mono); font-size:11px; color:var(--green); background:rgba(62,207,142,.12);
+  padding:3px 10px; border-radius:20px; margin-bottom:10px;
+}
+
+/* ===== TABLES / SPREADSHEET LOOK ===== */
+table.sheet{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:6px;}
+table.sheet th{
+  background:var(--panel-3); color:var(--cyan); font-family:var(--mono); font-weight:600; text-align:left;
+  padding:9px 10px; border:1px solid var(--border); font-size:12px; text-transform:uppercase; letter-spacing:.03em;
+}
+table.sheet td{padding:8px 10px; border:1px solid var(--border-soft); color:var(--text);}
+table.sheet tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+table.sheet input[type=number]{
+  width:64px; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:4px 6px; font-size:13px;
+}
+table.sheet select{background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:4px 6px; font-size:12.5px;}
+.gantt-bar{height:14px; border-radius:3px; background:var(--cyan);}
+.gantt-track{background:rgba(255,255,255,.06); border-radius:3px; overflow:hidden;}
+tr.critical-row td{background:rgba(255,107,107,.1) !important; color:var(--red); font-weight:600;}
+
+/* ===== TOOL / CALC ===== */
+.tool-block{background:var(--panel-2); border:1px solid var(--border);}
+.calc-controls{display:flex; gap:14px; flex-wrap:wrap; align-items:end; margin-bottom:18px;}
+.field{display:flex; flex-direction:column; gap:6px;}
+.field label{font-size:11.5px; color:var(--muted); font-family:var(--mono); text-transform:uppercase; letter-spacing:.05em;}
+.field input, .field select{
+  background:var(--bg); border:1px solid var(--border); color:var(--text); padding:9px 12px; border-radius:7px; font-size:14px; width:170px;
+}
+.btn{
+  border:none; border-radius:7px; padding:11px 20px; font-size:14px; font-weight:700;
+  background:var(--orange); color:#1a0f00;
+}
+.btn:hover{background:var(--yellow);}
+.btn-outline{background:transparent; border:1px solid var(--border); color:var(--text); font-weight:600;}
+.result-box{
+  margin-top:16px; padding:16px 20px; background:var(--bg); border:1px solid var(--border); border-radius:10px;
+  font-family:var(--mono); font-size:14px; display:flex; gap:30px; flex-wrap:wrap;
+}
+.result-box .r-item .v{font-size:24px; color:var(--yellow); font-weight:700;}
+.result-box .r-item .l{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+
+/* ===== NETWORK DIAGRAM (CPM) ===== */
+.netwrap{overflow-x:auto; margin-top:20px; padding:10px 0;}
+.netnode{fill:var(--panel); stroke:var(--border); stroke-width:1.5;}
+.netnode.critical{stroke:var(--red); stroke-width:2.5;}
+.netlabel{font-family:var(--mono); fill:var(--text); font-size:11px;}
+.netlabel.id{font-family:var(--display); fill:var(--cyan); font-size:13px; font-weight:700;}
+.netedge{stroke:var(--muted-2); stroke-width:1.5; fill:none; marker-end:url(#arrow);}
+.netedge.critical{stroke:var(--red); stroke-width:2.5;}
+
+/* ===== QUIZ ===== */
+.quiz-block h3{margin-bottom:4px;}
+.quiz-sub{color:var(--muted); font-size:13px; margin-bottom:18px;}
+.qcard{background:var(--panel-2); border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:14px;}
+.qcard .qtext{font-size:15px; font-weight:600; margin-bottom:12px;}
+.qopt{
+  display:block; width:100%; text-align:left; background:var(--bg); border:1px solid var(--border); color:var(--text);
+  padding:10px 14px; border-radius:7px; margin-bottom:8px; font-size:13.5px;
+}
+.qopt:hover{border-color:var(--muted-2);}
+.qopt.correct{border-color:var(--green); background:rgba(62,207,142,.14); color:var(--green);}
+.qopt.wrong{border-color:var(--red); background:rgba(255,107,107,.14); color:var(--red);}
+.qopt.disabled{pointer-events:none; opacity:.85;}
+.qexplain{
+  margin-top:10px; padding:12px 14px; background:var(--bg); border-left:2px solid var(--cyan); border-radius:0 8px 8px 0;
+  font-size:13px; color:var(--muted); display:none;
+}
+.qexplain.show{display:block;}
+
+/* ===== BERANDA ===== */
+.hero{padding-top:20px; margin-bottom:50px;}
+.hero h1{font-size:clamp(36px,5.5vw,58px); line-height:1.05; margin-bottom:18px; letter-spacing:-.01em;}
+.hero h1 span{color:var(--orange);}
+.hero p{color:var(--muted); font-size:16px; max-width:600px; margin-bottom:26px;}
+.module-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+.mcard{
+  background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:22px; cursor:pointer;
+  transition:border-color .15s, transform .15s; position:relative; overflow:hidden;
+}
+.mcard:hover{border-color:var(--cyan); transform:translateY(-2px);}
+.mcard .midx{font-family:var(--mono); font-size:12px; color:var(--muted-2); margin-bottom:8px;}
+.mcard h3{font-size:19px; margin-bottom:8px;}
+.mcard p{font-size:13px; color:var(--muted); margin:0 0 12px;}
+.mcard .ex{font-size:11.5px; color:var(--muted-2); font-family:var(--mono);}
+.mcard .accent{position:absolute; top:0; left:0; width:4px; height:100%;}
+.how-box{background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:26px 28px; margin-top:40px;}
+.how-box ol{margin:0; padding-left:20px; color:var(--muted); font-size:14px; line-height:1.9;}
+@media(max-width:860px){ .theory-grid{grid-template-columns:1fr;} .module-grid{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav id="topnav">
+  <div class="brand"><span class="sq"></span> PM BLUEPRINT</div>
+  <div class="tabs" id="tabsWrap">
+    <button class="tabbtn active" onclick="goTo('beranda')">Beranda</button>
+    <button class="tabbtn" onclick="goTo('waterfall')">1. Waterfall</button>
+    <button class="tabbtn" onclick="goTo('agile')">2. Agile</button>
+    <button class="tabbtn" onclick="goTo('hybrid')">3. Hybrid</button>
+    <button class="tabbtn" onclick="goTo('lean')">4. Lean</button>
+    <button class="tabbtn" onclick="goTo('cpm')">5. CPM</button>
+    <button class="tabbtn" onclick="goTo('sixsigma')">6. Six Sigma</button>
+  </div>
+  <div id="scoreWidget">Skor Latihan: 0 / 0</div>
+</nav>
+
+<!-- ===================== BERANDA ===================== -->
+<section id="page-beranda" class="page">
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span>MODUL PEMBELAJARAN INTERAKTIF · PROJECT MANAGEMENT</div>
+    <h1>6 Metodologi Project<br>Management, <span>dari teori ke praktik.</span></h1>
+    <p>Pelajari Waterfall, Agile, Hybrid, Lean, Critical Path Method, dan Six Sigma lengkap dengan teori dari kerangka kerja PMBOK Guide (PMI), Agile Practice Guide, dan literatur Lean Six Sigma — dipadukan studi kasus, kalkulator interaktif ala spreadsheet, serta latihan soal dengan pembahasan langsung.</p>
+    <button class="btn" onclick="goTo('waterfall')">Mulai Belajar dari Modul 1 →</button>
+  </div>
+
+  <div class="eyebrow"><span class="dot"></span>PILIH MODUL</div>
+  <div class="module-grid" id="moduleGrid"></div>
+
+  <div class="how-box">
+    <h3 style="margin-bottom:12px;">Cara Menggunakan Modul Ini</h3>
+    <ol>
+      <li><b>Teori</b> — ringkasan konsep inti tiap metodologi beserta rujukan kerangka kerja yang digunakan di industri.</li>
+      <li><b>Studi Kasus</b> — contoh penerapan nyata pada proyek infrastruktur, digital, manufaktur, hingga farmasi di konteks Indonesia.</li>
+      <li><b>Kalkulator Interaktif</b> — alat seperti spreadsheet untuk menghitung jalur kritis (CPM), level sigma, kecepatan sprint, dan value stream — ubah angkanya dan lihat hasilnya berubah langsung.</li>
+      <li><b>Latihan Soal</b> — klik salah satu opsi jawaban untuk melihat apakah benar dan membaca pembahasannya secara instan. Skor Anda terekam di pojok kanan atas.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== 1. WATERFALL ===================== -->
+<section id="page-waterfall" class="page hidden">
+  <div class="eyebrow"><span class="dot" style="background:var(--cyan)"></span>MODUL 1 · PREDICTIVE LIFE CYCLE</div>
+  <h2 class="title">Waterfall</h2>
+  <p class="subtitle">Pendekatan sekuensial-linear di mana setiap fase harus tuntas sebelum fase berikutnya dimulai — fondasi dari pendekatan predictive dalam PMBOK Guide.</p>
+
+  <div class="block">
+    <h3><span class="num">§1</span>Teori & Konsep Inti</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Definisi & Karakteristik</h4>
+        <ul>
+          <li>Proyek dibagi menjadi fase berurutan: Requirement → Design → Implementation → Verification → Maintenance.</li>
+          <li>PMBOK Guide (PMI) menyebut ini sebagai <i>predictive life cycle</i> — scope, jadwal, dan biaya ditentukan secara rinci di awal.</li>
+          <li>Perubahan dikendalikan lewat proses formal <i>integrated change control</i>, bukan iterasi bebas.</li>
+          <li>Baseline scope-jadwal-biaya menjadi acuan pengendalian kinerja, sering diukur dengan Earned Value Management (EVM).</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Kapan Digunakan</h4>
+        <ul>
+          <li>Requirement jelas, stabil, dan risiko perubahan besar rendah.</li>
+          <li>Proyek dengan regulasi ketat & dokumentasi wajib: konstruksi, EPC Migas, bendungan, pabrik.</li>
+          <li>Ketergantungan fisik antar tahapan kuat — pondasi harus selesai sebelum struktur atas dibangun.</li>
+        </ul>
+        <h4 style="margin-top:14px;">Kelebihan vs Keterbatasan</h4>
+        <p>Kuat di kontrol, dokumentasi, dan kepastian anggaran; namun kaku terhadap perubahan requirement di tengah jalan dan nilai bisnis baru terlihat di akhir proyek karena pengujian menyeluruh (big-bang testing) baru terjadi mendekati akhir.</p>
+      </div>
+    </div>
+    <div class="refbox">Rujukan: PMBOK Guide 7th Ed. (Project Management Institute) — prinsip predictive/plan-driven approach; konsep fase sekuensial pertama kali didiskusikan Winston Royce (1970) dalam konteks pengembangan perangkat lunak besar.</div>
+  </div>
+
+  <div class="block">
+    <h3><span class="num">§1b</span>Lima Grup Proses & Dokumen Kunci</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">PMBOK Guide memetakan siklus predictive ke dalam lima grup proses manajemen proyek yang berlaku lintas fase waterfall.</p>
+    <table class="sheet">
+      <tr><th>Grup Proses</th><th>Fokus Utama</th><th>Dokumen / Output Kunci</th></tr>
+      <tr><td>Initiating</td><td>Otorisasi proyek & penetapan tujuan tingkat tinggi</td><td>Project Charter, Stakeholder Register</td></tr>
+      <tr><td>Planning</td><td>Perencanaan rinci scope, jadwal, biaya, risiko</td><td>WBS, Schedule Baseline, Cost Baseline, Risk Register</td></tr>
+      <tr><td>Executing</td><td>Pelaksanaan pekerjaan sesuai rencana</td><td>Deliverable, Laporan Kemajuan Kerja</td></tr>
+      <tr><td>Monitoring & Controlling</td><td>Pengukuran kinerja terhadap baseline & pengendalian perubahan</td><td>Change Request, Laporan EVM (SPI/CPI)</td></tr>
+      <tr><td>Closing</td><td>Serah terima resmi & penutupan administratif/kontrak</td><td>Berita Acara Serah Terima, Lessons Learned</td></tr>
+    </table>
+    <div class="refbox">Peran kunci: Project Manager memegang akuntabilitas tunggal atas jadwal & biaya; Sponsor mengesahkan baseline; perubahan apa pun wajib melalui Change Control Board sebelum baseline direvisi.</div>
+  </div>
+
+  <div class="case-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 1</span>
+    <h3 style="margin-bottom:8px;">Pembangunan Jalan Tol Sepanjang 42 KM</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Kontraktor EPC menjalankan proyek jalan tol dengan tahapan: Studi Kelayakan → Detailed Engineering Design (DED) → Pengadaan Lahan & Material → Konstruksi Fisik → Commissioning → Serah Terima. Karena melibatkan izin pemerintah, AMDAL, dan kontrak lump-sum, setiap fase harus disetujui sebelum fase berikut dimulai — perubahan desain di tengah konstruksi akan sangat mahal dan memerlukan change order formal.</p>
+  </div>
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 2</span>
+    <h3 style="margin-bottom:8px;">Kilang Migas — Pendekatan FEED lalu EPC</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Proyek kilang minyak menjalankan Front-End Engineering Design (FEED) untuk mematangkan desain teknis sebelum kontrak EPC (Engineering, Procurement, Construction) ditandatangani. Setiap transisi fase melewati Stage-Gate Review formal oleh komite teknis — mencerminkan sifat waterfall yang menuntut kepastian desain tinggi sebelum modal besar dikucurkan ke konstruksi fisik.</p>
+  </div>
+  </div>
+
+  <div class="block tool-block">
+    <h3><span class="num">§2</span>Contoh Spreadsheet: WBS & Gantt Chart</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">Work Breakdown Structure sederhana proyek di atas dengan visual bar layaknya Gantt chart. Total durasi proyek dihitung otomatis dari jumlah baris.</p>
+    <table class="sheet" id="waterfallGantt"></table>
+    <div class="result-box" id="waterfallTotal"></div>
+  </div>
+
+  <div class="block quiz-block" data-module="waterfall">
+    <h3>Latihan Soal — Waterfall</h3>
+    <p class="quiz-sub">Klik salah satu opsi untuk melihat jawaban benar dan pembahasannya.</p>
+    <div class="qlist" id="quiz-waterfall"></div>
+  </div>
+</section>
+
+<!-- ===================== 2. AGILE ===================== -->
+<section id="page-agile" class="page hidden">
+  <div class="eyebrow"><span class="dot" style="background:var(--green)"></span>MODUL 2 · ADAPTIVE LIFE CYCLE</div>
+  <h2 class="title">Agile</h2>
+  <p class="subtitle">Pendekatan iteratif-inkremental yang mengutamakan kolaborasi, adaptasi cepat terhadap perubahan, dan pengiriman nilai secara bertahap.</p>
+
+  <div class="block">
+    <h3><span class="num">§1</span>Teori & Konsep Inti</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Nilai & Prinsip (Agile Manifesto, 2001)</h4>
+        <ul>
+          <li>Individu & interaksi lebih diutamakan daripada proses & alat yang kaku.</li>
+          <li>Perangkat lunak/produk yang berjalan lebih diutamakan daripada dokumentasi yang lengkap.</li>
+          <li>Kolaborasi dengan pelanggan lebih diutamakan daripada negosiasi kontrak yang rigid.</li>
+          <li>Tanggap terhadap perubahan lebih diutamakan daripada mengikuti rencana secara kaku.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Kerangka Kerja Scrum</h4>
+        <ul>
+          <li><b>Peran:</b> Product Owner (mengelola product backlog & nilai), Scrum Master (fasilitator & penghilang hambatan), Development Team.</li>
+          <li><b>Event:</b> Sprint (1–4 minggu), Sprint Planning, Daily Scrum, Sprint Review, Sprint Retrospective.</li>
+          <li><b>Artefak:</b> Product Backlog, Sprint Backlog, Increment.</li>
+          <li><b>Metrik:</b> Velocity (story point terselesaikan per sprint), Burndown Chart.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refbox">Rujukan: Agile Practice Guide (PMI & Agile Alliance, 2017); Scrum Guide (Schwaber & Sutherland); Agile Manifesto (2001).</div>
+  </div>
+
+  <div class="block">
+    <h3><span class="num">§1b</span>Kanban, Estimasi, & Skala Enterprise</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Kanban vs Scrum</h4>
+        <ul>
+          <li><b>Kanban</b> bersifat continuous flow (tanpa kotak waktu sprint) dengan papan visual kolom To Do → In Progress → Done dan batas Work-in-Progress (WIP limit) di tiap kolom.</li>
+          <li>Metrik utama Kanban: Lead Time (dari permintaan masuk hingga selesai) dan Cycle Time (dari mulai dikerjakan hingga selesai), divisualisasikan lewat Cumulative Flow Diagram.</li>
+          <li>Scrum cocok untuk tim produk dengan ritme rilis berkala; Kanban cocok untuk tim support/operasional dengan aliran permintaan tidak teratur.</li>
+        </ul>
+        <h4 style="margin-top:14px;">Definition of Ready & Done</h4>
+        <p>DoR memastikan item backlog cukup jelas untuk dikerjakan; DoD adalah kriteria objektif yang menandakan suatu item benar-benar selesai (termasuk teruji & terdokumentasi), menjaga konsistensi kualitas increment.</p>
+      </div>
+      <div class="col">
+        <h4>Teknik Estimasi</h4>
+        <ul>
+          <li><b>Planning Poker</b> — tiap anggota tim menaksir ukuran cerita secara rahasia lalu mendiskusikan perbedaan sebelum konsensus.</li>
+          <li><b>Fibonacci Sequence</b> (1,2,3,5,8,13,21…) dipakai sebagai skala story point karena merefleksikan ketidakpastian yang membesar pada estimasi besar.</li>
+          <li><b>T-Shirt Sizing</b> (S/M/L/XL) untuk estimasi kasar di tahap awal roadmap.</li>
+        </ul>
+        <h4 style="margin-top:14px;">Skala Enterprise</h4>
+        <p>Untuk proyek besar lintas tim, organisasi mengadopsi kerangka scaling seperti SAFe (Scaled Agile Framework), LeSS (Large-Scale Scrum), atau forum koordinasi Scrum of Scrums agar beberapa tim Scrum tetap selaras pada satu tujuan produk.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 1</span>
+    <h3 style="margin-bottom:8px;">Pengembangan Aplikasi Mobile Banking Startup Fintech</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Tim produk mengembangkan fitur baru tiap sprint 2 minggu. Product Owner menyusun backlog fitur (login biometrik, transfer QRIS, notifikasi transaksi) berdasarkan prioritas nilai bisnis. Tim merilis increment yang bisa langsung diuji pengguna setiap akhir sprint, lalu menyesuaikan prioritas berikutnya berdasarkan umpan balik pasar yang bergerak cepat.</p>
+  </div>
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 2</span>
+    <h3 style="margin-bottom:8px;">Marketplace E-commerce dengan Banyak Tim Scrum</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Perusahaan e-commerce memiliki lima tim Scrum (pencarian, pembayaran, logistik, promosi, keamanan) yang bekerja paralel. Mereka mengadakan Scrum of Scrums mingguan agar dependensi antar tim (misalnya fitur promosi butuh perubahan di modul pembayaran) terdeteksi lebih awal, mencegah konflik rilis menjelang kampanye belanja besar.</p>
+  </div>
+  </div>
+
+  <div class="block tool-block">
+    <h3><span class="num">§2</span>Kalkulator Interaktif: Perencanaan Sprint</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">Masukkan total story point backlog dan rata-rata velocity tim untuk mengestimasi jumlah sprint & durasi proyek.</p>
+    <div class="calc-controls">
+      <div class="field"><label>Total Backlog (SP)</label><input type="number" id="agBacklog" value="240"></div>
+      <div class="field"><label>Velocity / Sprint (SP)</label><input type="number" id="agVelocity" value="32"></div>
+      <div class="field"><label>Panjang Sprint (Minggu)</label><input type="number" id="agSprintLen" value="2"></div>
+      <button class="btn" onclick="calcAgile()">Hitung Estimasi</button>
+    </div>
+    <div class="result-box" id="agileResult"></div>
+    <table class="sheet" style="margin-top:20px;">
+      <tr><th>Backlog Item</th><th>Prioritas</th><th>Story Point</th></tr>
+      <tr><td>Login Biometrik (Face/Fingerprint)</td><td>Tinggi</td><td>13</td></tr>
+      <tr><td>Transfer via QRIS</td><td>Tinggi</td><td>21</td></tr>
+      <tr><td>Notifikasi Transaksi Real-time</td><td>Sedang</td><td>8</td></tr>
+      <tr><td>Integrasi E-wallet Pihak Ketiga</td><td>Sedang</td><td>34</td></tr>
+      <tr><td>Dark Mode UI</td><td>Rendah</td><td>5</td></tr>
+    </table>
+  </div>
+
+  <div class="block quiz-block" data-module="agile">
+    <h3>Latihan Soal — Agile</h3>
+    <p class="quiz-sub">Klik salah satu opsi untuk melihat jawaban benar dan pembahasannya.</p>
+    <div class="qlist" id="quiz-agile"></div>
+  </div>
+</section>
+
+<!-- ===================== 3. HYBRID ===================== -->
+<section id="page-hybrid" class="page hidden">
+  <div class="eyebrow"><span class="dot" style="background:var(--orange)"></span>MODUL 3 · BLENDED LIFE CYCLE</div>
+  <h2 class="title">Hybrid</h2>
+  <p class="subtitle">Kombinasi strategis antara pendekatan predictive (waterfall) dan adaptive (agile) — perencanaan yang kuat dipadu eksekusi yang fleksibel.</p>
+
+  <div class="block">
+    <h3><span class="num">§1</span>Teori & Konsep Inti</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Definisi</h4>
+        <ul>
+          <li>PMI mendeskripsikan hybrid life cycle sebagai perpaduan elemen predictive dan adaptive dalam satu proyek.</li>
+          <li>Komponen proyek yang stabil & regulated menggunakan tata kelola waterfall (phase gate, milestone besar).</li>
+          <li>Komponen yang butuh iterasi cepat & umpan balik pengguna menggunakan ritme sprint agile — biasanya "bersarang" di dalam satu phase gate.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Pola Umum Penerapan</h4>
+        <ul>
+          <li><b>Waterfall untuk:</b> perencanaan strategis, procurement, infrastruktur fisik, milestone kontraktual.</li>
+          <li><b>Agile untuk:</b> pengembangan software/konfigurasi sistem, desain UX, area yang requirement-nya berevolusi.</li>
+          <li>Contoh: implementasi ERP — blueprint & go-live pakai gerbang fase, tapi konfigurasi modul dikerjakan lewat sprint.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refbox">Rujukan: PMBOK Guide 7th Ed. & Agile Practice Guide (PMI) — konsep hybrid/blended approach untuk proyek dengan karakteristik campuran.</div>
+  </div>
+
+  <div class="block">
+    <h3><span class="num">§1b</span>Spektrum Pendekatan & Pola Water-Scrum-Fall</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Bukan Biner, Tapi Spektrum</h4>
+        <ul>
+          <li>PMI menggambarkan pendekatan proyek sebagai kontinum: Predictive murni → Hybrid → Iterative/Incremental → Adaptive/Agile murni — bukan pilihan hitam-putih.</li>
+          <li>Tim memilih titik pada spektrum ini berdasarkan tingkat kepastian requirement, regulasi, dan keterlibatan vendor eksternal.</li>
+          <li>Semakin tinggi ketidakpastian & kebutuhan validasi cepat dari pasar, semakin proyek condong ke sisi adaptive.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Pola "Water-Scrum-Fall"</h4>
+        <ul>
+          <li>Istilah populer (Forrester Research) untuk pola hybrid paling umum di perusahaan besar: requirement & perencanaan anggaran di depan pakai waterfall, pengembangan tengah pakai sprint Scrum, lalu rilis/deployment di akhir kembali ke proses waterfall (change management, sign-off, rilis terjadwal).</li>
+          <li>Governance memerlukan satu jadwal induk terintegrasi yang menyinkronkan milestone waterfall dengan sprint review agile, serta dashboard pelaporan tunggal agar sponsor tetap punya visibilitas.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 1</span>
+    <h3 style="margin-bottom:8px;">Implementasi ERP di Perusahaan Tambang</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Perusahaan menjalankan fase Blueprint → Procurement Lisensi → Konfigurasi & Testing → Go-Live sebagai gerbang fase formal (waterfall) karena melibatkan kontrak vendor dan anggaran modal. Namun di dalam fase Konfigurasi & Testing, tim implementasi bekerja dalam sprint 2 minggu untuk menyesuaikan modul finance, procurement, dan maintenance berdasarkan umpan balik pengguna kunci (key users) secara berkelanjutan.</p>
+  </div>
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 2</span>
+    <h3 style="margin-bottom:8px;">Smart Building & Digital Twin Kawasan IKN</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Pembangunan fisik gedung pintar di kawasan IKN mengikuti jadwal konstruksi waterfall yang ketat (izin, struktur, MEP). Namun sistem monitoring IoT dan dashboard digital twin-nya dikembangkan tim software secara agile, dengan sprint yang terus menyesuaikan dashboard begitu sensor bangunan mulai online — dua ritme kerja berjalan paralel menuju satu tanggal serah terima.</p>
+  </div>
+  </div>
+
+  <div class="block tool-block">
+    <h3><span class="num">§2</span>Peta Alokasi Pendekatan per Fase Proyek</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">Contoh pemetaan komponen proyek ERP ke pendekatan yang paling sesuai.</p>
+    <table class="sheet">
+      <tr><th>Fase / Komponen</th><th>Pendekatan</th><th>Alasan</th></tr>
+      <tr><td>Kontrak & Procurement Lisensi</td><td>Waterfall</td><td>Mengikat secara legal, sulit diubah setelah tanda tangan</td></tr>
+      <tr><td>Blueprint Proses Bisnis</td><td>Waterfall</td><td>Butuh persetujuan formal lintas divisi sebagai baseline</td></tr>
+      <tr><td>Konfigurasi Modul Finance</td><td>Agile (Sprint)</td><td>Requirement berevolusi seiring uji coba pengguna</td></tr>
+      <tr><td>UAT (User Acceptance Test) Iteratif</td><td>Agile (Sprint)</td><td>Butuh siklus umpan balik cepat dari key user</td></tr>
+      <tr><td>Go-Live & Cutover</td><td>Waterfall</td><td>Momen kritikal berisiko tinggi, harus terjadwal ketat</td></tr>
+    </table>
+  </div>
+
+  <div class="block quiz-block" data-module="hybrid">
+    <h3>Latihan Soal — Hybrid</h3>
+    <p class="quiz-sub">Klik salah satu opsi untuk melihat jawaban benar dan pembahasannya.</p>
+    <div class="qlist" id="quiz-hybrid"></div>
+  </div>
+</section>
+
+<!-- ===================== 4. LEAN ===================== -->
+<section id="page-lean" class="page hidden">
+  <div class="eyebrow"><span class="dot" style="background:var(--green)"></span>MODUL 4 · WASTE ELIMINATION</div>
+  <h2 class="title">Lean</h2>
+  <p class="subtitle">Filosofi menghilangkan pemborosan (waste) dan memaksimalkan nilai bagi pelanggan, berakar dari Toyota Production System.</p>
+
+  <div class="block">
+    <h3><span class="num">§1</span>Teori & Konsep Inti</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>5 Prinsip Lean (Womack & Jones)</h4>
+        <ul>
+          <li><b>Value</b> — definisikan nilai dari sudut pandang pelanggan.</li>
+          <li><b>Value Stream</b> — petakan seluruh aliran proses yang menghasilkan nilai tersebut.</li>
+          <li><b>Flow</b> — pastikan proses mengalir tanpa hambatan/penundaan.</li>
+          <li><b>Pull</b> — produksi berdasarkan permintaan aktual, bukan dorongan stok.</li>
+          <li><b>Perfection</b> — perbaikan berkelanjutan (Kaizen) tanpa henti.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>8 Jenis Pemborosan (TIMWOOD+S)</h4>
+        <ul>
+          <li><b>T</b>ransportation, <b>I</b>nventory, <b>M</b>otion, <b>W</b>aiting,</li>
+          <li><b>O</b>verproduction, <b>O</b>verprocessing, <b>D</b>efects,</li>
+          <li>+ <b>S</b>kills underutilized (potensi SDM yang tidak dimanfaatkan).</li>
+        </ul>
+        <p style="margin-top:8px;">Alat utama: <b>Value Stream Mapping (VSM)</b> — memetakan setiap langkah proses, waktu siklus, dan mana yang menambah nilai vs. sekadar menunggu.</p>
+      </div>
+    </div>
+    <div class="refbox">Rujukan: "Lean Thinking" — James P. Womack & Daniel T. Jones; Toyota Production System (Taiichi Ohno).</div>
+  </div>
+
+  <div class="block">
+    <h3><span class="num">§1b</span>Dua Pilar TPS, 5S, & Takt Time</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Dua Pilar Toyota Production System</h4>
+        <ul>
+          <li><b>Just-In-Time (JIT)</b> — memproduksi hanya apa yang dibutuhkan, sejumlah yang dibutuhkan, pada saat dibutuhkan; menekan inventori berlebih memakai sistem kartu Kanban sebagai sinyal tarik (pull signal) antar stasiun kerja.</li>
+          <li><b>Jidoka</b> ("otomasi dengan sentuhan manusia") — proses/mesin berhenti otomatis begitu cacat terdeteksi, mencegah cacat menyebar ke tahap berikutnya (andon system).</li>
+        </ul>
+        <h4 style="margin-top:14px;">Gemba Walk</h4>
+        <p>Filosofi "pergi ke tempat kejadian sebenarnya" — pemimpin turun langsung mengamati lantai produksi/proses nyata alih-alih hanya membaca laporan, agar akar masalah dan waste terlihat langsung.</p>
+      </div>
+      <div class="col">
+        <h4>5S — Penataan Tempat Kerja</h4>
+        <ul>
+          <li><b>Seiri</b> (Ringkas) — pilah barang perlu vs tidak perlu.</li>
+          <li><b>Seiton</b> (Rapi) — atur posisi barang agar mudah diakses.</li>
+          <li><b>Seiso</b> (Resik) — jaga kebersihan area kerja.</li>
+          <li><b>Seiketsu</b> (Rawat) — standarisasi praktik 3S di atas.</li>
+          <li><b>Shitsuke</b> (Rajin) — disiplin menjaga kebiasaan tersebut secara berkelanjutan.</li>
+        </ul>
+        <h4 style="margin-top:14px;">Takt Time</h4>
+        <p>Kecepatan produksi yang harus dicapai agar output sesuai laju permintaan pelanggan: Takt Time = Waktu Kerja Tersedia ÷ Permintaan Pelanggan. Berbeda dengan cycle time (waktu aktual menyelesaikan satu unit).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 1</span>
+    <h3 style="margin-bottom:8px;">Lini Produksi Komponen Otomotif</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Pabrik komponen otomotif menemukan bahwa dari total lead time pemrosesan pesanan, sebagian besar waktu justru dihabiskan untuk menunggu persetujuan dan antrian quality control — bukan proses produksi itu sendiri. Tim menerapkan Value Stream Mapping untuk mengidentifikasi titik pemborosan dan menyusun rencana perbaikan (Kaizen event).</p>
+  </div>
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 2</span>
+    <h3 style="margin-bottom:8px;">Lean di Instalasi Gawat Darurat Rumah Sakit</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Rumah sakit menerapkan prinsip Lean untuk memetakan alur pasien IGD dari pendaftaran hingga penanganan dokter. Gemba walk oleh manajemen menemukan pasien banyak menunggu karena rekam medis belum terintegrasi (waste "waiting"). Setelah 5S diterapkan di ruang triase dan alur dokumen disederhanakan, waktu tunggu rata-rata pasien turun signifikan tanpa menambah staf.</p>
+  </div>
+  </div>
+
+  <div class="block tool-block">
+    <h3><span class="num">§2</span>Kalkulator Interaktif: Value Stream Mapping</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">Ubah waktu siklus (menit) atau jenis tiap langkah, lalu hitung ulang persentase waktu bernilai tambah (Value-Added) terhadap total lead time.</p>
+    <table class="sheet" id="vsmTable"></table>
+    <div class="calc-controls" style="margin-top:14px;">
+      <button class="btn" onclick="calcVSM()">Hitung % Value-Added</button>
+    </div>
+    <div class="result-box" id="vsmResult"></div>
+  </div>
+
+  <div class="block quiz-block" data-module="lean">
+    <h3>Latihan Soal — Lean</h3>
+    <p class="quiz-sub">Klik salah satu opsi untuk melihat jawaban benar dan pembahasannya.</p>
+    <div class="qlist" id="quiz-lean"></div>
+  </div>
+</section>
+
+<!-- ===================== 5. CPM ===================== -->
+<section id="page-cpm" class="page hidden">
+  <div class="eyebrow"><span class="dot" style="background:var(--red)"></span>MODUL 5 · SCHEDULE NETWORK ANALYSIS</div>
+  <h2 class="title">Critical Path Method (CPM)</h2>
+  <p class="subtitle">Teknik penjadwalan untuk menentukan durasi minimum proyek dan mengidentifikasi rangkaian aktivitas yang tidak boleh terlambat sedikit pun.</p>
+
+  <div class="block">
+    <h3><span class="num">§1</span>Teori & Konsep Inti</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Istilah Kunci</h4>
+        <ul>
+          <li><b>ES/EF (Early Start/Finish)</b> — dihitung lewat forward pass, waktu tercepat aktivitas bisa mulai/selesai.</li>
+          <li><b>LS/LF (Late Start/Finish)</b> — dihitung lewat backward pass, batas terlambat aktivitas boleh mulai/selesai tanpa menunda proyek.</li>
+          <li><b>Total Float</b> = LS − ES (atau LF − EF) — jumlah waktu aktivitas boleh molor tanpa menggeser tanggal selesai proyek.</li>
+          <li><b>Jalur Kritis</b> — rangkaian aktivitas dengan float = 0; menentukan durasi total proyek.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Cara Kerja</h4>
+        <ul>
+          <li><b>Forward Pass:</b> ES = maksimum EF dari semua predecessor; EF = ES + durasi.</li>
+          <li><b>Backward Pass:</b> LF = minimum LS dari semua successor (LF = durasi proyek jika tidak ada successor); LS = LF − durasi.</li>
+          <li>Jika aktivitas non-kritis terlambat melebihi float-nya, jalur tersebut ikut menjadi kritis dan proyek mundur.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refbox">Rujukan: Kelley & Walker (1959, DuPont) — pengembang awal metode Critical Path Method; PMBOK Guide — Precedence Diagramming Method (PDM) dalam Schedule Management.</div>
+  </div>
+
+  <div class="block">
+    <h3><span class="num">§1b</span>CPM vs PERT, Jenis Dependensi, & Kompresi Jadwal</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>CPM vs PERT</h4>
+        <ul>
+          <li><b>CPM</b> memakai satu estimasi durasi deterministik per aktivitas — cocok saat durasi relatif dapat diprediksi (mis. konstruksi).</li>
+          <li><b>PERT</b> (Program Evaluation Review Technique) memakai tiga estimasi — optimis (O), paling mungkin (M), pesimis (P) — dihitung dengan rumus (O + 4M + P) / 6 untuk menangkap ketidakpastian, umum pada proyek riset/rekayasa baru.</li>
+        </ul>
+        <h4 style="margin-top:14px;">Jenis Hubungan Ketergantungan</h4>
+        <ul>
+          <li><b>Finish-to-Start (FS)</b> — paling umum: aktivitas B mulai setelah A selesai.</li>
+          <li><b>Start-to-Start (SS)</b>, <b>Finish-to-Finish (FF)</b>, dan <b>Start-to-Finish (SF)</b> — jarang dipakai, untuk pola kerja paralel/khusus.</li>
+          <li><b>Lead & Lag</b> — Lead mempercepat mulainya successor (tumpang tindih), Lag menambah jeda wajib antar aktivitas.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Teknik Kompresi Jadwal</h4>
+        <ul>
+          <li><b>Crashing</b> — menambah sumber daya (lembur, tenaga kerja tambahan) pada aktivitas kritis untuk mempercepat durasi, umumnya menaikkan biaya.</li>
+          <li><b>Fast-Tracking</b> — menjalankan aktivitas yang biasanya berurutan menjadi paralel, mempercepat jadwal namun menaikkan risiko rework.</li>
+        </ul>
+        <h4 style="margin-top:14px;">Jalur Nyaris Kritis (Near-Critical Path)</h4>
+        <p>Jalur dengan float kecil (misalnya 1–3 hari) perlu dipantau ketat karena sedikit keterlambatan saja bisa membuatnya berubah menjadi jalur kritis baru, mengejutkan manajer proyek yang hanya memantau jalur kritis awal.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="case-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 1</span>
+    <h3 style="margin-bottom:8px;">Konstruksi Jembatan Bentang Panjang</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Proyek jembatan melibatkan tujuh aktivitas utama dengan ketergantungan berbeda — sebagian bisa berjalan paralel (misalnya pengadaan material baja berjalan bersamaan dengan pekerjaan pondasi). Manajer proyek perlu tahu persis rangkaian aktivitas mana yang menentukan tanggal commissioning, dan aktivitas mana yang punya ruang toleransi (float) jika terjadi keterlambatan kecil.</p>
+  </div>
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS 2</span>
+    <h3 style="margin-bottom:8px;">Crashing Jadwal Pipa Gas Karena Tenggat Kontrak</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Kontraktor pemasangan pipa gas terancam denda keterlambatan karena cuaca buruk menunda pekerjaan penggalian. Manajer proyek menganalisis jalur kritis untuk menemukan aktivitas mana yang paling murah untuk di-crash (menambah kru pengelasan) dibanding fast-tracking (menjalankan uji tekanan pipa paralel dengan penimbunan tanah, meski berisiko lebih tinggi).</p>
+  </div>
+  </div>
+
+  <div class="block tool-block">
+    <h3><span class="num">§2</span>Kalkulator Interaktif: Jalur Kritis</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">Ubah durasi (hari) tiap aktivitas lalu klik "Hitung Jalur Kritis" — tabel dan diagram jaringan akan menyorot jalur kritis (float = 0) secara otomatis.</p>
+    <table class="sheet" id="cpmTable"></table>
+    <div class="calc-controls" style="margin-top:14px;">
+      <button class="btn" onclick="runCPM()">Hitung Jalur Kritis</button>
+      <button class="btn btn-outline" onclick="resetCPM()">Reset ke Default</button>
+    </div>
+    <div class="result-box" id="cpmResult"></div>
+    <div class="netwrap"><svg id="cpmSvg" width="1000" height="260"></svg></div>
+  </div>
+
+  <div class="block quiz-block" data-module="cpm">
+    <h3>Latihan Soal — Critical Path Method</h3>
+    <p class="quiz-sub">Klik salah satu opsi untuk melihat jawaban benar dan pembahasannya.</p>
+    <div class="qlist" id="quiz-cpm"></div>
+  </div>
+</section>
+
+<!-- ===================== 6. SIX SIGMA ===================== -->
+<section id="page-sixsigma" class="page hidden">
+  <div class="eyebrow"><span class="dot" style="background:var(--yellow)"></span>MODUL 6 · VARIATION REDUCTION</div>
+  <h2 class="title">Six Sigma</h2>
+  <p class="subtitle">Pendekatan berbasis statistik untuk mengurangi variasi dan cacat proses hingga mendekati kesempurnaan kualitas.</p>
+
+  <div class="block">
+    <h3><span class="num">§1</span>Teori & Konsep Inti</h3>
+    <div class="theory-grid">
+      <div class="col">
+        <h4>Metodologi DMAIC</h4>
+        <ul>
+          <li><b>Define</b> — tetapkan masalah, tujuan, dan suara pelanggan (Voice of Customer).</li>
+          <li><b>Measure</b> — kumpulkan data kinerja proses saat ini secara objektif.</li>
+          <li><b>Analyze</b> — cari akar penyebab variasi/cacat (root cause analysis).</li>
+          <li><b>Improve</b> — rancang & uji solusi perbaikan proses.</li>
+          <li><b>Control</b> — kunci perbaikan dengan sistem pengendalian agar tidak kembali ke kondisi lama.</li>
+        </ul>
+      </div>
+      <div class="col">
+        <h4>Sigma Level & DPMO</h4>
+        <ul>
+          <li><b>DPMO</b> (Defects Per Million Opportunities) mengukur tingkat cacat per sejuta peluang kesalahan.</li>
+          <li>Level Six Sigma (6σ) secara teori setara ±3.4 DPMO — mendekati zero defect.</li>
+          <li>Struktur peran: Champion, Master Black Belt, Black Belt (memimpin proyek penuh waktu), Green Belt (kontributor paruh waktu).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refbox">Rujukan: Dikembangkan Motorola (1980-an), dipopulerkan General Electric di bawah Jack Welch; kerangka DMAIC standar iSixSigma / ASQ.</div>
+  </div>
+
+  <div class="block">
+    <h3><span class="num">§1b</span>Hierarki Sabuk (Belt) Six Sigma — Teori & Peran Tiap Level</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px; max-width:760px;">Sama seperti sabuk pada seni bela diri, Six Sigma menggunakan sistem warna sabuk untuk menandai jenjang keahlian dan tanggung jawab seseorang dalam proyek perbaikan proses. Berikut penjelasan lengkap tiap level yang diakui secara luas oleh badan sertifikasi seperti ASQ (American Society for Quality) dan IASSC (International Association for Six Sigma Certification).</p>
+    <table class="sheet">
+      <tr><th>Sabuk</th><th>Fokus & Teori yang Dikuasai</th><th>Estimasi Pelatihan</th><th>Peran dalam Proyek DMAIC</th></tr>
+      <tr>
+        <td><b style="color:#EAF3FA;">⬜ White Belt</b></td>
+        <td>Pengenalan istilah dasar Six Sigma & konsep waste/variasi secara umum. Tidak dituntut memahami statistik.</td>
+        <td>4–8 jam (awareness training)</td>
+        <td>Anggota pendukung lokal — membantu observasi masalah sehari-hari, umumnya tidak memimpin proyek formal.</td>
+      </tr>
+      <tr>
+        <td><b style="color:var(--yellow);">🟨 Yellow Belt</b></td>
+        <td>Dasar DMAIC, teknik pengumpulan data sederhana, pemetaan proses dasar (SIPOC, flowchart).</td>
+        <td>8–16 jam</td>
+        <td>Kontributor tim — mengumpulkan data lapangan, mendukung Green/Black Belt pada bagian tugas spesifik.</td>
+      </tr>
+      <tr>
+        <td><b style="color:var(--green);">🟩 Green Belt</b></td>
+        <td>Menguasai penuh siklus DMAIC, statistik dasar-menengah (uji hipotesis dasar, diagram kontrol, kapabilitas proses).</td>
+        <td>2–4 minggu</td>
+        <td>Memimpin proyek skala kecil–menengah secara paruh waktu di area kerjanya sendiri, dibimbing Black Belt.</td>
+      </tr>
+      <tr>
+        <td><b style="color:var(--text);">⬛ Black Belt</b></td>
+        <td>Statistik lanjutan — Design of Experiments (DOE), regresi, uji hipotesis kompleks — plus keterampilan manajemen perubahan.</td>
+        <td>4–6 minggu</td>
+        <td>Memimpin proyek besar lintas fungsi secara penuh waktu; melatih & membimbing Green Belt dan Yellow Belt.</td>
+      </tr>
+      <tr>
+        <td><b style="color:var(--orange);">◆ Master Black Belt</b></td>
+        <td>Strategi deployment Six Sigma tingkat organisasi, metodologi coaching, kurikulum pelatihan internal.</td>
+        <td>Berbulan-bulan pengalaman lapangan sebagai Black Belt</td>
+        <td>Melatih & mengawasi para Black Belt/Green Belt; menjadi konsultan internal & penentu arah program kualitas perusahaan.</td>
+      </tr>
+      <tr>
+        <td><b style="color:var(--cyan);">★ Champion</b></td>
+        <td>Bukan level teknis, melainkan peran eksekutif — memahami kaitan proyek Six Sigma dengan strategi bisnis.</td>
+        <td>Briefing eksekutif singkat</td>
+        <td>Sponsor proyek: mengalokasikan sumber daya, menyingkirkan hambatan organisasi, memastikan proyek selaras tujuan bisnis.</td>
+      </tr>
+    </table>
+    <div class="refbox"><b>Catatan penting soal "Blue Belt" & "Red Belt":</b> istilah ini <b>bukan bagian dari kerangka baku</b> yang diakui luas oleh ASQ maupun IASSC — enam level standar yang diakui industri secara global hanya White, Yellow, Green, Black, dan Master Black Belt (ditambah peran non-teknis Champion). Beberapa penyedia pelatihan atau perusahaan tertentu memang menciptakan sabuk tambahan bermerek sendiri (termasuk kadang disebut Blue Belt atau Orange Belt) sebagai jenjang internal tambahan — biasanya diposisikan sebagai jenjang menengah antara Yellow dan Green Belt untuk kontributor yang lebih berpengalaman. Jika organisasi Anda menggunakan istilah ini, perlakukan sebagai jenjang internal kustom, bukan standar sertifikasi universal.</div>
+  </div>
+
+  <div class="block case-block">
+    <span class="tag">PEMBAHASAN — BAGAIMANA SEMUA BELT BEKERJA BERSAMA</span>
+    <h3 style="margin-bottom:8px;">Alur Kolaborasi Belt dalam Satu Proyek DMAIC Nyata</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Pabrik farmasi menemukan variasi berat tablet melebihi toleransi regulator. Berikut bagaimana tiap sabuk terlibat dari awal hingga akhir:</p>
+    <table class="sheet" style="margin-top:10px;">
+      <tr><th>Tahap DMAIC</th><th>Belt yang Terlibat</th><th>Kontribusi Konkret</th></tr>
+      <tr><td>Define</td><td>Champion + Black Belt</td><td>Champion menyetujui piagam proyek & anggaran; Black Belt merumuskan pernyataan masalah dan target sigma level.</td></tr>
+      <tr><td>Measure</td><td>Green Belt + Yellow Belt</td><td>Green Belt merancang rencana pengumpulan data timbangan tablet; Yellow Belt mencatat data QC harian di lini produksi.</td></tr>
+      <tr><td>Analyze</td><td>Black Belt + Green Belt</td><td>Black Belt menjalankan uji hipotesis & regresi untuk menemukan mesin pencetak sebagai akar penyebab utama variasi.</td></tr>
+      <tr><td>Improve</td><td>Green Belt + White Belt</td><td>Green Belt merancang eksperimen parameter mesin baru; White Belt membantu uji coba di lini produksi hariannya.</td></tr>
+      <tr><td>Control</td><td>Black Belt + Master Black Belt</td><td>Black Belt memasang Statistical Process Control (SPC) chart; Master Black Belt mereview agar metode ini direplikasi ke pabrik lain.</td></tr>
+    </table>
+  </div>
+
+  <div class="block case-block">
+    <span class="tag">STUDI KASUS TAMBAHAN</span>
+    <h3 style="margin-bottom:8px;">Pengurangan Kesalahan Input Transaksi Perbankan</h3>
+    <p style="color:var(--muted); font-size:14.5px;">Sebuah bank menemukan tingkat kesalahan input data nasabah di cabang cukup tinggi, menyebabkan keluhan dan biaya koreksi ulang. Seorang Green Belt di kantor cabang memimpin proyek DMAIC skala kecil, dibimbing Black Belt di kantor pusat, sementara staf teller (Yellow Belt) mengumpulkan data jenis kesalahan tersering. Setelah root cause ditemukan pada formulir digital yang membingungkan, perbaikan tampilan formulir menurunkan DPMO secara signifikan dalam tiga bulan.</p>
+  </div>
+
+  <div class="block tool-block">
+    <h3><span class="num">§2</span>Kalkulator Interaktif: DPMO & Sigma Level</h3>
+    <p style="color:var(--muted); font-size:13.5px; margin-top:-6px;">Masukkan data hasil inspeksi kualitas untuk menghitung DPMO dan estimasi level sigma proses Anda.</p>
+    <div class="calc-controls">
+      <div class="field"><label>Jumlah Unit Diperiksa</label><input type="number" id="ssUnits" value="5000"></div>
+      <div class="field"><label>Peluang Cacat / Unit</label><input type="number" id="ssOpp" value="4"></div>
+      <div class="field"><label>Jumlah Cacat Ditemukan</label><input type="number" id="ssDefects" value="27"></div>
+      <button class="btn" onclick="calcSigma()">Hitung DPMO & Sigma</button>
+    </div>
+    <div class="result-box" id="sigmaResult"></div>
+  </div>
+
+  <div class="block quiz-block" data-module="sixsigma">
+    <h3>Latihan Soal — Six Sigma</h3>
+    <p class="quiz-sub">Klik salah satu opsi untuk melihat jawaban benar dan pembahasannya.</p>
+    <div class="qlist" id="quiz-sixsigma"></div>
+  </div>
+</section>
+
+<script>
+// ================= QUIZ DATA (20 soal per modul) =================
+const QUIZ = {
+  waterfall:[
+    {q:"Pendekatan mana yang paling menekankan penetapan baseline scope, jadwal, dan biaya sejak awal proyek?",
+     options:["Waterfall (predictive)","Kanban murni","Scrum murni"], correct:0,
+     explain:"Predictive life cycle (waterfall) menetapkan baseline scope-jadwal-biaya di awal sebagai acuan pengendalian formal, berbeda dengan pendekatan adaptive yang merencanakan secara bertahap."},
+    {q:"Mengapa proyek pembangunan jalan tol umumnya cocok memakai pendekatan waterfall?",
+     options:["Karena timnya kecil","Karena requirement & regulasi relatif stabil sehingga perubahan besar di tengah jalan berisiko tinggi biaya","Karena tidak perlu dokumentasi"], correct:1,
+     explain:"Proyek infrastruktur fisik memiliki ketergantungan tahapan yang kuat dan regulasi ketat, sehingga pendekatan sekuensial dengan kontrol perubahan formal lebih sesuai."},
+    {q:"Dokumen yang menjadi acuan pengendalian kinerja jadwal dan biaya pada pendekatan predictive disebut...",
+     options:["Product backlog","Baseline (jadwal & biaya)","Burndown chart"], correct:1,
+     explain:"Baseline adalah versi rencana yang disetujui dan digunakan sebagai pembanding untuk mengukur kinerja aktual, umum dipakai bersama Earned Value Management pada pendekatan predictive."},
+    {q:"Apa kelemahan utama pendekatan waterfall?",
+     options:["Terlalu murah","Sulit mengakomodasi perubahan requirement di tengah proyek karena tiap fase harus tuntas dulu","Tidak bisa dipakai untuk proyek besar"], correct:1,
+     explain:"Karena fase bersifat sekuensial, perubahan requirement di tengah jalan sering memerlukan proses change order formal yang memakan waktu dan biaya."},
+    {q:"Earned Value Management (EVM) paling natural diterapkan pada pendekatan...",
+     options:["Predictive/waterfall","Agile murni tanpa baseline","Tidak relevan untuk pendekatan manapun"], correct:0,
+     explain:"EVM membandingkan kinerja aktual terhadap baseline scope-jadwal-biaya yang ditetapkan di awal — sesuatu yang menjadi ciri khas pendekatan predictive."},
+    {q:"Grup proses PMBOK yang menghasilkan Project Charter adalah...",
+     options:["Initiating","Executing","Closing"], correct:0,
+     explain:"Project Charter diterbitkan pada grup proses Initiating sebagai dokumen yang secara formal mengotorisasi keberadaan proyek."},
+    {q:"WBS adalah singkatan dari...",
+     options:["Work Breakdown Structure","Weekly Business Summary","Workflow Baseline System"], correct:0,
+     explain:"Work Breakdown Structure adalah dekomposisi hierarkis ruang lingkup proyek menjadi paket-paket pekerjaan yang lebih kecil dan terkelola."},
+    {q:"Dokumen yang mencatat daftar risiko proyek beserta rencana responsnya disebut...",
+     options:["Risk Register","Stakeholder Register","Issue Log"], correct:0,
+     explain:"Risk Register mendaftar risiko yang teridentifikasi, analisis, pemilik risiko, dan strategi respons yang direncanakan."},
+    {q:"Siapa yang biasanya mengesahkan baseline proyek pada pendekatan predictive?",
+     options:["Sponsor proyek","Anggota tim paling junior","Vendor eksternal"], correct:0,
+     explain:"Sponsor memiliki otoritas untuk menyetujui baseline scope-jadwal-biaya karena mereka menyediakan sumber daya dan menanggung akuntabilitas bisnis proyek."},
+    {q:"Perubahan pada baseline predictive idealnya harus melalui...",
+     options:["Keputusan sepihak anggota tim","Proses Integrated Change Control / Change Control Board","Tidak perlu proses apa pun"], correct:1,
+     explain:"Perubahan pada scope, jadwal, atau biaya yang sudah dibaseline harus dievaluasi dan disetujui secara formal agar dampaknya terhadap proyek terkendali."},
+    {q:"SPI (Schedule Performance Index) bernilai kurang dari 1 menunjukkan bahwa proyek...",
+     options:["Lebih cepat dari jadwal","Terlambat dari jadwal rencana","Tidak memiliki jadwal sama sekali"], correct:1,
+     explain:"SPI = Earned Value / Planned Value. Nilai di bawah 1 berarti pekerjaan yang terselesaikan lebih sedikit dari yang direncanakan pada titik waktu tersebut."},
+    {q:"CPI (Cost Performance Index) bernilai kurang dari 1 menunjukkan bahwa proyek...",
+     options:["Menghemat biaya","Mengeluarkan biaya lebih besar dari nilai pekerjaan yang diselesaikan (over budget)","Tidak relevan dengan biaya"], correct:1,
+     explain:"CPI = Earned Value / Actual Cost. Nilai di bawah 1 berarti biaya aktual yang dikeluarkan lebih besar dibanding nilai pekerjaan yang berhasil diselesaikan."},
+    {q:"Tujuan utama pendekatan Stage-Gate pada proyek EPC adalah...",
+     options:["Mempercepat proyek tanpa evaluasi","Memastikan kematangan desain/keputusan sebelum melangkah ke tahap yang lebih mahal","Menghilangkan kebutuhan dokumentasi"], correct:1,
+     explain:"Stage-Gate memberi checkpoint formal agar risiko besar (seperti komitmen konstruksi fisik) baru diambil setelah desain dan rencana cukup matang."},
+    {q:"Pada proyek kilang migas, fase FEED (Front-End Engineering Design) dilakukan...",
+     options:["Setelah konstruksi selesai","Sebelum kontrak EPC ditandatangani, untuk mematangkan desain teknis","Bersamaan dengan commissioning"], correct:1,
+     explain:"FEED mematangkan desain dan estimasi biaya sebelum kontrak EPC (Engineering, Procurement, Construction) ditandatangani, mengurangi ketidakpastian besar di tahap konstruksi."},
+    {q:"Ciri khas 'big-bang testing' pada pendekatan waterfall adalah...",
+     options:["Pengujian dilakukan bertahap tiap minggu","Pengujian menyeluruh baru dilakukan mendekati akhir proyek","Tidak ada pengujian sama sekali"], correct:1,
+     explain:"Karena fase bersifat sekuensial, verifikasi/testing menyeluruh sering menumpuk di akhir siklus, sehingga masalah besar baru terdeteksi belakangan."},
+    {q:"Manakah dari berikut yang BUKAN dokumen khas pendekatan predictive?",
+     options:["WBS","Schedule Baseline","Sprint Backlog"], correct:2,
+     explain:"Sprint Backlog adalah artefak khas Scrum/Agile, bukan dokumen standar pendekatan predictive/waterfall."},
+    {q:"Grup proses Closing pada PMBOK menghasilkan output berupa...",
+     options:["Berita Acara Serah Terima & Lessons Learned","Product Backlog baru","Sprint Review notes"], correct:0,
+     explain:"Closing menandai penutupan formal proyek/fase, termasuk serah terima deliverable dan dokumentasi pembelajaran (lessons learned) untuk proyek mendatang."},
+    {q:"Salah satu kelebihan utama waterfall dibanding agile pada proyek berskala besar dan regulated adalah...",
+     options:["Kepastian anggaran & jadwal yang lebih tinggi sejak awal","Fleksibilitas mengubah requirement kapan saja","Tidak memerlukan perencanaan"], correct:0,
+     explain:"Karena scope, jadwal, dan biaya ditetapkan sebagai baseline di depan, stakeholder mendapat kepastian yang lebih tinggi — trade-off-nya adalah kekakuan terhadap perubahan."},
+    {q:"Ketergantungan Finish-to-Start antara pekerjaan pondasi dan struktur atas bangunan mencerminkan sifat proyek yang...",
+     options:["Memiliki ketergantungan fisik kuat antar tahapan","Bisa dikerjakan dalam urutan bebas","Tidak memerlukan urutan sama sekali"], correct:0,
+     explain:"Struktur atas secara fisik tidak bisa dibangun sebelum pondasi selesai — ketergantungan fisik semacam ini adalah alasan kuat proyek konstruksi memakai pendekatan sekuensial."},
+    {q:"Peran Project Manager pada pendekatan predictive umumnya memegang...",
+     options:["Akuntabilitas tunggal atas pencapaian jadwal & biaya sesuai baseline","Tidak ada tanggung jawab formal","Peran yang sama persis dengan Scrum Master"], correct:0,
+     explain:"Berbeda dengan Scrum Master yang bersifat fasilitator, Project Manager pada pendekatan predictive memegang akuntabilitas langsung atas pencapaian target jadwal dan biaya proyek."}
+  ],
+  agile:[
+    {q:"Menurut praktik umum Scrum, berapa lama durasi satu sprint yang umum digunakan?",
+     options:["1–4 minggu","6 bulan","1 hari"], correct:0,
+     explain:"Sprint umumnya berdurasi 1 hingga 4 minggu (paling umum 2 minggu), cukup pendek untuk menghasilkan increment yang bisa diuji tapi cukup panjang untuk menyelesaikan pekerjaan bermakna."},
+    {q:"Siapa yang bertanggung jawab memaksimalkan nilai produk dan mengelola product backlog dalam Scrum?",
+     options:["Scrum Master","Product Owner","Project Sponsor"], correct:1,
+     explain:"Product Owner memegang akuntabilitas terhadap product backlog dan memastikan tim mengerjakan item dengan nilai bisnis tertinggi terlebih dahulu."},
+    {q:"Ukuran kecepatan tim menyelesaikan story point per sprint disebut...",
+     options:["Velocity","Float","Sigma level"], correct:0,
+     explain:"Velocity adalah rata-rata jumlah story point yang berhasil diselesaikan tim per sprint, dipakai untuk memprediksi kapan backlog akan selesai."},
+    {q:"Event harian singkat (~15 menit) untuk sinkronisasi progres tim disebut...",
+     options:["Sprint Review","Daily Scrum (Daily Standup)","Retrospective"], correct:1,
+     explain:"Daily Scrum adalah pertemuan singkat harian bagi tim pengembang untuk menyelaraskan rencana kerja 24 jam ke depan."},
+    {q:"Menurut Agile Manifesto, mana yang lebih diutamakan?",
+     options:["Proses & alat yang kaku dibanding individu & interaksi","Individu & interaksi dibanding proses & alat yang kaku","Dokumentasi lengkap dibanding produk yang berjalan"], correct:1,
+     explain:"Salah satu dari empat nilai inti Agile Manifesto adalah mengutamakan individu dan interaksi di atas proses dan alat yang kaku."},
+    {q:"Siapa yang memfasilitasi tim dan menghilangkan hambatan (impediment) dalam Scrum?",
+     options:["Scrum Master","Product Owner","Stakeholder eksternal"], correct:0,
+     explain:"Scrum Master berperan sebagai servant leader yang memfasilitasi proses Scrum dan membantu tim menyingkirkan hambatan kerja."},
+    {q:"Artefak yang berisi seluruh daftar fitur/kebutuhan yang mungkin dikerjakan tim disebut...",
+     options:["Product Backlog","Sprint Backlog","Increment"], correct:0,
+     explain:"Product Backlog adalah daftar terurut seluruh kebutuhan produk yang dikelola dan diprioritaskan oleh Product Owner."},
+    {q:"Event untuk menunjukkan hasil kerja (increment) kepada stakeholder di akhir sprint disebut...",
+     options:["Sprint Review","Sprint Planning","Backlog Refinement"], correct:0,
+     explain:"Sprint Review adalah kesempatan tim mendemonstrasikan increment yang selesai dan mengumpulkan umpan balik dari stakeholder."},
+    {q:"Event untuk merefleksikan cara kerja tim dan merencanakan perbaikan proses disebut...",
+     options:["Sprint Retrospective","Daily Scrum","Sprint Review"], correct:0,
+     explain:"Sprint Retrospective difokuskan pada evaluasi proses kerja tim itu sendiri, bukan pada produk, untuk menemukan perbaikan di sprint berikutnya."},
+    {q:"Grafik yang menunjukkan sisa pekerjaan terhadap waktu dalam satu sprint disebut...",
+     options:["Burndown Chart","Value Stream Map","Network Diagram"], correct:0,
+     explain:"Burndown Chart memvisualisasikan penurunan story point tersisa dari hari ke hari sepanjang sprint, membantu tim memantau progres."},
+    {q:"Definition of Done (DoD) berfungsi untuk...",
+     options:["Menetapkan kriteria objektif suatu item benar-benar selesai","Mengganti kebutuhan testing","Menentukan harga produk"], correct:0,
+     explain:"DoD menjaga konsistensi kualitas dengan memastikan semua orang punya pemahaman yang sama tentang kapan sebuah item bisa dianggap 'selesai'."},
+    {q:"Perbedaan utama Kanban board dari Scrum board adalah...",
+     options:["Kanban tidak terikat kotak waktu sprint (continuous flow)","Kanban hanya bisa dipakai untuk software","Kanban tidak memiliki visualisasi apa pun"], correct:0,
+     explain:"Kanban mengalirkan pekerjaan secara berkelanjutan tanpa siklus sprint tetap, berbeda dengan Scrum yang bekerja dalam kotak waktu (timebox) tertentu."},
+    {q:"Batas jumlah pekerjaan yang boleh dikerjakan bersamaan pada satu kolom Kanban disebut...",
+     options:["WIP limit (Work-in-Progress limit)","Velocity cap","Sprint goal"], correct:0,
+     explain:"WIP limit mencegah tim mengerjakan terlalu banyak hal sekaligus, sehingga aliran kerja (flow) tetap lancar dan cepat selesai."},
+    {q:"Teknik estimasi yang menggunakan skala mirip deret Fibonacci dan diskusi tim disebut...",
+     options:["Planning Poker","Gantt Charting","Value Stream Mapping"], correct:0,
+     explain:"Planning Poker meminta tiap anggota tim menaksir ukuran cerita secara rahasia menggunakan kartu berskala Fibonacci, lalu mendiskusikan perbedaan sebelum sepakat."},
+    {q:"Kerangka kerja untuk menyelaraskan banyak tim Scrum pada satu produk skala besar antara lain...",
+     options:["SAFe (Scaled Agile Framework) atau LeSS (Large-Scale Scrum)","CPM dan PERT","5S dan Kaizen"], correct:0,
+     explain:"SAFe dan LeSS adalah kerangka scaling Agile yang membantu banyak tim Scrum tetap selaras pada satu tujuan produk di organisasi besar."},
+    {q:"Forum sinkronisasi berkala antar beberapa tim Scrum yang saling bergantung disebut...",
+     options:["Scrum of Scrums","Kaizen event","Change Control Board"], correct:0,
+     explain:"Scrum of Scrums adalah pertemuan perwakilan dari beberapa tim Scrum untuk membahas dependensi dan risiko lintas tim."},
+    {q:"Cycle time pada pendekatan Kanban mengukur...",
+     options:["Waktu dari mulai dikerjakan hingga item tersebut selesai","Total anggaran proyek","Jumlah anggota tim"], correct:0,
+     explain:"Cycle time berbeda dari lead time (yang dihitung sejak permintaan masuk); cycle time hanya menghitung sejak pekerjaan benar-benar mulai dikerjakan."},
+    {q:"Salah satu prinsip Agile menekankan bahwa ukuran utama kemajuan proyek adalah...",
+     options:["Perangkat lunak/produk yang berjalan (working software)","Jumlah halaman dokumentasi","Jumlah rapat yang dilakukan"], correct:0,
+     explain:"Agile Manifesto menekankan bahwa produk yang benar-benar berfungsi adalah indikator kemajuan yang lebih bermakna dibanding dokumentasi semata."},
+    {q:"Teknik estimasi kasar T-Shirt Sizing (S/M/L/XL) paling cocok digunakan pada tahap...",
+     options:["Estimasi awal roadmap yang masih kasar","Sprint terakhir sebelum rilis produksi","Audit keuangan proyek"], correct:0,
+     explain:"T-Shirt Sizing memberikan estimasi kasar dan cepat, cocok saat detail requirement belum sepenuhnya jelas di tahap awal perencanaan produk."},
+    {q:"Pada studi kasus mobile banking, mengapa tim memilih sprint pendek (2 minggu)?",
+     options:["Agar bisa merilis & menguji fitur dengan umpan balik pasar yang bergerak cepat","Karena diwajibkan regulator","Karena tim tidak punya rencana jangka panjang"], correct:0,
+     explain:"Sprint pendek memungkinkan tim merilis increment secara sering dan cepat menyesuaikan prioritas berdasarkan umpan balik nyata dari pengguna."}
+  ],
+  hybrid:[
+    {q:"Pendekatan hybrid paling tepat digunakan ketika...",
+     options:["Seluruh proyek pasti stabil dari awal sampai akhir","Sebagian komponen proyek stabil/regulated sementara sebagian lain butuh iterasi cepat","Tidak ada perbedaan karakteristik antar komponen proyek"], correct:1,
+     explain:"Hybrid memadukan tata kelola waterfall untuk komponen yang stabil dan berisiko tinggi terhadap perubahan, dengan ritme agile untuk komponen yang butuh adaptasi cepat."},
+    {q:"Pada implementasi ERP, pola hybrid yang umum diterapkan adalah...",
+     options:["Seluruh proyek memakai sprint tanpa milestone","Waterfall untuk milestone besar/phase gate, agile untuk konfigurasi modul teknis","Tidak ada perencanaan sama sekali"], correct:1,
+     explain:"Milestone kontraktual dan go-live dikelola sebagai gerbang fase formal, sementara konfigurasi & UAT modul dikerjakan secara iteratif dalam sprint."},
+    {q:"Apa manfaat utama pendekatan hybrid dibanding murni waterfall atau murni agile?",
+     options:["Selalu lebih murah dalam segala kondisi","Fleksibilitas menyesuaikan pendekatan sesuai karakteristik tiap fase/komponen proyek","Menghilangkan kebutuhan akan manajer proyek"], correct:1,
+     explain:"Hybrid memungkinkan tim memilih ritme kerja yang paling sesuai untuk tiap bagian proyek, alih-alih memaksakan satu pendekatan untuk semua konteks."},
+    {q:"Apa risiko utama jika hybrid diterapkan tanpa tata kelola yang matang?",
+     options:["Proyek otomatis gagal total","Kebingungan tata kelola karena dua ritme kerja berbeda berjalan bersamaan tanpa titik integrasi yang jelas","Tidak ada risiko sama sekali"], correct:1,
+     explain:"Tanpa titik integrasi dan pelaporan yang jelas antara jalur waterfall dan jalur agile, tim bisa kehilangan visibilitas status proyek secara keseluruhan."},
+    {q:"Istilah populer untuk pola hybrid di mana requirement & rilis memakai waterfall tapi pengembangan tengah memakai sprint disebut...",
+     options:["Water-Scrum-Fall","Fast-tracking","Gemba walk"], correct:0,
+     explain:"Water-Scrum-Fall (istilah dari Forrester Research) menggambarkan pola hybrid paling umum di perusahaan besar: waterfall di ujung-ujung, Scrum di tengah."},
+    {q:"Menurut PMI, pendekatan proyek (predictive hingga adaptive) sebaiknya dipandang sebagai...",
+     options:["Pilihan biner (harus salah satu)","Spektrum/kontinum yang bisa dipadukan sesuai kebutuhan","Sesuatu yang tidak relevan untuk dipilih"], correct:1,
+     explain:"PMI menggambarkan pendekatan proyek sebagai kontinum dari predictive murni hingga adaptive murni, dengan hybrid berada di antaranya."},
+    {q:"Faktor yang membuat sebuah proyek condong ke sisi adaptive pada spektrum pendekatan adalah...",
+     options:["Tingkat ketidakpastian requirement yang tinggi","Requirement yang sudah 100% pasti sejak awal","Tidak adanya stakeholder eksternal"], correct:0,
+     explain:"Semakin tinggi ketidakpastian dan kebutuhan validasi cepat dari pasar/pengguna, semakin proyek diuntungkan oleh ritme kerja yang iteratif dan adaptif."},
+    {q:"Pada studi kasus smart building IKN, bagian mana yang paling sesuai memakai pendekatan agile?",
+     options:["Konstruksi fisik gedung","Sistem monitoring IoT & dashboard digital twin","Proses perizinan bangunan"], correct:1,
+     explain:"Sistem digital yang terus disesuaikan berdasarkan data sensor yang baru online cocok dikerjakan secara iteratif, berbeda dengan konstruksi fisik yang harus mengikuti urutan tetap."},
+    {q:"Pada studi kasus smart building IKN, bagian mana yang tetap memakai pendekatan waterfall?",
+     options:["Konstruksi fisik gedung (izin, struktur, MEP)","Penyesuaian dashboard mingguan","Iterasi tampilan aplikasi monitoring"], correct:0,
+     explain:"Konstruksi fisik memiliki ketergantungan tahapan yang ketat dan regulasi keselamatan, sehingga tetap dikelola dengan jadwal waterfall yang ketat."},
+    {q:"Kebutuhan tata kelola (governance) utama pada proyek hybrid adalah...",
+     options:["Satu jadwal induk terintegrasi & dashboard pelaporan tunggal","Menghapus seluruh dokumentasi","Memisahkan total tim agile dan waterfall tanpa komunikasi"], correct:0,
+     explain:"Agar sponsor tetap punya visibilitas menyeluruh, jadwal waterfall dan ritme sprint agile perlu disinkronkan dalam satu kerangka pelaporan terintegrasi."},
+    {q:"Mengapa kontrak & procurement lisensi pada proyek ERP sebaiknya tetap dikelola secara waterfall?",
+     options:["Karena mengikat secara legal dan sulit diubah setelah tanda tangan","Karena tidak penting bagi proyek","Karena vendor selalu setuju dengan segala perubahan"], correct:0,
+     explain:"Kontrak legal dan komitmen anggaran bersifat mengikat, sehingga perubahan di tengah jalan berisiko tinggi secara hukum dan finansial — cocok dikelola dengan kepastian di awal."},
+    {q:"UAT (User Acceptance Test) iteratif pada proyek ERP hybrid biasanya dikerjakan dengan pendekatan...",
+     options:["Agile (sprint pendek dengan umpan balik cepat dari key user)","Waterfall dengan satu kali pengujian di akhir","Tidak perlu diuji sama sekali"], correct:0,
+     explain:"UAT iteratif memungkinkan key user memberi umpan balik berulang kali sebelum go-live, sehingga masalah konfigurasi ditemukan lebih awal."},
+    {q:"Go-live & cutover sistem ERP umumnya tetap memakai pendekatan waterfall karena...",
+     options:["Merupakan momen kritikal berisiko tinggi yang harus terjadwal ketat","Tidak ada risiko yang perlu dikelola","Selalu dilakukan tanpa perencanaan"], correct:0,
+     explain:"Cutover ke sistem baru menyangkut kontinuitas operasional bisnis, sehingga memerlukan jadwal yang presisi dan rencana kontinjensi yang matang layaknya milestone waterfall."},
+    {q:"Manfaat 'bersarangnya' sprint agile di dalam satu phase gate waterfall adalah...",
+     options:["Tim tetap bisa iterasi cepat tanpa kehilangan kontrol milestone besar","Menghapus kebutuhan sponsor proyek","Menjamin proyek tidak akan pernah molor"], correct:0,
+     explain:"Pola ini memberi fleksibilitas eksekusi teknis (lewat sprint) sambil tetap menjaga akuntabilitas milestone besar di level manajemen (lewat phase gate)."},
+    {q:"Tantangan komunikasi utama pada tim hybrid adalah...",
+     options:["Menyelaraskan istilah & metrik antara tim yang berpikir waterfall dan tim yang berpikir agile","Tidak adanya tantangan komunikasi sama sekali","Terlalu banyak dokumentasi yang tidak perlu"], correct:0,
+     explain:"Istilah seperti 'milestone' vs 'sprint goal' atau metrik EVM vs velocity perlu diterjemahkan agar seluruh stakeholder memahami status proyek yang sama."},
+    {q:"Hybrid paling sering diterapkan pada jenis proyek...",
+     options:["Transformasi digital, implementasi ERP, atau smart factory","Proyek sangat kecil dengan satu orang pengerja","Proyek yang tidak melibatkan teknologi sama sekali"], correct:0,
+     explain:"Proyek dengan komponen fisik/regulasi sekaligus komponen software/konfigurasi yang berevolusi adalah kandidat ideal untuk pendekatan hybrid."},
+    {q:"Apa yang membedakan hybrid sejati dari sekadar 'waterfall dengan nama lain'?",
+     options:["Adanya iterasi nyata pada komponen tertentu, bukan hanya dokumentasi tambahan","Jumlah rapat yang lebih banyak","Penggunaan istilah agile tanpa perubahan cara kerja"], correct:0,
+     explain:"Hybrid yang efektif benar-benar mengubah cara kerja pada komponen yang diberi ritme agile — bukan sekadar relabeling proses waterfall dengan istilah agile."},
+    {q:"Siapa yang biasanya menentukan komposisi ideal hybrid (porsi predictive vs adaptive) pada suatu proyek?",
+     options:["Manajer proyek bersama sponsor, berdasarkan karakteristik proyek","Ditentukan secara acak","Selalu 50:50 tanpa pertimbangan konteks"], correct:0,
+     explain:"Komposisi hybrid idealnya disesuaikan dengan tingkat kepastian requirement, regulasi, dan risiko tiap komponen proyek — bukan rasio tetap yang universal."},
+    {q:"Risiko governance terbesar bila jalur waterfall dan jalur agile berjalan tanpa titik integrasi yang jelas adalah...",
+     options:["Kehilangan visibilitas status proyek secara keseluruhan bagi sponsor/eksekutif","Proyek otomatis selesai lebih cepat","Tidak ada risiko governance sama sekali"], correct:0,
+     explain:"Tanpa pelaporan terintegrasi, sponsor bisa kesulitan menilai kesehatan proyek secara menyeluruh karena dua bagian proyek melaporkan progres dengan cara berbeda."},
+    {q:"Contoh proyek yang relatif TIDAK memerlukan pendekatan hybrid adalah...",
+     options:["Proyek sangat kecil & sederhana yang seluruh requirement-nya sudah pasti sejak awal","Proyek ERP skala nasional","Proyek transformasi digital multi-tahun"], correct:0,
+     explain:"Ketika seluruh requirement sudah jelas dan risiko perubahan rendah, kompleksitas tambahan dari memadukan dua pendekatan biasanya tidak sepadan manfaatnya."}
+  ],
+  lean:[
+    {q:"Filosofi Lean berakar dari sistem produksi milik perusahaan mana?",
+     options:["Toyota (Toyota Production System)","General Electric","Motorola"], correct:0,
+     explain:"Lean berkembang dari Toyota Production System yang dipelopori Taiichi Ohno, kemudian dipopulerkan secara luas melalui buku 'Lean Thinking' oleh Womack & Jones."},
+    {q:"Urutan 5 prinsip Lean menurut Womack & Jones adalah...",
+     options:["Value → Value Stream → Flow → Pull → Perfection","Define → Measure → Analyze → Improve → Control","Plan → Do → Check → Act → Review"], correct:0,
+     explain:"Kelima prinsip ini membentuk siklus perbaikan berkelanjutan Lean, dimulai dari mendefinisikan nilai bagi pelanggan hingga mengejar kesempurnaan (Kaizen)."},
+    {q:"Menunggu persetujuan yang lama dalam proses kerja termasuk jenis pemborosan (waste)...",
+     options:["Overproduction","Waiting","Defects"], correct:1,
+     explain:"Waiting adalah salah satu dari 8 jenis waste (TIMWOOD+S) — waktu yang terbuang karena proses/orang menunggu tanpa aktivitas bernilai tambah."},
+    {q:"Alat untuk memetakan aliran proses dan mengidentifikasi waste di sepanjang proses disebut...",
+     options:["Value Stream Mapping (VSM)","Gantt Chart","Fishbone Diagram"], correct:0,
+     explain:"VSM memvisualisasikan setiap langkah proses beserta waktu siklus dan status nilai tambahnya, memudahkan identifikasi titik pemborosan."},
+    {q:"Budaya perbaikan berkelanjutan tanpa henti dalam Lean disebut...",
+     options:["Kaizen","Sprint","Six Sigma"], correct:0,
+     explain:"Kaizen adalah filosofi perbaikan kecil dan berkelanjutan yang melibatkan seluruh anggota organisasi, menjadi prinsip kelima (Perfection) dalam Lean."},
+    {q:"Dua pilar utama Toyota Production System adalah...",
+     options:["Just-In-Time dan Jidoka","DMAIC dan SPC","Scrum dan Kanban board"], correct:0,
+     explain:"Just-In-Time menekan inventori berlebih dengan sistem tarik, sementara Jidoka menghentikan proses otomatis begitu cacat terdeteksi — keduanya fondasi TPS."},
+    {q:"Sistem kartu yang mengatur sinyal tarik (pull) antar stasiun kerja pada Just-In-Time disebut...",
+     options:["Kanban","Burndown chart","Risk Register"], correct:0,
+     explain:"Kartu Kanban pada manufaktur memberi sinyal kapan stasiun kerja berikutnya boleh memproduksi/mengambil komponen, mencegah produksi berlebih."},
+    {q:"Jidoka memungkinkan mesin/proses untuk...",
+     options:["Berhenti otomatis saat cacat terdeteksi, mencegah cacat menyebar","Berjalan lebih cepat tanpa henti","Mengabaikan kontrol kualitas"], correct:0,
+     explain:"Jidoka ('otomasi dengan sentuhan manusia') menghentikan lini produksi begitu ada anomali agar masalah segera ditangani, bukan diteruskan ke tahap berikutnya."},
+    {q:"Filosofi 'pergi langsung ke tempat kejadian nyata' untuk observasi masalah disebut...",
+     options:["Gemba walk","Sprint Review","Change Control Board"], correct:0,
+     explain:"Gemba walk mendorong pemimpin turun langsung ke lokasi kerja nyata (lantai produksi, ruang pelayanan) alih-alih hanya membaca laporan."},
+    {q:"Langkah pertama 5S, 'Seiri', berarti...",
+     options:["Memilah barang perlu vs tidak perlu (Ringkas)","Menjaga kebersihan area kerja","Membuat standar kerja"], correct:0,
+     explain:"Seiri (Ringkas) adalah langkah memilah dan menyingkirkan barang yang tidak diperlukan dari area kerja sebagai fondasi 5S."},
+    {q:"Langkah terakhir 5S, 'Shitsuke', menekankan...",
+     options:["Disiplin menjaga kebiasaan 4S sebelumnya secara berkelanjutan","Membeli peralatan baru","Menghentikan seluruh proses kerja"], correct:0,
+     explain:"Shitsuke (Rajin) memastikan praktik Sort-Set-Shine-Standardize benar-benar menjadi kebiasaan yang konsisten dijaga, bukan hanya proyek satu kali."},
+    {q:"Takt Time dihitung dengan rumus...",
+     options:["Waktu kerja tersedia ÷ permintaan pelanggan","Total biaya ÷ jumlah unit","Durasi proyek ÷ jumlah aktivitas"], correct:0,
+     explain:"Takt Time menunjukkan kecepatan produksi yang harus dicapai agar output sesuai laju permintaan pelanggan, berbeda dari cycle time aktual."},
+    {q:"Overproduction sebagai salah satu jenis waste berarti...",
+     options:["Memproduksi lebih banyak atau lebih cepat dari yang dibutuhkan","Kekurangan bahan baku","Kelebihan tenaga kerja terlatih"], correct:0,
+     explain:"Overproduction dianggap waste paling merugikan karena memicu waste lain seperti kelebihan inventori dan biaya penyimpanan."},
+    {q:"Motion sebagai salah satu waste merujuk pada...",
+     options:["Gerakan fisik pekerja yang tidak perlu/tidak menambah nilai","Waktu tunggu material","Kesalahan produk jadi"], correct:0,
+     explain:"Motion mencakup gerakan berulang atau tidak efisien pekerja (mis. berjalan jauh mengambil alat) yang tidak menambah nilai bagi produk."},
+    {q:"Prinsip 'Pull' dalam Lean berarti produksi didorong oleh...",
+     options:["Permintaan aktual, bukan target stok yang diperkirakan","Perkiraan penjualan jangka panjang semata","Kapasitas mesin maksimum"], correct:0,
+     explain:"Sistem pull memproduksi berdasarkan sinyal permintaan nyata, mengurangi risiko kelebihan produksi dan penumpukan inventori."},
+    {q:"Prinsip 'Perfection' dalam Lean paling identik dengan budaya...",
+     options:["Kaizen (perbaikan berkelanjutan)","Crashing jadwal","Change control formal"], correct:0,
+     explain:"Perfection menekankan bahwa perbaikan proses tidak pernah benar-benar selesai — selalu ada ruang untuk penyempurnaan lebih lanjut."},
+    {q:"Pada studi kasus IGD rumah sakit, waste apa yang ditemukan lewat Gemba walk manajemen?",
+     options:["Waiting — pasien menunggu karena rekam medis belum terintegrasi","Overproduction obat","Defects pada alat medis"], correct:0,
+     explain:"Observasi langsung di lapangan menemukan bahwa waktu tunggu pasien didominasi oleh proses administratif yang lambat, bukan oleh penanganan medis itu sendiri."},
+    {q:"VSM membantu tim melihat perbedaan antara...",
+     options:["Waktu bernilai tambah vs waktu terbuang dalam satu alur proses","Harga jual vs biaya produksi","Jumlah karyawan tetap vs kontrak"], correct:0,
+     explain:"VSM memisahkan waktu yang benar-benar menambah nilai bagi pelanggan dari waktu yang habis untuk menunggu/proses non-esensial, sehingga peluang perbaikan terlihat jelas."},
+    {q:"Overprocessing sebagai waste terjadi ketika...",
+     options:["Proses dilakukan melebihi yang benar-benar dibutuhkan/diinginkan pelanggan","Terlalu sedikit bahan baku dipakai","Karyawan bekerja terlalu cepat"], correct:0,
+     explain:"Overprocessing mencakup langkah kerja, fitur, atau kualitas berlebih yang tidak dihargai pelanggan — menghabiskan sumber daya tanpa menambah nilai yang mereka rasakan."},
+    {q:"'Skills underutilized' sebagai tambahan pada TIMWOOD (menjadi TIMWOOD+S) merujuk pada...",
+     options:["Potensi keahlian/ide karyawan yang tidak dimanfaatkan optimal oleh organisasi","Kurangnya mesin produksi","Kelebihan anggaran pelatihan"], correct:0,
+     explain:"Waste ini menyoroti hilangnya nilai ketika organisasi tidak melibatkan pengetahuan, kreativitas, atau keterampilan karyawan secara maksimal dalam perbaikan proses."}
+  ],
+  cpm:[
+    {q:"Total float suatu aktivitas dihitung dengan rumus...",
+     options:["LS − ES (atau LF − EF)","ES + EF","Durasi proyek ÷ jumlah aktivitas"], correct:0,
+     explain:"Total float mengukur selisih antara waktu mulai terlambat (LS) dan waktu mulai tercepat (ES) suatu aktivitas — menunjukkan seberapa fleksibel aktivitas tersebut boleh molor."},
+    {q:"Aktivitas dengan total float = 0 berada pada...",
+     options:["Jalur non-kritis","Jalur kritis (critical path)","Buffer proyek"], correct:1,
+     explain:"Float nol berarti aktivitas tidak memiliki ruang keterlambatan sama sekali — jika molor, seluruh proyek ikut molor. Rangkaian aktivitas seperti ini disebut jalur kritis."},
+    {q:"Durasi total proyek pada metode CPM ditentukan oleh...",
+     options:["Jalur terpendek dari start ke finish","Jalur terpanjang dari start ke finish (critical path)","Rata-rata durasi seluruh aktivitas"], correct:1,
+     explain:"Durasi proyek sama dengan total durasi jalur terpanjang (critical path) dari titik mulai hingga titik selesai jaringan aktivitas."},
+    {q:"Forward pass pada CPM digunakan untuk menghitung...",
+     options:["Early Start (ES) dan Early Finish (EF)","Late Start (LS) dan Late Finish (LF)","Sigma level proses"], correct:0,
+     explain:"Forward pass berjalan dari awal ke akhir jaringan untuk menghitung waktu tercepat setiap aktivitas bisa dimulai (ES) dan selesai (EF)."},
+    {q:"Jika aktivitas non-kritis terlambat melebihi total float-nya, apa yang terjadi?",
+     options:["Tidak berpengaruh apa pun terhadap proyek","Jalur tersebut berpotensi menjadi kritis dan durasi proyek total ikut mundur","Otomatis proyek dibatalkan"], correct:1,
+     explain:"Keterlambatan yang melebihi float akan menggeser LS/LF aktivitas berikutnya, berpotensi mengubah jalur tersebut menjadi kritis dan memundurkan tanggal selesai proyek."},
+    {q:"Backward pass pada CPM digunakan untuk menghitung...",
+     options:["Late Start (LS) dan Late Finish (LF)","Early Start (ES) dan Early Finish (EF)","Velocity tim"], correct:0,
+     explain:"Backward pass berjalan dari akhir ke awal jaringan untuk menentukan batas waktu terlambat (LS/LF) setiap aktivitas boleh dimulai/selesai tanpa menunda proyek."},
+    {q:"Perbedaan utama PERT dari CPM adalah PERT menggunakan...",
+     options:["Tiga estimasi durasi (optimis, paling mungkin, pesimis)","Hanya satu estimasi durasi deterministik","Tidak menggunakan estimasi durasi sama sekali"], correct:0,
+     explain:"PERT dirancang untuk menangkap ketidakpastian durasi lewat tiga titik estimasi, cocok untuk proyek riset/rekayasa baru yang durasinya sulit dipastikan."},
+    {q:"Rumus estimasi durasi PERT (distribusi beta) adalah...",
+     options:["(O + 4M + P) / 6","(O + P) / 2","O × M × P"], correct:0,
+     explain:"Rumus ini memberi bobot lebih besar pada estimasi 'paling mungkin' (M) dibanding skenario optimis (O) dan pesimis (P), menghasilkan estimasi durasi yang diharapkan."},
+    {q:"Hubungan ketergantungan yang paling umum digunakan dalam penjadwalan proyek adalah...",
+     options:["Finish-to-Start (FS)","Start-to-Finish (SF)","Finish-to-Finish (FF)"], correct:0,
+     explain:"Finish-to-Start berarti aktivitas berikutnya baru bisa mulai setelah aktivitas sebelumnya selesai — pola paling umum dan intuitif dalam penjadwalan."},
+    {q:"'Lead time' dalam penjadwalan proyek berarti...",
+     options:["Mempercepat mulainya aktivitas successor sehingga tumpang tindih dengan predecessor","Menambah jeda wajib antar aktivitas","Menghapus aktivitas dari jaringan"], correct:0,
+     explain:"Lead memungkinkan aktivitas berikutnya dimulai sebelum predecessor sepenuhnya selesai, mempercepat jadwal keseluruhan."},
+    {q:"'Lag time' dalam penjadwalan proyek berarti...",
+     options:["Menambah jeda waktu wajib antar dua aktivitas yang berurutan","Mempercepat aktivitas successor","Menghitung total float"], correct:0,
+     explain:"Lag menambahkan waktu tunggu yang disengaja, misalnya menunggu beton mengering sebelum aktivitas berikutnya boleh dimulai."},
+    {q:"Teknik menambah sumber daya (lembur/tenaga tambahan) pada aktivitas kritis untuk mempercepat proyek disebut...",
+     options:["Crashing","Fast-tracking","Gemba walk"], correct:0,
+     explain:"Crashing mempercepat durasi aktivitas kritis dengan menambah sumber daya, umumnya menaikkan biaya proyek secara langsung."},
+    {q:"Teknik menjalankan aktivitas yang biasanya berurutan menjadi paralel untuk mempercepat jadwal disebut...",
+     options:["Fast-tracking","Crashing","Kaizen"], correct:0,
+     explain:"Fast-tracking mempercepat jadwal tanpa menambah biaya langsung, namun meningkatkan risiko rework karena aktivitas dikerjakan sebelum prasyaratnya sepenuhnya matang."},
+    {q:"Risiko utama fast-tracking dibanding crashing adalah...",
+     options:["Meningkatnya risiko rework/kesalahan karena kurang koordinasi antar aktivitas paralel","Biaya proyek pasti naik drastis","Tidak ada risiko tambahan sama sekali"], correct:0,
+     explain:"Menjalankan aktivitas yang seharusnya berurutan secara paralel bisa menimbulkan konflik atau kesalahan yang baru terlihat belakangan, memerlukan pengerjaan ulang."},
+    {q:"Jalur dengan float kecil yang berpotensi menjadi kritis jika sedikit terlambat disebut...",
+     options:["Jalur nyaris kritis (near-critical path)","Jalur bebas (free path)","Jalur cadangan (backup path)"], correct:0,
+     explain:"Jalur ini perlu dipantau ketat karena keterlambatan kecil saja bisa mengubahnya menjadi jalur kritis baru yang menentukan durasi proyek."},
+    {q:"Pada studi kasus jembatan, aktivitas 'Pengadaan Material Baja' memiliki float karena...",
+     options:["Berjalan paralel dengan rangkaian aktivitas pondasi-pilar yang durasinya lebih panjang","Tidak memiliki predecessor sama sekali","Merupakan aktivitas terakhir dalam proyek"], correct:0,
+     explain:"Karena pengadaan material bisa berjalan bersamaan dengan pekerjaan pondasi dan pilar yang memakan waktu lebih lama, aktivitas ini punya ruang toleransi keterlambatan (float)."},
+    {q:"Precedence Diagramming Method (PDM) dalam PMBOK merujuk pada...",
+     options:["Teknik menggambar jaringan aktivitas dengan node & panah ketergantungan","Metode menghitung DPMO","Framework Scrum untuk penjadwalan sprint"], correct:0,
+     explain:"PDM adalah notasi standar untuk menggambarkan aktivitas sebagai node yang dihubungkan panah ketergantungan, dasar dari diagram jaringan CPM."},
+    {q:"Jika durasi aktivitas non-kritis dipersingkat, apa dampaknya terhadap durasi total proyek?",
+     options:["Tidak berdampak, karena bukan bagian dari jalur kritis","Durasi proyek otomatis ikut memendek","Proyek menjadi lebih lambat"], correct:0,
+     explain:"Karena aktivitas non-kritis memiliki float, mempersingkat durasinya tidak mengubah jalur terpanjang (critical path) yang menentukan durasi total proyek."},
+    {q:"Pada studi kasus pipa gas, manajer proyek memilih antara crashing dan fast-tracking terutama berdasarkan...",
+     options:["Trade-off antara biaya tambahan (crashing) dan risiko rework yang bisa diterima (fast-tracking)","Warna seragam kerja tim","Jumlah rapat mingguan"], correct:0,
+     explain:"Keputusan kompresi jadwal selalu melibatkan trade-off eksplisit: menambah biaya secara langsung (crashing) versus menaikkan risiko teknis dengan paralelisasi (fast-tracking)."},
+    {q:"Metode Critical Path Method pertama kali dikembangkan dalam konteks industri apa?",
+     options:["Proyek konstruksi/kimia di perusahaan DuPont (Kelley & Walker, 1959)","Pengembangan aplikasi mobile","Industri perbankan digital"], correct:0,
+     explain:"CPM dikembangkan Kelley & Walker di DuPont pada 1959 untuk menjadwalkan proyek pembangunan dan pemeliharaan pabrik kimia berskala besar."}
+  ],
+  sixsigma:[
+    {q:"Urutan tahapan DMAIC yang benar adalah...",
+     options:["Define → Measure → Analyze → Improve → Control","Measure → Define → Improve → Analyze → Control","Analyze → Define → Measure → Control → Improve"], correct:0,
+     explain:"DMAIC adalah singkatan berurutan: Define (definisikan masalah), Measure (ukur kondisi saat ini), Analyze (cari akar penyebab), Improve (perbaiki), Control (kendalikan agar tetap konsisten)."},
+    {q:"Secara teori, level Six Sigma (6σ) menghasilkan tingkat cacat sekitar...",
+     options:["3.4 DPMO","66,807 DPMO","500,000 DPMO"], correct:0,
+     explain:"Level 6 sigma (dengan pergeseran 1.5 sigma jangka panjang) setara dengan sekitar 3.4 cacat per juta peluang (DPMO) — sangat mendekati zero defect."},
+    {q:"DPMO adalah singkatan dari...",
+     options:["Defects Per Million Opportunities","Design Process Management Output","Data Point Measurement Objective"], correct:0,
+     explain:"DPMO (Defects Per Million Opportunities) mengukur jumlah cacat yang terjadi per satu juta peluang kesalahan, menjadi basis perhitungan level sigma."},
+    {q:"Peran yang memimpin proyek Six Sigma penuh waktu dengan keahlian statistik mendalam disebut...",
+     options:["Green Belt","Black Belt","Champion"], correct:1,
+     explain:"Black Belt biasanya mengerjakan proyek Six Sigma secara penuh waktu dan menguasai perangkat statistik lanjutan, sementara Green Belt umumnya berkontribusi paruh waktu."},
+    {q:"Six Sigma pertama kali dikembangkan oleh perusahaan...",
+     options:["Motorola","Toyota","DuPont"], correct:0,
+     explain:"Six Sigma dikembangkan Motorola pada tahun 1980-an sebagai metodologi pengendalian kualitas berbasis statistik, kemudian dipopulerkan luas oleh General Electric."},
+    {q:"Level sabuk yang hanya menerima pelatihan awareness singkat (4–8 jam) dan umumnya tidak memimpin proyek formal adalah...",
+     options:["White Belt","Black Belt","Master Black Belt"], correct:0,
+     explain:"White Belt adalah jenjang pengenalan dasar — memahami istilah dan konsep umum, biasanya berperan sebagai pendukung lokal, bukan pemimpin proyek."},
+    {q:"Level sabuk yang berperan sebagai kontributor tim pengumpul data dan pendukung Green/Black Belt adalah...",
+     options:["Yellow Belt","Master Black Belt","Champion"], correct:0,
+     explain:"Yellow Belt memahami dasar DMAIC dan teknik pengumpulan data sederhana, cukup untuk mendukung proyek tanpa memimpinnya."},
+    {q:"Level sabuk yang memimpin proyek skala kecil-menengah secara paruh waktu di area kerjanya sendiri adalah...",
+     options:["Green Belt","White Belt","Champion"], correct:0,
+     explain:"Green Belt menguasai penuh siklus DMAIC dan statistik dasar-menengah, cukup untuk memimpin proyek perbaikan skala kecil-menengah sambil tetap menjalankan pekerjaan utamanya."},
+    {q:"Level sabuk yang memimpin proyek besar lintas fungsi secara penuh waktu serta melatih Green Belt adalah...",
+     options:["Black Belt","Yellow Belt","White Belt"], correct:0,
+     explain:"Black Belt menguasai statistik lanjutan (DOE, regresi, uji hipotesis kompleks) dan bertanggung jawab penuh waktu memimpin proyek besar lintas fungsi."},
+    {q:"Level yang bertugas melatih & mengawasi para Black Belt serta menentukan strategi program kualitas organisasi adalah...",
+     options:["Master Black Belt","Green Belt","Yellow Belt"], correct:0,
+     explain:"Master Black Belt berperan sebagai konsultan internal dan pelatih, memastikan seluruh proyek Six Sigma selaras dengan strategi kualitas organisasi secara keseluruhan."},
+    {q:"Peran yang bertindak sebagai sponsor eksekutif proyek Six Sigma (bukan level teknis) disebut...",
+     options:["Champion","White Belt","Yellow Belt"], correct:0,
+     explain:"Champion adalah posisi eksekutif/manajemen senior yang mengalokasikan sumber daya dan menyingkirkan hambatan organisasi bagi proyek Six Sigma."},
+    {q:"Menurut kerangka baku yang diakui ASQ dan IASSC, manakah yang BUKAN bagian dari hierarki sabuk standar Six Sigma?",
+     options:["Blue Belt / Red Belt","Green Belt","Black Belt"], correct:0,
+     explain:"Hierarki standar yang diakui luas hanya White, Yellow, Green, Black, dan Master Black Belt (plus peran Champion). Istilah Blue Belt/Red Belt bukan bagian dari standar sertifikasi universal, meski sebagian perusahaan memakainya sebagai jenjang internal kustom."},
+    {q:"Statistik lanjutan seperti Design of Experiments (DOE) dan regresi kompleks dikuasai penuh oleh level...",
+     options:["Black Belt","White Belt","Yellow Belt"], correct:0,
+     explain:"Penguasaan statistik lanjutan menjadi pembeda utama Black Belt dari Green Belt yang umumnya hanya menguasai statistik dasar-menengah."},
+    {q:"Pada studi kasus tablet farmasi tahap Define, siapa yang merumuskan pernyataan masalah & target sigma level bersama Champion?",
+     options:["Black Belt","White Belt","Yellow Belt"], correct:0,
+     explain:"Black Belt biasanya merumuskan piagam proyek (project charter) dan target teknis, sementara Champion memastikan proyek selaras dengan prioritas bisnis dan menyetujui anggarannya."},
+    {q:"Pada studi kasus tablet farmasi tahap Measure, siapa yang mencatat data QC harian di lini produksi?",
+     options:["Yellow Belt","Master Black Belt","Champion"], correct:0,
+     explain:"Yellow Belt berperan sebagai kontributor lapangan yang mengumpulkan data operasional harian untuk mendukung analisis Green Belt/Black Belt."},
+    {q:"Pada tahap Control studi kasus tablet farmasi, alat yang dipasang Black Belt untuk menjaga hasil perbaikan tetap konsisten disebut...",
+     options:["Statistical Process Control (SPC) chart","Value Stream Map","Sprint Backlog"], correct:0,
+     explain:"SPC chart memantau variasi proses secara berkelanjutan setelah perbaikan diterapkan, memberi peringatan dini bila proses mulai menyimpang dari kondisi terkendali."},
+    {q:"Estimasi pelatihan untuk mencapai level Green Belt biasanya berlangsung sekitar...",
+     options:["2–4 minggu","4–8 jam","Berbulan-bulan pengalaman lapangan"], correct:0,
+     explain:"Pelatihan Green Belt mencakup keseluruhan metodologi DMAIC dan statistik dasar-menengah, biasanya memerlukan 2–4 minggu kurikulum intensif."},
+    {q:"Estimasi pelatihan untuk mencapai level Black Belt biasanya berlangsung sekitar...",
+     options:["4–6 minggu","1 hari","1 jam"], correct:0,
+     explain:"Karena mencakup statistik lanjutan dan keterampilan manajemen perubahan, pelatihan Black Belt umumnya memerlukan waktu lebih panjang, sekitar 4–6 minggu."},
+    {q:"Pada studi kasus perbankan, siapa yang memimpin proyek DMAIC skala kecil di kantor cabang, dibimbing Black Belt pusat?",
+     options:["Green Belt","White Belt","Champion"], correct:0,
+     explain:"Sesuai perannya, Green Belt di cabang memimpin proyek skala kecil-menengah secara paruh waktu sambil tetap dibimbing oleh Black Belt yang lebih senior."},
+    {q:"Yield (persentase tanpa cacat) yang mendekati 100% menunjukkan proses dengan...",
+     options:["DPMO rendah dan level sigma tinggi","DPMO tinggi dan level sigma rendah","Tidak ada hubungan dengan DPMO"], correct:0,
+     explain:"Yield dan DPMO berbanding terbalik — semakin sedikit cacat per juta peluang, semakin tinggi persentase produk/proses yang bebas cacat dan semakin tinggi level sigma."}
+  ]
+};
+
+const MODULE_META = [
+  {key:'waterfall', title:'Waterfall', color:'var(--cyan)', desc:'Sekuensial & terstruktur, kuat di kontrol dan dokumentasi.', ex:'Contoh: Tol, Bendungan, Pabrik, EPC Migas'},
+  {key:'agile', title:'Agile', color:'var(--green)', desc:'Iteratif, adaptif, kolaborasi & nilai berkelanjutan.', ex:'Contoh: Software, Aplikasi, Fintech, Produk Digital'},
+  {key:'hybrid', title:'Hybrid', color:'var(--orange)', desc:'Kombinasi perencanaan strategis & eksekusi fleksibel.', ex:'Contoh: Transformasi Digital, ERP, Smart Factory'},
+  {key:'lean', title:'Lean', color:'var(--green)', desc:'Hilangkan pemborosan, optimasi proses & nilai.', ex:'Contoh: Manufaktur, Logistik, RS, E-commerce'},
+  {key:'cpm', title:'Critical Path Method', color:'var(--red)', desc:'Fokus pada aktivitas paling kritis penentu jadwal.', ex:'Contoh: Konstruksi, Infrastruktur, Engineering'},
+  {key:'sixsigma', title:'Six Sigma', color:'var(--yellow)', desc:'Kurangi variasi & cacat lewat pendekatan DMAIC.', ex:'Contoh: Otomotif, Farmasi, Elektronik, Perbankan'}
+];
+
+// ================= SCORE TRACKER =================
+let scoreState = {correct:0, total:0};
+function updateScoreWidget(){
+  document.getElementById('scoreWidget').textContent = `Skor Latihan: ${scoreState.correct} / ${scoreState.total}`;
+}
+
+// ================= TAB NAV =================
+function goTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('page-'+page).classList.remove('hidden');
+  document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
+  const idx = ['beranda','waterfall','agile','hybrid','lean','cpm','sixsigma'].indexOf(page);
+  document.querySelectorAll('.tabbtn')[idx].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ================= QUIZ RENDER =================
+function renderQuiz(moduleKey){
+  const wrap = document.getElementById('quiz-'+moduleKey);
+  const questions = QUIZ[moduleKey];
+  wrap.innerHTML='';
+  questions.forEach((item,qi)=>{
+    const card = document.createElement('div');
+    card.className='qcard';
+    const letters=['A','B','C'];
+    let optsHtml='';
+    item.options.forEach((opt,oi)=>{
+      optsHtml += `<button class="qopt" data-qi="${qi}" data-oi="${oi}" onclick="answerQuiz('${moduleKey}',${qi},${oi},this)"><b>${letters[oi]}.</b> ${opt}</button>`;
+    });
+    card.innerHTML = `<div class="qtext">${qi+1}. ${item.q}</div>${optsHtml}<div class="qexplain" id="exp-${moduleKey}-${qi}">${item.explain}</div>`;
+    wrap.appendChild(card);
+  });
+}
+function answerQuiz(moduleKey, qi, oi, btnEl){
+  const item = QUIZ[moduleKey][qi];
+  const card = btnEl.closest('.qcard');
+  const opts = card.querySelectorAll('.qopt');
+  if(card.dataset.answered) return; // already answered
+  card.dataset.answered = "1";
+  opts.forEach((o,i)=>{
+    o.classList.add('disabled');
+    if(i===item.correct) o.classList.add('correct');
+    else if(i===oi) o.classList.add('wrong');
+  });
+  document.getElementById(`exp-${moduleKey}-${qi}`).classList.add('show');
+  scoreState.total++;
+  if(oi===item.correct) scoreState.correct++;
+  updateScoreWidget();
+}
+function initQuizzes(){
+  let totalQ = 0;
+  Object.keys(QUIZ).forEach(k=>{ renderQuiz(k); totalQ += QUIZ[k].length; });
+  scoreState.total = 0; // total counts only answered so far; show max possible separately
+  document.getElementById('scoreWidget').textContent = `Skor Latihan: 0 / ${totalQ} soal`;
+}
+
+// ================= MODULE CARDS (Beranda) =================
+function renderModuleCards(){
+  const grid = document.getElementById('moduleGrid');
+  grid.innerHTML='';
+  MODULE_META.forEach((m,i)=>{
+    const card = document.createElement('div');
+    card.className='mcard';
+    card.onclick = ()=>goTo(m.key);
+    card.innerHTML = `<div class="accent" style="background:${m.color}"></div>
+      <div class="midx">MODUL ${i+1}</div>
+      <h3>${m.title}</h3>
+      <p>${m.desc}</p>
+      <div class="ex">${m.ex}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ================= WATERFALL GANTT TABLE =================
+const waterfallTasks = [
+  {name:'Studi Kelayakan', dur:20, start:0},
+  {name:'Detailed Engineering Design (DED)', dur:35, start:20},
+  {name:'Pengadaan Lahan & Material', dur:40, start:55},
+  {name:'Konstruksi Fisik', dur:180, start:95},
+  {name:'Commissioning', dur:15, start:275},
+  {name:'Serah Terima', dur:10, start:290}
+];
+function renderWaterfallGantt(){
+  const totalDur = 300;
+  const table = document.getElementById('waterfallGantt');
+  let html = `<tr><th>Fase</th><th>Durasi (hari)</th><th>Mulai (hari ke-)</th><th>Visual Timeline</th></tr>`;
+  waterfallTasks.forEach(t=>{
+    const widthPct = (t.dur/totalDur*100).toFixed(1);
+    const leftPct = (t.start/totalDur*100).toFixed(1);
+    html += `<tr><td>${t.name}</td><td>${t.dur}</td><td>${t.start}</td>
+      <td><div class="gantt-track" style="width:100%;"><div class="gantt-bar" style="width:${widthPct}%; margin-left:${leftPct}%;"></div></div></td></tr>`;
+  });
+  table.innerHTML = html;
+  document.getElementById('waterfallTotal').innerHTML =
+    `<div class="r-item"><div class="v">${totalDur} hari</div><div class="l">Total Durasi Proyek</div></div>
+     <div class="r-item"><div class="v">6</div><div class="l">Fase Sekuensial</div></div>`;
+}
+
+// ================= AGILE CALCULATOR =================
+function calcAgile(){
+  const backlog = parseFloat(document.getElementById('agBacklog').value)||0;
+  const velocity = parseFloat(document.getElementById('agVelocity').value)||1;
+  const sprintLen = parseFloat(document.getElementById('agSprintLen').value)||1;
+  const sprints = Math.ceil(backlog/velocity);
+  const weeks = sprints*sprintLen;
+  document.getElementById('agileResult').innerHTML = `
+    <div class="r-item"><div class="v">${sprints}</div><div class="l">Sprint Dibutuhkan</div></div>
+    <div class="r-item"><div class="v">${weeks}</div><div class="l">Total Minggu</div></div>
+    <div class="r-item"><div class="v">${(weeks/4.33).toFixed(1)}</div><div class="l">Estimasi Bulan</div></div>`;
+}
+
+// ================= LEAN VSM CALCULATOR =================
+const vsmSteps = [
+  {name:'Terima Pesanan', time:5, type:'VA'},
+  {name:'Menunggu Persetujuan Kredit', time:120, type:'Waste'},
+  {name:'Proses Produksi', time:45, type:'VA'},
+  {name:'Menunggu Antrian QC', time:30, type:'Waste'},
+  {name:'Inspeksi Quality Control', time:10, type:'VA'},
+  {name:'Packing', time:15, type:'VA'},
+  {name:'Menunggu Jadwal Pengiriman', time:60, type:'Waste'},
+  {name:'Pengiriman ke Pelanggan', time:20, type:'VA'}
+];
+function renderVSM(){
+  const table = document.getElementById('vsmTable');
+  let html = `<tr><th>Langkah Proses</th><th>Waktu Siklus (menit)</th><th>Jenis</th></tr>`;
+  vsmSteps.forEach((s,i)=>{
+    html += `<tr>
+      <td>${s.name}</td>
+      <td><input type="number" id="vsm-time-${i}" value="${s.time}"></td>
+      <td><select id="vsm-type-${i}"><option value="VA" ${s.type==='VA'?'selected':''}>Value-Added</option><option value="Waste" ${s.type==='Waste'?'selected':''}>Waste</option></select></td>
+    </tr>`;
+  });
+  table.innerHTML = html;
+}
+function calcVSM(){
+  let total=0, va=0;
+  vsmSteps.forEach((s,i)=>{
+    const t = parseFloat(document.getElementById(`vsm-time-${i}`).value)||0;
+    const type = document.getElementById(`vsm-type-${i}`).value;
+    total += t;
+    if(type==='VA') va += t;
+  });
+  const pct = total? (va/total*100):0;
+  document.getElementById('vsmResult').innerHTML = `
+    <div class="r-item"><div class="v">${total}</div><div class="l">Total Lead Time (menit)</div></div>
+    <div class="r-item"><div class="v">${va}</div><div class="l">Waktu Value-Added (menit)</div></div>
+    <div class="r-item"><div class="v">${pct.toFixed(1)}%</div><div class="l">% Value-Added terhadap Total</div></div>`;
+}
+
+// ================= CPM ENGINE + RENDER =================
+const cpmDefault = [
+  {id:'A', name:'Mobilisasi & Persiapan Lahan', dur:5, pred:[]},
+  {id:'B', name:'Pekerjaan Pondasi (Bore Pile)', dur:12, pred:['A']},
+  {id:'C', name:'Pengadaan Material Baja', dur:15, pred:['A']},
+  {id:'D', name:'Pekerjaan Pilar / Abutment', dur:18, pred:['B']},
+  {id:'E', name:'Erection Struktur Baja', dur:20, pred:['D','C']},
+  {id:'F', name:'Pengecoran Deck Jembatan', dur:14, pred:['E']},
+  {id:'G', name:'Finishing & Commissioning', dur:8, pred:['F']}
+];
+function computeCPM(activities){
+  const map = {};
+  activities.forEach(a=>map[a.id]={...a, ES:0, EF:0, LS:0, LF:0, succ:[]});
+  activities.forEach(a=> a.pred.forEach(p=> map[p].succ.push(a.id)));
+  const indeg = {}; activities.forEach(a=>indeg[a.id]=a.pred.length);
+  const queue = activities.filter(a=>a.pred.length===0).map(a=>a.id);
+  const order = [];
+  while(queue.length){
+    const id = queue.shift();
+    order.push(id);
+    map[id].succ.forEach(s=>{ indeg[s]--; if(indeg[s]===0) queue.push(s); });
+  }
+  order.forEach(id=>{
+    const node = map[id];
+    node.ES = node.pred.length ? Math.max(...node.pred.map(p=>map[p].EF)) : 0;
+    node.EF = node.ES + node.dur;
+  });
+  const projectDuration = Math.max(...order.map(id=>map[id].EF));
+  [...order].reverse().forEach(id=>{
+    const node = map[id];
+    node.LF = node.succ.length ? Math.min(...node.succ.map(s=>map[s].LS)) : projectDuration;
+    node.LS = node.LF - node.dur;
+  });
+  const result = order.map(id=>{
+    const n = map[id];
+    const float = n.LS - n.ES;
+    return {...n, float, critical: float===0};
+  });
+  return {result, projectDuration};
+}
+function renderCPMTable(activities){
+  const table = document.getElementById('cpmTable');
+  let html = `<tr><th>ID</th><th>Aktivitas</th><th>Predecessor</th><th>Durasi (hari)</th></tr>`;
+  activities.forEach(a=>{
+    html += `<tr><td>${a.id}</td><td>${a.name}</td><td>${a.pred.join(', ')||'—'}</td>
+      <td><input type="number" id="cpm-dur-${a.id}" value="${a.dur}" min="1"></td></tr>`;
+  });
+  table.innerHTML = html;
+}
+function runCPM(){
+  const activities = cpmDefault.map(a=>({...a, dur: parseFloat(document.getElementById('cpm-dur-'+a.id).value)||1}));
+  const {result, projectDuration} = computeCPM(activities);
+  const critCount = result.filter(r=>r.critical).length;
+
+  let tableHtml = `<tr><th>ID</th><th>Aktivitas</th><th>Predecessor</th><th>Durasi</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>Float</th></tr>`;
+  result.forEach(r=>{
+    tableHtml += `<tr class="${r.critical?'critical-row':''}"><td>${r.id}</td><td>${r.name}</td><td>${r.pred.join(', ')||'—'}</td>
+      <td>${r.dur}</td><td>${r.ES}</td><td>${r.EF}</td><td>${r.LS}</td><td>${r.LF}</td><td>${r.float}</td></tr>`;
+  });
+  document.getElementById('cpmTable').innerHTML = tableHtml;
+
+  const critPath = result.filter(r=>r.critical).map(r=>r.id).join(' → ');
+  document.getElementById('cpmResult').innerHTML = `
+    <div class="r-item"><div class="v">${projectDuration} hari</div><div class="l">Durasi Total Proyek</div></div>
+    <div class="r-item"><div class="v">${critCount} aktivitas</div><div class="l">Jumlah Aktivitas Kritis</div></div>
+    <div class="r-item"><div class="v" style="font-size:16px; color:var(--red);">${critPath}</div><div class="l">Jalur Kritis</div></div>`;
+
+  drawCPMNetwork(result);
+}
+function resetCPM(){
+  cpmDefault.forEach(a=>{ document.getElementById('cpm-dur-'+a.id).value = a.dur; });
+  runCPM();
+}
+function drawCPMNetwork(result){
+  const svg = document.getElementById('cpmSvg');
+  const byId = {}; result.forEach(r=>byId[r.id]=r);
+  // simple layered layout based on ES value buckets
+  const order = result.map(r=>r.id);
+  const positions = {};
+  const spacingX = 135, startX = 70, ySlots = {};
+  order.forEach((id,i)=>{
+    const r = byId[id];
+    // stagger vertically for parallel activities sharing similar ES
+    const key = r.ES;
+    ySlots[key] = ySlots[key]===undefined ? 0 : ySlots[key]+1;
+    positions[id] = {x:startX + i*spacingX, y:70 + ySlots[key]*110};
+  });
+  let defs = `<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#6D8CAA"/></marker>
+  <marker id="arrowc" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#FF6B6B"/></marker></defs>`;
+  let edges='';
+  let nodes='';
+  result.forEach(r=>{
+    const p = positions[r.id];
+    r.pred.forEach(pid=>{
+      const pp = positions[pid];
+      const crit = r.critical && byId[pid].critical;
+      edges += `<path class="netedge ${crit?'critical':''}" d="M${pp.x+30},${pp.y} C${pp.x+70},${pp.y} ${p.x-70},${p.y} ${p.x-30},${p.y}" marker-end="url(#${crit?'arrowc':'arrow'})"/>`;
+    });
+  });
+  result.forEach(r=>{
+    const p = positions[r.id];
+    nodes += `<g>
+      <circle class="netnode ${r.critical?'critical':''}" cx="${p.x}" cy="${p.y}" r="30"/>
+      <text class="netlabel id" x="${p.x}" y="${p.y-2}" text-anchor="middle">${r.id}</text>
+      <text class="netlabel" x="${p.x}" y="${p.y+12}" text-anchor="middle" style="font-size:9px;">F:${r.float}</text>
+      <text class="netlabel" x="${p.x}" y="${p.y-46}" text-anchor="middle" style="font-size:10px;">ES ${r.ES} | EF ${r.EF}</text>
+      <text class="netlabel" x="${p.x}" y="${p.y+52}" text-anchor="middle" style="font-size:10px;">LS ${r.LS} | LF ${r.LF}</text>
+    </g>`;
+  });
+  const maxX = Math.max(...Object.values(positions).map(p=>p.x))+100;
+  const maxY = Math.max(...Object.values(positions).map(p=>p.y))+90;
+  svg.setAttribute('viewBox', `0 0 ${maxX} ${maxY}`);
+  svg.setAttribute('width', Math.max(maxX,1000));
+  svg.setAttribute('height', maxY);
+  svg.innerHTML = defs + edges + nodes;
+}
+
+// ================= SIX SIGMA CALCULATOR =================
+const sigmaTable = [
+  {sigma:1, dpmo:691462},{sigma:1.5, dpmo:500000},{sigma:2, dpmo:308538},
+  {sigma:2.5, dpmo:158655},{sigma:3, dpmo:66807},{sigma:3.5, dpmo:22750},
+  {sigma:4, dpmo:6210},{sigma:4.5, dpmo:1350},{sigma:5, dpmo:233},
+  {sigma:5.5, dpmo:32},{sigma:6, dpmo:3.4}
+];
+function dpmoToSigma(dpmo){
+  if(dpmo<=0) return 6;
+  if(dpmo>=sigmaTable[0].dpmo) return sigmaTable[0].sigma;
+  if(dpmo<=sigmaTable[sigmaTable.length-1].dpmo) return sigmaTable[sigmaTable.length-1].sigma;
+  for(let i=0;i<sigmaTable.length-1;i++){
+    const hi=sigmaTable[i], lo=sigmaTable[i+1];
+    if(dpmo<=hi.dpmo && dpmo>=lo.dpmo){
+      const logHi=Math.log(hi.dpmo), logLo=Math.log(lo.dpmo), logD=Math.log(dpmo);
+      const frac=(logHi-logD)/(logHi-logLo);
+      return +(hi.sigma + frac*(lo.sigma-hi.sigma)).toFixed(2);
+    }
+  }
+  return null;
+}
+function calcSigma(){
+  const units = parseFloat(document.getElementById('ssUnits').value)||1;
+  const opp = parseFloat(document.getElementById('ssOpp').value)||1;
+  const defects = parseFloat(document.getElementById('ssDefects').value)||0;
+  const dpmo = (defects/(units*opp))*1000000;
+  const sigma = dpmoToSigma(dpmo);
+  const yieldPct = (1-defects/(units*opp))*100;
+  document.getElementById('sigmaResult').innerHTML = `
+    <div class="r-item"><div class="v">${dpmo.toFixed(1)}</div><div class="l">DPMO</div></div>
+    <div class="r-item"><div class="v">${sigma}σ</div><div class="l">Estimasi Sigma Level</div></div>
+    <div class="r-item"><div class="v">${yieldPct.toFixed(2)}%</div><div class="l">Yield (Tanpa Cacat)</div></div>`;
+}
+
+// ================= INIT =================
+window.onload = function(){
+  renderModuleCards();
+  initQuizzes();
+  renderWaterfallGantt();
+  renderVSM();
+  renderCPMTable(cpmDefault);
+  runCPM();
+  calcAgile();
+  calcVSM();
+  calcSigma();
+};
+</script></body></html>

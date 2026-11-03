@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mining Financial Engineering &amp; Risk Analytics System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg-deep:#080C15;
+    --bg-panel:#0F1626;
+    --bg-panel-2:#141D33;
+    --bg-panel-3:#182444;
+    --border:#232F4E;
+    --border-soft:#1A2440;
+    --gold:#D4A94A;
+    --gold-bright:#E9C670;
+    --gold-dim:#8A7128;
+    --green:#2FCB7A;
+    --red:#EF5350;
+    --yellow:#F5B700;
+    --blue:#4C8DFF;
+    --text-1:#EAEEF7;
+    --text-2:#95A2C0;
+    --text-3:#5A6688;
+    --radius:10px;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg-deep);
+    color:var(--text-1);
+    font-family:var(--font-body);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--gold-dim); color:#fff;}
+  ::-webkit-scrollbar{width:10px; height:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg-deep);}
+  ::-webkit-scrollbar-thumb{background:var(--border); border-radius:10px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--gold-dim);}
+
+  .mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  /* ===================== TOP BAR ===================== */
+  .topbar{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    height:64px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 28px;
+    background:rgba(8,12,21,.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:34px; height:34px; border-radius:8px;
+    background:linear-gradient(155deg, var(--gold-bright), var(--gold-dim));
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:700; color:#0A0F1C; font-size:15px;
+  }
+  .brand-text{font-family:var(--font-display); font-weight:600; font-size:15px; letter-spacing:.01em;}
+  .brand-text span{color:var(--gold);}
+  .topbar-nav{display:flex; gap:26px; font-size:13px; color:var(--text-2);}
+  .topbar-nav a:hover{color:var(--text-1);}
+  .btn{
+    font-family:var(--font-body); font-size:13px; font-weight:600;
+    padding:9px 18px; border-radius:7px; border:1px solid var(--border);
+    cursor:pointer; transition:.15s ease;
+  }
+  .btn-gold{background:var(--gold); color:#171006; border:none;}
+  .btn-gold:hover{background:var(--gold-bright);}
+  .btn-ghost{background:transparent; color:var(--text-1);}
+  .btn-ghost:hover{border-color:var(--gold-dim); color:var(--gold-bright);}
+
+  /* ===================== HERO ===================== */
+  .hero{
+    min-height:100vh;
+    display:flex; align-items:center;
+    padding:120px 6vw 60px;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse 900px 500px at 82% 18%, rgba(212,169,74,.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 10% 90%, rgba(76,141,255,.08), transparent 60%),
+      var(--bg-deep);
+  }
+  .hero-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--border-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 60% 30%, black 20%, transparent 75%);
+    opacity:.55;
+  }
+  .hero-inner{
+    position:relative; z-index:2;
+    display:grid; grid-template-columns:1.05fr .95fr; gap:60px;
+    max-width:1360px; margin:0 auto; width:100%; align-items:center;
+  }
+  .hero-eyebrow{display:flex; align-items:center; gap:10px; margin-bottom:22px;}
+  .hero-eyebrow .dot{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 10px var(--green);}
+  .hero h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(34px, 4.4vw, 58px);
+    line-height:1.05; letter-spacing:-.01em;
+    margin-bottom:22px;
+  }
+  .hero h1 em{font-style:normal; color:var(--gold-bright);}
+  .hero p.lead{
+    font-size:16.5px; color:var(--text-2); max-width:540px; margin-bottom:34px;
+  }
+  .hero-cta{display:flex; gap:14px; margin-bottom:44px; flex-wrap:wrap;}
+  .hero-stats{display:flex; gap:36px; flex-wrap:wrap;}
+  .hero-stat .n{font-family:var(--font-mono); font-size:22px; font-weight:600; color:var(--text-1);}
+  .hero-stat .l{font-size:11.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.08em; margin-top:2px;}
+
+  /* schematic signature */
+  .schematic{
+    position:relative;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:26px 22px;
+  }
+  .schematic-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .schematic-head .t{font-family:var(--font-mono); font-size:11px; color:var(--text-3); letter-spacing:.12em; text-transform:uppercase;}
+  .schematic-head .live{display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10.5px; color:var(--green);}
+  .flow-node{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 12px; border-radius:8px;
+    background:var(--bg-panel-3); border:1px solid var(--border-soft);
+    position:relative;
+  }
+  .flow-node .idx{
+    font-family:var(--font-mono); font-size:10px; color:var(--bg-deep);
+    background:var(--gold); width:20px; height:20px; border-radius:5px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .flow-node .label{font-size:13px; font-weight:600; color:var(--text-1);}
+  .flow-node .sub{font-family:var(--font-mono); font-size:10.5px; color:var(--text-3);}
+  .flow-connector{
+    width:2px; height:16px; margin-left:20px;
+    background:linear-gradient(var(--gold-dim), transparent);
+  }
+  .flow-node.warn .idx{background:var(--red); color:#fff;}
+  .flow-node.warn{border-color:rgba(239,83,80,.35);}
+
+  /* ===================== SECTION SHELL ===================== */
+  section{padding:90px 6vw;}
+  .section-head{max-width:680px; margin:0 auto 48px; text-align:center;}
+  .section-head .eyebrow{display:block; margin-bottom:10px;}
+  .section-head h2{font-family:var(--font-display); font-size:clamp(26px,3vw,36px); font-weight:600; margin-bottom:12px;}
+  .section-head p{color:var(--text-2); font-size:15px;}
+  .wrap{max-width:1360px; margin:0 auto;}
+
+  /* roadmap */
+  .roadmap{background:var(--bg-panel); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);}
+  .roadmap-track{
+    display:grid; grid-template-columns:repeat(9, 1fr); gap:2px;
+    background:var(--border-soft); border-radius:12px; overflow:hidden;
+  }
+  .rm-item{
+    background:var(--bg-panel-2); padding:20px 14px; min-height:150px;
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .rm-item.active{background:linear-gradient(165deg, rgba(212,169,74,.16), var(--bg-panel-2));}
+  .rm-num{font-family:var(--font-mono); font-size:11px; color:var(--text-3);}
+  .rm-item.active .rm-num{color:var(--gold);}
+  .rm-title{font-size:12.5px; font-weight:600; line-height:1.35;}
+  .rm-badge{
+    margin-top:auto; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.06em;
+    text-transform:uppercase; padding:3px 7px; border-radius:20px; width:fit-content;
+  }
+  .rm-badge.live{background:rgba(47,203,122,.15); color:var(--green); border:1px solid rgba(47,203,122,.35);}
+  .rm-badge.soon{background:rgba(255,255,255,.05); color:var(--text-3); border:1px solid var(--border);}
+
+  /* ===================== APP SHELL ===================== */
+  #app{display:flex; background:var(--bg-deep); border-top:1px solid var(--border-soft);}
+  .sidebar{
+    width:250px; flex-shrink:0;
+    background:var(--bg-panel);
+    border-right:1px solid var(--border-soft);
+    padding:26px 14px;
+    position:sticky; top:64px; align-self:flex-start;
+    height:calc(100vh - 64px); overflow-y:auto;
+  }
+  .sb-group-label{
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--text-3); padding:14px 10px 8px;
+  }
+  .sb-item{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:9px 10px; border-radius:7px; font-size:13.5px; color:var(--text-2);
+    cursor:pointer; transition:.12s ease;
+  }
+  .sb-item .l{display:flex; align-items:center; gap:10px;}
+  .sb-item .ico{width:16px; text-align:center; opacity:.85; font-size:13px;}
+  .sb-item:hover{background:var(--bg-panel-3); color:var(--text-1);}
+  .sb-item.active{background:var(--bg-panel-3); color:var(--gold-bright); border:1px solid var(--border);}
+  .sb-item.locked{cursor:default; opacity:.55;}
+  .sb-item.locked:hover{background:transparent; color:var(--text-2);}
+  .sb-tag{font-family:var(--font-mono); font-size:9px; color:var(--text-3); border:1px solid var(--border); border-radius:20px; padding:1px 6px;}
+
+  .main{flex:1; min-width:0; padding:34px 40px 100px;}
+  .page{display:none;}
+  .page.active{display:block;}
+
+  .page-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:26px; flex-wrap:wrap; gap:16px;}
+  .page-head h1{font-family:var(--font-display); font-size:24px; font-weight:600;}
+  .page-head p{color:var(--text-2); font-size:13.5px; margin-top:4px;}
+
+  /* project overview strip */
+  .overview-strip{
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:1px;
+    background:var(--border-soft); border:1px solid var(--border-soft); border-radius:10px; overflow:hidden;
+    margin-bottom:28px;
+  }
+  .ov-cell{background:var(--bg-panel); padding:14px 16px;}
+  .ov-cell label{display:block; font-family:var(--font-mono); font-size:9.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-3); margin-bottom:6px;}
+  .ov-cell input, .ov-cell select{
+    width:100%; background:transparent; border:none; color:var(--text-1);
+    font-family:var(--font-body); font-size:14px; font-weight:600; padding:0;
+  }
+  .ov-cell input:focus, .ov-cell select:focus{outline:none; color:var(--gold-bright);}
+  .ov-cell select option{background:var(--bg-panel-2); color:var(--text-1);}
+
+  /* KPI groups */
+  .kpi-groups{display:flex; flex-direction:column; gap:26px; margin-bottom:10px;}
+  .kpi-group-title{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .kpi-group-title h3{font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--text-1);}
+  .kpi-group-title .line{flex:1; height:1px; background:var(--border-soft);}
+  .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px;}
+  .kpi-card{
+    background:var(--bg-panel); border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:16px 18px; position:relative; transition:.15s ease;
+  }
+  .kpi-card:hover{border-color:var(--border); transform:translateY(-1px);}
+  .kpi-card .top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .kpi-card .label{font-size:11.5px; color:var(--text-2); font-weight:500; max-width:140px;}
+  .kpi-card .flag{width:7px; height:7px; border-radius:50%; margin-top:4px; flex-shrink:0;}
+  .flag.green{background:var(--green); box-shadow:0 0 8px rgba(47,203,122,.6);}
+  .flag.yellow{background:var(--yellow); box-shadow:0 0 8px rgba(245,183,0,.6);}
+  .flag.red{background:var(--red); box-shadow:0 0 8px rgba(239,83,80,.6);}
+  .flag.blue{background:var(--blue); box-shadow:0 0 8px rgba(76,141,255,.6);}
+  .kpi-card .value{font-family:var(--font-mono); font-size:21px; font-weight:600; color:var(--text-1);}
+  .kpi-card .unit{font-size:11px; color:var(--text-3); margin-left:4px; font-family:var(--font-body);}
+  .kpi-card.locked{opacity:.5;}
+  .kpi-card.locked .value{color:var(--text-3); font-size:15px;}
+  .kpi-card .lock-badge{
+    position:absolute; top:12px; right:14px; font-family:var(--font-mono); font-size:8.5px;
+    color:var(--text-3); border:1px solid var(--border); padding:2px 6px; border-radius:20px;
+  }
+
+  /* tooltip */
+  .info-dot{
+    width:14px; height:14px; border-radius:50%; border:1px solid var(--text-3); color:var(--text-3);
+    font-size:9px; display:inline-flex; align-items:center; justify-content:center; cursor:help; position:relative;
+    font-family:var(--font-mono);
+  }
+  .info-dot .tip{
+    display:none; position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+    width:220px; background:var(--bg-panel-3); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; font-size:11.5px; line-height:1.45; color:var(--text-2); font-family:var(--font-body);
+    z-index:20; box-shadow:0 10px 30px rgba(0,0,0,.4);
+  }
+  .info-dot:hover .tip{display:block;}
+
+  /* charts row */
+  .chart-row{display:grid; grid-template-columns:1.3fr 1fr; gap:16px; margin-top:26px;}
+  .panel{background:var(--bg-panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:20px;}
+  .panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+  .panel-head h4{font-size:13.5px; font-weight:600;}
+  .panel-head .eyebrow{font-size:9.5px;}
+  .chart-box{position:relative; height:230px;}
+
+  /* input forms */
+  .form-section{margin-bottom:30px;}
+  .form-section-head{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
+  .form-section-head .num{
+    font-family:var(--font-mono); font-size:11px; width:22px; height:22px; border-radius:6px;
+    background:var(--bg-panel-3); border:1px solid var(--border); display:flex; align-items:center; justify-content:center;
+    color:var(--gold);
+  }
+  .form-section-head h4{font-size:14px; font-weight:600;}
+  .form-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(210px,1fr)); gap:14px;
+    background:var(--bg-panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:18px;
+  }
+  .field label{display:block; font-size:11.5px; color:var(--text-2); margin-bottom:6px;}
+  .field .fx{display:flex; align-items:center; background:var(--bg-panel-3); border:1px solid var(--border); border-radius:7px; overflow:hidden;}
+  .field input{
+    width:100%; background:transparent; border:none; padding:9px 10px; color:var(--text-1);
+    font-family:var(--font-mono); font-size:13.5px;
+  }
+  .field input:focus{outline:none;}
+  .field .fx:focus-within{border-color:var(--gold-dim);}
+  .field .unit-tag{font-family:var(--font-mono); font-size:10.5px; color:var(--text-3); padding:0 10px; border-left:1px solid var(--border); white-space:nowrap;}
+
+  .result-strip{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:1px;
+    background:var(--border-soft); border:1px solid var(--border-soft); border-radius:10px; overflow:hidden; margin-top:14px;
+  }
+  .result-cell{background:var(--bg-panel-2); padding:12px 14px;}
+  .result-cell .l{font-size:10.5px; color:var(--text-3); margin-bottom:5px;}
+  .result-cell .v{font-family:var(--font-mono); font-size:15px; font-weight:600; color:var(--gold-bright);}
+
+  /* P&L waterfall-ish */
+  .pl-line{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--border-soft); font-size:13.5px;}
+  .pl-line:last-child{border-bottom:none;}
+  .pl-line .name{color:var(--text-2);}
+  .pl-line .val{font-family:var(--font-mono); font-weight:600;}
+  .pl-line.total .name{color:var(--text-1); font-weight:600;}
+  .pl-line.total .val{color:var(--gold-bright); font-size:16px;}
+  .pl-line .val.neg{color:var(--red);}
+
+  /* locked page */
+  .locked-page{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:420px; text-align:center; border:1px dashed var(--border); border-radius:14px; padding:40px;
+    background:radial-gradient(ellipse 400px 200px at 50% 0%, rgba(212,169,74,.06), transparent);
+  }
+  .locked-page .ico{
+    width:52px; height:52px; border-radius:14px; background:var(--bg-panel-3); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; font-size:22px; margin-bottom:18px; color:var(--gold);
+  }
+  .locked-page h3{font-family:var(--font-display); font-size:18px; margin-bottom:8px;}
+  .locked-page p{color:var(--text-2); font-size:13.5px; max-width:420px; margin-bottom:18px;}
+  .locked-page .phase-pill{
+    font-family:var(--font-mono); font-size:10.5px; color:var(--gold); border:1px solid var(--gold-dim);
+    padding:4px 12px; border-radius:20px; background:rgba(212,169,74,.08);
+  }
+
+  footer{padding:40px 6vw; border-top:1px solid var(--border-soft); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;}
+  footer .f-brand{font-family:var(--font-display); font-weight:600; font-size:14px;}
+  footer .f-meta{font-size:12px; color:var(--text-3); font-family:var(--font-mono);}
+
+  @media (max-width:980px){
+    .hero-inner{grid-template-columns:1fr;}
+    .roadmap-track{grid-template-columns:repeat(3,1fr);}
+    #app{flex-direction:column;}
+    .sidebar{width:100%; height:auto; position:relative; top:0; display:flex; overflow-x:auto; gap:4px; padding:12px;}
+    .sb-group-label{display:none;}
+    .sb-item{white-space:nowrap;}
+    .main{padding:24px 18px 80px;}
+    .overview-strip{grid-template-columns:repeat(2,1fr);}
+    .chart-row{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    .topbar{padding:0 12px;}
+    .topbar-nav{display:none;}
+    .brand-text{font-size:11px; white-space:nowrap;}
+    .brand-mark{width:28px; height:28px; font-size:13px;}
+    .topbar .btn{padding:7px 10px; font-size:11px; white-space:nowrap;}
+    .hero{padding:96px 5vw 50px;}
+    .form-grid{grid-template-columns:1fr 1fr;}
+  }
+
+  /* financial table */
+  .fintable{width:100%; border-collapse:collapse; font-size:12.5px; min-width:720px;}
+  .fintable th{
+    font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--text-2); text-align:right; padding:9px 12px; border-bottom:1px solid var(--border);
+    background:var(--bg-panel-3); white-space:nowrap;
+  }
+  .fintable th:first-child{text-align:left;}
+  .fintable td{padding:8px 12px; text-align:right; border-bottom:1px solid var(--border-soft); font-family:var(--font-mono); white-space:nowrap;}
+  .fintable td:first-child{text-align:left; font-family:var(--font-body); color:var(--text-2);}
+  .fintable tr.hl td{font-weight:700; color:var(--gold-bright); border-top:1px solid var(--border);}
+  .fintable tr:hover td{background:rgba(255,255,255,.02);}
+  .fintable td.neg{color:var(--red);}
+  .fintable td.pos{color:var(--green);}
+
+  /* gauge */
+  .gauge-wrap{width:220px; text-align:center;}
+  .gauge-svg{display:block; margin:0 auto;}
+  .gauge-value{font-family:var(--font-mono); font-size:34px; font-weight:700; margin-top:-58px;}
+  .gauge-label{font-family:var(--font-mono); font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.08em; margin-top:6px;}
+  .gauge-band{font-family:var(--font-display); font-weight:700; font-size:15px; margin-top:8px; padding:5px 14px; border-radius:20px; display:inline-block;}
+
+  /* risk register */
+  .risk-cat{background:var(--bg-panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:18px 20px; margin-bottom:14px;}
+  .risk-cat-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
+  .risk-cat-head h4{font-size:14px; font-weight:600;}
+  .risk-item{display:grid; grid-template-columns:1.6fr .7fr .7fr .5fr; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+  .risk-item:last-child{border-bottom:none;}
+  .risk-item select{background:var(--bg-panel-3); border:1px solid var(--border); color:var(--text-1); font-family:var(--font-body); font-size:12px; padding:5px 8px; border-radius:6px; width:100%;}
+  .risk-item .rlabel{color:var(--text-2);}
+  .risk-item .rscore{font-family:var(--font-mono); text-align:center; font-weight:700;}
+  .risk-pill{font-family:var(--font-mono); font-size:9.5px; padding:2px 8px; border-radius:20px; text-align:center;}
+
+  /* decision card */
+  .decision-card{border-radius:16px; padding:34px; border:1px solid var(--border); position:relative; overflow:hidden;}
+  .decision-card .rec{font-family:var(--font-display); font-size:30px; font-weight:700; margin-bottom:10px;}
+  .decision-card .desc{color:var(--text-2); font-size:14px; max-width:560px; margin-bottom:18px;}
+  .decision-metrics{display:flex; gap:28px; flex-wrap:wrap;}
+  .decision-metrics .dm .n{font-family:var(--font-mono); font-size:20px; font-weight:700;}
+  .decision-metrics .dm .l{font-size:10.5px; color:var(--text-3); text-transform:uppercase; letter-spacing:.06em; margin-top:2px;}
+  .driver-row{display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-soft);}
+  .driver-row:last-child{border-bottom:none;}
+  .driver-rank{font-family:var(--font-mono); font-size:11px; color:var(--gold); width:24px;}
+
+  @media print{
+    .topbar, .sidebar, .hero, .roadmap, footer, #btnExportCSV, #btnPrintReport{display:none !important;}
+    body{background:#fff; color:#111;}
+    #app{display:block;}
+    .main{padding:0;}
+    .panel, .kpi-card, .fintable td, .fintable th{border-color:#ccc !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== TOP BAR ===================== -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">M</div>
+    <div class="brand-text">MINING F<span>E</span> &amp; RISK ANALYTICS</div>
+  </div>
+  <div class="topbar-nav">
+    <a href="#hero">Ringkasan</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#app-shell">Dashboard</a>
+  </div>
+  <a href="#app-shell" class="btn btn-gold">Buka Dashboard →</a>
+</div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="hero" style="padding-top:64px;">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span class="dot"></span><span class="eyebrow">Financial Engineering Decision System — Fase 9 / 9 Lengkap</span></div>
+      <h1>Dari operasi tambang<br>menuju <em>keputusan investasi.</em></h1>
+      <p class="lead">Ubah asumsi produksi, hauling, dan biaya tambang menjadi Revenue, Cost, Profit, Cash Flow, NPV, IRR, dan Risk Score — dalam satu sistem yang terhubung, bukan kalkulator terpisah.</p>
+      <div class="hero-cta">
+        <a href="#app-shell" class="btn btn-gold">Masuk ke Dashboard</a>
+        <a href="#roadmap" class="btn btn-ghost">Lihat Roadmap 9 Fase</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">18</div><div class="l">Modul Analitik</div></div>
+        <div class="hero-stat"><div class="n">9</div><div class="l">Fase Pengembangan</div></div>
+        <div class="hero-stat"><div class="n">09</div><div class="l">Fase Aktif (Lengkap)</div></div>
+      </div>
+    </div>
+
+    <div class="schematic">
+      <div class="schematic-head">
+        <span class="t">Data Flow Engine</span>
+        <span class="live"><span class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--green);"></span>LIVE</span>
+      </div>
+      <div id="flowSchematic"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ROADMAP ===================== -->
+<section class="roadmap" id="roadmap">
+  <div class="wrap">
+    <div class="section-head" style="margin-bottom:34px;">
+      <span class="eyebrow">Arsitektur Pengembangan</span>
+      <h2>Sembilan fase, satu sistem keputusan</h2>
+      <p>Setiap fase menambah lapisan analitik baru tanpa mengubah perhitungan fase sebelumnya — dari input operasional tambang hingga rekomendasi investasi akhir.</p>
+    </div>
+    <div class="roadmap-track" id="roadmapTrack"></div>
+  </div>
+</section>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app-shell"></div>
+<div id="app">
+  <aside class="sidebar" id="sidebar"></aside>
+  <main class="main">
+
+    <!-- ============ PAGE: DASHBOARD ============ -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-head">
+        <div>
+          <h1>Executive Dashboard</h1>
+          <p>Ringkasan KPI operasional, finansial, dan risiko — dihitung otomatis dari input proyek.</p>
+        </div>
+        <span class="phase-pill" style="font-family:var(--font-mono);font-size:10.5px;color:var(--green);border:1px solid rgba(47,203,122,.4);padding:5px 12px;border-radius:20px;background:rgba(47,203,122,.08);">Fase 1–9 Aktif — Sistem Lengkap</span>
+      </div>
+
+      <div class="overview-strip">
+        <div class="ov-cell"><label>Nama Proyek</label><input id="ov_name" value="Andesit Hauling &amp; OB Removal"></div>
+        <div class="ov-cell"><label>Lokasi</label><input id="ov_loc" value="Samarinda, Kalimantan Timur"></div>
+        <div class="ov-cell"><label>Durasi Proyek</label><input id="ov_dur" value="5 Tahun"></div>
+        <div class="ov-cell"><label>Komoditas</label><input id="ov_commodity" value="Andesit / Overburden"></div>
+        <div class="ov-cell"><label>Mata Uang</label>
+          <select id="ov_currency"><option>IDR</option><option>USD</option></select>
+        </div>
+        <div class="ov-cell"><label>Periode Analisis</label><input id="ov_period" value="Bulanan"></div>
+      </div>
+
+      <div class="kpi-groups">
+        <div>
+          <div class="kpi-group-title"><h3>KPI Operasional</h3><div class="line"></div></div>
+          <div class="kpi-grid" id="kpiOperational"></div>
+        </div>
+        <div>
+          <div class="kpi-group-title"><h3>KPI Finansial</h3><div class="line"></div></div>
+          <div class="kpi-grid" id="kpiFinancial"></div>
+        </div>
+        <div>
+          <div class="kpi-group-title"><h3>KPI Risiko</h3><div class="line"></div></div>
+          <div class="kpi-grid" id="kpiRisk"></div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="panel">
+          <div class="panel-head"><h4>Revenue vs Cost vs Profit (Bulanan)</h4><span class="eyebrow">Live</span></div>
+          <div class="chart-box"><canvas id="chartRevCost"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h4>Komposisi Biaya Variabel</h4><span class="eyebrow">Live</span></div>
+          <div class="chart-box"><canvas id="chartCostMix"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: PROJECT INPUT ============ -->
+    <div class="page" id="page-input">
+      <div class="page-head">
+        <div>
+          <h1>Project Input</h1>
+          <p>Seluruh angka di Dashboard dan Production Model dihitung langsung dari input di halaman ini.</p>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">A</span><h4>Production Input</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Target Volume Ore/Bulan</label><div class="fx"><input id="p_ore" type="number" value="92000"><span class="unit-tag">m³</span></div></div>
+          <div class="field"><label>Target Volume OB/Bulan</label><div class="fx"><input id="p_ob" type="number" value="21000"><span class="unit-tag">m³</span></div></div>
+          <div class="field"><label>Hari Kerja/Bulan</label><div class="fx"><input id="p_days" type="number" value="30"><span class="unit-tag">hari</span></div></div>
+          <div class="field"><label>Jam Kerja/Hari</label><div class="fx"><input id="p_hours" type="number" value="14"><span class="unit-tag">jam</span></div></div>
+          <div class="field"><label>Densitas Material</label><div class="fx"><input id="p_density" type="number" step="0.1" value="1.5"><span class="unit-tag">ton/m³</span></div></div>
+          <div class="field"><label>Payload per Truck</label><div class="fx"><input id="p_payload" type="number" value="30"><span class="unit-tag">ton</span></div></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">B</span><h4>Hauling Input</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Cycle Time</label><div class="fx"><input id="h_cycle" type="number" value="24"><span class="unit-tag">menit/ret</span></div></div>
+          <div class="field"><label>Jarak Hauling (One-Way)</label><div class="fx"><input id="h_dist" type="number" value="6.5"><span class="unit-tag">km</span></div></div>
+          <div class="field"><label>Physical Availability</label><div class="fx"><input id="h_pa" type="number" value="85"><span class="unit-tag">%</span></div></div>
+          <div class="field"><label>Utilization of Availability</label><div class="fx"><input id="h_ua" type="number" value="83"><span class="unit-tag">%</span></div></div>
+          <div class="field"><label>Jumlah Dump Truck</label><div class="fx"><input id="h_trucks" type="number" value="7"><span class="unit-tag">unit</span></div></div>
+          <div class="field"><label>Jumlah Excavator</label><div class="fx"><input id="h_exc" type="number" value="2"><span class="unit-tag">unit</span></div></div>
+        </div>
+        <div class="result-strip" id="haulingResults"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">C</span><h4>Revenue Assumptions</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Rate Ore</label><div class="fx"><input id="r_ore" type="number" value="44280"><span class="unit-tag">Rp/m³</span></div></div>
+          <div class="field"><label>Rate Overburden</label><div class="fx"><input id="r_ob" type="number" value="44280"><span class="unit-tag">Rp/m³</span></div></div>
+          <div class="field"><label>Hauling Rate</label><div class="fx"><input id="r_haul" type="number" value="0"><span class="unit-tag">Rp/m³/km</span></div></div>
+          <div class="field"><label>Other Revenue</label><div class="fx"><input id="r_other" type="number" value="0"><span class="unit-tag">Rp/bulan</span></div></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">D</span><h4>Variable Cost</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Fuel Ratio</label><div class="fx"><input id="c_fuelratio" type="number" step="0.01" value="0.38"><span class="unit-tag">L/m³</span></div></div>
+          <div class="field"><label>Fuel Price</label><div class="fx"><input id="c_fuelprice" type="number" value="16000"><span class="unit-tag">Rp/L</span></div></div>
+          <div class="field"><label>Lubricant Cost</label><div class="fx"><input id="c_lube" type="number" value="450"><span class="unit-tag">Rp/m³</span></div></div>
+          <div class="field"><label>Tire Cost</label><div class="fx"><input id="c_tire" type="number" value="620"><span class="unit-tag">Rp/m³</span></div></div>
+          <div class="field"><label>Maintenance Cost</label><div class="fx"><input id="c_maint" type="number" value="1800"><span class="unit-tag">Rp/m³</span></div></div>
+          <div class="field"><label>Operator Cost</label><div class="fx"><input id="c_operator" type="number" value="950"><span class="unit-tag">Rp/m³</span></div></div>
+          <div class="field"><label>Other Variable Cost</label><div class="fx"><input id="c_othervar" type="number" value="0"><span class="unit-tag">Rp/m³</span></div></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">E</span><h4>Fixed Cost</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Salary &amp; Management</label><div class="fx"><input id="f_salary" type="number" value="650000000"><span class="unit-tag">Rp/bln</span></div></div>
+          <div class="field"><label>Camp &amp; Office</label><div class="fx"><input id="f_camp" type="number" value="180000000"><span class="unit-tag">Rp/bln</span></div></div>
+          <div class="field"><label>Equipment Depreciation</label><div class="fx"><input id="f_depr" type="number" value="420000000"><span class="unit-tag">Rp/bln</span></div></div>
+          <div class="field"><label>Insurance &amp; Permit</label><div class="fx"><input id="f_ins" type="number" value="95000000"><span class="unit-tag">Rp/bln</span></div></div>
+          <div class="field"><label>Overhead</label><div class="fx"><input id="f_ovh" type="number" value="210000000"><span class="unit-tag">Rp/bln</span></div></div>
+          <div class="field"><label>Other Fixed Cost</label><div class="fx"><input id="f_other" type="number" value="78518783"><span class="unit-tag">Rp/bln</span></div></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">F</span><h4>Profit &amp; Loss — Estimasi Dasar</h4><span class="sb-tag" style="margin-left:auto;">Waterfall lengkap di halaman P&amp;L</span></div>
+        <div class="form-grid" style="grid-template-columns:1fr; padding:22px 26px;">
+          <div class="pl-line"><span class="name">Total Revenue</span><span class="val mono" id="pl_rev">—</span></div>
+          <div class="pl-line"><span class="name">(-) Total Variable Cost</span><span class="val mono neg" id="pl_var">—</span></div>
+          <div class="pl-line"><span class="name">(-) Total Fixed Cost</span><span class="val mono neg" id="pl_fix">—</span></div>
+          <div class="pl-line total"><span class="name">= EBITDA (Estimasi Dasar)</span><span class="val mono" id="pl_ebitda">—</span></div>
+          <div class="pl-line"><span class="name">EBITDA Margin</span><span class="val mono" id="pl_margin">—</span></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">G</span><h4>Capex &amp; Financing</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Capex Investasi</label><div class="fx"><input id="g_capex" type="number" value="45000000000"><span class="unit-tag">Rp</span></div></div>
+          <div class="field"><label>Debt Financing Ratio</label><div class="fx"><input id="g_debtratio" type="number" value="65"><span class="unit-tag">%</span></div></div>
+          <div class="field"><label>Interest Rate</label><div class="fx"><input id="g_interest" type="number" step="0.1" value="11"><span class="unit-tag">%/thn</span></div></div>
+          <div class="field"><label>Loan Tenor</label><div class="fx"><input id="g_tenor" type="number" value="5"><span class="unit-tag">tahun</span></div></div>
+          <div class="field"><label>Umur Depresiasi (Garis Lurus)</label><div class="fx"><input id="g_deplife" type="number" value="8"><span class="unit-tag">tahun</span></div></div>
+          <div class="field"><label>Tarif Pajak Badan</label><div class="fx"><input id="g_tax" type="number" step="0.5" value="22"><span class="unit-tag">%</span></div></div>
+          <div class="field"><label>Horizon Proyek</label><div class="fx"><input id="g_horizon" type="number" value="5"><span class="unit-tag">tahun</span></div></div>
+          <div class="field"><label>Pertumbuhan Revenue/Tahun</label><div class="fx"><input id="g_growth" type="number" step="0.5" value="-3"><span class="unit-tag">%/thn</span></div></div>
+          <div class="field"><label>Eskalasi Cost/Tahun</label><div class="fx"><input id="g_escalation" type="number" step="0.5" value="4"><span class="unit-tag">%/thn</span></div></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">H</span><h4>Working Capital Assumptions</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Piutang (AR) Days</label><div class="fx"><input id="h_ardays" type="number" value="45"><span class="unit-tag">hari</span></div></div>
+          <div class="field"><label>Persediaan (Inventory) Days</label><div class="fx"><input id="h_invdays" type="number" value="15"><span class="unit-tag">hari</span></div></div>
+          <div class="field"><label>Hutang Usaha (AP) Days</label><div class="fx"><input id="h_apdays" type="number" value="30"><span class="unit-tag">hari</span></div></div>
+          <div class="field"><label>Saldo Kas Minimum</label><div class="fx"><input id="h_mincash" type="number" value="1500000000"><span class="unit-tag">Rp</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: PRODUCTION MODEL ============ -->
+    <div class="page" id="page-production">
+      <div class="page-head"><div><h1>Production Model</h1><p>Model produksi &amp; hauling secara detail — fleet matching dan kapasitas.</p></div></div>
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-head"><h4>Fleet Matching &amp; Kapasitas</h4><span class="eyebrow">Live</span></div>
+        <div class="result-strip" id="prodResults1"></div>
+        <div class="result-strip" id="prodResults2" style="margin-top:14px;"></div>
+      </div>
+      <div class="chart-row">
+        <div class="panel"><div class="panel-head"><h4>Kapasitas Fleet vs Target Produksi</h4></div><div class="chart-box"><canvas id="chartFleetCap"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><h4>Rasio Ret: Ore vs OB</h4></div><div class="chart-box"><canvas id="chartRetSplit"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: REVENUE & COST ============ -->
+    <div class="page" id="page-revcost">
+      <div class="page-head"><div><h1>Revenue &amp; Cost</h1><p>Rincian sumber pendapatan dan struktur biaya.</p></div></div>
+      <div class="chart-row">
+        <div class="panel"><div class="panel-head"><h4>Rincian Revenue</h4></div><div class="chart-box"><canvas id="chartRevBreak"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><h4>Rincian Variable Cost</h4></div><div class="chart-box"><canvas id="chartVarBreak"></canvas></div></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h4>Cost per m³</h4></div>
+        <div class="result-strip" id="costPerM3"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: P&L ============ -->
+    <div class="page" id="page-pl">
+      <div class="page-head"><div><h1>Profit &amp; Loss Statement</h1><p>Waterfall lengkap Revenue → EBITDA → EBIT → EBT → Net Profit (bulanan).</p></div></div>
+      <div class="panel" style="max-width:640px;">
+        <div id="plFull"></div>
+      </div>
+      <div class="chart-row">
+        <div class="panel"><div class="panel-head"><h4>Waterfall P&amp;L</h4></div><div class="chart-box"><canvas id="chartPLWaterfall"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><h4>Margin (%)</h4></div><div class="chart-box"><canvas id="chartMargins"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: CASH FLOW ============ -->
+    <div class="page" id="page-cashflow">
+      <div class="page-head"><div><h1>Cash Flow Projection</h1><p>Proyeksi arus kas proyek 5 tahun — Project Level (UFCF) &amp; Equity Level (LFCF).</p></div></div>
+      <div class="panel" style="overflow-x:auto;">
+        <table class="fintable" id="cashflowTable"></table>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h4>Free Cash Flow &amp; Kumulatif</h4></div>
+        <div class="chart-box" style="height:280px;"><canvas id="chartFCF"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: WORKING CAPITAL ============ -->
+    <div class="page" id="page-workingcap">
+      <div class="page-head"><div><h1>Working Capital</h1><p>Kebutuhan modal kerja dan dampaknya terhadap arus kas.</p></div></div>
+      <div class="panel" style="overflow-x:auto;">
+        <table class="fintable" id="wcTable"></table>
+      </div>
+      <div class="result-strip" id="wcSummary" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- ============ PAGE: DCF VALUATION ============ -->
+    <div class="page" id="page-dcf">
+      <div class="page-head"><div><h1>DCF Valuation</h1><p>Discounted Cash Flow — Present Value, Terminal Value, dan Enterprise Value.</p></div></div>
+      <div class="panel" style="overflow-x:auto;">
+        <table class="fintable" id="dcfTable"></table>
+      </div>
+      <div class="result-strip" id="dcfSummary" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- ============ PAGE: INVESTMENT ANALYSIS ============ -->
+    <div class="page" id="page-investment">
+      <div class="page-head"><div><h1>Investment Analysis</h1><p>WACC (CAPM), NPV/IRR Project vs Equity, Levered vs Unlevered.</p></div></div>
+
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">W</span><h4>WACC / CAPM Inputs</h4></div>
+        <div class="form-grid">
+          <div class="field"><label>Risk-Free Rate</label><div class="fx"><input id="w_rf" type="number" step="0.1" value="6.5"><span class="unit-tag">%</span></div></div>
+          <div class="field"><label>Equity Risk Premium</label><div class="fx"><input id="w_erp" type="number" step="0.1" value="6.0"><span class="unit-tag">%</span></div></div>
+          <div class="field"><label>Beta Levered (Pembanding)</label><div class="fx"><input id="w_betacomp" type="number" step="0.01" value="1.10"><span class="unit-tag">x</span></div></div>
+          <div class="field"><label>D/E Pembanding</label><div class="fx"><input id="w_decomp" type="number" step="0.01" value="0.80"><span class="unit-tag">x</span></div></div>
+          <div class="field"><label>Tax Rate Pembanding</label><div class="fx"><input id="w_taxcomp" type="number" step="0.5" value="22"><span class="unit-tag">%</span></div></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-head"><h4>Hasil WACC</h4></div>
+        <div class="result-strip" id="waccResults"></div>
+      </div>
+
+      <div class="kpi-group-title"><h3>Project Level (Unlevered — UFCF/FCFF)</h3><div class="line"></div></div>
+      <div class="kpi-grid" id="kpiProjectLevel" style="margin-bottom:24px;"></div>
+
+      <div class="kpi-group-title"><h3>Equity Level (Levered — LFCF)</h3><div class="line"></div></div>
+      <div class="kpi-grid" id="kpiEquityLevel" style="margin-bottom:24px;"></div>
+
+      <div class="panel">
+        <div class="panel-head"><h4>Keputusan Investasi</h4></div>
+        <div id="investDecision"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: RISK ANALYSIS ============ -->
+    <div class="page" id="page-risk">
+      <div class="page-head"><div><h1>Risk Analysis</h1><p>Register risiko kualitatif per kategori — dasar bagi Risk Score kuantitatif.</p></div></div>
+      <div id="riskRegister"></div>
+    </div>
+
+    <!-- ============ PAGE: SENSITIVITY ============ -->
+    <div class="page" id="page-sensitivity">
+      <div class="page-head"><div><h1>Sensitivity Analysis</h1><p>Dampak perubahan ±15% tiap variabel kunci terhadap NPV Project.</p></div></div>
+      <div class="panel">
+        <div class="panel-head"><h4>Tornado Chart — NPV Project</h4></div>
+        <div class="chart-box" style="height:380px;"><canvas id="chartTornado"></canvas></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h4>Break-Even Analysis</h4></div>
+        <div class="result-strip" id="breakEvenResults"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: SCENARIO ============ -->
+    <div class="page" id="page-scenario">
+      <div class="page-head"><div><h1>Scenario Analysis</h1><p>Bear / Base / Bull Case — bandingkan hasil finansial &amp; risiko.</p></div></div>
+      <div class="panel" style="overflow-x:auto;">
+        <table class="fintable" id="scenarioTable"></table>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h4>Perbandingan NPV per Skenario</h4></div>
+        <div class="chart-box"><canvas id="chartScenario"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: PROBABILITY ============ -->
+    <div class="page" id="page-probability">
+      <div class="page-head"><div><h1>Probability Analysis</h1><p>Distribusi ketidakpastian untuk variabel kunci — input bagi Monte Carlo.</p></div></div>
+      <div class="form-grid" id="probInputs" style="margin-bottom:18px;"></div>
+      <div class="form-section">
+        <div class="form-section-head"><span class="num">ρ</span><h4>Matriks Korelasi (Volume, Availability, Cost, Rate)</h4></div>
+        <div class="form-grid" id="corrInputs"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: MONTE CARLO ============ -->
+    <div class="page" id="page-montecarlo">
+      <div class="page-head">
+        <div><h1>Monte Carlo Simulation</h1><p>Simulasi variabel berkorelasi (Gaussian Copula) untuk distribusi NPV, IRR, Profit &amp; FCF.</p></div>
+      </div>
+      <div class="form-grid" style="margin-bottom:18px; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));">
+        <div class="field"><label>Jumlah Simulasi</label>
+          <div class="fx"><select id="mc_n" style="width:100%;background:transparent;border:none;padding:9px 10px;color:var(--text-1);font-family:var(--font-mono);font-size:13.5px;">
+            <option value="1000">1,000</option>
+            <option value="5000" selected>5,000</option>
+            <option value="10000">10,000</option>
+            <option value="50000">50,000</option>
+            <option value="100000">100,000</option>
+          </select></div>
+        </div>
+        <div style="display:flex; align-items:flex-end;"><button class="btn btn-gold" id="btnRunMC" style="width:100%;">▶ Jalankan Simulasi</button></div>
+        <div style="display:flex; align-items:flex-end;"><span class="sb-tag" id="mcStatus">Belum dijalankan</span></div>
+      </div>
+
+      <div class="kpi-grid" id="kpiMonteCarlo" style="margin-bottom:20px;"></div>
+
+      <div class="chart-row">
+        <div class="panel"><div class="panel-head"><h4>Distribusi NPV</h4></div><div class="chart-box"><canvas id="chartNPVHist"></canvas></div></div>
+        <div class="panel"><div class="panel-head"><h4>Distribusi IRR</h4></div><div class="chart-box"><canvas id="chartIRRHist"></canvas></div></div>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h4>Value at Risk (VaR) — Net Profit Bulanan</h4></div>
+        <div class="result-strip" id="varResults"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: FLEET OPTIMIZATION ============ -->
+    <div class="page" id="page-fleet">
+      <div class="page-head"><div><h1>Fleet Optimization</h1><p>Bandingkan konfigurasi armada — target kapasitas mengacu pada volume Ore/Andesit (OB diasumsikan ditangani armada/subkontraktor terpisah).</p></div></div>
+      <div class="panel" style="overflow-x:auto;">
+        <table class="fintable" id="fleetTable"></table>
+      </div>
+      <div class="panel" style="margin-top:16px;">
+        <div class="panel-head"><h4>Biaya per m³ per Konfigurasi</h4></div>
+        <div class="chart-box"><canvas id="chartFleetOpt"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: RISK SCORE ============ -->
+    <div class="page" id="page-riskscore">
+      <div class="page-head"><div><h1>Risk Score</h1><p>Skor risiko terintegrasi 0–100 dari seluruh kategori risiko.</p></div></div>
+      <div class="panel" style="display:flex; gap:36px; align-items:center; flex-wrap:wrap;">
+        <div id="riskGauge" style="flex-shrink:0;"></div>
+        <div style="flex:1; min-width:240px;">
+          <div id="riskScoreBreakdown"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: MANAGEMENT DECISION ============ -->
+    <div class="page" id="page-decision">
+      <div class="page-head"><div><h1>Management Decision</h1><p>Rekomendasi investasi otomatis berdasarkan seluruh hasil analisis.</p></div></div>
+      <div id="decisionCard"></div>
+      <div class="panel" style="margin-top:20px;">
+        <div class="panel-head"><h4>5 Driver Utama</h4></div>
+        <div id="topDrivers"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE: REPORTS ============ -->
+    <div class="page" id="page-reports">
+      <div class="page-head">
+        <div><h1>Reports</h1><p>Ringkasan lengkap proyek — cetak, simpan PDF, atau ekspor data.</p></div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" id="btnExportCSV">⬇ Export CSV</button>
+          <button class="btn btn-gold" id="btnPrintReport">🖨 Cetak / Simpan PDF</button>
+        </div>
+      </div>
+      <div id="reportContent"></div>
+    </div>
+
+  </main>
+</div>
+
+
+<footer>
+  <div>
+    <div class="f-brand">MINING FE &amp; RISK ANALYTICS SYSTEM</div>
+    <div class="f-meta">Financial Engineering Decision Support — Fase 1/9</div>
+  </div>
+  <div class="f-meta">PRODUCTION → REVENUE → COST → PROFIT → CASH FLOW → NPV → RISK → DECISION</div>
+</footer>
+
+<script>
+/* ============================================================
+   ROADMAP DATA
+============================================================ */
+const roadmap = [
+  {n:1, t:"Landing Page + Dashboard + Input", badge:"live"},
+  {n:2, t:"Production + Revenue + Cost + P&L", badge:"live"},
+  {n:3, t:"Cash Flow + Working Capital + DCF", badge:"live"},
+  {n:4, t:"WACC + NPV + IRR + Investment Analysis", badge:"live"},
+  {n:5, t:"Sensitivity + Scenario + Break-Even", badge:"live"},
+  {n:6, t:"Probability + Monte Carlo + VaR", badge:"live"},
+  {n:7, t:"Fleet Optimization", badge:"live"},
+  {n:8, t:"Risk Score + Management Decision Engine", badge:"live"},
+  {n:9, t:"Report Generator", badge:"live"},
+];
+document.getElementById('roadmapTrack').innerHTML = roadmap.map(r=>`
+  <div class="rm-item ${r.badge==='live'?'active':''}">
+    <div class="rm-num">FASE ${String(r.n).padStart(2,'0')}</div>
+    <div class="rm-title">${r.t}</div>
+    <div class="rm-badge ${r.badge}">${r.badge==='live'?'● Aktif':'Segera'}</div>
+  </div>
+`).join('');
+
+/* ============================================================
+   FLOW SCHEMATIC (hero signature)
+============================================================ */
+const flow = [
+  {l:"Production Model", s:"Volume × Fleet × Cycle Time"},
+  {l:"Revenue Engine", s:"Volume × Rate"},
+  {l:"Cost Engine", s:"Fuel + Variable + Fixed"},
+  {l:"Profit & Loss", s:"EBITDA → EBIT → Net Profit"},
+  {l:"Cash Flow & DCF", s:"FCF → NPV → IRR", warn:false},
+  {l:"Risk & Decision", s:"Monte Carlo → Risk Score", warn:true},
+];
+document.getElementById('flowSchematic').innerHTML = flow.map((f,i)=>`
+  ${i>0 ? '<div class="flow-connector"></div>' : ''}
+  <div class="flow-node ${f.warn?'warn':''}">
+    <div class="idx">${i+1}</div>
+    <div>
+      <div class="label">${f.l}</div>
+      <div class="sub">${f.s}</div>
+    </div>
+  </div>
+`).join('');
+
+/* ============================================================
+   SIDEBAR MENU
+============================================================ */
+const menuGroups = [
+  {label:"Analisis Inti", items:[
+    {id:"dashboard", icon:"◆", name:"Dashboard"},
+    {id:"input", icon:"▤", name:"Project Input"},
+  ]},
+  {label:"Model Operasional", items:[
+    {id:"production", icon:"⛏", name:"Production Model"},
+    {id:"revcost", icon:"₨", name:"Revenue & Cost"},
+    {id:"pl", icon:"∑", name:"Profit & Loss"},
+  ]},
+  {label:"Corporate Finance", items:[
+    {id:"cashflow", icon:"⇄", name:"Cash Flow"},
+    {id:"workingcap", icon:"⟲", name:"Working Capital"},
+    {id:"dcf", icon:"§", name:"DCF Valuation"},
+    {id:"investment", icon:"%", name:"Investment Analysis"},
+  ]},
+  {label:"Risk & Quant", items:[
+    {id:"risk", icon:"▲", name:"Risk Analysis"},
+    {id:"sensitivity", icon:"↕", name:"Sensitivity Analysis"},
+    {id:"scenario", icon:"◫", name:"Scenario Analysis"},
+    {id:"probability", icon:"π", name:"Probability Analysis"},
+    {id:"montecarlo", icon:"⚂", name:"Monte Carlo & VaR"},
+  ]},
+  {label:"Optimisasi & Keputusan", items:[
+    {id:"fleet", icon:"🚚", name:"Fleet Optimization"},
+    {id:"riskscore", icon:"⛨", name:"Risk Score"},
+    {id:"decision", icon:"⚑", name:"Management Decision"},
+    {id:"reports", icon:"⎙", name:"Reports"},
+  ]},
+];
+
+const sidebarEl = document.getElementById('sidebar');
+let sidebarHTML = '';
+
+menuGroups.forEach(g=>{
+  sidebarHTML += `<div class="sb-group-label">${g.label}</div>`;
+  g.items.forEach(it=>{
+    sidebarHTML += `<div class="sb-item ${it.id==='dashboard'?'active':''}" data-page="${it.id}">
+      <span class="l"><span class="ico">${it.icon}</span>${it.name}</span>
+    </div>`;
+  });
+});
+sidebarEl.innerHTML = sidebarHTML;
+
+document.querySelectorAll('.sb-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+item.dataset.page).classList.add('active');
+    document.getElementById('app-shell').scrollIntoView({behavior:'smooth'});
+    render();
+  });
+});
+
+/* ============================================================
+   FORMAT HELPERS
+============================================================ */
+const fmtRp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const fmtNum = n => Math.round(n).toLocaleString('id-ID');
+const fmtPct = n => (n*100).toFixed(1) + '%';
+
+/* ============================================================
+   CALCULATION ENGINE
+============================================================ */
+function getVal(id){ return parseFloat(document.getElementById(id).value) || 0; }
+
+/* ============================================================
+   STATE
+============================================================ */
+let mcResults = null; // populated after Monte Carlo run
+let corrMatrix = [
+  [1.00, 0.70, -0.50, 0.10],
+  [0.70, 1.00, -0.55, 0.05],
+  [-0.50,-0.55, 1.00, -0.05],
+  [0.10, 0.05, -0.05, 1.00],
+]; // order: Volume, Availability, Cost, Rate
+
+/* ============================================================
+   CORE ENGINE — computeAll(overrides)
+   overrides: {inputId: value} lets Sensitivity/Scenario/MonteCarlo
+   recompute the full chain without touching the DOM.
+============================================================ */
+function gv(id, overrides){
+  if(overrides && Object.prototype.hasOwnProperty.call(overrides, id)) return overrides[id];
+  return getVal(id);
+}
+
+function computeAll(overrides){
+  overrides = overrides || {};
+  // ---- raw inputs ----
+  const oreVol = gv('p_ore',overrides), obVol = gv('p_ob',overrides);
+  const days = gv('p_days',overrides), hours = gv('p_hours',overrides);
+  const density = gv('p_density',overrides), payload = gv('p_payload',overrides);
+  const cycle = gv('h_cycle',overrides), dist = gv('h_dist',overrides);
+  const pa = gv('h_pa',overrides)/100, ua = gv('h_ua',overrides)/100;
+  const trucks = gv('h_trucks',overrides), excavators = gv('h_exc',overrides);
+
+  const rateOre = gv('r_ore',overrides), rateOb = gv('r_ob',overrides);
+  const rateHaul = gv('r_haul',overrides), otherRev = gv('r_other',overrides);
+
+  const fuelRatio = gv('c_fuelratio',overrides), fuelPrice = gv('c_fuelprice',overrides);
+  const lube = gv('c_lube',overrides), tire = gv('c_tire',overrides), maint = gv('c_maint',overrides);
+  const operatorC = gv('c_operator',overrides), otherVar = gv('c_othervar',overrides);
+
+  const fSalary=gv('f_salary',overrides), fCamp=gv('f_camp',overrides), fDepr=gv('f_depr',overrides),
+        fIns=gv('f_ins',overrides), fOvh=gv('f_ovh',overrides), fOther=gv('f_other',overrides);
+  const fixed = fSalary+fCamp+fDepr+fIns+fOvh+fOther;
+  const cashFixed = fixed - fDepr;
+
+  const capex = gv('g_capex',overrides), debtRatioPct = gv('g_debtratio',overrides);
+  const interestPct = gv('g_interest',overrides), tenor = gv('g_tenor',overrides);
+  const depLife = gv('g_deplife',overrides), taxPct = gv('g_tax',overrides);
+  const horizon = gv('g_horizon',overrides), growthPct = gv('g_growth',overrides);
+  const escalationPct = gv('g_escalation',overrides);
+
+  const arDays = gv('h_ardays',overrides), invDays = gv('h_invdays',overrides), apDays = gv('h_apdays',overrides);
+
+  const debtRatio = debtRatioPct/100, interest = interestPct/100, tax = taxPct/100;
+  const growth = growthPct/100, escalation = escalationPct/100;
+
+  // ---- production / hauling ----
+  const totalVolume = oreVol + obVol;
+  const retPerHour = cycle>0 ? 60/cycle : 0;
+  const effHours = hours * pa * ua;
+  const retPerDayTruck = retPerHour * effHours;
+  const payloadM3 = density>0 ? payload/density : 0;
+  const prodPerTruckDay = retPerDayTruck * payloadM3;
+  const fleetProdDay = prodPerTruckDay * trucks;
+  const fleetProdMonth = fleetProdDay * days;
+  const requiredFleet = prodPerTruckDay>0 ? Math.ceil(totalVolume/(prodPerTruckDay*days)) : 0;
+  const fleetUtil = fleetProdMonth>0 ? Math.min(totalVolume/fleetProdMonth,1.5) : 0;
+
+  // ---- revenue ----
+  const oreRevenue = oreVol*rateOre;
+  const obRevenue = obVol*rateOb;
+  const haulRevenue = totalVolume*rateHaul*dist;
+  const totalRevenue = oreRevenue+obRevenue+haulRevenue+otherRev;
+
+  // ---- variable cost ----
+  const fuelCost = totalVolume*fuelRatio*fuelPrice;
+  const otherVarCost = totalVolume*(lube+tire+maint+operatorC+otherVar);
+  const totalVarCost = fuelCost+otherVarCost;
+
+  // ---- P&L monthly (full waterfall) ----
+  const ebitda = totalRevenue-totalVarCost-cashFixed;
+  const ebitdaMargin = totalRevenue>0 ? ebitda/totalRevenue : 0;
+  const depreciationM = fDepr;
+  const ebit = ebitda - depreciationM;
+  const ebitMargin = totalRevenue>0 ? ebit/totalRevenue : 0;
+  const initialDebt = capex*debtRatio;
+  const interestM = (initialDebt*interest)/12; // year-1 representative monthly interest
+  const ebt = ebit - interestM;
+  const taxM = Math.max(ebt,0)*tax;
+  const netProfit = ebt - taxM;
+  const netMargin = totalRevenue>0 ? netProfit/totalRevenue : 0;
+
+  // ---- annual project cash flow (Year0..horizon) ----
+  const years = horizon;
+  const revA=[], costA=[], ebitdaA=[], deprA=[], ebitA=[], taxA=[], nopatA=[], fcffA=[];
+  const arA=[], invA=[], apA=[], nwcA=[], dwcA=[];
+  const loanBegA=[], principalA=[], loanEndA=[], intA=[], dsA=[], cfadsA=[], dscrA=[], ecfA=[];
+  for(let t=0;t<=years;t++){
+    if(t===0){
+      revA.push(0); costA.push(0); ebitdaA.push(0); deprA.push(0); ebitA.push(0); taxA.push(0); nopatA.push(0);
+      arA.push(0); invA.push(0); apA.push(0); nwcA.push(0); dwcA.push(0);
+      loanBegA.push(0); principalA.push(0); loanEndA.push(initialDebt); intA.push(0); dsA.push(0); cfadsA.push(0); dscrA.push(null);
+      fcffA.push(-capex);
+      ecfA.push(-capex+initialDebt);
+      continue;
+    }
+    const rev_t = totalRevenue*12*Math.pow(1+growth,t-1);
+    const cost_t = (totalVarCost+cashFixed)*12*Math.pow(1+escalation,t-1);
+    const ebitda_t = rev_t - cost_t;
+    const depr_t = t<=depLife ? capex/depLife : 0;
+    const ebit_t = ebitda_t - depr_t;
+    const tax_t = Math.max(ebit_t,0)*tax;
+    const nopat_t = ebit_t - tax_t;
+
+    const ar_t = rev_t/365*arDays;
+    const inv_t = cost_t/365*invDays;
+    const ap_t = cost_t/365*apDays;
+    const nwc_t = ar_t+inv_t-ap_t;
+    const dwc_t = nwc_t - nwcA[t-1];
+
+    const fcff_t = nopat_t + depr_t - dwc_t;
+
+    const loanBeg_t = t<=tenor ? (loanEndA[t-1] !== undefined ? loanEndA[t-1] : initialDebt) : 0;
+    const principal_t = t<=tenor ? initialDebt/tenor : 0;
+    const loanEnd_t = Math.max(loanBeg_t - principal_t, 0);
+    const int_t = loanBeg_t*interest;
+    const ds_t = principal_t+int_t;
+    const cfads_t = ebitda_t - tax_t - dwc_t;
+    const dscr_t = ds_t>0 ? cfads_t/ds_t : null;
+    const ecf_t = fcff_t - ds_t;
+
+    revA.push(rev_t); costA.push(cost_t); ebitdaA.push(ebitda_t); deprA.push(depr_t); ebitA.push(ebit_t);
+    taxA.push(tax_t); nopatA.push(nopat_t); fcffA.push(fcff_t);
+    arA.push(ar_t); invA.push(inv_t); apA.push(ap_t); nwcA.push(nwc_t); dwcA.push(dwc_t);
+    loanBegA.push(loanBeg_t); principalA.push(principal_t); loanEndA.push(loanEnd_t); intA.push(int_t);
+    dsA.push(ds_t); cfadsA.push(cfads_t); dscrA.push(dscr_t); ecfA.push(ecf_t);
+  }
+
+  // ---- WACC / CAPM ----
+  const rf = gv('w_rf',overrides)/100, erp = gv('w_erp',overrides)/100;
+  const betaComp = gv('w_betacomp',overrides), deComp = gv('w_decomp',overrides), taxComp = gv('w_taxcomp',overrides)/100;
+  const betaU = betaComp/(1+(1-taxComp)*deComp);
+  const deTarget = debtRatio/(1-debtRatio);
+  const betaL = betaU*(1+(1-tax)*deTarget);
+  const ke = rf+betaL*erp;
+  const kdAT = interest*(1-tax);
+  const we = 1-debtRatio, wd = debtRatio;
+  const wacc = we*ke+wd*kdAT;
+
+  // ---- NPV / IRR (project & equity) ----
+  const npvProject = npv(wacc, fcffA);
+  const irrProject = irr(fcffA);
+  const npvEquity = npv(ke, ecfA);
+  const irrEquity = irr(ecfA);
+  const payback = paybackYear(fcffA);
+
+  // ---- Terminal Value / Enterprise Value (going-concern DCF lens) ----
+  const tg = growth; // reuse revenue growth as terminal growth proxy
+  const lastFCFF = fcffA[years];
+  const tv = (wacc>tg) ? lastFCFF*(1+tg)/(wacc-tg) : 0;
+  const pvTV = tv/Math.pow(1+wacc,years);
+  const pvFCFF = fcffA.slice(1).reduce((s,v,i)=> s + v/Math.pow(1+wacc,i+1), 0);
+  const enterpriseValue = pvFCFF + pvTV;
+
+  return {
+    // production
+    oreVol,obVol,totalVolume,retPerHour,retPerDayTruck,prodPerTruckDay,fleetProdDay,fleetProdMonth,
+    requiredFleet,fleetUtil,trucks,excavators,payload,cycle,dist,fuelRatio,pa,ua,
+    // revenue/cost
+    oreRevenue,obRevenue,haulRevenue,totalRevenue,fuelCost,otherVarCost,totalVarCost,
+    fixed,cashFixed,depreciationM,
+    // P&L
+    ebitda,ebitdaMargin,ebit,ebitMargin,interestM,ebt,taxM,netProfit,netMargin,
+    // annual arrays
+    years,revA,costA,ebitdaA,deprA,ebitA,taxA,nopatA,fcffA,arA,invA,apA,nwcA,dwcA,
+    loanBegA,principalA,loanEndA,intA,dsA,cfadsA,dscrA,ecfA,initialDebt,
+    // wacc
+    rf,erp,betaComp,deComp,taxComp,betaU,deTarget,betaL,ke,kdAT,we,wd,wacc,tax,capex,tenor,depLife,horizon,growth,escalation,
+    // valuation
+    npvProject,irrProject,npvEquity,irrEquity,payback,tv,pvTV,pvFCFF,enterpriseValue,
+    arDays,invDays,apDays,
+  };
+}
+
+/* ============================================================
+   FINANCE HELPERS
+============================================================ */
+function npv(rate, cashflows){
+  // cashflows[0] is Year0 (already undiscounted, t=0)
+  let total = cashflows[0];
+  for(let t=1;t<cashflows.length;t++){
+    total += cashflows[t]/Math.pow(1+rate, t);
+  }
+  return total;
+}
+function irr(cashflows, guess){
+  guess = guess===undefined?0.15:guess;
+  let rate = guess;
+  for(let iter=0; iter<100; iter++){
+    let f=0, df=0;
+    for(let t=0;t<cashflows.length;t++){
+      f += cashflows[t]/Math.pow(1+rate,t);
+      if(t>0) df += -t*cashflows[t]/Math.pow(1+rate,t+1);
+    }
+    if(Math.abs(df)<1e-12) break;
+    const newRate = rate - f/df;
+    if(!isFinite(newRate)) break;
+    if(Math.abs(newRate-rate)<1e-9){ rate=newRate; break; }
+    rate = newRate;
+  }
+  if(!isFinite(rate) || rate < -0.99 || rate > 50) return null;
+  return rate;
+}
+function paybackYear(fcffA){
+  let cum = fcffA[0];
+  for(let t=1;t<fcffA.length;t++){
+    cum += fcffA[t];
+    if(cum>=0) return t;
+  }
+  return null;
+}
+
+/* ============================================================
+   FORMAT HELPERS (extra)
+============================================================ */
+const fmtRpM = n => 'Rp ' + (n/1e9).toLocaleString('id-ID',{maximumFractionDigits:2}) + ' M';
+const fmtX = n => n===null||n===undefined?'—':n.toFixed(2)+'x';
+const fmtSignedPct = n => (n>=0?'+':'') + (n*100).toFixed(1)+'%';
+
+/* ============================================================
+   KPI BUILDERS (live now — no more locked placeholders)
+============================================================ */
+function buildOperationalKPIs(d){
+  return [
+    {label:"Volume Ore / Bulan", value:fmtNum(d.oreVol)+" m³", flag:"green"},
+    {label:"Volume OB / Bulan", value:fmtNum(d.obVol)+" m³", flag:"green"},
+    {label:"Total Material", value:fmtNum(d.totalVolume)+" m³", flag:"blue"},
+    {label:"Kapasitas Produksi Fleet", value:fmtNum(d.fleetProdMonth)+" m³/bln", flag: d.fleetProdMonth>=d.totalVolume?"green":"red"},
+    {label:"Jumlah Dump Truck", value:d.trucks+" unit", flag:"blue"},
+    {label:"Payload / Truck", value:d.payload+" ton", flag:"blue"},
+    {label:"Cycle Time", value:d.cycle+" menit/ret", flag:"yellow"},
+    {label:"Jarak Hauling", value:d.dist+" km", flag:"yellow"},
+    {label:"Fuel Ratio", value:d.fuelRatio+" L/m³", flag:"yellow"},
+  ];
+}
+function buildFinancialKPIs(d){
+  return [
+    {label:"Revenue", value:fmtRp(d.totalRevenue), flag:"green"},
+    {label:"Variable Cost", value:fmtRp(d.totalVarCost), flag:"red"},
+    {label:"Fixed Cost", value:fmtRp(d.fixed), flag:"red"},
+    {label:"EBITDA", value:fmtRp(d.ebitda), flag: d.ebitda>=0?"green":"red"},
+    {label:"EBIT", value:fmtRp(d.ebit), flag: d.ebit>=0?"green":"red"},
+    {label:"Net Profit", value:fmtRp(d.netProfit), flag: d.netProfit>=0?"green":"red"},
+    {label:"Profit Margin", value:fmtPct(d.netMargin), flag: d.netMargin>0.15?"green":d.netMargin>0?"yellow":"red"},
+    {label:"Free Cash Flow (Y1)", value:fmtRp(d.fcffA[1]), flag: d.fcffA[1]>=0?"green":"red"},
+    {label:"Working Capital (Y1)", value:fmtRp(d.nwcA[1]), flag:"blue"},
+    {label:"NPV (Project)", value:fmtRp(d.npvProject), flag: d.npvProject>=0?"green":"red"},
+    {label:"IRR (Project)", value: d.irrProject===null?"n/a":fmtPct(d.irrProject), flag: d.irrProject>d.wacc?"green":"red"},
+    {label:"WACC", value:fmtPct(d.wacc), flag:"blue"},
+    {label:"Payback Period", value: d.payback===null?"> "+d.years+" thn":d.payback+" tahun", flag: d.payback?"green":"yellow"},
+  ];
+}
+function buildRiskKPIs(d){
+  const rs = computeRiskScore(d);
+  const mc = mcResults;
+  return [
+    {label:"Risk Score", value: rs.score.toFixed(0)+"/100", flag: rs.color},
+    {label:"Probability of Loss", value: mc? fmtPct(mc.pLoss) : "Jalankan Monte Carlo", flag: mc? (mc.pLoss<0.15?"green":mc.pLoss<0.35?"yellow":"red") : "blue"},
+    {label:"Probability NPV < 0", value: mc? fmtPct(mc.pNpvNeg) : "Jalankan Monte Carlo", flag: mc? (mc.pNpvNeg<0.15?"green":mc.pNpvNeg<0.35?"yellow":"red") : "blue"},
+    {label:"Probability IRR < WACC", value: mc? fmtPct(mc.pIrrLtWacc) : "Jalankan Monte Carlo", flag: mc? (mc.pIrrLtWacc<0.15?"green":mc.pIrrLtWacc<0.35?"yellow":"red") : "blue"},
+    {label:"P5 / P50 / P95 NPV", value: mc? (fmtRpM(mc.npvP5)+' / '+fmtRpM(mc.npvP50)+' / '+fmtRpM(mc.npvP95)) : "Jalankan Monte Carlo", flag:"blue"},
+    {label:"VaR 95% (Net Profit)", value: mc? fmtRp(mc.varNP95) : "Jalankan Monte Carlo", flag:"yellow"},
+  ];
+}
+
+const tooltips = {
+  "Revenue":"Total pendapatan dari seluruh volume material dikalikan rate jual.",
+  "Variable Cost":"Biaya yang berubah proporsional terhadap volume produksi (fuel, lubricant, tire, maintenance, operator).",
+  "Fixed Cost":"Biaya tetap bulanan yang tidak berubah terhadap volume produksi, termasuk depresiasi.",
+  "EBITDA":"Revenue dikurangi Variable Cost dan Fixed Cost tunai (sebelum depresiasi, bunga, pajak).",
+  "EBIT":"EBITDA dikurangi Depresiasi — laba operasional sebelum bunga dan pajak.",
+  "Net Profit":"EBT dikurangi pajak — laba bersih setelah bunga dan pajak.",
+  "Profit Margin":"Net Profit dibagi Revenue.",
+  "Free Cash Flow (Y1)":"Unlevered Free Cash Flow (FCFF) tahun pertama = NOPAT + Depresiasi − Δ Modal Kerja.",
+  "Working Capital (Y1)":"Net Working Capital (Piutang + Persediaan − Hutang Usaha) tahun pertama.",
+  "NPV (Project)":"Net Present Value arus kas proyek (unlevered) didiskon pada WACC.",
+  "IRR (Project)":"Internal Rate of Return arus kas proyek unlevered — dibandingkan terhadap WACC.",
+  "WACC":"Weighted Average Cost of Capital — tingkat diskonto proyek dari CAPM & struktur modal.",
+  "Payback Period":"Waktu yang dibutuhkan agar arus kas kumulatif proyek mencapai nol.",
+  "Kapasitas Produksi Fleet":"Total produksi maksimum armada per bulan berdasarkan jumlah truck, cycle time, dan availability.",
+};
+
+function renderKPICards(container, items){
+  container.innerHTML = items.map(it=>`
+    <div class="kpi-card">
+      <div class="top">
+        <span class="label">${it.label} ${tooltips[it.label]?`<span class="info-dot">i<span class="tip">${tooltips[it.label]}</span></span>`:''}</span>
+        ${it.flag?`<span class="flag ${it.flag}"></span>`:''}
+      </div>
+      <div class="value" style="${/[a-zA-Z]{5,}/.test(it.value)&&it.value.length>14?'font-size:13px;':''}">${it.value}</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   CHARTS — registry + helpers
+============================================================ */
+const charts = {};
+function mkChart(id, config){
+  const el = document.getElementById(id);
+  if(!el || typeof Chart==='undefined') return null;
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(el.getContext('2d'), config);
+  return charts[id];
+}
+const CHART_TEXT = '#95A2C0', CHART_GRID='#1A2440';
+function baseScales(extra){
+  return Object.assign({
+    y:{ticks:{color:CHART_TEXT}, grid:{color:CHART_GRID}},
+    x:{ticks:{color:CHART_TEXT}, grid:{display:false}}
+  }, extra||{});
+}
+
+let chartsReady = false;
+function initCharts(){
+  if(typeof Chart === 'undefined'){
+    document.querySelectorAll('.chart-box').forEach(box=>{
+      box.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;text-align:center;padding:20px;">Grafik memerlukan koneksi internet untuk memuat Chart.js dari CDN.<br>KPI &amp; tabel tetap aktif secara offline.</div>';
+    });
+    return;
+  }
+  chartsReady = true;
+}
+
+/* ============================================================
+   PAGE RENDERERS
+============================================================ */
+function renderDashboardCharts(d){
+  if(!chartsReady) return;
+  mkChart('chartRevCost', {type:'bar', data:{labels:['Revenue','Variable Cost','Fixed Cost','EBITDA'],
+    datasets:[{data:[d.totalRevenue,d.totalVarCost,d.fixed,d.ebitda], backgroundColor:['#2FCB7A','#EF5350','#F5B700','#D4A94A'], borderRadius:6, maxBarThickness:56}]},
+    options:{plugins:{legend:{display:false}}, scales:baseScales({y:{ticks:{color:CHART_TEXT, callback:v=>(v/1e9).toFixed(1)+'M'}, grid:{color:CHART_GRID}}})}});
+  mkChart('chartCostMix', {type:'doughnut', data:{labels:['Fuel Cost','Non-Fuel Variable'],
+    datasets:[{data:[d.fuelCost,d.otherVarCost], backgroundColor:['#D4A94A','#4C8DFF'], borderColor:'#0F1626', borderWidth:3}]},
+    options:{plugins:{legend:{position:'bottom', labels:{color:CHART_TEXT, boxWidth:10, font:{size:11}}}}, cutout:'68%'}});
+}
+
+function renderProduction(d){
+  document.getElementById('prodResults1').innerHTML = `
+    <div class="result-cell"><div class="l">Ret / Jam / Truck</div><div class="v">${d.retPerHour.toFixed(2)}</div></div>
+    <div class="result-cell"><div class="l">Ret / Hari / Truck</div><div class="v">${d.retPerDayTruck.toFixed(1)}</div></div>
+    <div class="result-cell"><div class="l">Produksi / Truck / Hari</div><div class="v">${fmtNum(d.prodPerTruckDay)} m³</div></div>
+    <div class="result-cell"><div class="l">Effective Working Hours</div><div class="v">${(d.pa*d.ua*100).toFixed(1)}% × ${getVal('p_hours')}j</div></div>`;
+  document.getElementById('prodResults2').innerHTML = `
+    <div class="result-cell"><div class="l">Kapasitas Fleet / Hari</div><div class="v">${fmtNum(d.fleetProdDay)} m³</div></div>
+    <div class="result-cell"><div class="l">Kapasitas Fleet / Bulan</div><div class="v">${fmtNum(d.fleetProdMonth)} m³</div></div>
+    <div class="result-cell"><div class="l">Fleet Dibutuhkan</div><div class="v">${d.requiredFleet} unit</div></div>
+    <div class="result-cell"><div class="l">Fleet Utilization</div><div class="v">${fmtPct(d.fleetUtil)}</div></div>`;
+  if(chartsReady){
+    mkChart('chartFleetCap', {type:'bar', data:{labels:['Target Volume','Kapasitas Fleet'], datasets:[{data:[d.totalVolume,d.fleetProdMonth], backgroundColor:['#4C8DFF','#2FCB7A'], borderRadius:6}]},
+      options:{plugins:{legend:{display:false}}, scales:baseScales()}});
+    mkChart('chartRetSplit', {type:'doughnut', data:{labels:['Ore','Overburden'], datasets:[{data:[d.oreVol,d.obVol], backgroundColor:['#D4A94A','#4C8DFF'], borderColor:'#0F1626', borderWidth:3}]},
+      options:{plugins:{legend:{position:'bottom', labels:{color:CHART_TEXT, boxWidth:10, font:{size:11}}}}, cutout:'68%'}});
+  }
+}
+
+function renderRevCost(d){
+  document.getElementById('costPerM3').innerHTML = `
+    <div class="result-cell"><div class="l">Fuel Cost / m³</div><div class="v">${fmtRp(d.fuelRatio*getVal('c_fuelprice'))}</div></div>
+    <div class="result-cell"><div class="l">Total Variable Cost / m³</div><div class="v">${fmtRp(d.totalVarCost/d.totalVolume)}</div></div>
+    <div class="result-cell"><div class="l">Fixed Cost / m³</div><div class="v">${fmtRp(d.fixed/d.totalVolume)}</div></div>
+    <div class="result-cell"><div class="l">Total Cost / m³</div><div class="v">${fmtRp((d.totalVarCost+d.fixed)/d.totalVolume)}</div></div>
+    <div class="result-cell"><div class="l">Blended Rate / m³</div><div class="v">${fmtRp(d.totalRevenue/d.totalVolume)}</div></div>`;
+  if(chartsReady){
+    mkChart('chartRevBreak', {type:'pie', data:{labels:['Ore Revenue','OB Revenue','Hauling Revenue','Other'],
+      datasets:[{data:[d.oreRevenue,d.obRevenue,d.haulRevenue,getVal('r_other')], backgroundColor:['#2FCB7A','#4C8DFF','#D4A94A','#F5B700'], borderColor:'#0F1626', borderWidth:3}]},
+      options:{plugins:{legend:{position:'bottom', labels:{color:CHART_TEXT, boxWidth:10, font:{size:11}}}}}});
+    mkChart('chartVarBreak', {type:'pie', data:{labels:['Fuel','Lubricant','Tire','Maintenance','Operator','Other'],
+      datasets:[{data:[d.fuelCost, d.totalVolume*getVal('c_lube'), d.totalVolume*getVal('c_tire'), d.totalVolume*getVal('c_maint'), d.totalVolume*getVal('c_operator'), d.totalVolume*getVal('c_othervar')],
+        backgroundColor:['#D4A94A','#4C8DFF','#2FCB7A','#F5B700','#EF5350','#8892B0'], borderColor:'#0F1626', borderWidth:3}]},
+      options:{plugins:{legend:{position:'bottom', labels:{color:CHART_TEXT, boxWidth:10, font:{size:11}}}}}});
+  }
+}
+
+function renderPL(d){
+  const rows = [
+    ["Total Revenue", d.totalRevenue, false],
+    ["(-) Total Variable Cost", -d.totalVarCost, true],
+    ["(-) Fixed Cost (Tunai)", -d.cashFixed, true],
+    ["= EBITDA", d.ebitda, false, true],
+    ["(-) Depresiasi", -d.depreciationM, true],
+    ["= EBIT", d.ebit, false, true],
+    ["(-) Beban Bunga (estimasi Th.1)", -d.interestM, true],
+    ["= EBT (Laba Sebelum Pajak)", d.ebt, false, true],
+    ["(-) Pajak Penghasilan Badan", -d.taxM, true],
+    ["= NET PROFIT", d.netProfit, false, true],
+  ];
+  document.getElementById('plFull').innerHTML = rows.map(([name,val,neg,total])=>`
+    <div class="pl-line ${total?'total':''}"><span class="name">${name}</span><span class="val mono ${neg?'neg':''}">${neg?'('+fmtRp(Math.abs(val))+')':fmtRp(val)}</span></div>
+  `).join('') + `
+    <div class="pl-line"><span class="name">EBITDA Margin</span><span class="val mono">${fmtPct(d.ebitdaMargin)}</span></div>
+    <div class="pl-line"><span class="name">EBIT Margin</span><span class="val mono">${fmtPct(d.ebitMargin)}</span></div>
+    <div class="pl-line"><span class="name">Net Profit Margin</span><span class="val mono">${fmtPct(d.netMargin)}</span></div>`;
+  if(chartsReady){
+    mkChart('chartPLWaterfall', {type:'bar', data:{labels:['Revenue','EBITDA','EBIT','EBT','Net Profit'],
+      datasets:[{data:[d.totalRevenue,d.ebitda,d.ebit,d.ebt,d.netProfit], backgroundColor:['#4C8DFF','#D4A94A','#F5B700','#8892B0','#2FCB7A'], borderRadius:6}]},
+      options:{plugins:{legend:{display:false}}, scales:baseScales({y:{ticks:{color:CHART_TEXT, callback:v=>(v/1e9).toFixed(1)+'M'}, grid:{color:CHART_GRID}}})}});
+    mkChart('chartMargins', {type:'line', data:{labels:['EBITDA Margin','EBIT Margin','Net Margin'],
+      datasets:[{data:[d.ebitdaMargin*100,d.ebitMargin*100,d.netMargin*100], borderColor:'#D4A94A', backgroundColor:'rgba(212,169,74,.15)', fill:true, tension:.3, pointBackgroundColor:'#D4A94A'}]},
+      options:{plugins:{legend:{display:false}}, scales:baseScales({y:{ticks:{color:CHART_TEXT, callback:v=>v+'%'}, grid:{color:CHART_GRID}}})}});
+  }
+}
+
+function fmtCell(v, fmt){
+  if(v===null||v===undefined) return '—';
+  if(fmt==='dp3'){ return v.toFixed(3); }
+  if(fmt==='pct'){ return (v*100).toFixed(1)+'%'; }
+  return v<0 ? '('+fmtNum(Math.abs(v))+')' : fmtNum(v);
+}
+function fintable(headers, rows){
+  let html = '<thead><tr>'+headers.map(h=>`<th>${h}</th>`).join('')+'</tr></thead><tbody>';
+  rows.forEach(r=>{
+    html += `<tr class="${r.hl?'hl':''}"><td>${r.label}</td>`+r.vals.map(v=>`<td class="${v<0 && r.fmt!=='dp3'?'neg':''}">${fmtCell(v, r.fmt)}</td>`).join('')+'</tr>';
+  });
+  html += '</tbody>';
+  return html;
+}
+
+function renderCashflow(d){
+  const yearLabels = Array.from({length:d.years+1},(_,i)=>i===0?'Year 0':'Year '+i);
+  document.getElementById('cashflowTable').innerHTML = fintable(['',...yearLabels],[
+    {label:'Revenue', vals:d.revA},
+    {label:'Total Cash Cost', vals:d.costA.map(v=>-v)},
+    {label:'EBITDA', vals:d.ebitdaA, hl:true},
+    {label:'Depresiasi', vals:d.deprA.map(v=>-v)},
+    {label:'EBIT', vals:d.ebitA},
+    {label:'Pajak', vals:d.taxA.map(v=>-v)},
+    {label:'NOPAT', vals:d.nopatA},
+    {label:'(+) Depresiasi', vals:d.deprA},
+    {label:'(-) Δ Working Capital', vals:d.dwcA.map(v=>-v)},
+    {label:'(-) Capex', vals:d.fcffA.map((v,i)=>i===0?-d.capex:0)},
+    {label:'FCFF (Project/Unlevered)', vals:d.fcffA, hl:true},
+    {label:'Debt Service (Pokok+Bunga)', vals:d.dsA.map(v=>-v)},
+    {label:'Equity Cash Flow (Levered)', vals:d.ecfA, hl:true},
+  ]);
+  if(chartsReady){
+    const cum = []; d.fcffA.reduce((acc,v,i)=>{ cum[i]=acc+v; return cum[i]; },0);
+    mkChart('chartFCF', {type:'line', data:{labels:yearLabels, datasets:[
+      {label:'FCFF Tahunan', data:d.fcffA, borderColor:'#4C8DFF', backgroundColor:'rgba(76,141,255,.12)', fill:false, tension:.25},
+      {label:'Kumulatif FCFF', data:cum, borderColor:'#D4A94A', backgroundColor:'rgba(212,169,74,.12)', fill:true, tension:.25},
+    ]}, options:{plugins:{legend:{labels:{color:CHART_TEXT}}}, scales:baseScales({y:{ticks:{color:CHART_TEXT, callback:v=>(v/1e9).toFixed(1)+'M'}, grid:{color:CHART_GRID}}})}});
+  }
+}
+
+function renderWC(d){
+  const yearLabels = Array.from({length:d.years+1},(_,i)=>i===0?'Year 0':'Year '+i);
+  document.getElementById('wcTable').innerHTML = fintable(['',...yearLabels],[
+    {label:'Revenue', vals:d.revA},
+    {label:'Cost', vals:d.costA},
+    {label:'Piutang (AR)', vals:d.arA},
+    {label:'Persediaan (Inventory)', vals:d.invA},
+    {label:'Hutang Usaha (AP)', vals:d.apA.map(v=>-v)},
+    {label:'Net Working Capital', vals:d.nwcA, hl:true},
+    {label:'Δ NWC (Cash Impact)', vals:d.dwcA},
+  ]);
+  document.getElementById('wcSummary').innerHTML = `
+    <div class="result-cell"><div class="l">AR Days</div><div class="v">${d.arDays} hari</div></div>
+    <div class="result-cell"><div class="l">Inventory Days</div><div class="v">${d.invDays} hari</div></div>
+    <div class="result-cell"><div class="l">AP Days</div><div class="v">${d.apDays} hari</div></div>
+    <div class="result-cell"><div class="l">Cash Conversion Cycle</div><div class="v">${(d.arDays+d.invDays-d.apDays)} hari</div></div>
+    <div class="result-cell"><div class="l">NWC Tahun 1</div><div class="v">${fmtRp(d.nwcA[1])}</div></div>`;
+}
+
+function renderDCF(d){
+  const yearLabels = Array.from({length:d.years+1},(_,i)=>i===0?'Year 0':'Year '+i);
+  const df = d.fcffA.map((v,i)=> i===0?1:1/Math.pow(1+d.wacc,i));
+  const pv = d.fcffA.map((v,i)=> i===0?0:v*df[i]);
+  document.getElementById('dcfTable').innerHTML = fintable(['',...yearLabels],[
+    {label:'Free Cash Flow (FCFF)', vals:d.fcffA},
+    {label:'Discount Factor', vals:df, fmt:'dp3'},
+    {label:'Present Value', vals:pv, hl:true},
+  ]);
+  document.getElementById('dcfSummary').innerHTML = `
+    <div class="result-cell"><div class="l">Σ PV of FCFF (Y1-${d.years})</div><div class="v">${fmtRp(d.pvFCFF)}</div></div>
+    <div class="result-cell"><div class="l">Terminal Value (Y${d.years})</div><div class="v">${fmtRp(d.tv)}</div></div>
+    <div class="result-cell"><div class="l">PV of Terminal Value</div><div class="v">${fmtRp(d.pvTV)}</div></div>
+    <div class="result-cell"><div class="l">Enterprise Value</div><div class="v">${fmtRp(d.enterpriseValue)}</div></div>
+    <div class="result-cell"><div class="l">NPV Project (finite horizon)</div><div class="v">${fmtRp(d.npvProject)}</div></div>`;
+}
+
+function renderInvestment(d){
+  document.getElementById('waccResults').innerHTML = `
+    <div class="result-cell"><div class="l">Beta Unlevered</div><div class="v">${d.betaU.toFixed(2)}</div></div>
+    <div class="result-cell"><div class="l">D/E Target</div><div class="v">${d.deTarget.toFixed(2)}x</div></div>
+    <div class="result-cell"><div class="l">Beta Relevered</div><div class="v">${d.betaL.toFixed(2)}</div></div>
+    <div class="result-cell"><div class="l">Cost of Equity (Ke)</div><div class="v">${fmtPct(d.ke)}</div></div>
+    <div class="result-cell"><div class="l">Cost of Debt (After-Tax)</div><div class="v">${fmtPct(d.kdAT)}</div></div>
+    <div class="result-cell"><div class="l">WACC</div><div class="v">${fmtPct(d.wacc)}</div></div>`;
+  renderKPICards(document.getElementById('kpiProjectLevel'), [
+    {label:"NPV (Project)", value:fmtRp(d.npvProject), flag: d.npvProject>=0?"green":"red"},
+    {label:"IRR (Project)", value: d.irrProject===null?"n/a":fmtPct(d.irrProject), flag: d.irrProject>d.wacc?"green":"red"},
+    {label:"Discount Rate Used", value:fmtPct(d.wacc)+" (WACC)", flag:"blue"},
+    {label:"Payback Period", value: d.payback===null?"> "+d.years+" thn":d.payback+" tahun", flag: d.payback?"green":"yellow"},
+  ]);
+  renderKPICards(document.getElementById('kpiEquityLevel'), [
+    {label:"NPV Equity", value:fmtRp(d.npvEquity), flag: d.npvEquity>=0?"green":"red"},
+    {label:"IRR Equity", value: d.irrEquity===null?"n/a":fmtPct(d.irrEquity), flag: d.irrEquity>d.ke?"green":"red"},
+    {label:"Discount Rate Used", value:fmtPct(d.ke)+" (Cost of Equity)", flag:"blue"},
+    {label:"Initial Debt Raised", value:fmtRp(d.initialDebt), flag:"blue"},
+  ]);
+  const attractive = d.irrProject!==null && d.irrProject > d.wacc && d.npvProject>0;
+  document.getElementById('investDecision').innerHTML = `
+    <div style="display:flex; align-items:center; gap:14px;">
+      <span class="flag ${attractive?'green':'red'}" style="width:14px;height:14px;"></span>
+      <div>
+        <div style="font-family:var(--font-display); font-weight:700; font-size:16px; color:${attractive?'var(--green)':'var(--red)'};">
+          ${attractive? 'IRR > WACC → INVESTASI MENARIK' : 'IRR ≤ WACC → INVESTASI PERLU DIKAJI ULANG'}
+        </div>
+        <div style="color:var(--text-2); font-size:13px; margin-top:4px;">IRR Project ${d.irrProject===null?'n/a':fmtPct(d.irrProject)} dibandingkan WACC ${fmtPct(d.wacc)} — spread ${d.irrProject===null?'n/a':fmtSignedPct(d.irrProject-d.wacc)}.</div>
+      </div>
+    </div>`;
+}
+
+function renderRisk(d){
+  const categories = [
+    {name:"Market Risk", items:[
+      {n:"Commodity Price / Rate", v: "Rate saat ini "+fmtRp(getVal('r_ore'))+"/m³, tidak ada hedging kontrak jangka panjang.", level: "yellow"},
+      {n:"Contract Rate Stability", v: "Rate diasumsikan tetap sepanjang horizon proyek kecuali eskalasi manual.", level:"yellow"},
+      {n:"Demand / Offtake", v: "Bergantung pada 1 pembeli/kontraktor utama.", level:"red"},
+    ]},
+    {name:"Operational Risk", items:[
+      {n:"Fleet Utilization", v: fmtPct(d.fleetUtil)+" dari kapasitas maksimum.", level: d.fleetUtil<1?"green":"yellow"},
+      {n:"Equipment Availability", v: fmtPct(d.pa)+" physical availability × "+fmtPct(d.ua)+" utilization.", level: (d.pa*d.ua)>0.65?"green":"red"},
+      {n:"Cycle Time Sensitivity", v: d.cycle+" menit/ret — perubahan cycle time berdampak langsung ke kapasitas.", level:"yellow"},
+    ]},
+    {name:"Cost Risk", items:[
+      {n:"Fuel Price Exposure", v: "Fuel cost "+fmtPct(d.fuelCost/d.totalVarCost)+" dari total variable cost.", level: (d.fuelCost/d.totalVarCost)>0.4?"red":"yellow"},
+      {n:"Cost Escalation", v: fmtPct(d.escalation)+"/tahun diasumsikan.", level:"yellow"},
+    ]},
+    {name:"Financial Risk", items:[
+      {n:"Leverage (D/E)", v: d.deTarget.toFixed(2)+"x — Debt Ratio "+fmtPct(d.wd)+".", level: d.deTarget>2?"red":d.deTarget>1?"yellow":"green"},
+      {n:"Min DSCR", v: fmtX(Math.min(...d.dscrA.filter(v=>v!==null))), level: Math.min(...d.dscrA.filter(v=>v!==null))>1.2?"green":"red"},
+      {n:"WACC Sensitivity", v: "WACC "+fmtPct(d.wacc)+" — NPV sensitif terhadap perubahan tingkat diskonto.", level:"yellow"},
+    ]},
+    {name:"Project Risk", items:[
+      {n:"Capex Overrun", v: "Belum ada buffer kontingensi Capex eksplisit.", level:"yellow"},
+      {n:"Production Ramp-Up", v: "Model mengasumsikan produksi penuh sejak Tahun 1.", level:"yellow"},
+    ]},
+  ];
+  document.getElementById('riskRegister').innerHTML = categories.map(cat=>`
+    <div class="form-section">
+      <div class="form-section-head"><h4>${cat.name}</h4></div>
+      <div class="form-grid" style="grid-template-columns:1fr;">
+        ${cat.items.map(it=>`<div class="pl-line"><span class="name"><span class="flag ${it.level}" style="display:inline-block;margin-right:8px;"></span>${it.n} — <span style="color:var(--text-3);">${it.v}</span></span></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   SENSITIVITY (Tornado) + BREAK-EVEN
+============================================================ */
+function renderSensitivity(d){
+  const drivers = [
+    {label:"Volume Ore", id:"p_ore", base:getVal('p_ore')},
+    {label:"Rate Ore", id:"r_ore", base:getVal('r_ore')},
+    {label:"Fuel Price", id:"c_fuelprice", base:getVal('c_fuelprice')},
+    {label:"Variable Cost (Maintenance)", id:"c_maint", base:getVal('c_maint')},
+    {label:"Fixed Cost (Salary)", id:"f_salary", base:getVal('f_salary')},
+    {label:"Capex", id:"g_capex", base:getVal('g_capex')},
+    {label:"WACC (Rf)", id:"w_rf", base:getVal('w_rf')},
+  ];
+  const rows = drivers.map(dr=>{
+    const lo = computeAll({[dr.id]: dr.base*0.85}).npvProject;
+    const hi = computeAll({[dr.id]: dr.base*1.15}).npvProject;
+    return {label:dr.label, lo:Math.min(lo,hi), hi:Math.max(lo,hi), range:Math.abs(hi-lo)};
+  }).sort((a,b)=>b.range-a.range);
+
+  if(chartsReady){
+    mkChart('chartTornado', {type:'bar', data:{
+      labels:rows.map(r=>r.label),
+      datasets:[
+        {label:'NPV (-15%)', data:rows.map(r=>r.lo), backgroundColor:'#EF5350'},
+        {label:'NPV (+15%)', data:rows.map(r=>r.hi), backgroundColor:'#2FCB7A'},
+      ]}, options:{indexAxis:'y', plugins:{legend:{labels:{color:CHART_TEXT}}},
+      scales:{x:{ticks:{color:CHART_TEXT, callback:v=>(v/1e9).toFixed(0)+'M'}, grid:{color:CHART_GRID}}, y:{ticks:{color:CHART_TEXT}, grid:{display:false}}}}});
+  }
+
+  // break-even
+  const rate = d.totalRevenue/d.totalVolume;
+  const vcM3 = d.totalVarCost/d.totalVolume;
+  const bepVolume = (rate-vcM3)>0 ? d.fixed/(rate-vcM3) : null;
+  const bepRate = vcM3 + d.fixed/d.totalVolume;
+  const bepFuel = d.fuelRatio>0 ? (d.totalRevenue-d.otherVarCost-d.fixed)/(d.fuelRatio*d.totalVolume) : null;
+  const bepVarCost = rate - d.fixed/d.totalVolume;
+  document.getElementById('breakEvenResults').innerHTML = `
+    <div class="result-cell"><div class="l">BEP Volume</div><div class="v">${bepVolume?fmtNum(bepVolume)+' m³':'n/a'}</div></div>
+    <div class="result-cell"><div class="l">BEP Rate</div><div class="v">${fmtRp(bepRate)}/m³</div></div>
+    <div class="result-cell"><div class="l">BEP Fuel Price</div><div class="v">${bepFuel?fmtRp(bepFuel)+'/L':'n/a'}</div></div>
+    <div class="result-cell"><div class="l">BEP Variable Cost</div><div class="v">${fmtRp(bepVarCost)}/m³</div></div>
+    <div class="result-cell"><div class="l">Margin of Safety (Volume)</div><div class="v">${bepVolume?fmtPct(1-bepVolume/d.totalVolume):'n/a'}</div></div>`;
+}
+
+/* ============================================================
+   SCENARIO
+============================================================ */
+function renderScenario(d){
+  const scenarios = [
+    {name:"Bear Case", mult:{p_ore:0.80, r_ore:0.90, c_fuelprice:1.30, c_maint:1.15, h_cycle:1.15}},
+    {name:"Base Case", mult:{}},
+    {name:"Bull Case", mult:{p_ore:1.10, r_ore:1.08, c_fuelprice:0.85, c_maint:0.92, h_cycle:0.92}},
+  ];
+  const results = scenarios.map(s=>{
+    const overrides = {};
+    Object.keys(s.mult).forEach(k=> overrides[k] = getVal(k)*s.mult[k]);
+    const r = computeAll(overrides);
+    return {name:s.name, revenue:r.totalRevenue, ebitda:r.ebitda, netProfit:r.netProfit, npv:r.npvProject, irr:r.irrProject, margin:r.netMargin, risk:computeRiskScore(r)};
+  });
+  document.getElementById('scenarioTable').innerHTML = fintable(['', ...results.map(r=>r.name)], [
+    {label:'Revenue', vals:results.map(r=>r.revenue)},
+    {label:'EBITDA', vals:results.map(r=>r.ebitda)},
+    {label:'Net Profit', vals:results.map(r=>r.netProfit)},
+    {label:'Net Margin (%)', vals:results.map(r=>r.margin*100)},
+    {label:'NPV Project', vals:results.map(r=>r.npv), hl:true},
+    {label:'IRR Project (%)', vals:results.map(r=>r.irr===null?null:r.irr*100)},
+    {label:'Risk Score (0-100)', vals:results.map(r=>r.risk.score)},
+  ]);
+  if(chartsReady){
+    mkChart('chartScenario', {type:'bar', data:{labels:results.map(r=>r.name), datasets:[{data:results.map(r=>r.npv), backgroundColor:['#EF5350','#4C8DFF','#2FCB7A'], borderRadius:6}]},
+      options:{plugins:{legend:{display:false}}, scales:baseScales({y:{ticks:{color:CHART_TEXT, callback:v=>(v/1e9).toFixed(0)+'M'}, grid:{color:CHART_GRID}}})}});
+  }
+}
+
+/* ============================================================
+   PROBABILITY INPUTS (for Monte Carlo)
+============================================================ */
+function ensureProbInputs(){
+  const box = document.getElementById('probInputs');
+  if(box.dataset.built) return;
+  const defs = [
+    {id:'mc_vol_min', label:'Volume Ore — Min', val:Math.round(getVal('p_ore')*0.75), unit:'m³'},
+    {id:'mc_vol_mode', label:'Volume Ore — Most Likely', val:getVal('p_ore'), unit:'m³'},
+    {id:'mc_vol_max', label:'Volume Ore — Max', val:Math.round(getVal('p_ore')*1.10), unit:'m³'},
+    {id:'mc_rate_mean', label:'Rate Ore — Mean', val:getVal('r_ore'), unit:'Rp/m³'},
+    {id:'mc_rate_std', label:'Rate Ore — Std Dev (%)', val:5, unit:'%'},
+    {id:'mc_fuel_min', label:'Fuel Price — Min', val:12700, unit:'Rp/L'},
+    {id:'mc_fuel_mode', label:'Fuel Price — Most Likely', val:getVal('c_fuelprice'), unit:'Rp/L'},
+    {id:'mc_fuel_max', label:'Fuel Price — Max', val:24000, unit:'Rp/L'},
+    {id:'mc_avail_min', label:'Availability — Min (%)', val:70, unit:'%'},
+    {id:'mc_avail_mode', label:'Availability — Most Likely (%)', val:85, unit:'%'},
+    {id:'mc_avail_max', label:'Availability — Max (%)', val:95, unit:'%'},
+    {id:'mc_cost_min', label:'Maintenance Cost — Min', val:Math.round(getVal('c_maint')*0.9), unit:'Rp/m³'},
+    {id:'mc_cost_mode', label:'Maintenance Cost — Mode', val:getVal('c_maint'), unit:'Rp/m³'},
+    {id:'mc_cost_max', label:'Maintenance Cost — Max', val:Math.round(getVal('c_maint')*1.3), unit:'Rp/m³'},
+  ];
+  box.innerHTML = defs.map(f=>`<div class="field"><label>${f.label}</label><div class="fx"><input id="${f.id}" type="number" value="${f.val}"><span class="unit-tag">${f.unit}</span></div></div>`).join('');
+  const corrBox = document.getElementById('corrInputs');
+  const labels = ['Volume','Availability','Cost','Rate'];
+  let corrHtml = '<div style="grid-column:1/-1; overflow-x:auto;"><table class="fintable" style="min-width:400px;"><thead><tr><th></th>'+labels.map(l=>`<th>${l}</th>`).join('')+'</tr></thead><tbody>';
+  for(let i=0;i<4;i++){
+    corrHtml += `<tr><td>${labels[i]}</td>`;
+    for(let j=0;j<4;j++){
+      if(j>i){ corrHtml += `<td>—</td>`; continue; }
+      corrHtml += `<td><input data-corr="${i}-${j}" type="number" step="0.05" min="-1" max="1" value="${corrMatrix[i][j]}" ${i===j?'disabled':''} style="width:60px; background:${i===j?'transparent':'var(--bg-panel-3)'}; border:1px solid var(--border); border-radius:4px; color:var(--text-1); font-family:var(--font-mono); text-align:center; padding:4px;"></td>`;
+    }
+    corrHtml += '</tr>';
+  }
+  corrHtml += '</tbody></table></div>';
+  corrBox.innerHTML = corrHtml;
+  corrBox.querySelectorAll('input[data-corr]').forEach(inp=>{
+    inp.addEventListener('input', ()=>{
+      const [i,j] = inp.dataset.corr.split('-').map(Number);
+      const v = parseFloat(inp.value)||0;
+      corrMatrix[i][j] = v; corrMatrix[j][i] = v;
+    });
+  });
+  box.dataset.built = "1";
+}
+
+/* ============================================================
+   MONTE CARLO ENGINE (Gaussian Copula, correlated)
+============================================================ */
+function cholesky4(R){
+  const L = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+  for(let i=0;i<4;i++){
+    for(let j=0;j<=i;j++){
+      let sum=0;
+      for(let k=0;k<j;k++) sum += L[i][k]*L[j][k];
+      if(i===j) L[i][j] = Math.sqrt(Math.max(R[i][i]-sum,0));
+      else L[i][j] = (L[j][j]!==0) ? (R[i][j]-sum)/L[j][j] : 0;
+    }
+  }
+  return L;
+}
+function randNormal(){
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function stdNormalCDF(x){
+  // Abramowitz-Stegun approximation
+  const t = 1/(1+0.2316419*Math.abs(x));
+  const d = 0.3989423*Math.exp(-x*x/2);
+  let p = d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));
+  if(x>0) p = 1-p;
+  return p;
+}
+function triInv(u, min, mode, max){
+  if(max<=min) return mode;
+  const fc = (mode-min)/(max-min);
+  if(u<fc) return min+Math.sqrt(u*(max-min)*(mode-min));
+  return max-Math.sqrt((1-u)*(max-min)*(max-mode));
+}
+function percentile(arr, p){
+  const s = [...arr].sort((a,b)=>a-b);
+  const idx = (s.length-1)*p;
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  if(lo===hi) return s[lo];
+  return s[lo] + (s[hi]-s[lo])*(idx-lo);
+}
+
+function runMonteCarlo(){
+  ensureProbInputs();
+  const N = parseInt(document.getElementById('mc_n').value);
+  const statusEl = document.getElementById('mcStatus');
+  statusEl.textContent = 'Menghitung '+N.toLocaleString('id-ID')+' iterasi...';
+
+  setTimeout(()=>{
+    const volMin=getVal('mc_vol_min'), volMode=getVal('mc_vol_mode'), volMax=getVal('mc_vol_max');
+    const rateMean=getVal('mc_rate_mean'), rateStdPct=getVal('mc_rate_std')/100;
+    const fuelMin=getVal('mc_fuel_min'), fuelMode=getVal('mc_fuel_mode'), fuelMax=getVal('mc_fuel_max');
+    const availMin=getVal('mc_avail_min')/100, availMode=getVal('mc_avail_mode')/100, availMax=getVal('mc_avail_max')/100;
+    const costMin=getVal('mc_cost_min'), costMode=getVal('mc_cost_mode'), costMax=getVal('mc_cost_max');
+
+    const L = cholesky4(corrMatrix);
+    const base = computeAll({});
+    const wacc = base.wacc;
+
+    const netProfits=[], npvs=[], irrs=[];
+    let lossCount=0, npvNegCount=0, irrLtWaccCount=0;
+
+    for(let i=0;i<N;i++){
+      const z = [randNormal(),randNormal(),randNormal(),randNormal()];
+      const y = [
+        L[0][0]*z[0],
+        L[1][0]*z[0]+L[1][1]*z[1],
+        L[2][0]*z[0]+L[2][1]*z[1]+L[2][2]*z[2],
+        L[3][0]*z[0]+L[3][1]*z[1]+L[3][2]*z[2]+L[3][3]*z[3],
+      ];
+      const u = y.map(stdNormalCDF);
+
+      const vol = triInv(u[0], volMin, volMode, volMax);
+      const avail = triInv(u[1], availMin, availMode, availMax);
+      const cost = triInv(u[2], costMin, costMode, costMax);
+      const rate = rateMean*(1+ (invNormalApprox(u[3]))*rateStdPct );
+      const fuel = triInv(Math.random(), fuelMin, fuelMode, fuelMax); // macro var, independent
+
+      const effVol = vol*avail;
+      const revenue = effVol*rate + base.obVol*rate;
+      const fuelCost_i = (effVol+base.obVol)*base.fuelRatio*fuel;
+      const otherVar_i = (effVol+base.obVol)*(cost + getVal('c_lube')+getVal('c_tire')+getVal('c_operator')+getVal('c_othervar') - getVal('c_maint'));
+      const totalVarCost_i = fuelCost_i+otherVar_i;
+      const ebitda_i = revenue - totalVarCost_i - base.cashFixed;
+      const ebit_i = ebitda_i - base.depreciationM;
+      const ebt_i = ebit_i - base.interestM;
+      const tax_i = Math.max(ebt_i,0)*base.tax;
+      const netProfit_i = ebt_i - tax_i;
+      netProfits.push(netProfit_i);
+      if(netProfit_i<0) lossCount++;
+
+      // annualized simplified project cash flow for NPV/IRR distribution
+      const ebitA_i = ebitda_i*12 - (base.capex/base.depLife);
+      const taxA_i = Math.max(ebitA_i,0)*base.tax;
+      const nopatA_i = ebitA_i - taxA_i;
+      const fcff1_i = nopatA_i + (base.capex/base.depLife) - (base.nwcA[1]||0);
+      const cf = [-base.capex];
+      for(let t=1;t<=base.years;t++) cf.push(fcff1_i*Math.pow(1+base.growth,t-1));
+      const npv_i = npv(wacc, cf);
+      const irr_i = irr(cf, 0.2);
+      npvs.push(npv_i);
+      if(npv_i<0) npvNegCount++;
+      if(irr_i!==null){ irrs.push(irr_i); if(irr_i<wacc) irrLtWaccCount++; } else { irrLtWaccCount++; }
+    }
+
+    mcResults = {
+      N, netProfits, npvs, irrs, wacc,
+      meanNP: netProfits.reduce((a,b)=>a+b,0)/N,
+      pLoss: lossCount/N,
+      pNpvNeg: npvNegCount/N,
+      pIrrLtWacc: irrLtWaccCount/N,
+      npvP5: percentile(npvs,0.05), npvP50: percentile(npvs,0.5), npvP95: percentile(npvs,0.95),
+      varNP90: percentile(netProfits,0.10), varNP95: percentile(netProfits,0.05), varNP99: percentile(netProfits,0.01),
+      varNPV90: percentile(npvs,0.10), varNPV95: percentile(npvs,0.05), varNPV99: percentile(npvs,0.01),
+    };
+    statusEl.textContent = 'Selesai — '+N.toLocaleString('id-ID')+' iterasi';
+    renderMonteCarloResults();
+    render(); // refresh Risk KPIs / Risk Score / Decision with new MC data
+  }, 30);
+}
+function invNormalApprox(p){
+  // Beasley-Springer-Moro approximation for inverse standard normal
+  const a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
+  const b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
+  const c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
+  const dd=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+  const plow=0.02425, phigh=1-plow;
+  let q,r;
+  if(p<plow){ q=Math.sqrt(-2*Math.log(p)); return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1); }
+  else if(p<=phigh){ q=p-0.5; r=q*q; return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q / (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
+  else { q=Math.sqrt(-2*Math.log(1-p)); return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((dd[0]*q+dd[1])*q+dd[2])*q+dd[3])*q+1); }
+}
+
+function histogram(data, bins){
+  const min = Math.min(...data), max = Math.max(...data);
+  const w = (max-min)/bins || 1;
+  const counts = new Array(bins).fill(0);
+  const labels = [];
+  for(let i=0;i<bins;i++) labels.push(min+i*w);
+  data.forEach(v=>{
+    let idx = Math.floor((v-min)/w);
+    if(idx>=bins) idx=bins-1; if(idx<0) idx=0;
+    counts[idx]++;
+  });
+  return {labels, counts};
+}
+
+function renderMonteCarloResults(){
+  if(!mcResults) return;
+  const mc = mcResults;
+  renderKPICards(document.getElementById('kpiMonteCarlo'), [
+    {label:"Mean Net Profit", value:fmtRp(mc.meanNP), flag: mc.meanNP>=0?"green":"red"},
+    {label:"P(Net Profit < 0)", value:fmtPct(mc.pLoss), flag: mc.pLoss<0.15?"green":mc.pLoss<0.35?"yellow":"red"},
+    {label:"E[NPV]", value:fmtRp(mc.npvs.reduce((a,b)=>a+b,0)/mc.N), flag:"blue"},
+    {label:"P5 NPV", value:fmtRp(mc.npvP5), flag:"yellow"},
+    {label:"P50 NPV", value:fmtRp(mc.npvP50), flag:"blue"},
+    {label:"P95 NPV", value:fmtRp(mc.npvP95), flag:"green"},
+    {label:"P(NPV < 0)", value:fmtPct(mc.pNpvNeg), flag: mc.pNpvNeg<0.15?"green":mc.pNpvNeg<0.35?"yellow":"red"},
+    {label:"P(IRR < WACC)", value:fmtPct(mc.pIrrLtWacc), flag: mc.pIrrLtWacc<0.15?"green":mc.pIrrLtWacc<0.35?"yellow":"red"},
+  ]);
+  document.getElementById('varResults').innerHTML = `
+    <div class="result-cell"><div class="l">VaR 90%</div><div class="v">${fmtRp(mc.varNP90)}</div></div>
+    <div class="result-cell"><div class="l">VaR 95%</div><div class="v">${fmtRp(mc.varNP95)}</div></div>
+    <div class="result-cell"><div class="l">VaR 99%</div><div class="v">${fmtRp(mc.varNP99)}</div></div>
+    <div class="result-cell"><div class="l">NPV VaR 95%</div><div class="v">${fmtRp(mc.varNPV95)}</div></div>`;
+  if(chartsReady){
+    const hNpv = histogram(mc.npvs, 20);
+    mkChart('chartNPVHist', {type:'bar', data:{labels:hNpv.labels.map(v=>(v/1e9).toFixed(1)+'M'), datasets:[{data:hNpv.counts, backgroundColor:'#4C8DFF', borderRadius:2}]},
+      options:{plugins:{legend:{display:false}}, scales:baseScales()}});
+    const hIrr = histogram(mc.irrs.length?mc.irrs:[0], 20);
+    mkChart('chartIRRHist', {type:'bar', data:{labels:hIrr.labels.map(v=>(v*100).toFixed(0)+'%'), datasets:[{data:hIrr.counts, backgroundColor:'#2FCB7A', borderRadius:2}]},
+      options:{plugins:{legend:{display:false}}, scales:baseScales()}});
+  }
+}
+
+/* ============================================================
+   FLEET OPTIMIZATION
+============================================================ */
+function ensureFleetInputs(d){
+  const table = document.getElementById('fleetTable');
+  if(table.dataset.built) { updateFleetTable(d); return; }
+  table.dataset.built = "1";
+  const wrap = table.parentElement;
+  const formHtml = `<div class="form-grid" style="margin-bottom:16px;" id="fleetUnitCost">
+    <div class="field"><label>Biaya Excavator/Unit/Bulan</label><div class="fx"><input id="fl_exccost" type="number" value="385000000"><span class="unit-tag">Rp</span></div></div>
+    <div class="field"><label>Biaya Dump Truck/Unit/Bulan</label><div class="fx"><input id="fl_dtcost" type="number" value="195000000"><span class="unit-tag">Rp</span></div></div>
+    <div class="field"><label>Kapasitas/Ret Dump Truck</label><div class="fx"><input id="fl_dtcap" type="number" value="12" step="0.5"><span class="unit-tag">m³</span></div></div>
+  </div>`;
+  wrap.insertAdjacentHTML('beforebegin', formHtml);
+  document.querySelectorAll('#fleetUnitCost input').forEach(inp=> inp.addEventListener('input', render));
+  updateFleetTable(d);
+}
+function updateFleetTable(d){
+  const excCost = getVal('fl_exccost')||385000000, dtCost = getVal('fl_dtcost')||195000000, dtCap = getVal('fl_dtcap')||12;
+  const retHour = d.retPerHour, hours = getVal('p_hours'), pa=d.pa, ua=d.ua, days=getVal('p_days');
+  const baseDT = getVal('h_trucks'), baseExc = getVal('h_exc');
+  const configs = [
+    {name:`2 Shift — ${baseExc} Exc + ${baseDT+4} DT`, exc:baseExc, dt:baseDT+4, shift:2},
+    {name:`2 Shift — ${baseExc} Exc + ${baseDT+2} DT`, exc:baseExc, dt:baseDT+2, shift:2},
+    {name:`2 Shift — ${baseExc} Exc + ${baseDT} DT (Saat Ini)`, exc:baseExc, dt:baseDT, shift:2},
+    {name:`1 Shift — ${baseExc+1} Exc + ${baseDT+10} DT`, exc:baseExc+1, dt:baseDT+10, shift:1},
+    {name:`1 Shift — ${baseExc+1} Exc + ${baseDT+14} DT`, exc:baseExc+1, dt:baseDT+14, shift:1},
+  ];
+  const target = d.oreVol; // fleet sized against primary (Andesit/Ore) volume; OB typically supplementary/separate contractor
+  const rows = configs.map(c=>{
+    const cap = c.dt*dtCap*retHour*hours*pa*ua*c.shift/2*days; // shift factor normalized to base 2-shift hours
+    const cost = c.exc*excCost + c.dt*dtCost;
+    const costPerM3 = cap>0 ? cost/cap : Infinity;
+    const feasible = cap >= target;
+    return {...c, cap, cost, costPerM3, feasible};
+  });
+  const feasibleRows = rows.filter(r=>r.feasible);
+  const bestCost = feasibleRows.length? Math.min(...feasibleRows.map(r=>r.costPerM3)) : null;
+
+  document.getElementById('fleetTable').innerHTML = fintable(['Konfigurasi','Kapasitas (m³/bln)','Biaya/Bulan','Biaya/m³','Status'],
+    rows.map(r=>({label:r.name, vals:[r.cap, -r.cost, -r.costPerM3, r.feasible ? (Math.round(r.costPerM3)===Math.round(bestCost)?1:0) : -999], hl: r.feasible && Math.round(r.costPerM3)===Math.round(bestCost)}))
+  );
+  // custom render since status column needs text not number — rebuild manually for clarity
+  let html = '<thead><tr><th>Konfigurasi</th><th>Kapasitas (m³/bln)</th><th>Biaya/Bulan</th><th>Biaya/m³</th><th>Status</th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    const optimal = r.feasible && bestCost!==null && Math.round(r.costPerM3)===Math.round(bestCost);
+    html += `<tr class="${optimal?'hl':''}"><td>${r.name}</td><td>${fmtNum(r.cap)}</td><td>${fmtRp(r.cost)}</td><td>${fmtRp(r.costPerM3)}</td>
+      <td style="color:${r.feasible?(optimal?'var(--gold-bright)':'var(--green)'):'var(--red)'}; font-family:var(--font-body);">${r.feasible?(optimal?'★ OPTIMAL':'Layak'):'Kapasitas Kurang'}</td></tr>`;
+  });
+  html += '</tbody>';
+  document.getElementById('fleetTable').innerHTML = html;
+
+  if(chartsReady){
+    mkChart('chartFleetOpt', {type:'bar', data:{labels:rows.map(r=>r.name), datasets:[{data:rows.map(r=>r.costPerM3===Infinity?0:r.costPerM3), backgroundColor:rows.map(r=> r.feasible? (Math.round(r.costPerM3)===Math.round(bestCost)?'#D4A94A':'#2FCB7A') : '#EF5350'), borderRadius:6}]},
+      options:{indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{color:CHART_TEXT}, grid:{color:CHART_GRID}}, y:{ticks:{color:CHART_TEXT, font:{size:10}}, grid:{display:false}}}}});
+  }
+}
+
+/* ============================================================
+   RISK SCORE (0-100)
+============================================================ */
+function computeRiskScore(d){
+  // 5 categories, each scored 0-20 (risk contribution), summed to 0-100
+  let score = 0;
+  // Market risk: margin thinness
+  score += d.netMargin>0.20?4 : d.netMargin>0.10?10 : d.netMargin>0?16 : 20;
+  // Operational: fleet utilization & availability
+  const availComposite = d.pa*d.ua;
+  score += (d.fleetUtil<=1 ? 4 : 14) * (availComposite>0.65?0.6:1);
+  // Cost: fuel share of variable cost
+  const fuelShare = d.fuelCost/d.totalVarCost;
+  score += fuelShare>0.45?18 : fuelShare>0.30?11 : 5;
+  // Financial: DSCR & leverage
+  const minDscr = Math.min(...d.dscrA.filter(v=>v!==null && isFinite(v)));
+  score += (isFinite(minDscr) ? (minDscr<1.2?18: minDscr<2?9:3) : 10) ;
+  score += d.deTarget>2?4:d.deTarget>1?2:0;
+  // Project / Monte Carlo overlay if available
+  if(mcResults){
+    score += mcResults.pNpvNeg>0.30?14 : mcResults.pNpvNeg>0.15?7:2;
+  } else {
+    score += (d.npvProject<0)?14:(d.irrProject!==null && d.irrProject<d.wacc)?9:2;
+  }
+  score = Math.max(0,Math.min(100,score));
+  let band, color;
+  if(score<=30){band="LOW RISK"; color="green";}
+  else if(score<=60){band="MODERATE RISK"; color="yellow";}
+  else if(score<=80){band="HIGH RISK"; color="red";}
+  else {band="VERY HIGH RISK"; color="red";}
+  return {score, band, color};
+}
+
+function gaugeSVG(score, color){
+  const angle = -90 + (score/100)*180;
+  const rad = angle*Math.PI/180;
+  const cx=110, cy=110, r=90;
+  const x = cx + r*Math.cos(rad), y = cy + r*Math.sin(rad);
+  const colorHex = {green:'#2FCB7A', yellow:'#F5B700', red:'#EF5350'}[color];
+  return `<svg class="gauge-svg" width="220" height="130" viewBox="0 0 220 130">
+    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#1A2440" stroke-width="16" stroke-linecap="round"/>
+    <path d="M 20 110 A 90 90 0 0 1 200 110" fill="none" stroke="${colorHex}" stroke-width="16" stroke-linecap="round"
+      stroke-dasharray="${(score/100)*283} 283"/>
+    <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#EAEEF7" stroke-width="3"/>
+    <circle cx="${cx}" cy="${cy}" r="6" fill="#EAEEF7"/>
+  </svg>`;
+}
+
+function renderRiskScore(d){
+  const rs = computeRiskScore(d);
+  document.getElementById('riskGauge').innerHTML = `
+    <div class="gauge-wrap">
+      ${gaugeSVG(rs.score, rs.color)}
+      <div class="gauge-value" style="color:${{green:'var(--green)',yellow:'var(--yellow)',red:'var(--red)'}[rs.color]};">${rs.score.toFixed(0)}</div>
+      <div class="gauge-label">Risk Score / 100</div>
+      <div class="gauge-band" style="background:rgba(255,255,255,.06); color:${{green:'var(--green)',yellow:'var(--yellow)',red:'var(--red)'}[rs.color]};">${rs.band}</div>
+    </div>`;
+  const minDscr = Math.min(...d.dscrA.filter(v=>v!==null && isFinite(v)));
+  document.getElementById('riskScoreBreakdown').innerHTML = `
+    <div class="pl-line"><span class="name">Market Risk (Margin)</span><span class="val mono">${fmtPct(d.netMargin)} margin</span></div>
+    <div class="pl-line"><span class="name">Operational Risk (Availability × Utilization)</span><span class="val mono">${fmtPct(d.pa*d.ua)}</span></div>
+    <div class="pl-line"><span class="name">Cost Risk (Fuel share of Variable Cost)</span><span class="val mono">${fmtPct(d.fuelCost/d.totalVarCost)}</span></div>
+    <div class="pl-line"><span class="name">Financial Risk (Min DSCR)</span><span class="val mono">${fmtX(isFinite(minDscr)?minDscr:null)}</span></div>
+    <div class="pl-line"><span class="name">Leverage (D/E Target)</span><span class="val mono">${d.deTarget.toFixed(2)}x</span></div>
+    <div class="pl-line"><span class="name">${mcResults?'Probability NPV < 0 (Monte Carlo)':'NPV / IRR vs WACC (Deterministik)'}</span><span class="val mono">${mcResults?fmtPct(mcResults.pNpvNeg):(d.npvProject<0?'NPV Negatif':'OK')}</span></div>
+    <div class="note" style="margin-top:14px;">Skala: 0–30 Low · 31–60 Moderate · 61–80 High · 81–100 Very High. ${mcResults?'':'Jalankan Monte Carlo untuk skor berbasis probabilitas.'}</div>`;
+}
+
+/* ============================================================
+   MANAGEMENT DECISION
+============================================================ */
+function renderDecision(d){
+  const rs = computeRiskScore(d);
+  const irrOk = d.irrProject!==null && d.irrProject>d.wacc;
+  const npvOk = d.npvProject>0;
+  let rec, color, desc;
+  if(npvOk && irrOk && rs.score<=30){ rec="INVEST"; color="green"; desc="NPV positif, IRR di atas WACC, dan profil risiko rendah. Proyek layak dilanjutkan ke tahap due diligence final."; }
+  else if(npvOk && irrOk && rs.score<=60){ rec="INVEST WITH CAUTION"; color="yellow"; desc="Secara finansial menarik, namun beberapa faktor risiko perlu mitigasi sebelum eksekusi penuh (lihat driver di bawah)."; }
+  else if(npvOk && !irrOk){ rec="OPTIMIZE BEFORE INVESTING"; color="yellow"; desc="NPV positif tetapi IRR belum melampaui WACC dengan margin memadai — pertimbangkan optimasi struktur biaya atau fleet sebelum melanjutkan."; }
+  else if(rs.score>60){ rec="HIGH RISK"; color="red"; desc="Skor risiko tinggi pada satu atau lebih kategori utama. Proyek memerlukan mitigasi risiko signifikan sebelum keputusan investasi."; }
+  else { rec="DO NOT INVEST"; color="red"; desc="NPV negatif pada asumsi saat ini. Proyek tidak menciptakan nilai pada struktur biaya dan modal saat ini."; }
+
+  document.getElementById('decisionCard').innerHTML = `
+    <div class="decision-card" style="background:linear-gradient(160deg, rgba(${color==='green'?'47,203,122':color==='yellow'?'245,183,0':'239,83,80'},.12), var(--bg-panel)); border-color:${{green:'rgba(47,203,122,.35)',yellow:'rgba(245,183,0,.35)',red:'rgba(239,83,80,.35)'}[color]};">
+      <div class="eyebrow">Rekomendasi Sistem</div>
+      <div class="rec" style="color:${{green:'var(--green)',yellow:'var(--yellow)',red:'var(--red)'}[color]};">${rec}</div>
+      <div class="desc">${desc}</div>
+      <div style="display:flex; gap:24px; flex-wrap:wrap; margin-top:10px;">
+        <div><div class="eyebrow">NPV Project</div><div class="mono" style="font-size:16px; font-weight:600;">${fmtRp(d.npvProject)}</div></div>
+        <div><div class="eyebrow">IRR vs WACC</div><div class="mono" style="font-size:16px; font-weight:600;">${d.irrProject===null?'n/a':fmtPct(d.irrProject)} / ${fmtPct(d.wacc)}</div></div>
+        <div><div class="eyebrow">Risk Score</div><div class="mono" style="font-size:16px; font-weight:600;">${rs.score.toFixed(0)}/100 — ${rs.band}</div></div>
+      </div>
+    </div>`;
+
+  const drivers = [
+    {n:"NPV Project", v: fmtRp(d.npvProject), ok: npvOk},
+    {n:"IRR vs WACC", v: (d.irrProject===null?'n/a':fmtPct(d.irrProject))+' vs '+fmtPct(d.wacc), ok: irrOk},
+    {n:"Profit Margin", v: fmtPct(d.netMargin), ok: d.netMargin>0.10},
+    {n:"Min DSCR", v: fmtX(Math.min(...d.dscrA.filter(v=>v!==null&&isFinite(v)))), ok: Math.min(...d.dscrA.filter(v=>v!==null&&isFinite(v)))>1.2},
+    {n:"Risk Score", v: rs.score.toFixed(0)+'/100', ok: rs.score<=60},
+  ];
+  document.getElementById('topDrivers').innerHTML = drivers.map(dr=>`
+    <div class="pl-line"><span class="name"><span class="flag ${dr.ok?'green':'red'}" style="display:inline-block;margin-right:8px;"></span>${dr.n}</span><span class="val mono">${dr.v}</span></div>`).join('');
+}
+
+/* ============================================================
+   REPORTS
+============================================================ */
+function renderReports(d){
+  const rs = computeRiskScore(d);
+  document.getElementById('reportContent').innerHTML = `
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel-head"><h4>Ringkasan Proyek</h4></div>
+      <div class="result-strip">
+        <div class="result-cell"><div class="l">Proyek</div><div class="v" style="font-size:12px;">${document.getElementById('ov_name').value}</div></div>
+        <div class="result-cell"><div class="l">Lokasi</div><div class="v" style="font-size:12px;">${document.getElementById('ov_loc').value}</div></div>
+        <div class="result-cell"><div class="l">Revenue/Bulan</div><div class="v">${fmtRp(d.totalRevenue)}</div></div>
+        <div class="result-cell"><div class="l">Net Profit/Bulan</div><div class="v">${fmtRp(d.netProfit)}</div></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel-head"><h4>Valuasi</h4></div>
+      <div class="result-strip">
+        <div class="result-cell"><div class="l">WACC</div><div class="v">${fmtPct(d.wacc)}</div></div>
+        <div class="result-cell"><div class="l">NPV Project</div><div class="v">${fmtRp(d.npvProject)}</div></div>
+        <div class="result-cell"><div class="l">IRR Project</div><div class="v">${d.irrProject===null?'n/a':fmtPct(d.irrProject)}</div></div>
+        <div class="result-cell"><div class="l">Enterprise Value</div><div class="v">${fmtRp(d.enterpriseValue)}</div></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel-head"><h4>Risiko</h4></div>
+      <div class="result-strip">
+        <div class="result-cell"><div class="l">Risk Score</div><div class="v">${rs.score.toFixed(0)}/100 — ${rs.band}</div></div>
+        <div class="result-cell"><div class="l">P(NPV&lt;0)</div><div class="v">${mcResults?fmtPct(mcResults.pNpvNeg):'Jalankan Monte Carlo'}</div></div>
+        <div class="result-cell"><div class="l">Min DSCR</div><div class="v">${fmtX(Math.min(...d.dscrA.filter(v=>v!==null&&isFinite(v))))}</div></div>
+      </div>
+    </div>
+    <div class="note">Laporan ini dibuat otomatis dari seluruh modul Fase 1–9. Gunakan tombol "Cetak / Simpan PDF" untuk versi cetak, atau "Export CSV" untuk data mentah.</div>`;
+}
+
+function exportCSV(d){
+  const rows = [
+    ["Parameter","Nilai"],
+    ["Revenue/Bulan", d.totalRevenue],
+    ["Variable Cost/Bulan", d.totalVarCost],
+    ["Fixed Cost/Bulan", d.fixed],
+    ["EBITDA/Bulan", d.ebitda],
+    ["EBIT/Bulan", d.ebit],
+    ["Net Profit/Bulan", d.netProfit],
+    ["WACC", d.wacc],
+    ["NPV Project", d.npvProject],
+    ["IRR Project", d.irrProject],
+    ["NPV Equity", d.npvEquity],
+    ["IRR Equity", d.irrEquity],
+    ["Enterprise Value", d.enterpriseValue],
+  ];
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mining-fe-report.csv';
+  a.click();
+}
+
+/* ============================================================
+   MAIN RENDER (dispatches to active page)
+============================================================ */
+function render(){
+  const d = computeAll({});
+
+  renderKPICards(document.getElementById('kpiOperational'), buildOperationalKPIs(d));
+  renderKPICards(document.getElementById('kpiFinancial'), buildFinancialKPIs(d));
+  renderKPICards(document.getElementById('kpiRisk'), buildRiskKPIs(d));
+
+  document.getElementById('haulingResults').innerHTML = `
+    <div class="result-cell"><div class="l">Ret / Jam / Truck</div><div class="v">${d.retPerHour.toFixed(2)}</div></div>
+    <div class="result-cell"><div class="l">Ret / Hari / Truck</div><div class="v">${d.retPerDayTruck.toFixed(1)}</div></div>
+    <div class="result-cell"><div class="l">Produksi / Truck / Hari</div><div class="v">${fmtNum(d.prodPerTruckDay)} m³</div></div>
+    <div class="result-cell"><div class="l">Kapasitas Fleet / Bulan</div><div class="v">${fmtNum(d.fleetProdMonth)} m³</div></div>
+    <div class="result-cell"><div class="l">Fleet Dibutuhkan</div><div class="v">${d.requiredFleet} unit</div></div>
+    <div class="result-cell"><div class="l">Fleet Utilization</div><div class="v">${fmtPct(d.fleetUtil)}</div></div>`;
+
+  document.getElementById('pl_rev').textContent = fmtRp(d.totalRevenue);
+  document.getElementById('pl_var').textContent = '(' + fmtRp(d.totalVarCost) + ')';
+  document.getElementById('pl_fix').textContent = '(' + fmtRp(d.fixed) + ')';
+  document.getElementById('pl_ebitda').textContent = fmtRp(d.ebitda);
+  document.getElementById('pl_margin').textContent = fmtPct(d.ebitdaMargin);
+
+  renderDashboardCharts(d);
+
+  const activePage = document.querySelector('.page.active');
+  const pid = activePage ? activePage.id : '';
+  try{
+    if(pid==='page-production') renderProduction(d);
+    else if(pid==='page-revcost') renderRevCost(d);
+    else if(pid==='page-pl') renderPL(d);
+    else if(pid==='page-cashflow') renderCashflow(d);
+    else if(pid==='page-workingcap') renderWC(d);
+    else if(pid==='page-dcf') renderDCF(d);
+    else if(pid==='page-investment') renderInvestment(d);
+    else if(pid==='page-risk') renderRisk(d);
+    else if(pid==='page-sensitivity') renderSensitivity(d);
+    else if(pid==='page-scenario') renderScenario(d);
+    else if(pid==='page-probability') ensureProbInputs();
+    else if(pid==='page-montecarlo'){ ensureProbInputs(); if(mcResults) renderMonteCarloResults(); }
+    else if(pid==='page-fleet') ensureFleetInputs(d);
+    else if(pid==='page-riskscore') renderRiskScore(d);
+    else if(pid==='page-decision') renderDecision(d);
+    else if(pid==='page-reports') renderReports(d);
+  }catch(e){ console.error('Page render error for', pid, e); }
+}
+
+document.addEventListener('input', (e)=>{
+  if(e.target.matches('.form-grid input, .ov-cell input, .ov-cell select')){
+    render();
+  }
+});
+
+document.getElementById('btnRunMC') && document.getElementById('btnRunMC').addEventListener('click', runMonteCarlo);
+document.getElementById('btnExportCSV') && document.getElementById('btnExportCSV').addEventListener('click', ()=>exportCSV(computeAll({})));
+document.getElementById('btnPrintReport') && document.getElementById('btnPrintReport').addEventListener('click', ()=>window.print());
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  try{ initCharts(); }catch(e){ console.error('Chart init failed, continuing without charts:', e); }
+  render();
+});
+</script>
+</body>
+</html>

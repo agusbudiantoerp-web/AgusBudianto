@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MPM OS — Management &amp; Project Management Operating System</title>
+<style>
+:root{
+  --bg:#0a1420;
+  --bg-2:#0d1a2e;
+  --panel:#101f36;
+  --panel-2:#0d1929;
+  --border:#1f3350;
+  --border-soft:#17273f;
+  --text:#eef2f7;
+  --text-muted:#8fa3bd;
+  --text-dim:#5d7391;
+  --gold:#c9a227;
+  --gold-light:#e8c766;
+  --gold-dim:#8a7229;
+  --green:#3ddc97;
+  --yellow:#f0b429;
+  --red:#e5484d;
+  --blue:#4f9ce8;
+  --radius:10px;
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+  --sans:'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+  --mono:'Consolas','SFMono-Regular',Menlo,monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(1200px 800px at 85% -10%, #142744 0%, var(--bg) 45%), var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--bg-2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;}
+
+/* ---------- LAYOUT ---------- */
+.app{display:flex;min-height:100vh;}
+.sidebar{
+  width:260px;flex:none;background:linear-gradient(180deg,var(--bg-2),#081120);
+  border-right:1px solid var(--border-soft);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.brand{padding:22px 20px 16px;border-bottom:1px solid var(--border-soft);}
+.brand .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;}
+.brand h1{font-family:var(--serif);font-size:20px;margin:6px 0 4px;color:var(--text);letter-spacing:.01em;}
+.brand p{margin:0;font-size:11px;color:var(--text-muted);}
+nav{padding:10px 10px 20px;flex:1;}
+.nav-group{margin-top:14px;}
+.nav-group-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);padding:6px 10px;font-family:var(--mono);}
+.nav-item{
+  display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;
+  color:var(--text-muted);cursor:pointer;font-size:13px;user-select:none;
+  border:1px solid transparent;
+}
+.nav-item:hover{background:var(--panel-2);color:var(--text);}
+.nav-item.active{background:linear-gradient(90deg,rgba(201,162,39,.14),rgba(201,162,39,.02));color:var(--gold-light);border-color:rgba(201,162,39,.25);}
+.nav-item .dot{width:5px;height:5px;border-radius:50%;background:var(--text-dim);flex:none;}
+.nav-item.active .dot{background:var(--gold);}
+.sidebar-foot{padding:14px 20px;border-top:1px solid var(--border-soft);font-size:10.5px;color:var(--text-dim);}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:rgba(10,20,32,.86);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border-soft);
+  padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.topbar h2{margin:0;font-family:var(--serif);font-size:19px;font-weight:600;}
+.topbar .sub{font-size:11.5px;color:var(--text-muted);margin-top:2px;}
+.topbar-actions{display:flex;gap:8px;align-items:center;}
+.content{padding:28px;max-width:1360px;width:100%;margin:0 auto;}
+.section{display:none;}
+.section.active{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+/* ---------- BUTTONS / INPUTS ---------- */
+button{font-family:var(--sans);cursor:pointer;}
+.btn{
+  background:var(--panel);border:1px solid var(--border);color:var(--text);
+  padding:8px 14px;border-radius:7px;font-size:12.5px;font-weight:600;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s;
+}
+.btn:hover{border-color:var(--gold-dim);color:var(--gold-light);}
+.btn.gold{background:linear-gradient(180deg,var(--gold-light),var(--gold));color:#1b1404;border:none;}
+.btn.gold:hover{filter:brightness(1.08);color:#1b1404;}
+.btn.ghost{background:transparent;border:1px solid var(--border);}
+.btn.danger{border-color:rgba(229,72,77,.4);color:#f6a2a5;}
+.btn.danger:hover{background:rgba(229,72,77,.1);border-color:var(--red);}
+.btn.small{padding:5px 10px;font-size:11.5px;}
+input,select,textarea{
+  background:var(--panel-2);border:1px solid var(--border);color:var(--text);
+  border-radius:6px;padding:7px 9px;font-size:12.5px;font-family:var(--sans);width:100%;
+}
+textarea{resize:vertical;min-height:44px;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-dim);box-shadow:0 0 0 3px rgba(201,162,39,.12);}
+label.field-label{font-size:11px;color:var(--text-muted);margin-bottom:4px;display:block;font-family:var(--mono);letter-spacing:.02em;}
+
+/* ---------- PANELS / CARDS ---------- */
+.panel{background:var(--panel);border:1px solid var(--border-soft);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+.panel-head h3{margin:0;font-family:var(--serif);font-size:16px;color:var(--gold-light);}
+.panel-head .desc{font-size:11.5px;color:var(--text-muted);margin-top:3px;max-width:640px;}
+.grid{display:grid;gap:16px;}
+.grid.cols-2{grid-template-columns:1fr 1fr;}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media(max-width:1000px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
+
+.stat-card{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:9px;padding:14px 16px;}
+.stat-card .label{font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);}
+.stat-card .value{font-family:var(--serif);font-size:26px;margin-top:4px;}
+.stat-card .value.green{color:var(--green);}
+.stat-card .value.yellow{color:var(--yellow);}
+.stat-card .value.red{color:var(--red);}
+.stat-card .value.gold{color:var(--gold-light);}
+
+/* ---------- TABLES ---------- */
+.table-wrap{overflow-x:auto;border:1px solid var(--border-soft);border-radius:8px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:640px;}
+th{
+  background:var(--panel-2);color:var(--text-dim);text-align:left;padding:9px 10px;
+  font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-family:var(--mono);font-weight:600;
+  border-bottom:1px solid var(--border-soft);white-space:nowrap;
+}
+td{padding:6px 8px;border-bottom:1px solid var(--border-soft);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+td input,td select,td textarea{background:transparent;border:1px solid transparent;padding:5px 6px;}
+td input:hover,td select:hover,td textarea:hover{border-color:var(--border);}
+td input:focus,td select:focus,td textarea:focus{background:var(--panel-2);border-color:var(--gold-dim);}
+.row-del{color:var(--text-dim);background:none;border:none;font-size:15px;padding:2px 6px;border-radius:4px;}
+.row-del:hover{color:var(--red);background:rgba(229,72,77,.1);}
+.computed-cell{font-family:var(--mono);font-weight:700;}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:var(--mono);letter-spacing:.02em;}
+.badge.green{background:rgba(61,220,151,.14);color:var(--green);}
+.badge.yellow{background:rgba(240,180,41,.14);color:var(--yellow);}
+.badge.red{background:rgba(229,72,77,.14);color:#f6a2a5;}
+.badge.gray{background:rgba(143,163,189,.12);color:var(--text-muted);}
+.badge.blue{background:rgba(79,156,232,.14);color:var(--blue);}
+
+/* ---------- LANDING HERO ---------- */
+.hero{
+  border-radius:16px;border:1px solid var(--border-soft);padding:44px 40px;margin-bottom:24px;
+  background:
+    radial-gradient(600px 260px at 90% 0%, rgba(201,162,39,.14), transparent 60%),
+    linear-gradient(160deg,#0e1c30,#081120 70%);
+  position:relative;overflow:hidden;
+}
+.hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;}
+.hero h1{font-family:var(--serif);font-size:38px;line-height:1.15;margin:12px 0 10px;max-width:760px;}
+.hero p.lead{font-size:14.5px;color:var(--text-muted);max-width:600px;margin-bottom:22px;}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.loop{
+  display:flex;align-items:center;gap:0;margin-top:30px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+}
+.loop .node{background:var(--panel-2);border:1px solid var(--border);padding:8px 13px;border-radius:20px;color:var(--text-muted);}
+.loop .arrow{color:var(--gold-dim);padding:0 8px;}
+
+.tool-catalog{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.tool-card{
+  background:var(--panel-2);border:1px solid var(--border-soft);border-radius:9px;padding:13px 14px;
+  cursor:pointer;transition:.15s;
+}
+.tool-card:hover{border-color:var(--gold-dim);transform:translateY(-1px);}
+.tool-card.disabled{opacity:.45;cursor:default;}
+.tool-card.disabled:hover{transform:none;border-color:var(--border-soft);}
+.tool-card .cat{font-size:9.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;font-family:var(--mono);}
+.tool-card .name{font-size:13px;margin-top:5px;font-weight:600;}
+.tool-card .stat{font-size:10.5px;color:var(--text-dim);margin-top:6px;}
+.catalog-section-title{font-family:var(--serif);color:var(--gold-light);font-size:15px;margin:26px 0 10px;}
+
+.svg-wrap{display:flex;justify-content:center;padding:10px 0;}
+.legend{display:flex;gap:14px;font-size:11px;color:var(--text-muted);flex-wrap:wrap;margin-top:8px;}
+.legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle;}
+.hint{font-size:11px;color:var(--text-dim);margin-top:6px;}
+.tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.chip{background:var(--panel-2);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:11.5px;display:flex;align-items:center;gap:6px;}
+.chip button{background:none;border:none;color:var(--text-dim);font-size:13px;}
+.chip button:hover{color:var(--red);}
+.four-box{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px;min-height:420px;}
+.four-box .box{border:1px solid var(--border-soft);border-radius:9px;padding:12px;background:var(--panel-2);display:flex;flex-direction:column;}
+.four-box .box h4{margin:0 0 8px;font-family:var(--serif);font-size:14px;}
+.four-box .box.s h4{color:var(--green);} .four-box .box.w h4{color:var(--red);}
+.four-box .box.o h4{color:var(--blue);} .four-box .box.t h4{color:var(--yellow);}
+.list-add{display:flex;gap:6px;margin-top:8px;}
+.mini-item{background:var(--panel);border:1px solid var(--border-soft);border-radius:6px;padding:7px 9px;font-size:12px;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
+.footer-note{color:var(--text-dim);font-size:11px;text-align:center;padding:30px 0 10px;}
+.toast{
+  position:fixed;bottom:22px;right:22px;background:var(--panel);border:1px solid var(--gold-dim);
+  color:var(--gold-light);padding:11px 18px;border-radius:8px;font-size:12.5px;box-shadow:0 8px 30px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;z-index:999;
+}
+.toast.show{opacity:1;transform:none;}
+.form-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+@media(max-width:900px){.form-row{grid-template-columns:1fr 1fr;}}
+.formula-box{background:var(--panel-2);border:1px dashed var(--border);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12px;color:var(--text-muted);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="eyebrow">Operating System</div>
+      <h1>MPM&nbsp;OS</h1>
+      <p>Strategy · Planning · Execution · Control · Improvement</p>
+    </div>
+    <nav id="nav"></nav>
+    <div class="sidebar-foot">Semua data tersimpan lokal di browser Anda (offline). Prepared for Ir. Agus Budianto Ulil Absyor.</div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 id="topbarTitle">Executive Dashboard</h2>
+        <div class="sub" id="topbarSub">Single source of truth — hari ini</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn ghost small" onclick="exportAllJSON()">⇩ Backup (.json)</button>
+        <label class="btn ghost small" style="margin:0;">⇧ Restore
+          <input type="file" accept=".json" style="display:none" onchange="importAllJSON(event)">
+        </label>
+        <button class="btn danger small" onclick="resetAll()">Reset Data</button>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+    <div class="footer-note">MANAGEMENT &amp; PROJECT MANAGEMENT TOOLKIT — One platform for management thinking, project execution &amp; continuous improvement.</div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   MPM OS — single-file, offline, localStorage-backed management toolkit
+   ========================================================================= */
+
+const STORE_KEY = 'mpmos_state_v1';
+let state = loadState();
+
+function defaultState(){
+  return {
+    swot:{s:[],w:[],o:[],t:[]},
+    pestel:[],
+    okrs:[],
+    kpis:[],
+    raci:[],
+    risks:[],
+    wbs:[],
+    fmea:[],
+    pareto:[],
+    decision:[],
+    eisenhower:[],
+    bsc:[],
+    fivewhys:{problem:'',why1:'',why2:'',why3:'',why4:'',why5:'',root:'',corrective:'',preventive:''},
+    fishbone:{problem:'',man:[],machine:[],method:[],material:[],measurement:[],environment:[]},
+    pdca:{problem:'',target:'',rootcause:'',actionplan:'',do:'',check:'',act:''},
+    evm:{bac:0,pv:0,ev:0,ac:0},
+    kaizen:[],
+    mining:[]
+  };
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  }catch(e){ return defaultState(); }
+}
+function saveState(){
+  localStorage.setItem(STORE_KEY, JSON.stringify(state));
+  toast('Tersimpan');
+}
+let toastTimer=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1400);
+}
+function uid(){ return 'id'+Math.random().toString(36).slice(2,10); }
+
+function exportAllJSON(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  downloadBlob(blob,'MPM_OS_backup.json');
+}
+function importAllJSON(evt){
+  const file=evt.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const parsed=JSON.parse(e.target.result);
+      state=Object.assign(defaultState(),parsed);
+      saveState(); renderSection(currentSection); toast('Data dipulihkan');
+    }catch(err){ alert('File backup tidak valid.'); }
+  };
+  reader.readAsText(file);
+}
+function resetAll(){
+  if(!confirm('Hapus semua data pada toolkit ini? Tindakan tidak dapat dibatalkan.')) return;
+  state=defaultState(); saveState(); renderSection(currentSection);
+}
+function downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+function exportCSV(rows,columns,filename){
+  const header=columns.map(c=>`"${c.label.replace(/"/g,'""')}"`).join(',');
+  const lines=rows.map(r=>columns.map(c=>{
+    let v = c.computed ? c.computed(r) : (r[c.key] ?? '');
+    v=String(v).replace(/"/g,'""');
+    return `"${v}"`;
+  }).join(','));
+  const csv=[header,...lines].join('\r\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  downloadBlob(blob,filename);
+}
+
+/* =========================================================================
+   NAVIGATION
+   ========================================================================= */
+const NAV = [
+  {group:'Overview', items:[
+    {id:'dashboard', label:'Executive Dashboard', icon:'◆'},
+    {id:'catalog', label:'Tool Library (60+)', icon:'▤'},
+  ]},
+  {group:'Strategy', items:[
+    {id:'swot', label:'SWOT / TOWS'},
+    {id:'pestel', label:'PESTEL'},
+  ]},
+  {group:'Goals & Performance', items:[
+    {id:'okr', label:'OKR Tracker'},
+    {id:'kpi', label:'KPI Management'},
+    {id:'bsc', label:'Balanced Scorecard'},
+    {id:'eisenhower', label:'Eisenhower Matrix'},
+  ]},
+  {group:'Project Management', items:[
+    {id:'wbs', label:'WBS / Gantt'},
+    {id:'raci', label:'RACI Matrix'},
+    {id:'evm', label:'Earned Value (EVM)'},
+    {id:'risk', label:'Risk Register'},
+  ]},
+  {group:'Problem Solving & Quality', items:[
+    {id:'pdca', label:'PDCA'},
+    {id:'fivewhys', label:'5 Whys'},
+    {id:'fishbone', label:'Fishbone Diagram'},
+    {id:'fmea', label:'FMEA'},
+    {id:'pareto', label:'Pareto Analysis'},
+    {id:'decision', label:'Decision Matrix'},
+  ]},
+  {group:'Continuous Improvement', items:[
+    {id:'kaizen', label:'Kaizen Register'},
+  ]},
+  {group:'Industry Template', items:[
+    {id:'mining', label:'Mining Production'},
+  ]},
+];
+function buildNav(){
+  const nav=document.getElementById('nav');
+  nav.innerHTML='';
+  NAV.forEach(g=>{
+    const gl=document.createElement('div'); gl.className='nav-group-label'; gl.textContent=g.group;
+    nav.appendChild(gl);
+    const grp=document.createElement('div'); grp.className='nav-group';
+    g.items.forEach(it=>{
+      const el=document.createElement('div');
+      el.className='nav-item'; el.dataset.id=it.id;
+      el.innerHTML=`<span class="dot"></span><span>${it.label}</span>`;
+      el.onclick=()=>goTo(it.id);
+      grp.appendChild(el);
+    });
+    nav.appendChild(grp);
+  });
+}
+const TITLES = {
+  dashboard:['Executive Dashboard','Kesehatan proyek & bisnis dalam satu layar'],
+  catalog:['Tool Library','60+ management & project management frameworks'],
+  swot:['SWOT / TOWS Analysis','Kondisi internal-eksternal → strategi'],
+  pestel:['PESTEL Analysis','Faktor makro & respons strategis'],
+  okr:['OKR Tracker','Objective & Key Results'],
+  kpi:['KPI Management','Database indikator kinerja'],
+  bsc:['Balanced Scorecard','Financial · Customer · Internal Process · Learning & Growth'],
+  eisenhower:['Eisenhower Matrix','Prioritas berdasarkan urgent / important'],
+  wbs:['Work Breakdown Structure & Gantt','Rencana kerja & garis waktu'],
+  raci:['RACI Matrix','Responsible · Accountable · Consulted · Informed'],
+  evm:['Earned Value Management','CV · SV · CPI · SPI · EAC · ETC · VAC'],
+  risk:['Risk Register','Identifikasi, penilaian & mitigasi risiko'],
+  pdca:['PDCA Cycle','Plan · Do · Check · Act'],
+  fivewhys:['5 Whys','Root cause analysis'],
+  fishbone:['Fishbone Diagram','Man · Machine · Method · Material · Measurement · Environment'],
+  fmea:['FMEA','Failure Mode & Effect Analysis'],
+  pareto:['Pareto Analysis','80/20 — fokus pada penyebab dominan'],
+  decision:['Decision Matrix','Weighted scoring antar alternatif'],
+  kaizen:['Kaizen / Improvement Register','Continuous improvement & ROI'],
+  mining:['Mining Production Dashboard','Template industri pertambangan & hauling'],
+};
+let currentSection='dashboard';
+function goTo(id){
+  currentSection=id;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.id===id));
+  document.getElementById('topbarTitle').textContent=TITLES[id][0];
+  document.getElementById('topbarSub').textContent=TITLES[id][1];
+  renderSection(id);
+  document.getElementById('content').scrollIntoView({behavior:'instant'});
+  window.scrollTo(0,0);
+}
+
+/* =========================================================================
+   GENERIC EDITABLE TABLE COMPONENT
+   ========================================================================= */
+function fieldInput(row, col, onChange){
+  const val = row[col.key] ?? '';
+  if(col.type==='select'){
+    const opts = col.options.map(o=>`<option value="${o}" ${o===val?'selected':''}>${o}</option>`).join('');
+    return `<select data-key="${col.key}">${opts}</select>`;
+  }
+  if(col.type==='textarea'){
+    return `<textarea data-key="${col.key}" rows="1">${escapeHtml(val)}</textarea>`;
+  }
+  if(col.type==='number'){
+    return `<input type="number" step="any" data-key="${col.key}" value="${val}">`;
+  }
+  if(col.type==='date'){
+    return `<input type="date" data-key="${col.key}" value="${val}">`;
+  }
+  return `<input type="text" data-key="${col.key}" value="${escapeHtml(val)}">`;
+}
+function escapeHtml(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function renderDataTable(opts){
+  // opts: {containerId, rows, columns, onAdd, onDelete, onUpdate, afterRender}
+  const wrap=document.getElementById(opts.containerId);
+  let html = '<div class="table-wrap"><table><thead><tr>';
+  opts.columns.forEach(c=> html += `<th>${c.label}</th>`);
+  html += '<th></th></tr></thead><tbody>';
+  opts.rows.forEach((row,idx)=>{
+    html += `<tr data-idx="${idx}">`;
+    opts.columns.forEach(c=>{
+      if(c.computed){
+        html += `<td class="computed-cell">${c.render ? c.render(c.computed(row)) : c.computed(row)}</td>`;
+      } else {
+        html += `<td>${fieldInput(row,c)}</td>`;
+      }
+    });
+    html += `<td><button class="row-del" data-del="${idx}">✕</button></td></tr>`;
+  });
+  html += '</tbody></table></div>';
+  wrap.innerHTML = html;
+  wrap.querySelectorAll('[data-key]').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const tr=e.target.closest('tr'); const idx=+tr.dataset.idx;
+      opts.rows[idx][e.target.dataset.key] = e.target.value;
+      opts.onUpdate && opts.onUpdate();
+      saveState();
+      // re-render just computed cells without losing focus: full re-render but keep it snappy
+      renderDataTable(opts);
+      refocus(opts.containerId, idx, e.target.dataset.key);
+    });
+  });
+  wrap.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      const idx=+e.target.dataset.del;
+      opts.rows.splice(idx,1);
+      opts.onUpdate && opts.onUpdate();
+      saveState();
+      renderDataTable(opts);
+    });
+  });
+}
+function refocus(containerId, idx, key){
+  // best effort refocus after re-render (kept simple; browsers handle fast typing fine for this scale)
+}
+
+/* =========================================================================
+   1) EXECUTIVE DASHBOARD
+   ========================================================================= */
+function healthScore(){
+  const parts=[];
+  if(state.kpis.length){
+    const avg = state.kpis.reduce((s,k)=>{
+      const t=parseFloat(k.target)||0, a=parseFloat(k.actual)||0;
+      let pct = t? (a/t*100):0; pct=Math.max(0,Math.min(pct,130));
+      return s+Math.min(pct,100);
+    },0)/state.kpis.length;
+    parts.push(avg);
+  }
+  if(state.okrs.length){
+    const avg = state.okrs.reduce((s,o)=>{
+      const t=parseFloat(o.target)||0, c=parseFloat(o.current)||0;
+      let pct = t? (c/t*100):0; return s+Math.max(0,Math.min(pct,100));
+    },0)/state.okrs.length;
+    parts.push(avg);
+  }
+  if(state.risks.length){
+    const low = state.risks.filter(r=>(parseFloat(r.probability)||0)*(parseFloat(r.impact)||0) <= 8).length;
+    parts.push(low/state.risks.length*100);
+  }
+  if(state.wbs.length){
+    const done = state.wbs.filter(w=>w.status==='Completed').length;
+    parts.push(done/state.wbs.length*100);
+  }
+  if(!parts.length) return null;
+  return Math.round(parts.reduce((a,b)=>a+b,0)/parts.length);
+}
+function gaugeSVG(score){
+  const angle = (score/100)*180;
+  const rad = (deg)=> (Math.PI/180)*deg;
+  const cx=110, cy=110, r=90;
+  const x = cx - r*Math.cos(rad(angle));
+  const y = cy - r*Math.sin(rad(angle));
+  const large = angle>180?1:0;
+  const color = score>=75?'#3ddc97':score>=50?'#f0b429':'#e5484d';
+  return `<svg width="220" height="130" viewBox="0 0 220 130">
+    <path d="M20 110 A90 90 0 0 1 200 110" fill="none" stroke="#1f3350" stroke-width="16" stroke-linecap="round"/>
+    <path d="M20 110 A90 90 0 0 1 ${x} ${y}" fill="none" stroke="${color}" stroke-width="16" stroke-linecap="round"/>
+    <text x="110" y="95" text-anchor="middle" font-family="var(--serif)" font-size="34" fill="${color}" font-weight="700">${score}</text>
+    <text x="110" y="115" text-anchor="middle" font-family="var(--mono)" font-size="10" fill="#8fa3bd">HEALTH SCORE</text>
+  </svg>`;
+}
+function statusBadgeCount(arr, key, value){ return arr.filter(x=>x[key]===value).length; }
+
+function renderDashboard(){
+  const c=document.getElementById('content');
+  const score = healthScore();
+  const criticalRisks = state.risks.filter(r=>(parseFloat(r.probability)||0)*(parseFloat(r.impact)||0) >= 15).length;
+  const kpiRed = state.kpis.filter(k=>{ const t=parseFloat(k.target)||0,a=parseFloat(k.actual)||0; return t && (a/t*100)<80;}).length;
+  const okrAtRisk = statusBadgeCount(state.okrs,'status','At Risk') + statusBadgeCount(state.okrs,'status','Off Track');
+  const wbsDelayed = statusBadgeCount(state.wbs,'status','Delayed');
+  const openImprovement = state.kaizen.filter(k=>k.status!=='Done').length;
+
+  c.innerHTML = `
+    <div class="panel" style="display:flex;align-items:center;gap:30px;flex-wrap:wrap;">
+      <div>${score===null? `<div class="hint">Isi minimal satu tool (KPI, OKR, Risk, atau WBS) untuk menghitung Health Score otomatis.</div>` : gaugeSVG(score)}</div>
+      <div style="flex:1;min-width:260px;">
+        <h3 style="font-family:var(--serif);margin:0 0 6px;color:var(--gold-light);">Overall Project & Business Health</h3>
+        <p style="color:var(--text-muted);font-size:12.5px;max-width:520px;">
+          Skor dihitung otomatis dari rata-rata pencapaian KPI, progres OKR, tingkat risiko terkendali, dan status penyelesaian WBS.
+          🟢 ≥75 Healthy &nbsp;·&nbsp; 🟡 50–74 Attention Required &nbsp;·&nbsp; 🔴 &lt;50 Critical
+        </p>
+      </div>
+    </div>
+
+    <div class="grid cols-4">
+      <div class="stat-card"><div class="label">KPI Terdaftar</div><div class="value gold">${state.kpis.length}</div></div>
+      <div class="stat-card"><div class="label">KPI di Bawah Target</div><div class="value ${kpiRed?'red':'green'}">${kpiRed}</div></div>
+      <div class="stat-card"><div class="label">OKR Berisiko / Off Track</div><div class="value ${okrAtRisk?'yellow':'green'}">${okrAtRisk}</div></div>
+      <div class="stat-card"><div class="label">Risiko Kritis</div><div class="value ${criticalRisks?'red':'green'}">${criticalRisks}</div></div>
+      <div class="stat-card"><div class="label">Aktivitas WBS Delayed</div><div class="value ${wbsDelayed?'yellow':'green'}">${wbsDelayed}</div></div>
+      <div class="stat-card"><div class="label">Total Risiko Terdaftar</div><div class="value">${state.risks.length}</div></div>
+      <div class="stat-card"><div class="label">Improvement Terbuka</div><div class="value">${openImprovement}</div></div>
+      <div class="stat-card"><div class="label">Total OKR</div><div class="value">${state.okrs.length}</div></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>Strategy → Execution → Control → Improvement Loop</h3></div>
+      <div class="loop">
+        <span class="node">SWOT</span><span class="arrow">→</span>
+        <span class="node">Strategic Issue</span><span class="arrow">→</span>
+        <span class="node">Objective (OKR)</span><span class="arrow">→</span>
+        <span class="node">Project (WBS)</span><span class="arrow">→</span>
+        <span class="node">Task</span><span class="arrow">→</span>
+        <span class="node">Risk / Issue</span><span class="arrow">→</span>
+        <span class="node">Action (Kaizen)</span><span class="arrow">→</span>
+        <span class="node">KPI Result</span><span class="arrow">→</span>
+        <span class="node">Management Review</span>
+      </div>
+    </div>
+
+    <div class="grid cols-2">
+      <div class="panel">
+        <div class="panel-head"><h3>Top Risiko (berdasarkan skor)</h3></div>
+        ${topRisksTable()}
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>KPI Perlu Perhatian</h3></div>
+        ${kpiWatchTable()}
+      </div>
+    </div>
+  `;
+}
+function topRisksTable(){
+  const sorted=[...state.risks].map(r=>({...r,score:(parseFloat(r.probability)||0)*(parseFloat(r.impact)||0)}))
+    .sort((a,b)=>b.score-a.score).slice(0,5);
+  if(!sorted.length) return `<div class="hint">Belum ada data. Buka menu Risk Register untuk mulai.</div>`;
+  return `<div class="table-wrap"><table><thead><tr><th>Risiko</th><th>Skor</th><th>Level</th><th>Owner</th></tr></thead><tbody>
+    ${sorted.map(r=>`<tr><td>${escapeHtml(r.description||'-')}</td><td class="computed-cell">${r.score}</td><td>${riskLevelBadge(r.score)}</td><td>${escapeHtml(r.owner||'-')}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function kpiWatchTable(){
+  const watch=state.kpis.map(k=>({...k,pct: (parseFloat(k.target)||0)? (parseFloat(k.actual)||0)/(parseFloat(k.target)||1)*100 : null}))
+    .filter(k=>k.pct!==null).sort((a,b)=>a.pct-b.pct).slice(0,5);
+  if(!watch.length) return `<div class="hint">Belum ada data. Buka menu KPI Management untuk mulai.</div>`;
+  return `<div class="table-wrap"><table><thead><tr><th>KPI</th><th>Actual</th><th>Target</th><th>Status</th></tr></thead><tbody>
+    ${watch.map(k=>`<tr><td>${escapeHtml(k.kpi||'-')}</td><td>${escapeHtml(k.actual)}</td><td>${escapeHtml(k.target)}</td><td>${kpiStatusBadge(k.pct)}</td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function riskLevelBadge(score){
+  if(score>=15) return `<span class="badge red">Critical</span>`;
+  if(score>=8) return `<span class="badge yellow">Moderate</span>`;
+  return `<span class="badge green">Low</span>`;
+}
+function kpiStatusBadge(pct){
+  if(pct>=100) return `<span class="badge green">Achieved</span>`;
+  if(pct>=80) return `<span class="badge yellow">Warning</span>`;
+  return `<span class="badge red">Critical</span>`;
+}
+
+/* =========================================================================
+   2) TOOL CATALOG (full 60+ reference, cross-linked to implemented tools)
+   ========================================================================= */
+const CATALOG = [
+  {cat:'Strategy', tools:[
+    ['SWOT / TOWS Matrix','swot'],['PESTEL Analysis','pestel'],["Porter's Five Forces",null],
+    ['Value Chain Analysis',null],['VRIO Framework',null],['BCG Matrix',null],['Ansoff Matrix',null],
+    ['McKinsey 7S',null],['Blue Ocean Strategy',null],['Business Model Canvas',null],['Scenario Planning',null],
+  ]},
+  {cat:'Goals & Performance', tools:[
+    ['SMART Goals',null],['OKR',okr='okr'],['KPI Management','kpi'],['Balanced Scorecard','bsc'],
+    ['MBO',null],['BHAG',null],['Hoshin Kanri',null],['Strategy Map',null],
+  ]},
+  {cat:'Project Management', tools:[
+    ['Project Charter',null],['WBS / OBS','wbs'],['RACI Matrix','raci'],['Gantt Chart','wbs'],
+    ['Critical Path / PERT',null],['Earned Value Management','evm'],['Risk Register','risk'],
+    ['Issue Register',null],['Change Management',null],['Stakeholder Analysis',null],['Communication Plan',null],
+  ]},
+  {cat:'Agile Management', tools:[
+    ['Scrum Board',null],['Kanban Board',null],['Sprint Planning',null],['Product Backlog',null],
+    ['Burndown / Velocity Chart',null],['Retrospective',null],['Jira-style Issue Tracker',null],
+  ]},
+  {cat:'Problem Solving', tools:[
+    ['PDCA','pdca'],['DMAIC',null],['5 Whys','fivewhys'],['Fishbone Diagram','fishbone'],
+    ['8D Problem Solving',null],['A3 Problem Solving',null],['5W2H',null],['Kepner-Tregoe',null],['Fault Tree Analysis',null],
+  ]},
+  {cat:'Quality Management', tools:[
+    ['7 QC Tools',null],['Pareto Analysis','pareto'],['FMEA','fmea'],['Control Chart',null],
+    ['NCR Management',null],['CAPA',null],['SIPOC',null],
+  ]},
+  {cat:'Strategic Decision Making', tools:[
+    ['Eisenhower Matrix','eisenhower'],['Decision Matrix','decision'],['Cost-Benefit Analysis',null],
+    ['Risk Matrix','risk'],['Sensitivity Analysis',null],['Monte Carlo (Risk)',null],
+  ]},
+  {cat:'People & Organization', tools:[
+    ['Competency Matrix',null],['Skills Matrix',null],['Training Matrix',null],['9-Box Grid',null],
+    ['Performance Review',null],['Succession Planning',null],
+  ]},
+  {cat:'Operations', tools:[
+    ['Daily Management (SQCDP)',null],['Productivity Analysis',null],['OEE',null],['Bottleneck Analysis',null],
+    ['Process Mapping',null],['Value Stream Mapping',null],['SOP Management',null],
+  ]},
+  {cat:'Continuous Improvement', tools:[
+    ['Kaizen Register','kaizen'],['Lean / 5S',null],['Six Sigma / DMAIC',null],['TPM',null],['Poka-Yoke',null],['Waste Analysis',null],
+  ]},
+  {cat:'Industry Template — Mining', tools:[
+    ['Mining Production Dashboard','mining'],['Crusher / Hauling Productivity',null],['Fuel Ratio & Cost/BCM',null],
+  ]},
+];
+function renderCatalog(){
+  const c=document.getElementById('content');
+  let html = `<div class="panel"><div class="panel-head">
+      <h3>Katalog Lengkap — Management &amp; Project Management Frameworks</h3>
+      <div class="desc">Tool berwarna emas sudah aktif dan bisa langsung digunakan. Tool lain tersedia sebagai referensi metodologi pada roadmap pengembangan berikutnya.</div>
+    </div></div>`;
+  CATALOG.forEach(group=>{
+    html += `<div class="catalog-section-title">${group.cat}</div><div class="tool-catalog">`;
+    group.tools.forEach(([name,id])=>{
+      const enabled = !!id;
+      html += `<div class="tool-card ${enabled?'':'disabled'}" ${enabled?`onclick="goTo('${id}')"`:''}>
+        <div class="cat">${group.cat}</div>
+        <div class="name">${name}</div>
+        <div class="stat">${enabled? 'Buka Tool →' : 'Segera Hadir'}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  c.innerHTML = html;
+}
+
+/* =========================================================================
+   3) SWOT / TOWS
+   ========================================================================= */
+function renderSWOT(){
+  const c=document.getElementById('content');
+  c.innerHTML = `
+  <div class="panel">
+    <div class="panel-head">
+      <h3>SWOT Analysis</h3>
+      <div class="desc">Tambahkan item pada masing-masing kuadran. Setiap item dapat memiliki catatan dampak & prioritas.</div>
+    </div>
+    <div class="four-box">
+      <div class="box s" id="box-s"><h4>Strengths</h4></div>
+      <div class="box w" id="box-w"><h4>Weaknesses</h4></div>
+      <div class="box o" id="box-o"><h4>Opportunities</h4></div>
+      <div class="box t" id="box-t"><h4>Threats</h4></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h3>TOWS Matrix — Strategi Turunan</h3><div class="desc">Dihasilkan otomatis dari kombinasi kuadran SWOT.</div></div>
+    <div class="grid cols-2">
+      <div class="stat-card"><div class="label">SO Strategy (Strengths × Opportunities)</div><div style="margin-top:8px;font-size:12.5px;">${towsList('s','o','Gunakan kekuatan untuk meraih peluang')}</div></div>
+      <div class="stat-card"><div class="label">WO Strategy (Weaknesses × Opportunities)</div><div style="margin-top:8px;font-size:12.5px;">${towsList('w','o','Atasi kelemahan dengan memanfaatkan peluang')}</div></div>
+      <div class="stat-card"><div class="label">ST Strategy (Strengths × Threats)</div><div style="margin-top:8px;font-size:12.5px;">${towsList('s','t','Gunakan kekuatan untuk menghadapi ancaman')}</div></div>
+      <div class="stat-card"><div class="label">WT Strategy (Weaknesses × Threats)</div><div style="margin-top:8px;font-size:12.5px;">${towsList('w','t','Minimalkan kelemahan & hindari ancaman')}</div></div>
+    </div>
+  </div>`;
+  ['s','w','o','t'].forEach(k=>renderSwotBox(k));
+}
+function towsList(a,b,hint){
+  if(!state.swot[a].length || !state.swot[b].length) return `<span style="color:var(--text-dim)">${hint} — lengkapi kedua kuadran untuk melihat kombinasi.</span>`;
+  const items=[];
+  state.swot[a].forEach(x=>state.swot[b].forEach(y=>items.push(`${x.desc||'(item)'} ↔ ${y.desc||'(item)'}`)));
+  return items.slice(0,6).map(i=>`<div style="margin-bottom:4px;color:var(--text-muted)">• ${escapeHtml(i)}</div>`).join('') + (items.length>6?`<div class="hint">+${items.length-6} kombinasi lainnya</div>`:'');
+}
+function renderSwotBox(key){
+  const box=document.getElementById('box-'+key);
+  const items=state.swot[key];
+  let html = items.map((it,idx)=>`
+    <div class="mini-item">
+      <div style="flex:1;">
+        <input style="margin-bottom:4px;" data-k="${key}" data-idx="${idx}" data-field="desc" value="${escapeHtml(it.desc)}" placeholder="Deskripsi...">
+        <div style="display:flex;gap:6px;">
+          <select data-k="${key}" data-idx="${idx}" data-field="priority">
+            ${['Low','Medium','High'].map(p=>`<option ${it.priority===p?'selected':''}>${p}</option>`).join('')}
+          </select>
+          <input data-k="${key}" data-idx="${idx}" data-field="action" value="${escapeHtml(it.action)}" placeholder="Rencana tindakan...">
+        </div>
+      </div>
+      <button class="row-del" data-delk="${key}" data-delidx="${idx}">✕</button>
+    </div>`).join('');
+  html += `<div class="list-add"><input id="add-${key}" placeholder="Tambah item baru, lalu Enter"></div>`;
+  box.innerHTML = `<h4>${box.querySelector('h4').textContent}</h4>` + html;
+  box.querySelectorAll('[data-field]').forEach(el=>{
+    el.addEventListener('input',e=>{
+      const {k,idx,field}=e.target.dataset;
+      state.swot[k][+idx][field]=e.target.value; saveState();
+    });
+  });
+  box.querySelectorAll('[data-delk]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      const {delk,delidx}=e.target.dataset;
+      state.swot[delk].splice(+delidx,1); saveState(); renderSWOT();
+    });
+  });
+  const addInput=document.getElementById('add-'+key);
+  addInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && e.target.value.trim()){
+      state.swot[key].push({desc:e.target.value.trim(),impact:'Medium',priority:'Medium',evidence:'',action:''});
+      saveState(); renderSWOT();
+    }
+  });
+}
+
+/* =========================================================================
+   4) PESTEL
+   ========================================================================= */
+function renderPESTEL(){
+  const c=document.getElementById('content');
+  c.innerHTML = `<div class="panel">
+    <div class="panel-head">
+      <h3>PESTEL Analysis</h3>
+      <div class="desc">Political · Economic · Social · Technological · Environmental · Legal — dengan probability & impact otomatis membentuk heatmap.</div>
+      <button class="btn small" onclick="addPestel()">+ Tambah Faktor</button>
+    </div>
+    <div id="pestelTable"></div>
+    <div style="margin-top:14px;">
+      <button class="btn ghost small" onclick="exportCSV(state.pestel, pestelCols(), 'PESTEL.csv')">⇩ Export CSV</button>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h3>Heatmap Probability × Impact</h3></div>
+    <div id="pestelHeat"></div>
+  </div>`;
+  drawPestel();
+}
+function pestelCols(){
+  return [
+    {key:'category',label:'Kategori'},{key:'desc',label:'Deskripsi'},
+    {key:'probability',label:'Probability (1-5)'},{key:'impact',label:'Impact (1-5)'},
+    {key:'trend',label:'Trend'},{key:'horizon',label:'Time Horizon'},{key:'response',label:'Strategic Response'},
+  ];
+}
+function addPestel(){
+  state.pestel.push({category:'Political',desc:'',probability:3,impact:3,trend:'Stable',horizon:'Short-term',response:''});
+  saveState(); drawPestel();
+}
+function drawPestel(){
+  const cols=[
+    {key:'category',label:'Kategori',type:'select',options:['Political','Economic','Social','Technological','Environmental','Legal']},
+    {key:'desc',label:'Deskripsi Faktor',type:'text'},
+    {key:'probability',label:'Probability',type:'select',options:['1','2','3','4','5']},
+    {key:'impact',label:'Impact',type:'select',options:['1','2','3','4','5']},
+    {key:'trend',label:'Trend',type:'select',options:['Increasing','Stable','Decreasing']},
+    {key:'horizon',label:'Horizon',type:'select',options:['Short-term','Medium-term','Long-term']},
+    {key:'response',label:'Strategic Response',type:'text'},
+  ];
+  renderDataTable({containerId:'pestelTable',rows:state.pestel,columns:cols,onUpdate:drawPestelHeat});
+  drawPestelHeat();
+}
+function drawPestelHeat(){
+  const grid=document.getElementById('pestelHeat');
+  if(!grid) return;
+  const cells=[];
+  for(let p=5;p>=1;p--){
+    for(let im=1; im<=5; im++){
+      const count = state.pestel.filter(x=>+x.probability===p && +x.impact===im).length;
+      const score=p*im;
+      const color = score>=15?'#e5484d':score>=8?'#f0b429':'#3ddc97';
+      cells.push(`<div style="background:${color}${count?'':'22'};border:1px solid var(--border-soft);border-radius:4px;height:44px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${count?'#081120':'var(--text-dim)'}">${count||''}</div>`);
+    }
+  }
+  grid.innerHTML = `<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-width:420px;">${cells.join('')}</div>
+  <div class="legend"><span><span class="sw" style="background:#3ddc97"></span>Low</span><span><span class="sw" style="background:#f0b429"></span>Moderate</span><span><span class="sw" style="background:#e5484d"></span>High</span></div>
+  <div class="hint">Baris: Probability (5→1, atas ke bawah) · Kolom: Impact (1→5, kiri ke kanan)</div>`;
+}
+
+/* =========================================================================
+   5) OKR
+   ========================================================================= */
+function renderOKR(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>OKR Tracker</h3><div class="desc">Objective, Key Results, target vs current, status otomatis.</div>
+    <button class="btn small" onclick="addOKR()">+ Tambah Key Result</button></div>
+    <div id="okrTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(state.okrs, okrCols(), 'OKR.csv')">⇩ Export CSV</button></div>
+  </div>`;
+  drawOKR();
+}
+function okrCols(){
+  return [{key:'objective',label:'Objective'},{key:'kr',label:'Key Result'},{key:'baseline',label:'Baseline'},
+    {key:'target',label:'Target'},{key:'current',label:'Current'},
+    {key:'achievement',label:'Achievement %',computed:r=>achievementPct(r)},
+    {key:'owner',label:'Owner'},{key:'deadline',label:'Deadline'},{key:'status',label:'Status'}];
+}
+function achievementPct(r){
+  const t=parseFloat(r.target)||0, cu=parseFloat(r.current)||0;
+  if(!t) return '-'; return Math.round(cu/t*100)+'%';
+}
+function addOKR(){
+  state.okrs.push({objective:'',kr:'',baseline:0,target:100,current:0,owner:'',deadline:'',status:'Not Started'});
+  saveState(); drawOKR();
+}
+function drawOKR(){
+  const cols=[
+    {key:'objective',label:'Objective',type:'text'},{key:'kr',label:'Key Result',type:'text'},
+    {key:'baseline',label:'Baseline',type:'number'},{key:'target',label:'Target',type:'number'},{key:'current',label:'Current',type:'number'},
+    {key:'achievement',label:'Achieve %',computed:achievementPct},
+    {key:'owner',label:'Owner',type:'text'},{key:'deadline',label:'Deadline',type:'date'},
+    {key:'status',label:'Status',type:'select',options:['Not Started','On Track','At Risk','Off Track','Completed']},
+  ];
+  renderDataTable({containerId:'okrTable',rows:state.okrs,columns:cols});
+}
+
+/* =========================================================================
+   6) KPI MANAGEMENT
+   ========================================================================= */
+function renderKPI(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>KPI Database</h3><div class="desc">Status Green/Yellow/Red dihitung otomatis dari Actual vs Target.</div>
+    <button class="btn small" onclick="addKPI()">+ Tambah KPI</button></div>
+    <div id="kpiTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(state.kpis, kpiCols(), 'KPI.csv')">⇩ Export CSV</button></div>
+  </div>`;
+  drawKPI();
+}
+function kpiCols(){
+  return [{key:'kpi',label:'KPI'},{key:'definition',label:'Definition'},{key:'formula',label:'Formula'},
+    {key:'target',label:'Target'},{key:'actual',label:'Actual'},{key:'unit',label:'Unit'},
+    {key:'frequency',label:'Frequency'},{key:'owner',label:'Owner'},
+    {key:'status',label:'Status',computed:r=>kpiStatusText(r)}];
+}
+function kpiStatusText(r){
+  const t=parseFloat(r.target)||0,a=parseFloat(r.actual)||0;
+  if(!t) return '-'; const pct=a/t*100;
+  return pct>=100?'Green':pct>=80?'Yellow':'Red';
+}
+function addKPI(){
+  state.kpis.push({kpi:'',definition:'',formula:'',target:0,actual:0,unit:'',frequency:'Monthly',owner:''});
+  saveState(); drawKPI();
+}
+function drawKPI(){
+  const cols=[
+    {key:'kpi',label:'KPI',type:'text'},{key:'definition',label:'Definition',type:'text'},{key:'formula',label:'Formula',type:'text'},
+    {key:'target',label:'Target',type:'number'},{key:'actual',label:'Actual',type:'number'},{key:'unit',label:'Unit',type:'text'},
+    {key:'frequency',label:'Frequency',type:'select',options:['Daily','Weekly','Monthly','Quarterly','Annual']},
+    {key:'owner',label:'Owner',type:'text'},
+    {key:'status',label:'Status',computed:r=>{
+      const s=kpiStatusText(r);
+      if(s==='-') return '-';
+      const cls=s==='Green'?'green':s==='Yellow'?'yellow':'red';
+      return `<span class="badge ${cls}">${s}</span>`;
+    }},
+  ];
+  renderDataTable({containerId:'kpiTable',rows:state.kpis,columns:cols});
+}
+
+/* =========================================================================
+   7) BALANCED SCORECARD (+ radar)
+   ========================================================================= */
+function renderBSC(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Balanced Scorecard</h3><div class="desc">Empat perspektif: Financial, Customer, Internal Process, Learning & Growth.</div>
+    <button class="btn small" onclick="addBSC()">+ Tambah Measure</button></div>
+    <div id="bscTable"></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Radar — Rata-rata Achievement per Perspektif</h3></div>
+    <div class="svg-wrap" id="bscRadar"></div>
+  </div>`;
+  drawBSC();
+}
+function addBSC(){
+  state.bsc.push({perspective:'Financial',measure:'',target:0,actual:0});
+  saveState(); drawBSC();
+}
+function drawBSC(){
+  const cols=[
+    {key:'perspective',label:'Perspective',type:'select',options:['Financial','Customer','Internal Process','Learning & Growth']},
+    {key:'measure',label:'Measure',type:'text'},{key:'target',label:'Target',type:'number'},{key:'actual',label:'Actual',type:'number'},
+    {key:'achievement',label:'Achievement %',computed:r=>{ const t=parseFloat(r.target)||0,a=parseFloat(r.actual)||0; return t? Math.round(a/t*100)+'%':'-';}},
+  ];
+  renderDataTable({containerId:'bscTable',rows:state.bsc,columns:cols,onUpdate:drawBSCRadar});
+  drawBSCRadar();
+}
+function drawBSCRadar(){
+  const holder=document.getElementById('bscRadar'); if(!holder) return;
+  const persp=['Financial','Customer','Internal Process','Learning & Growth'];
+  const vals=persp.map(p=>{
+    const rows=state.bsc.filter(r=>r.perspective===p);
+    if(!rows.length) return 0;
+    const avg=rows.reduce((s,r)=>{ const t=parseFloat(r.target)||0,a=parseFloat(r.actual)||0; return s+(t?Math.min(a/t*100,120):0);},0)/rows.length;
+    return Math.round(avg);
+  });
+  holder.innerHTML = radarSVG(persp, vals, 120);
+}
+function radarSVG(labels, values, maxVal){
+  const cx=170, cy=160, r=110, n=labels.length;
+  const angle=(i)=>(Math.PI*2*i/n) - Math.PI/2;
+  const rings=[0.25,0.5,0.75,1];
+  let grid = rings.map(k=>{
+    const pts=labels.map((_,i)=>{ const rr=r*k; return `${cx+rr*Math.cos(angle(i))},${cy+rr*Math.sin(angle(i))}`;}).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="#1f3350" stroke-width="1"/>`;
+  }).join('');
+  const axes = labels.map((_,i)=>{
+    const x=cx+r*Math.cos(angle(i)), y=cy+r*Math.sin(angle(i));
+    return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#1f3350" stroke-width="1"/>`;
+  }).join('');
+  const dataPts = values.map((v,i)=>{ const rr=r*Math.min(v/maxVal,1); return `${cx+rr*Math.cos(angle(i))},${cy+rr*Math.sin(angle(i))}`;}).join(' ');
+  const labelEls = labels.map((l,i)=>{
+    const x=cx+(r+26)*Math.cos(angle(i)), y=cy+(r+26)*Math.sin(angle(i));
+    return `<text x="${x}" y="${y}" text-anchor="middle" font-size="10.5" fill="#8fa3bd" font-family="Consolas,monospace">${l}</text>`;
+  }).join('');
+  const valLabels = values.map((v,i)=>{
+    const rr=r*Math.min(v/maxVal,1); const x=cx+rr*Math.cos(angle(i)), y=cy+rr*Math.sin(angle(i));
+    return `<text x="${x}" y="${y-6}" text-anchor="middle" font-size="10" fill="#e8c766" font-weight="700">${v}%</text>`;
+  }).join('');
+  return `<svg width="340" height="330" viewBox="0 0 340 330">${grid}${axes}
+    <polygon points="${dataPts}" fill="#c9a22733" stroke="#c9a227" stroke-width="2"/>
+    ${labelEls}${valLabels}
+  </svg>`;
+}
+
+/* =========================================================================
+   8) EISENHOWER MATRIX
+   ========================================================================= */
+function renderEisenhower(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Eisenhower Matrix</h3><div class="desc">Tandai Urgent/Important untuk setiap task, kuadran ditentukan otomatis.</div>
+    <button class="btn small" onclick="addEisen()">+ Tambah Task</button></div>
+    <div id="eisenTable"></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Kuadran</h3></div>
+    <div class="four-box" id="eisenBoxes" style="min-height:280px;">
+      <div class="box s" id="q1"><h4>Do First (Urgent + Important)</h4></div>
+      <div class="box o" id="q2"><h4>Schedule (Not Urgent + Important)</h4></div>
+      <div class="box t" id="q3"><h4>Delegate (Urgent + Not Important)</h4></div>
+      <div class="box w" id="q4"><h4>Eliminate (Not Urgent + Not Important)</h4></div>
+    </div>
+  </div>`;
+  drawEisen();
+}
+function addEisen(){ state.eisenhower.push({task:'',urgent:'Yes',important:'Yes'}); saveState(); drawEisen(); }
+function drawEisen(){
+  const cols=[{key:'task',label:'Task',type:'text'},
+    {key:'urgent',label:'Urgent?',type:'select',options:['Yes','No']},
+    {key:'important',label:'Important?',type:'select',options:['Yes','No']},
+    {key:'quadrant',label:'Quadrant',computed:r=>eisenQuadrant(r)}];
+  renderDataTable({containerId:'eisenTable',rows:state.eisenhower,columns:cols,onUpdate:drawEisenBoxes});
+  drawEisenBoxes();
+}
+function eisenQuadrant(r){
+  if(r.urgent==='Yes'&&r.important==='Yes') return 'Do First';
+  if(r.urgent==='No'&&r.important==='Yes') return 'Schedule';
+  if(r.urgent==='Yes'&&r.important==='No') return 'Delegate';
+  return 'Eliminate';
+}
+function drawEisenBoxes(){
+  const map={'Do First':'q1','Schedule':'q2','Delegate':'q3','Eliminate':'q4'};
+  Object.values(map).forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=`<h4>${el.querySelector('h4').textContent}</h4>`; });
+  state.eisenhower.forEach(r=>{
+    const q=eisenQuadrant(r); const el=document.getElementById(map[q]);
+    if(el) el.insertAdjacentHTML('beforeend',`<div class="mini-item">${escapeHtml(r.task||'(untitled)')}</div>`);
+  });
+}
+
+/* =========================================================================
+   9) WBS / GANTT
+   ========================================================================= */
+function renderWBS(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Work Breakdown Structure</h3><div class="desc">ID, deskripsi, owner, durasi, budget, status.</div>
+    <button class="btn small" onclick="addWBS()">+ Tambah Aktivitas</button></div>
+    <div id="wbsTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(state.wbs, wbsCols(), 'WBS.csv')">⇩ Export CSV</button></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Gantt Chart (berbasis tanggal mulai/selesai)</h3></div>
+    <div id="ganttChart"></div>
+  </div>`;
+  drawWBS();
+}
+function wbsCols(){
+  return [{key:'wbsid',label:'ID'},{key:'description',label:'Description'},{key:'owner',label:'Owner'},
+    {key:'start',label:'Start'},{key:'finish',label:'Finish'},{key:'budget',label:'Budget'},{key:'status',label:'Status'}];
+}
+function addWBS(){
+  state.wbs.push({wbsid:(state.wbs.length+1)+'.0',description:'',owner:'',start:'',finish:'',budget:0,status:'Not Started'});
+  saveState(); drawWBS();
+}
+function drawWBS(){
+  const cols=[
+    {key:'wbsid',label:'ID',type:'text'},{key:'description',label:'Description',type:'text'},{key:'owner',label:'Owner',type:'text'},
+    {key:'start',label:'Start',type:'date'},{key:'finish',label:'Finish',type:'date'},{key:'budget',label:'Budget',type:'number'},
+    {key:'status',label:'Status',type:'select',options:['Not Started','In Progress','Delayed','Completed']},
+  ];
+  renderDataTable({containerId:'wbsTable',rows:state.wbs,columns:cols,onUpdate:drawGantt});
+  drawGantt();
+}
+function drawGantt(){
+  const holder=document.getElementById('ganttChart'); if(!holder) return;
+  const rows=state.wbs.filter(r=>r.start && r.finish);
+  if(!rows.length){ holder.innerHTML=`<div class="hint">Isi tanggal Start & Finish pada tabel WBS untuk menampilkan Gantt Chart.</div>`; return; }
+  const dates=rows.flatMap(r=>[new Date(r.start),new Date(r.finish)]);
+  const minD=new Date(Math.min(...dates)), maxD=new Date(Math.max(...dates));
+  const totalDays=Math.max(1,(maxD-minD)/86400000);
+  const statusColor={'Not Started':'#5d7391','In Progress':'#4f9ce8','Delayed':'#e5484d','Completed':'#3ddc97'};
+  let html = `<div style="display:flex;flex-direction:column;gap:8px;">`;
+  rows.forEach(r=>{
+    const s=new Date(r.start), f=new Date(r.finish);
+    const left = (s-minD)/86400000/totalDays*100;
+    const width = Math.max(1,(f-s)/86400000/totalDays*100);
+    html += `<div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:160px;font-size:11.5px;color:var(--text-muted);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(r.description||r.wbsid)}</div>
+      <div style="flex:1;background:var(--panel-2);border-radius:6px;height:20px;position:relative;">
+        <div style="position:absolute;left:${left}%;width:${width}%;height:100%;background:${statusColor[r.status]||'#5d7391'};border-radius:6px;"></div>
+      </div>
+      <div style="width:80px;font-size:10.5px;color:var(--text-dim);flex:none;">${r.status}</div>
+    </div>`;
+  });
+  html += `</div><div class="legend">${Object.entries(statusColor).map(([k,v])=>`<span><span class="sw" style="background:${v}"></span>${k}</span>`).join('')}</div>`;
+  holder.innerHTML = html;
+}
+
+/* =========================================================================
+   10) RACI
+   ========================================================================= */
+function renderRACI(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>RACI Matrix</h3><div class="desc">Format daftar: satu baris = satu kombinasi Aktivitas × Anggota Tim × Peran.</div>
+    <button class="btn small" onclick="addRACI()">+ Tambah Baris</button></div>
+    <div id="raciTable"></div>
+    <div class="hint" id="raciWarning"></div>
+  </div>`;
+  drawRACI();
+}
+function addRACI(){ state.raci.push({activity:'',member:'',role:'R'}); saveState(); drawRACI(); }
+function drawRACI(){
+  const cols=[{key:'activity',label:'Activity / Deliverable',type:'text'},{key:'member',label:'Team Member',type:'text'},
+    {key:'role',label:'Role',type:'select',options:['R','A','C','I']}];
+  renderDataTable({containerId:'raciTable',rows:state.raci,columns:cols,onUpdate:raciValidate});
+  raciValidate();
+}
+function raciValidate(){
+  const warn=document.getElementById('raciWarning'); if(!warn) return;
+  const activities=[...new Set(state.raci.map(r=>r.activity).filter(Boolean))];
+  const missing=activities.filter(a=>{
+    const rows=state.raci.filter(r=>r.activity===a);
+    return !rows.some(r=>r.role==='R') || !rows.some(r=>r.role==='A');
+  });
+  warn.innerHTML = missing.length? `⚠️ Aktivitas tanpa Responsible/Accountable lengkap: ${missing.map(escapeHtml).join(', ')}` : (activities.length? '✅ Semua aktivitas memiliki minimal satu Responsible dan satu Accountable.':'');
+}
+
+/* =========================================================================
+   11) EVM
+   ========================================================================= */
+function renderEVM(){
+  const c=document.getElementById('content');
+  const e=state.evm;
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Earned Value Management</h3><div class="desc">Masukkan BAC, PV, EV, AC — seluruh indeks dihitung otomatis.</div></div>
+    <div class="form-row">
+      <div><label class="field-label">BAC (Budget at Completion)</label><input type="number" id="evm-bac" value="${e.bac}"></div>
+      <div><label class="field-label">PV (Planned Value)</label><input type="number" id="evm-pv" value="${e.pv}"></div>
+      <div><label class="field-label">EV (Earned Value)</label><input type="number" id="evm-ev" value="${e.ev}"></div>
+      <div><label class="field-label">AC (Actual Cost)</label><input type="number" id="evm-ac" value="${e.ac}"></div>
+    </div>
+  </div>
+  <div class="grid cols-4" id="evmResults"></div>
+  <div class="panel"><div class="panel-head"><h3>Formula</h3></div>
+    <div class="formula-box">
+CV = EV − AC &nbsp;&nbsp;|&nbsp;&nbsp; SV = EV − PV &nbsp;&nbsp;|&nbsp;&nbsp; CPI = EV / AC &nbsp;&nbsp;|&nbsp;&nbsp; SPI = EV / PV
+EAC = BAC / CPI &nbsp;&nbsp;|&nbsp;&nbsp; ETC = EAC − AC &nbsp;&nbsp;|&nbsp;&nbsp; VAC = BAC − EAC
+    </div>
+  </div>`;
+  ['bac','pv','ev','ac'].forEach(k=>{
+    document.getElementById('evm-'+k).addEventListener('input',ev=>{
+      state.evm[k]=parseFloat(ev.target.value)||0; saveState(); drawEVMResults();
+    });
+  });
+  drawEVMResults();
+}
+function drawEVMResults(){
+  const holder=document.getElementById('evmResults'); if(!holder) return;
+  const {bac,pv,ev,ac}=state.evm;
+  const cv=ev-ac, sv=ev-pv, cpi= ac? ev/ac : 0, spi= pv? ev/pv : 0;
+  const eac= cpi? bac/cpi : 0, etc=eac-ac, vac=bac-eac;
+  const fmt=n=>Number.isFinite(n)? n.toLocaleString('id-ID',{maximumFractionDigits:2}) : '0';
+  const items=[
+    ['Cost Variance (CV)',cv,cv>=0],['Schedule Variance (SV)',sv,sv>=0],
+    ['CPI',cpi,cpi>=1],['SPI',spi,spi>=1],
+    ['Estimate at Completion (EAC)',eac,true],['Estimate to Complete (ETC)',etc,true],
+    ['Variance at Completion (VAC)',vac,vac>=0],['Project Health',null,null],
+  ];
+  holder.innerHTML = items.map(([label,val,good])=>{
+    if(label==='Project Health'){
+      const health = (cpi>=1 && spi>=1)?'On Track':(cpi<0.9||spi<0.9)?'Critical':'Watch';
+      const cls = health==='On Track'?'green':health==='Watch'?'yellow':'red';
+      return `<div class="stat-card"><div class="label">${label}</div><div class="value ${cls}">${health}</div></div>`;
+    }
+    const cls = good===null? '' : good?'green':'red';
+    return `<div class="stat-card"><div class="label">${label}</div><div class="value ${cls}">${fmt(val)}</div></div>`;
+  }).join('');
+}
+
+/* =========================================================================
+   12) RISK REGISTER
+   ========================================================================= */
+function renderRisk(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Risk Register</h3><div class="desc">Risk Score = Probability × Impact. Level otomatis: Low ≤8, Moderate 9–14, Critical ≥15.</div>
+    <button class="btn small" onclick="addRisk()">+ Tambah Risiko</button></div>
+    <div id="riskTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(state.risks, riskCols(), 'Risk_Register.csv')">⇩ Export CSV</button></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Risk Heatmap (5×5)</h3></div><div id="riskHeat"></div></div>`;
+  drawRisk();
+}
+function riskCols(){
+  return [{key:'description',label:'Description'},{key:'category',label:'Category'},{key:'cause',label:'Cause'},
+    {key:'consequence',label:'Consequence'},{key:'probability',label:'Probability'},{key:'impact',label:'Impact'},
+    {key:'score',label:'Risk Score',computed:r=>(parseFloat(r.probability)||0)*(parseFloat(r.impact)||0)},
+    {key:'owner',label:'Owner'},{key:'mitigation',label:'Mitigation'},{key:'contingency',label:'Contingency'},
+    {key:'dueDate',label:'Due Date'},{key:'status',label:'Status'}];
+}
+function addRisk(){
+  state.risks.push({description:'',category:'Operational',cause:'',consequence:'',probability:3,impact:3,owner:'',mitigation:'',contingency:'',dueDate:'',status:'Open'});
+  saveState(); drawRisk();
+}
+function drawRisk(){
+  const cols=[
+    {key:'description',label:'Risk',type:'text'},
+    {key:'category',label:'Category',type:'select',options:['Operational','Financial','Safety','Schedule','Technical','Environmental','Legal']},
+    {key:'cause',label:'Cause',type:'text'},{key:'consequence',label:'Consequence',type:'text'},
+    {key:'probability',label:'Prob.',type:'select',options:['1','2','3','4','5']},
+    {key:'impact',label:'Impact',type:'select',options:['1','2','3','4','5']},
+    {key:'score',label:'Score',computed:r=>{
+      const s=(parseFloat(r.probability)||0)*(parseFloat(r.impact)||0);
+      return `${s} ${riskLevelBadge(s)}`;
+    }},
+    {key:'owner',label:'Owner',type:'text'},{key:'mitigation',label:'Mitigation',type:'text'},
+    {key:'dueDate',label:'Due Date',type:'date'},
+    {key:'status',label:'Status',type:'select',options:['Open','Mitigating','Closed']},
+  ];
+  renderDataTable({containerId:'riskTable',rows:state.risks,columns:cols,onUpdate:drawRiskHeat});
+  drawRiskHeat();
+}
+function drawRiskHeat(){
+  const holder=document.getElementById('riskHeat'); if(!holder) return;
+  const cells=[];
+  for(let im=5; im>=1; im--){
+    for(let p=1;p<=5;p++){
+      const count=state.risks.filter(r=>+r.probability===p && +r.impact===im).length;
+      const score=p*im;
+      const color = score>=15?'#e5484d':score>=9?'#f0b429':'#3ddc97';
+      cells.push(`<div style="background:${color}${count?'':'22'};border:1px solid var(--border-soft);border-radius:4px;height:48px;display:flex;align-items:center;justify-content:center;font-weight:700;color:${count?'#081120':'var(--text-dim)'}">${count||''}</div>`);
+    }
+  }
+  holder.innerHTML=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-width:420px;">${cells.join('')}</div>
+  <div class="legend"><span><span class="sw" style="background:#3ddc97"></span>Low (≤8)</span><span><span class="sw" style="background:#f0b429"></span>Moderate (9–14)</span><span><span class="sw" style="background:#e5484d"></span>Critical (≥15)</span></div>
+  <div class="hint">Baris: Impact (5→1, atas ke bawah) · Kolom: Probability (1→5, kiri ke kanan)</div>`;
+}
+
+/* =========================================================================
+   13) PDCA
+   ========================================================================= */
+function renderPDCA(){
+  const c=document.getElementById('content'); const p=state.pdca;
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>PDCA Cycle</h3><div class="desc">Plan → Do → Check → Act</div></div>
+    <div class="grid cols-2">
+      <div class="stat-card"><label class="field-label">PLAN — Problem</label><textarea id="pdca-problem">${escapeHtml(p.problem)}</textarea>
+        <label class="field-label" style="margin-top:8px;">Target</label><textarea id="pdca-target">${escapeHtml(p.target)}</textarea>
+        <label class="field-label" style="margin-top:8px;">Root Cause & Action Plan</label><textarea id="pdca-rootcause">${escapeHtml(p.rootcause)}</textarea></div>
+      <div class="stat-card"><label class="field-label">DO — Implementation</label><textarea id="pdca-do" style="min-height:120px;">${escapeHtml(p.do)}</textarea></div>
+      <div class="stat-card"><label class="field-label">CHECK — Actual vs Target</label><textarea id="pdca-check" style="min-height:120px;">${escapeHtml(p.check)}</textarea></div>
+      <div class="stat-card"><label class="field-label">ACT — Standardize / Corrective Action</label><textarea id="pdca-act" style="min-height:120px;">${escapeHtml(p.act)}</textarea></div>
+    </div>
+  </div>`;
+  ['problem','target','rootcause','do','check','act'].forEach(k=>{
+    document.getElementById('pdca-'+k).addEventListener('input',e=>{ state.pdca[k]=e.target.value; saveState(); });
+  });
+}
+
+/* =========================================================================
+   14) 5 WHYS
+   ========================================================================= */
+function renderFiveWhys(){
+  const c=document.getElementById('content'); const f=state.fivewhys;
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>5 Whys — Root Cause Analysis</h3></div>
+    <label class="field-label">Problem Statement</label><textarea id="fw-problem">${escapeHtml(f.problem)}</textarea>
+    ${[1,2,3,4,5].map(n=>`<div style="margin-top:10px;"><label class="field-label">Why ${n}?</label><input id="fw-why${n}" value="${escapeHtml(f['why'+n])}"></div>`).join('')}
+    <div style="margin-top:14px;"><label class="field-label">Root Cause</label><textarea id="fw-root">${escapeHtml(f.root)}</textarea></div>
+    <div class="grid cols-2" style="margin-top:10px;">
+      <div><label class="field-label">Corrective Action</label><textarea id="fw-corrective">${escapeHtml(f.corrective)}</textarea></div>
+      <div><label class="field-label">Preventive Action</label><textarea id="fw-preventive">${escapeHtml(f.preventive)}</textarea></div>
+    </div>
+  </div>`;
+  ['problem','why1','why2','why3','why4','why5','root','corrective','preventive'].forEach(k=>{
+    const el=document.getElementById('fw-'+(k==='root'?'root':k==='corrective'?'corrective':k==='preventive'?'preventive':k));
+    if(el) el.addEventListener('input',e=>{ state.fivewhys[k]=e.target.value; saveState(); });
+  });
+}
+
+/* =========================================================================
+   15) FISHBONE
+   ========================================================================= */
+const FISHBONE_CATS=['man','machine','method','material','measurement','environment'];
+const FISHBONE_LABELS={man:'Man',machine:'Machine',method:'Method',material:'Material',measurement:'Measurement',environment:'Environment'};
+function renderFishbone(){
+  const c=document.getElementById('content'); const f=state.fishbone;
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Fishbone (Ishikawa) Diagram</h3></div>
+    <label class="field-label">Problem / Effect</label><input id="fb-problem" value="${escapeHtml(f.problem)}">
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Penyebab per Kategori</h3></div>
+    <div class="grid cols-3" id="fbGrid"></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Diagram</h3></div><div class="svg-wrap" id="fbSvg"></div></div>`;
+  document.getElementById('fb-problem').addEventListener('input',e=>{ state.fishbone.problem=e.target.value; saveState(); drawFishboneSVG();});
+  drawFishboneGrid(); drawFishboneSVG();
+}
+function drawFishboneGrid(){
+  const grid=document.getElementById('fbGrid');
+  grid.innerHTML = FISHBONE_CATS.map(cat=>`
+    <div class="stat-card">
+      <div class="label">${FISHBONE_LABELS[cat]}</div>
+      <div id="fb-list-${cat}" style="margin-top:8px;"></div>
+      <div class="list-add"><input id="fb-add-${cat}" placeholder="Tambah penyebab, Enter"></div>
+    </div>`).join('');
+  FISHBONE_CATS.forEach(cat=>{
+    drawFishboneList(cat);
+    document.getElementById('fb-add-'+cat).addEventListener('keydown',e=>{
+      if(e.key==='Enter' && e.target.value.trim()){
+        state.fishbone[cat].push(e.target.value.trim());
+        e.target.value=''; saveState(); drawFishboneList(cat); drawFishboneSVG();
+      }
+    });
+  });
+}
+function drawFishboneList(cat){
+  const holder=document.getElementById('fb-list-'+cat);
+  holder.innerHTML = state.fishbone[cat].map((item,idx)=>`
+    <div class="mini-item"><span>${escapeHtml(item)}</span><button class="row-del" data-cat="${cat}" data-idx="${idx}">✕</button></div>`).join('');
+  holder.querySelectorAll('[data-cat]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      const {cat,idx}=e.target.dataset;
+      state.fishbone[cat].splice(+idx,1); saveState(); drawFishboneList(cat); drawFishboneSVG();
+    });
+  });
+}
+function drawFishboneSVG(){
+  const holder=document.getElementById('fbSvg'); if(!holder) return;
+  const w=900,h=440,spineY=220;
+  let svg=`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">`;
+  svg += `<line x1="60" y1="${spineY}" x2="${w-60}" y2="${spineY}" stroke="#c9a227" stroke-width="2.5"/>`;
+  svg += `<polygon points="${w-60},${spineY-10} ${w-30},${spineY} ${w-60},${spineY+10}" fill="#c9a227"/>`;
+  svg += `<text x="${w-25}" y="${spineY+5}" font-family="Iowan Old Style,serif" font-size="14" fill="#eef2f7">${escapeHtml(state.fishbone.problem||'Effect')}</text>`;
+  const top=FISHBONE_CATS.slice(0,3), bottom=FISHBONE_CATS.slice(3);
+  const spacing=(w-160)/3;
+  top.forEach((cat,i)=>{
+    const bx=90+i*spacing+40, by=40;
+    svg += boneSVG(bx,by,90+i*spacing+220,spineY,true,cat);
+  });
+  bottom.forEach((cat,i)=>{
+    const bx=90+i*spacing+40, by=h-30;
+    svg += boneSVG(bx,by,90+i*spacing+220,spineY,false,cat);
+  });
+  svg += '</svg>';
+  holder.innerHTML = svg;
+}
+function boneSVG(bx,by,jx,jy,isTop,cat){
+  let s = `<line x1="${bx}" y1="${by}" x2="${jx}" y2="${jy}" stroke="#5d7391" stroke-width="1.5"/>`;
+  s += `<text x="${bx}" y="${isTop? by-8: by+18}" font-family="Consolas,monospace" font-size="11" fill="#e8c766" font-weight="700">${FISHBONE_LABELS[cat]}</text>`;
+  const items=state.fishbone[cat].slice(0,4);
+  items.forEach((it,i)=>{
+    const t = (i+1)/(items.length+1);
+    const x = bx + (jx-bx)*t, y = by + (jy-by)*t;
+    const ly = isTop? y-6 : y+14;
+    s += `<text x="${x}" y="${ly}" font-size="9.5" fill="#8fa3bd" text-anchor="middle">${escapeHtml((it||'').slice(0,18))}</text>`;
+  });
+  return s;
+}
+
+/* =========================================================================
+   16) FMEA
+   ========================================================================= */
+function renderFMEA(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>FMEA — Failure Mode & Effect Analysis</h3><div class="desc">RPN = Severity × Occurrence × Detection (skala 1–10). Diurutkan otomatis berdasarkan RPN tertinggi.</div>
+    <button class="btn small" onclick="addFMEA()">+ Tambah Failure Mode</button></div>
+    <div id="fmeaTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(sortedFmea(), fmeaCols(), 'FMEA.csv')">⇩ Export CSV</button></div>
+  </div>`;
+  drawFMEA();
+}
+function fmeaCols(){
+  return [{key:'failureMode',label:'Failure Mode'},{key:'effect',label:'Effect'},{key:'cause',label:'Cause'},
+    {key:'control',label:'Existing Control'},{key:'severity',label:'Severity'},{key:'occurrence',label:'Occurrence'},
+    {key:'detection',label:'Detection'},{key:'rpn',label:'RPN',computed:r=>rpn(r)}];
+}
+function rpn(r){ return (parseFloat(r.severity)||0)*(parseFloat(r.occurrence)||0)*(parseFloat(r.detection)||0); }
+function sortedFmea(){ return [...state.fmea].sort((a,b)=>rpn(b)-rpn(a)); }
+function addFMEA(){
+  state.fmea.push({failureMode:'',effect:'',cause:'',control:'',severity:5,occurrence:5,detection:5});
+  saveState(); drawFMEA();
+}
+function drawFMEA(){
+  const cols=[
+    {key:'failureMode',label:'Failure Mode',type:'text'},{key:'effect',label:'Effect',type:'text'},{key:'cause',label:'Cause',type:'text'},
+    {key:'control',label:'Control',type:'text'},
+    {key:'severity',label:'Sev',type:'select',options:Array.from({length:10},(_,i)=>String(i+1))},
+    {key:'occurrence',label:'Occ',type:'select',options:Array.from({length:10},(_,i)=>String(i+1))},
+    {key:'detection',label:'Det',type:'select',options:Array.from({length:10},(_,i)=>String(i+1))},
+    {key:'rpn',label:'RPN',computed:r=>{
+      const v=rpn(r); const cls=v>=200?'red':v>=100?'yellow':'green';
+      return `<span class="badge ${cls}">${v}</span>`;
+    }},
+  ];
+  // show sorted view but edit against original array via index mapping
+  const order = state.fmea.map((_,i)=>i).sort((a,b)=>rpn(state.fmea[b])-rpn(state.fmea[a]));
+  const rowsView = order.map(i=>state.fmea[i]);
+  renderDataTable({containerId:'fmeaTable',rows:rowsView,columns:cols,onUpdate:()=>{}});
+}
+
+/* =========================================================================
+   17) PARETO
+   ========================================================================= */
+function renderPareto(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Pareto Analysis</h3><div class="desc">Frequency, percentage, dan cumulative % dihitung otomatis.</div>
+    <button class="btn small" onclick="addPareto()">+ Tambah Kategori</button></div>
+    <div id="paretoTable"></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Pareto Chart</h3></div><div class="svg-wrap" id="paretoChart"></div></div>`;
+  drawPareto();
+}
+function addPareto(){ state.pareto.push({category:'',frequency:0}); saveState(); drawPareto(); }
+function paretoComputed(){
+  const total=state.pareto.reduce((s,r)=>s+(parseFloat(r.frequency)||0),0);
+  const sorted=[...state.pareto].sort((a,b)=>(parseFloat(b.frequency)||0)-(parseFloat(a.frequency)||0));
+  let cum=0;
+  return sorted.map(r=>{
+    const f=parseFloat(r.frequency)||0;
+    const pct= total? f/total*100:0; cum+=pct;
+    return {...r, pct: pct.toFixed(1), cum: cum.toFixed(1)};
+  });
+}
+function drawPareto(){
+  const cols=[{key:'category',label:'Category',type:'text'},{key:'frequency',label:'Frequency',type:'number'}];
+  renderDataTable({containerId:'paretoTable',rows:state.pareto,columns:cols,onUpdate:drawParetoChart});
+  drawParetoChart();
+}
+function drawParetoChart(){
+  const holder=document.getElementById('paretoChart'); if(!holder) return;
+  const data=paretoComputed();
+  if(!data.length){ holder.innerHTML=`<div class="hint">Tambahkan kategori & frekuensi untuk melihat chart.</div>`; return; }
+  const w=Math.max(400,data.length*90), h=320, padL=50, padB=40, padT=20;
+  const maxF=Math.max(...data.map(d=>parseFloat(d.frequency)||0),1);
+  const barW= (w-padL-40)/data.length*0.6;
+  let bars='', line='', labels='';
+  const pts=[];
+  data.forEach((d,i)=>{
+    const x = padL + i*((w-padL-40)/data.length) + 10;
+    const bh = (parseFloat(d.frequency)||0)/maxF * (h-padT-padB);
+    const y = h-padB-bh;
+    bars += `<rect x="${x}" y="${y}" width="${barW}" height="${bh}" fill="#c9a227" rx="2"/>`;
+    labels += `<text x="${x+barW/2}" y="${h-padB+16}" font-size="10" fill="#8fa3bd" text-anchor="middle">${escapeHtml((d.category||'').slice(0,10))}</text>`;
+    const cy = h-padB - (parseFloat(d.cum)/100)*(h-padT-padB);
+    pts.push([x+barW/2, cy]);
+  });
+  line = `<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#4f9ce8" stroke-width="2"/>`;
+  const dots = pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3" fill="#4f9ce8"/>`).join('');
+  const y80 = h-padB - 0.8*(h-padT-padB);
+  const line80 = `<line x1="${padL}" y1="${y80}" x2="${w-30}" y2="${y80}" stroke="#e5484d" stroke-dasharray="4,3" stroke-width="1"/><text x="${w-30}" y="${y80-4}" font-size="9" fill="#e5484d" text-anchor="end">80%</text>`;
+  holder.innerHTML = `<svg width="${w}" height="${h+10}" viewBox="0 0 ${w} ${h+10}">${bars}${line80}${line}${dots}${labels}</svg>
+  <div class="legend"><span><span class="sw" style="background:#c9a227"></span>Frequency</span><span><span class="sw" style="background:#4f9ce8"></span>Cumulative %</span></div>`;
+}
+
+/* =========================================================================
+   18) DECISION MATRIX
+   ========================================================================= */
+function renderDecision(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Decision Matrix (Weighted Scoring)</h3><div class="desc">Format baris: Alternative × Criteria × Weight (0-1) × Rating (1-5). Weighted Score = Weight × Rating.</div>
+    <button class="btn small" onclick="addDecision()">+ Tambah Baris</button></div>
+    <div id="decisionTable"></div>
+  </div>
+  <div class="panel"><div class="panel-head"><h3>Rekomendasi</h3></div><div id="decisionSummary"></div></div>`;
+  drawDecision();
+}
+function addDecision(){ state.decision.push({alternative:'',criteria:'',weight:0.2,rating:3}); saveState(); drawDecision(); }
+function drawDecision(){
+  const cols=[
+    {key:'alternative',label:'Alternative',type:'text'},{key:'criteria',label:'Criteria',type:'text'},
+    {key:'weight',label:'Weight (0-1)',type:'number'},{key:'rating',label:'Rating (1-5)',type:'number'},
+    {key:'weighted',label:'Weighted Score',computed:r=>((parseFloat(r.weight)||0)*(parseFloat(r.rating)||0)).toFixed(2)},
+  ];
+  renderDataTable({containerId:'decisionTable',rows:state.decision,columns:cols,onUpdate:drawDecisionSummary});
+  drawDecisionSummary();
+}
+function drawDecisionSummary(){
+  const holder=document.getElementById('decisionSummary'); if(!holder) return;
+  const totals={};
+  state.decision.forEach(r=>{
+    const alt=r.alternative||'(unnamed)';
+    totals[alt]=(totals[alt]||0)+(parseFloat(r.weight)||0)*(parseFloat(r.rating)||0);
+  });
+  const entries=Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){ holder.innerHTML=`<div class="hint">Belum ada data.</div>`; return; }
+  const max=entries[0][1]||1;
+  holder.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Alternative</th><th>Total Weighted Score</th><th></th></tr></thead><tbody>
+    ${entries.map(([alt,score],i)=>`<tr><td>${i===0?'🏆 ':''}${escapeHtml(alt)}</td><td class="computed-cell">${score.toFixed(2)}</td>
+      <td><div style="background:var(--panel-2);border-radius:4px;height:10px;width:180px;"><div style="height:100%;border-radius:4px;width:${(score/max*100)}%;background:${i===0?'#c9a227':'#4f9ce8'}"></div></div></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+/* =========================================================================
+   19) KAIZEN / IMPROVEMENT REGISTER
+   ========================================================================= */
+function renderKaizen(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Kaizen / Improvement Register</h3><div class="desc">ROI Improvement = Annual Benefit / Improvement Cost</div>
+    <button class="btn small" onclick="addKaizen()">+ Tambah Improvement</button></div>
+    <div id="kaizenTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(state.kaizen, kaizenCols(), 'Kaizen_Register.csv')">⇩ Export CSV</button></div>
+  </div>`;
+  drawKaizen();
+}
+function kaizenCols(){
+  return [{key:'problem',label:'Problem'},{key:'current',label:'Current Condition'},{key:'proposed',label:'Proposed Improvement'},
+    {key:'benefit',label:'Annual Benefit'},{key:'cost',label:'Cost'},{key:'roi',label:'ROI',computed:r=>kaizenROI(r)},
+    {key:'owner',label:'Owner'},{key:'deadline',label:'Deadline'},{key:'status',label:'Status'}];
+}
+function kaizenROI(r){ const c=parseFloat(r.cost)||0, b=parseFloat(r.benefit)||0; return c? (b/c).toFixed(2)+'x' : '-'; }
+function addKaizen(){
+  state.kaizen.push({problem:'',current:'',proposed:'',benefit:0,cost:0,owner:'',deadline:'',status:'Proposed'});
+  saveState(); drawKaizen();
+}
+function drawKaizen(){
+  const cols=[
+    {key:'problem',label:'Problem',type:'text'},{key:'current',label:'Current',type:'text'},{key:'proposed',label:'Proposed',type:'text'},
+    {key:'benefit',label:'Annual Benefit',type:'number'},{key:'cost',label:'Cost',type:'number'},
+    {key:'roi',label:'ROI',computed:kaizenROI},
+    {key:'owner',label:'Owner',type:'text'},{key:'deadline',label:'Deadline',type:'date'},
+    {key:'status',label:'Status',type:'select',options:['Proposed','In Progress','Done','Rejected']},
+  ];
+  renderDataTable({containerId:'kaizenTable',rows:state.kaizen,columns:cols});
+}
+
+/* =========================================================================
+   20) MINING PRODUCTION TEMPLATE
+   ========================================================================= */
+function renderMining(){
+  const c=document.getElementById('content');
+  c.innerHTML=`<div class="panel">
+    <div class="panel-head"><h3>Mining Production Dashboard</h3><div class="desc">Template industri hauling/tambang — target vs actual harian, availability, utilization, cost/ton.</div>
+    <button class="btn small" onclick="addMining()">+ Tambah Data Harian</button></div>
+    <div id="miningTable"></div>
+    <div style="margin-top:14px;"><button class="btn ghost small" onclick="exportCSV(state.mining, miningCols(), 'Mining_Production.csv')">⇩ Export CSV</button></div>
+  </div>
+  <div class="grid cols-4" id="miningStats"></div>`;
+  drawMining();
+}
+function miningCols(){
+  return [{key:'date',label:'Date'},{key:'target',label:'Target (BCM/Ton)'},{key:'actual',label:'Actual'},
+    {key:'achievement',label:'Achievement %',computed:r=>miningAchv(r)},
+    {key:'trips',label:'Trips'},{key:'cycleTime',label:'Cycle Time (min)'},{key:'fuel',label:'Fuel (L)'},
+    {key:'availability',label:'Availability %'},{key:'utilization',label:'Utilization %'},
+    {key:'costPerTon',label:'Cost/Ton'},{key:'delay',label:'Delay (hrs)'}];
+}
+function miningAchv(r){ const t=parseFloat(r.target)||0,a=parseFloat(r.actual)||0; return t? Math.round(a/t*100)+'%':'-'; }
+function addMining(){
+  state.mining.push({date:'',target:0,actual:0,trips:0,cycleTime:0,fuel:0,availability:85,utilization:80,costPerTon:0,delay:0});
+  saveState(); drawMining();
+}
+function drawMining(){
+  const cols=[
+    {key:'date',label:'Date',type:'date'},{key:'target',label:'Target',type:'number'},{key:'actual',label:'Actual',type:'number'},
+    {key:'achievement',label:'Achv %',computed:miningAchv},
+    {key:'trips',label:'Trips',type:'number'},{key:'cycleTime',label:'Cycle (min)',type:'number'},{key:'fuel',label:'Fuel (L)',type:'number'},
+    {key:'availability',label:'PA %',type:'number'},{key:'utilization',label:'UA %',type:'number'},
+    {key:'costPerTon',label:'Cost/Ton',type:'number'},{key:'delay',label:'Delay (hrs)',type:'number'},
+  ];
+  renderDataTable({containerId:'miningTable',rows:state.mining,columns:cols,onUpdate:drawMiningStats});
+  drawMiningStats();
+}
+function drawMiningStats(){
+  const holder=document.getElementById('miningStats'); if(!holder) return;
+  if(!state.mining.length){ holder.innerHTML=''; return; }
+  const avg=(k)=> state.mining.reduce((s,r)=>s+(parseFloat(r[k])||0),0)/state.mining.length;
+  const totalTarget=state.mining.reduce((s,r)=>s+(parseFloat(r.target)||0),0);
+  const totalActual=state.mining.reduce((s,r)=>s+(parseFloat(r.actual)||0),0);
+  const achv= totalTarget? Math.round(totalActual/totalTarget*100):0;
+  holder.innerHTML = `
+    <div class="stat-card"><div class="label">Overall Achievement</div><div class="value ${achv>=100?'green':achv>=80?'yellow':'red'}">${achv}%</div></div>
+    <div class="stat-card"><div class="label">Avg Physical Availability</div><div class="value gold">${avg('availability').toFixed(1)}%</div></div>
+    <div class="stat-card"><div class="label">Avg Utilization</div><div class="value gold">${avg('utilization').toFixed(1)}%</div></div>
+    <div class="stat-card"><div class="label">Avg Cost / Ton</div><div class="value">${avg('costPerTon').toLocaleString('id-ID',{maximumFractionDigits:0})}</div></div>
+  `;
+}
+
+/* =========================================================================
+   RENDER DISPATCH
+   ========================================================================= */
+const RENDERERS = {
+  dashboard:renderDashboard, catalog:renderCatalog, swot:renderSWOT, pestel:renderPESTEL,
+  okr:renderOKR, kpi:renderKPI, bsc:renderBSC, eisenhower:renderEisenhower,
+  wbs:renderWBS, raci:renderRACI, evm:renderEVM, risk:renderRisk,
+  pdca:renderPDCA, fivewhys:renderFiveWhys, fishbone:renderFishbone, fmea:renderFMEA,
+  pareto:renderPareto, decision:renderDecision, kaizen:renderKaizen, mining:renderMining,
+};
+function renderSection(id){ (RENDERERS[id]||renderDashboard)(); }
+
+/* =========================================================================
+   BOOTSTRAP
+   ========================================================================= */
+buildNav();
+goTo('dashboard');
+</script>
+</body>
+</html>

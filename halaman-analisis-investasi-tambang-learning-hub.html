@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Investasi Tambang - Interactive Learning Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- MathJax for rendering LaTeX formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Vue.js 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .glass-panel { background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .amber-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .emerald-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .blue-gradient { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .purple-gradient { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .formula-box { background: rgba(15, 23, 42, 0.9); border-left: 4px solid #f59e0b; padding: 12px; font-family: monospace; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .glass-panel { background: white !important; border: 1px solid #ccc !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="custom-scrollbar">
+
+<div id="app" class="min-h-screen flex flex-col">
+
+    <!-- Header Navbar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-700/50 bg-slate-900/90 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 amber-gradient rounded-xl text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20 flex items-center justify-center">
+                        <i class="fa-solid fa-pickaxe"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-amber-400 leading-tight">Analisis Investasi Tambang</h1>
+                        <p class="text-xs text-slate-400">Portal Belajar, Valuasi DCF & Model Keuangan Interaktif</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs Desktop -->
+                <nav class="hidden lg:flex space-x-1 text-xs font-semibold">
+                    <button @click="setActiveTab('summary')" :class="activeTab === 'summary' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-book-open mr-1.5"></i> Teori Bab I - VIII
+                    </button>
+                    <button @click="setActiveTab('calculator')" :class="activeTab === 'calculator' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-calculator mr-1.5"></i> Simulator NPV/IRR
+                    </button>
+                    <button @click="setActiveTab('dcf')" :class="activeTab === 'dcf' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-chart-line mr-1.5 text-emerald-400"></i> Model DCF & Valuasi
+                    </button>
+                    <button @click="setActiveTab('finmodel')" :class="activeTab === 'finmodel' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-file-invoice-dollar mr-1.5 text-blue-400"></i> Model Keuangan
+                    </button>
+                    <button @click="setActiveTab('examples')" :class="activeTab === 'examples' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-graduation-cap mr-1.5"></i> Soal & Pembahasan
+                    </button>
+                    <button @click="setActiveTab('casestudy')" :class="activeTab === 'casestudy' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-briefcase mr-1.5"></i> Studi Kasus
+                    </button>
+                    <button @click="setActiveTab('quiz')" :class="activeTab === 'quiz' ? 'bg-amber-500/20 text-amber-400 border-amber-500' : 'text-slate-300 hover:text-white hover:bg-slate-800'" class="px-3 py-2 rounded-lg border-b-2 transition flex items-center">
+                        <i class="fa-solid fa-vial mr-1.5"></i> Kuis
+                    </button>
+                </nav>
+
+                <div class="flex items-center space-x-2">
+                    <button @click="downloadPDF" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-500 text-slate-950 hover:bg-amber-400 transition flex items-center shadow-lg shadow-amber-500/20">
+                        <i class="fa-solid fa-print mr-1.5"></i> Cetak Modul
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Sub-Bar Mobile -->
+    <div class="lg:hidden glass-panel border-b border-slate-800 p-2 overflow-x-auto flex space-x-2 text-xs no-print">
+        <button @click="setActiveTab('summary')" :class="activeTab === 'summary' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">Teori Bab</button>
+        <button @click="setActiveTab('calculator')" :class="activeTab === 'calculator' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">Simulator</button>
+        <button @click="setActiveTab('dcf')" :class="activeTab === 'dcf' ? 'bg-emerald-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">DCF Model</button>
+        <button @click="setActiveTab('finmodel')" :class="activeTab === 'finmodel' ? 'bg-blue-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">Model Keuangan</button>
+        <button @click="setActiveTab('examples')" :class="activeTab === 'examples' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">Soal & Pembahasan</button>
+        <button @click="setActiveTab('casestudy')" :class="activeTab === 'casestudy' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">Studi Kasus</button>
+        <button @click="setActiveTab('quiz')" :class="activeTab === 'quiz' ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'" class="px-3 py-1.5 rounded-md whitespace-nowrap">Kuis</button>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <div class="glass-panel rounded-2xl p-6 border-l-4 border-amber-500 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10 text-amber-500 text-9xl pointer-events-none">
+                <i class="fa-solid fa-helmet-safety"></i>
+            </div>
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-400 rounded-full border border-amber-500/30">
+                        Modul Pembelajaran & Evaluasi Kelayakan Finansial Pertambangan
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white mt-2">
+                        Analisis Investasi Tambang <span class="text-amber-400">(Comprehensive Learning & Valuation Hub)</span>
+                    </h2>
+                    <div class="text-slate-300 text-sm mt-2 flex flex-wrap items-center gap-2">
+                        <span class="flex items-center text-amber-300 font-bold bg-slate-900/80 px-3 py-1 rounded-lg border border-slate-700">
+                            <i class="fa-solid fa-user-graduate mr-2 text-amber-400"></i>
+                            Ir. Agus Budianto Ulil Absyor S.T., M.M., M.LScm., M.AIB.
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 bg-slate-900/80 p-3 rounded-xl border border-slate-700/60">
+                    <div class="text-center px-3 border-r border-slate-700">
+                        <span class="block text-xl font-bold text-amber-400">8</span>
+                        <span class="text-[10px] text-slate-400">Bab Materi Lengkap</span>
+                    </div>
+                    <div class="text-center px-3 border-r border-slate-700">
+                        <span class="block text-xl font-bold text-emerald-400">2</span>
+                        <span class="text-[10px] text-slate-400">Kalkulator Model</span>
+                    </div>
+                    <div class="text-center px-3">
+                        <span class="block text-xl font-bold text-blue-400">IFRS / PSAK</span>
+                        <span class="text-[10px] text-slate-400">Standar Akuntansi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section v-show="activeTab === 'summary'" class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white flex items-center">
+                    <i class="fa-solid fa-book-bookmark text-amber-400 mr-2"></i> Kajian Teoritik & Konsep Mendalam Pertambangan (Bab I - VIII)
+                </h3>
+                <span class="text-xs text-slate-400">Pilih Bab untuk membaca modul teori mendalam</span>
+            </div>
+
+            <!-- Chapter Buttons -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2">
+                <button v-for="(chapter, index) in chapters" :key="index"
+                        @click="selectChapter(index)"
+                        :class="selectedChapter === index ? 'bg-amber-500 text-slate-950 font-bold border-amber-400' : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700'"
+                        class="p-2.5 rounded-xl border text-center transition flex flex-col items-center justify-center">
+                    <span class="text-[10px] uppercase font-semibold opacity-80">Bab</span>
+                    <span class="text-lg font-extrabold">{{ chapter.num }}</span>
+                </button>
+            </div>
+
+            <!-- Selected Chapter Detail Box -->
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700 shadow-2xl">
+                <div class="flex items-center space-x-4 pb-4 border-b border-slate-700 mb-6">
+                    <div class="w-12 h-12 rounded-xl amber-gradient flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shrink-0">
+                        {{ chapters[selectedChapter].num }}
+                    </div>
+                    <div>
+                        <h4 class="text-xl md:text-2xl font-bold text-amber-400">{{ chapters[selectedChapter].title }}</h4>
+                        <p class="text-xs md:text-sm text-slate-300 font-medium">{{ chapters[selectedChapter].subtitle }}</p>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-6">
+                    <!-- Detailed Content Column -->
+                    <div class="lg:col-span-8 space-y-5">
+                        <h5 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center">
+                            <i class="fa-solid fa-layer-group mr-2"></i> Landasan Teori Akademis & Metodologi Kelayakan
+                        </h5>
+                        <div class="space-y-4">
+                            <div v-for="(point, pIdx) in chapters[selectedChapter].points" :key="pIdx" class="bg-slate-900/70 p-4 rounded-xl border border-slate-800/80 hover:border-slate-700 transition">
+                                <div class="text-sm font-bold text-amber-300 mb-2 flex items-center">
+                                    <i class="fa-solid fa-angle-right text-amber-500 mr-2"></i> {{ point.heading }}
+                                </div>
+                                <div class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2" v-html="point.body"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulas & Takeaways Column -->
+                    <div class="lg:col-span-4 space-y-5">
+                        <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-800 space-y-4">
+                            <h5 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center border-b border-slate-800 pb-2">
+                                <i class="fa-solid fa-square-root-variable mr-2"></i> Formulasi & Persamaan Penting
+                            </h5>
+                            <div class="space-y-3">
+                                <div v-for="(key, kIdx) in chapters[selectedChapter].keyTakeaways" :key="kIdx" class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/60">
+                                    <div class="font-bold text-xs text-amber-300 mb-1">{{ key.title }}</div>
+                                    <p class="text-xs text-slate-300 leading-relaxed" v-html="key.desc"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-200 space-y-1">
+                            <div class="font-bold text-amber-400 flex items-center">
+                                <i class="fa-solid fa-lightbulb mr-2"></i> Catatan Studi & Tips Evaluasi:
+                            </div>
+                            <p class="text-slate-300 leading-relaxed">{{ chapters[selectedChapter].examTip }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section v-show="activeTab === 'calculator'" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700">
+                <div class="border-b border-slate-700 pb-4 mb-6">
+                    <h3 class="text-xl font-bold text-white flex items-center">
+                        <i class="fa-solid fa-calculator text-amber-400 mr-2"></i> Simulator & Kalkulator Kelayakan Investasi Tambang
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Hitung Net Present Value (NPV), Internal Rate of Return (IRR), Payback Period (PBP), dan Break-Even Point (BEP) proyek pertambangan.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <!-- Form Input -->
+                    <div class="lg:col-span-5 space-y-4 bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+                            Parameter Input Cash Flow Proyek
+                        </h4>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Investasi Modal Awal (I₀) [$]</label>
+                            <input type="number" v-model.number="calc.initialInvestment" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-amber-300 font-mono focus:outline-none focus:border-amber-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Discount Rate / MARR (%)</label>
+                                <input type="number" v-model.number="calc.discountRate" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-amber-300 font-mono focus:outline-none focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Umur Proyek (Tahun)</label>
+                                <input type="number" v-model.number="calc.years" min="1" max="10" @change="adjustCashflows" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-amber-300 font-mono focus:outline-none focus:border-amber-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-2">Arus Kas Bersih Tahunan (CFₜ) [$]</label>
+                            <div class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                                <div v-for="(cf, idx) in calc.cashflows" :key="idx" class="flex items-center space-x-2 text-xs">
+                                    <span class="w-16 font-mono text-slate-400">Tahun {{ idx + 1 }}:</span>
+                                    <input type="number" v-model.number="calc.cashflows[idx]" class="flex-grow bg-slate-800 border border-slate-700 rounded px-2.5 py-1 text-slate-200 font-mono focus:outline-none focus:border-amber-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-800">
+
+                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Input Parameter Titik Impas (BEP)</h4>
+                        <div class="grid grid-cols-3 gap-2 text-xs">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Biaya Tetap (FC)</label>
+                                <input type="number" v-model.number="calc.bepFC" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 font-mono text-slate-200">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Harga/Ton (P)</label>
+                                <input type="number" v-model.number="calc.bepPrice" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 font-mono text-slate-200">
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Biaya Var/Ton (VC)</label>
+                                <input type="number" v-model.number="calc.bepVC" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 font-mono text-slate-200">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Results -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Net Present Value</span>
+                                <span class="text-lg font-extrabold font-mono" :class="calcResults.npv >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                    {{ formatCurrency(calcResults.npv) }}
+                                </span>
+                                <span class="text-[10px] block mt-1" :class="calcResults.npv >= 0 ? 'text-emerald-500' : 'text-rose-500'">
+                                    {{ calcResults.npv >= 0 ? '✓ Layak (NPV ≥ 0)' : '✗ Tidak Layak' }}
+                                </span>
+                            </div>
+
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Internal Rate of Return</span>
+                                <span class="text-lg font-extrabold font-mono text-amber-400">
+                                    {{ calcResults.irr.toFixed(2) }}%
+                                </span>
+                                <span class="text-[10px] block mt-1" :class="calcResults.irr >= calc.discountRate ? 'text-emerald-500' : 'text-rose-500'">
+                                    {{ calcResults.irr >= calc.discountRate ? '✓ > MARR (' + calc.discountRate + '%)' : '✗ < MARR' }}
+                                </span>
+                            </div>
+
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Payback Period</span>
+                                <span class="text-lg font-extrabold font-mono text-cyan-400">
+                                    {{ calcResults.pbp.toFixed(2) }} Thn
+                                </span>
+                                <span class="text-[10px] text-slate-400 block mt-1">Pengembalian Modal</span>
+                            </div>
+
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">BEP Produksi</span>
+                                <span class="text-lg font-extrabold font-mono text-purple-400">
+                                    {{ formatNumber(calcResults.bepUnits) }} Ton
+                                </span>
+                                <span class="text-[10px] text-slate-400 block mt-1">Titik Impas Vol</span>
+                            </div>
+                        </div>
+
+                        <!-- Calculation Breakdown Table -->
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 overflow-x-auto">
+                            <h5 class="text-xs font-bold text-slate-300 uppercase mb-3">Tabel Diskon Arus Kas (Discounted Cash Flow Breakdown)</h5>
+                            <table class="w-full text-left text-xs text-slate-300 font-mono">
+                                <thead class="bg-slate-800 text-amber-400">
+                                    <tr>
+                                        <th class="p-2">Tahun (t)</th>
+                                        <th class="p-2">Cash Flow (CFₜ)</th>
+                                        <th class="p-2">DF ({{ calc.discountRate }}%)</th>
+                                        <th class="p-2">Present Value (PV)</th>
+                                        <th class="p-2">Kumulatif PV</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="p-2">0</td>
+                                        <td class="p-2 text-rose-400">-{{ formatCurrency(calc.initialInvestment) }}</td>
+                                        <td class="p-2">1.0000</td>
+                                        <td class="p-2 text-rose-400">-{{ formatCurrency(calc.initialInvestment) }}</td>
+                                        <td class="p-2 text-rose-400">-{{ formatCurrency(calc.initialInvestment) }}</td>
+                                    </tr>
+                                    <tr v-for="(row, idx) in calcResults.table" :key="idx" class="border-b border-slate-800/50">
+                                        <td class="p-2">{{ row.year }}</td>
+                                        <td class="p-2">{{ formatCurrency(row.cf) }}</td>
+                                        <td class="p-2 text-slate-400">{{ row.df.toFixed(4) }}</td>
+                                        <td class="p-2 text-emerald-400">{{ formatCurrency(row.pv) }}</td>
+                                        <td class="p-2" :class="row.cumPV >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                            {{ formatCurrency(row.cumPV) }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section v-show="activeTab === 'dcf'" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700">
+                <div class="border-b border-slate-700 pb-4 mb-6 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-emerald-400 tracking-wider">Modul Valuasi Cadangan Pertambangan</span>
+                        <h3 class="text-2xl font-bold text-white flex items-center mt-1">
+                            <i class="fa-solid fa-chart-line text-emerald-400 mr-2.5"></i> Kalkulator Model Valuasi DCF & Net Asset Value (NAV)
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Valuasi aset cadangan tambang berbasis Discounted Cash Flow (DCF), Net Asset Value (NAV), Enterprise Value, dan Analisis Sensitivitas Harga Komoditas.</p>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <!-- DCF Inputs -->
+                    <div class="lg:col-span-5 space-y-4 bg-slate-900/80 p-5 rounded-xl border border-slate-800">
+                        <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+                            Parameter Valuasi Cadangan & Tambang
+                        </h4>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Total Cadangan (Ton/Oz)</label>
+                                <input type="number" v-model.number="dcf.reserves" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-emerald-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Laju Produksi/Thn</label>
+                                <input type="number" v-model.number="dcf.annualProd" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-emerald-300 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Harga Acuan ($/Ton)</label>
+                                <input type="number" v-model.number="dcf.price" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-emerald-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Total OPEX ($/Ton)</label>
+                                <input type="number" v-model.number="dcf.opexPerTon" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-emerald-300 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Royalti (%)</label>
+                                <input type="number" v-model.number="dcf.royaltyRate" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-amber-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Pajak Badan (%)</label>
+                                <input type="number" v-model.number="dcf.taxRate" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-amber-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">WACC (%)</label>
+                                <input type="number" v-model.number="dcf.wacc" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-amber-300 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Initial CAPEX ($)</label>
+                                <input type="number" v-model.number="dcf.initialCapex" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Hutang Bersih (Net Debt) [$]</label>
+                                <input type="number" v-model.number="dcf.netDebt" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DCF Outputs -->
+                    <div class="lg:col-span-7 space-y-5">
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Umur Tambang (LOM)</span>
+                                <span class="text-xl font-extrabold font-mono text-cyan-400">{{ dcfResults.mineLife }} Tahun</span>
+                                <span class="text-[10px] text-slate-400 block mt-1">Cadangan / Produksi</span>
+                            </div>
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Enterprise Value (EV)</span>
+                                <span class="text-xl font-extrabold font-mono text-emerald-400">{{ formatCurrency(dcfResults.ev) }}</span>
+                                <span class="text-[10px] text-slate-400 block mt-1">PV Arus Kas Terdiskon</span>
+                            </div>
+                            <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Equity Value (NAV)</span>
+                                <span class="text-xl font-extrabold font-mono text-amber-400">{{ formatCurrency(dcfResults.equityVal) }}</span>
+                                <span class="text-[10px] text-slate-400 block mt-1">EV dikurangi Net Debt</span>
+                            </div>
+                        </div>
+
+                        <!-- Cash Flow Schedule Table -->
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 overflow-x-auto">
+                            <h5 class="text-xs font-bold text-emerald-400 uppercase mb-2">Proyeksi Diskon Arus Kas Umur Tambang (LOM DCF Schedule)</h5>
+                            <table class="w-full text-left text-[11px] text-slate-300 font-mono">
+                                <thead class="bg-slate-800 text-emerald-400">
+                                    <tr>
+                                        <th class="p-1.5">Tahun</th>
+                                        <th class="p-1.5">Revenue ($)</th>
+                                        <th class="p-1.5">OPEX ($)</th>
+                                        <th class="p-1.5">EBITDA ($)</th>
+                                        <th class="p-1.5">NCF ($)</th>
+                                        <th class="p-1.5">PV NCF ({{ dcf.wacc }}%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-slate-800">
+                                        <td class="p-1.5">Thn 0</td>
+                                        <td class="p-1.5">-</td>
+                                        <td class="p-1.5">-</td>
+                                        <td class="p-1.5">-</td>
+                                        <td class="p-1.5 text-rose-400">-{{ formatCurrency(dcf.initialCapex) }}</td>
+                                        <td class="p-1.5 text-rose-400">-{{ formatCurrency(dcf.initialCapex) }}</td>
+                                    </tr>
+                                    <tr v-for="r in dcfResults.rows" :key="r.year" class="border-b border-slate-800/50">
+                                        <td class="p-1.5">Thn {{ r.year }}</td>
+                                        <td class="p-1.5">{{ formatCurrency(r.revenue) }}</td>
+                                        <td class="p-1.5">{{ formatCurrency(r.opex) }}</td>
+                                        <td class="p-1.5 text-amber-300">{{ formatCurrency(r.ebitda) }}</td>
+                                        <td class="p-1.5 text-emerald-400">{{ formatCurrency(r.ncf) }}</td>
+                                        <td class="p-1.5 text-emerald-300 font-bold">{{ formatCurrency(r.pvNcf) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Sensitivity Matrix -->
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+                            <h5 class="text-xs font-bold text-amber-400 uppercase mb-2">Matriks Sensitivitas NAV: Harga Komoditas vs WACC</h5>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-center text-[11px] font-mono border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-800 text-slate-300">
+                                            <th class="p-1 border border-slate-700">Harga \ WACC</th>
+                                            <th v-for="w in dcfSensitivityWaccs" :key="w" class="p-1 border border-slate-700">{{ w }}%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="pFactor in [0.85, 1.0, 1.15]" :key="pFactor">
+                                            <td class="p-1 bg-slate-800 font-bold text-amber-300 border border-slate-700">
+                                                ${{ Math.round(dcf.price * pFactor) }} ({{ Math.round(pFactor * 100) }}%)
+                                            </td>
+                                            <td v-for="w in dcfSensitivityWaccs" :key="w" class="p-1 border border-slate-700" :class="calculateNAV(pFactor, w) >= 0 ? 'text-emerald-400' : 'text-rose-400'">
+                                                {{ formatCurrency(calculateNAV(pFactor, w)) }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section v-show="activeTab === 'finmodel'" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700">
+                <div class="border-b border-slate-700 pb-4 mb-6 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-blue-400 tracking-wider">Modul Model Keuangan Tambang Pro-Forma</span>
+                        <h3 class="text-2xl font-bold text-white flex items-center mt-1">
+                            <i class="fa-solid fa-file-invoice-dollar text-blue-400 mr-2.5"></i> Kalkulator Model Keuangan & Arus Kas Tambang
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Simulasi Pro-Forma Laporan Laba Rugi (P&L), Free Cash Flow to Firm (FCFF), Free Cash Flow to Equity (FCFE), dan Rasio Kemampuan Membayar Hutang (DSCR).</p>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <!-- Financial Model Input Form -->
+                    <div class="lg:col-span-4 space-y-4 bg-slate-900/80 p-5 rounded-xl border border-slate-800">
+                        <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+                            Asumsi Finansial & Operasional
+                        </h4>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Volume Produksi Batubara/Ore (Ton/Thn)</label>
+                            <input type="number" v-model.number="fm.prodVol" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-blue-300 font-mono">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Harga ($/Ton)</label>
+                                <input type="number" v-model.number="fm.price" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-blue-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Stripping Ratio (bcm/t)</label>
+                                <input type="number" v-model.number="fm.sr" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-blue-300 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Cost OB ($/bcm)</label>
+                                <input type="number" v-model.number="fm.costOb" step="0.1" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Cost Coal ($/ton)</label>
+                                <input type="number" v-model.number="fm.costCoal" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Royalti (%)</label>
+                                <input type="number" v-model.number="fm.royaltyPct" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-amber-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">G&A Cost ($/ton)</label>
+                                <input type="number" v-model.number="fm.gaCost" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-800">
+
+                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Struktur Pembiayaan & Depresiasi</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">CAPEX Awal ($)</label>
+                                <input type="number" v-model.number="fm.capex" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-amber-300 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Proporsi Debt (%)</label>
+                                <input type="number" v-model.number="fm.debtPct" step="5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-amber-300 font-mono">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Suku Bunga Pinjaman (%)</label>
+                                <input type="number" v-model.number="fm.interestRate" step="0.5" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Masa Amortisasi (Thn)</label>
+                                <input type="number" v-model.number="fm.debtTenor" min="1" max="10" class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-slate-200 font-mono">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Financial Model Output Tables & Metrics -->
+                    <div class="lg:col-span-8 space-y-5">
+                        <!-- Key Ratios Header -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block font-semibold">Total Revenue / Thn</span>
+                                <span class="text-base font-extrabold font-mono text-blue-400">{{ formatCurrency(fmResults.annualRev) }}</span>
+                            </div>
+                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block font-semibold">Margin EBITDA</span>
+                                <span class="text-base font-extrabold font-mono text-emerald-400">{{ fmResults.ebitdaMargin.toFixed(1) }}%</span>
+                            </div>
+                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block font-semibold">Cash Cash Cost / Ton</span>
+                                <span class="text-base font-extrabold font-mono text-amber-400">${{ fmResults.cashCostPerTon.toFixed(2) }}</span>
+                            </div>
+                            <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                                <span class="text-[10px] text-slate-400 block font-semibold">Rata-rata DSCR</span>
+                                <span class="text-base font-extrabold font-mono" :class="fmResults.dscr >= 1.3 ? 'text-emerald-400' : 'text-rose-400'">{{ fmResults.dscr.toFixed(2) }}x</span>
+                            </div>
+                        </div>
+
+                        <!-- Pro-Forma Income & Cash Flow Statement Table -->
+                        <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800 overflow-x-auto">
+                            <h5 class="text-xs font-bold text-blue-400 uppercase mb-3">Laporan Laba Rugi & Arus Kas Pro-Forma Tahunan ($)</h5>
+                            <table class="w-full text-left text-[11px] text-slate-300 font-mono border-collapse">
+                                <thead class="bg-slate-800 text-blue-300">
+                                    <tr>
+                                        <th class="p-1.5 border-b border-slate-700">Komponen Keuangan</th>
+                                        <th class="p-1.5 border-b border-slate-700 text-right" v-for="y in 5" :key="y">Tahun {{ y }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    <tr>
+                                        <td class="p-1.5 text-white font-bold">Pendapatan Kotor (Gross Revenue)</td>
+                                        <td class="p-1.5 text-right text-emerald-400" v-for="y in 5" :key="y">{{ formatCurrency(fmResults.annualRev) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5">(-) Royalti Pemerintah</td>
+                                        <td class="p-1.5 text-right text-rose-300" v-for="y in 5" :key="y">({{ formatCurrency(fmResults.royaltyVal) }})</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5 text-slate-300">Pendapatan Bersih (Net Revenue)</td>
+                                        <td class="p-1.5 text-right" v-for="y in 5" :key="y">{{ formatCurrency(fmResults.netRev) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5">(-) Biaya Pengupasan OB & Tambang</td>
+                                        <td class="p-1.5 text-right text-rose-300" v-for="y in 5" :key="y">({{ formatCurrency(fmResults.miningOpex) }})</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5">(-) Biaya Umum & Administrasi (G&A)</td>
+                                        <td class="p-1.5 text-right text-rose-300" v-for="y in 5" :key="y">({{ formatCurrency(fmResults.gaVal) }})</td>
+                                    </tr>
+                                    <tr class="bg-slate-800/60 font-bold text-amber-300">
+                                        <td class="p-1.5">EBITDA Tambang</td>
+                                        <td class="p-1.5 text-right" v-for="y in 5" :key="y">{{ formatCurrency(fmResults.ebitda) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5">(-) Depresiasi & Amortisasi (D&A)</td>
+                                        <td class="p-1.5 text-right text-slate-400" v-for="y in 5" :key="y">({{ formatCurrency(fmResults.depr) }})</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5 font-bold">Laba Usaha (EBIT)</td>
+                                        <td class="p-1.5 text-right font-bold" v-for="y in 5" :key="y">{{ formatCurrency(fmResults.ebit) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5">(-) Beban Bunga Pinjaman</td>
+                                        <td class="p-1.5 text-right text-rose-300" v-for="y in 5" :key="y">({{ formatCurrency(y <= fm.debtTenor ? fmResults.interestVal : 0) }})</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1.5">(-) Pajak Penghasilan Badan (22%)</td>
+                                        <td class="p-1.5 text-right text-rose-300" v-for="y in 5" :key="y">({{ formatCurrency(fmResults.taxVal) }})</td>
+                                    </tr>
+                                    <tr class="bg-slate-800/80 font-bold text-emerald-400">
+                                        <td class="p-1.5">Laba Bersih Setelah Pajak (EAT)</td>
+                                        <td class="p-1.5 text-right" v-for="y in 5" :key="y">{{ formatCurrency(fmResults.eat) }}</td>
+                                    </tr>
+                                    <tr class="border-t-2 border-slate-700 font-bold text-cyan-300">
+                                        <td class="p-1.5">Free Cash Flow to Firm (FCFF)</td>
+                                        <td class="p-1.5 text-right" v-for="y in 5" :key="y">{{ formatCurrency(fmResults.fcff) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section v-show="activeTab === 'examples'" class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white flex items-center">
+                    <i class="fa-solid fa-graduation-cap text-amber-400 mr-2"></i> Contoh Soal & Pembahasan Matematika Tambang Step-by-Step
+                </h3>
+            </div>
+
+            <div class="space-y-4">
+                <div v-for="(ex, index) in sampleProblems" :key="index" class="glass-panel rounded-2xl p-6 border border-slate-700">
+                    <div class="flex items-start justify-between cursor-pointer" @click="ex.open = !ex.open">
+                        <div class="flex items-center space-x-3">
+                            <span class="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                                {{ ex.category }}
+                            </span>
+                            <h4 class="text-base font-bold text-white">{{ ex.title }}</h4>
+                        </div>
+                        <button class="text-slate-400 hover:text-amber-400 transition text-lg">
+                            <i :class="ex.open ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+                        </button>
+                    </div>
+
+                    <div class="mt-4 text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-4 rounded-xl border border-slate-800" v-html="ex.question"></div>
+
+                    <!-- Accordion Solution -->
+                    <div v-show="ex.open" class="mt-4 pt-4 border-t border-slate-700/80 space-y-3">
+                        <div class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center">
+                            <i class="fa-solid fa-square-check mr-2"></i> Langkah Pembahasan & Analisis Rinci:
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl text-xs md:text-sm font-mono text-slate-200 border border-amber-500/20 leading-relaxed whitespace-pre-line overflow-x-auto" v-html="ex.solution"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section v-show="activeTab === 'casestudy'" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700">
+                <div class="border-b border-slate-700 pb-4 mb-6 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <span class="text-xs uppercase font-bold text-amber-400 tracking-wider">Modul Studi Kasus Riil Pertambangan</span>
+                        <h3 class="text-2xl font-bold text-white">Evaluasi & Komparasi Keputusan Investasi Pertambangan</h3>
+                    </div>
+                    <!-- Case Study Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <button v-for="(cs, csIdx) in caseStudies" :key="csIdx"
+                                @click="selectedCaseStudy = csIdx"
+                                :class="selectedCaseStudy === csIdx ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                class="px-3 py-1.5 rounded-lg text-xs transition border border-slate-700">
+                            {{ cs.shortName }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Case Detail -->
+                <div class="space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-slate-900/80 p-4 rounded-xl border border-slate-800 gap-3">
+                        <div>
+                            <span class="text-xs font-bold uppercase text-amber-400">{{ caseStudies[selectedCaseStudy].category }}</span>
+                            <h4 class="text-lg font-bold text-white">{{ caseStudies[selectedCaseStudy].title }}</h4>
+                        </div>
+                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                            Kesimpulan: {{ caseStudies[selectedCaseStudy].status }}
+                        </span>
+                    </div>
+
+                    <div class="grid md:grid-cols-12 gap-6">
+                        <!-- Problem Description -->
+                        <div class="md:col-span-5 space-y-4 text-xs md:text-sm text-slate-300">
+                            <h5 class="text-sm font-bold text-amber-300 flex items-center">
+                                <i class="fa-solid fa-circle-info mr-2"></i> Latar Belakang & Parameter Proyek
+                            </h5>
+                            <p class="leading-relaxed text-xs" v-html="caseStudies[selectedCaseStudy].description"></p>
+                            
+                            <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                                <span class="text-xs font-bold text-amber-400 block border-b border-slate-800 pb-1">Parameter Utama:</span>
+                                <ul class="space-y-1.5 text-xs font-mono">
+                                    <li v-for="(param, pIdx) in caseStudies[selectedCaseStudy].parameters" :key="pIdx" class="flex justify-between">
+                                        <span class="text-slate-400">{{ param.label }}:</span>
+                                        <span class="text-slate-200 font-bold">{{ param.value }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Calculations Table -->
+                        <div class="md:col-span-7 space-y-4">
+                            <h5 class="text-sm font-bold text-amber-300 flex items-center">
+                                <i class="fa-solid fa-chart-pie mr-2"></i> Proyeksi Keuangan & Evaluasi Kelayakan
+                            </h5>
+                            
+                            <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-xs overflow-x-auto">
+                                <table class="w-full text-left font-mono">
+                                    <thead>
+                                        <tr class="text-amber-400 border-b border-slate-700">
+                                            <th class="pb-2" v-for="col in caseStudies[selectedCaseStudy].tableHeaders" :key="col">{{ col }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800 text-slate-300">
+                                        <tr v-for="(row, rIdx) in caseStudies[selectedCaseStudy].tableRows" :key="rIdx" :class="row.isBold ? 'font-bold text-white' : ''">
+                                            <td class="py-1.5" v-for="(cell, cIdx) in row.cells" :key="cIdx" :class="cIdx > 0 ? 'text-right' : ''" v-html="cell"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Indicator Metrics -->
+                            <div class="grid grid-cols-3 gap-2 font-mono text-center text-xs">
+                                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                                    <span class="block text-slate-400 text-[10px]">NPV Proyek</span>
+                                    <span class="text-emerald-400 font-bold text-sm">{{ caseStudies[selectedCaseStudy].metrics.npv }}</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                                    <span class="block text-slate-400 text-[10px]">IRR / Cost</span>
+                                    <span class="text-amber-400 font-bold text-sm">{{ caseStudies[selectedCaseStudy].metrics.irr }}</span>
+                                </div>
+                                <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+                                    <span class="block text-slate-400 text-[10px]">Payback / EAC</span>
+                                    <span class="text-cyan-400 font-bold text-sm">{{ caseStudies[selectedCaseStudy].metrics.pbp }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Executive Recommendation -->
+                            <div class="p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs space-y-1.5">
+                                <span class="font-bold text-amber-400 uppercase block">Rekomendasi Manajerial & Keputusan Investasi:</span>
+                                <p class="text-slate-300 leading-relaxed" v-html="caseStudies[selectedCaseStudy].recommendation"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section v-show="activeTab === 'quiz'" class="space-y-6">
+            <div class="glass-panel rounded-2xl p-6 border border-slate-700">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-4 mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center">
+                            <i class="fa-solid fa-vial text-amber-400 mr-2"></i> Uji Pemahaman Mandiri (Kuis Analisis Investasi Tambang)
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1">Uji pemahaman Anda terhadap konsep dasar dan tingkat lanjut Bab 1 hingga Bab 8.</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Skor Anda:</span>
+                        <span class="text-2xl font-black text-amber-400 font-mono">{{ quizScore }} / {{ quizQuestions.length * 10 }}</span>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div v-for="(q, qIdx) in quizQuestions" :key="qIdx" class="bg-slate-900/60 p-5 rounded-xl border border-slate-800">
+                        <p class="text-sm font-bold text-white mb-3">
+                            {{ qIdx + 1 }}. {{ q.question }}
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-2 text-xs">
+                            <button v-for="(opt, oIdx) in q.options" :key="oIdx"
+                                    @click="selectQuizOption(qIdx, oIdx)"
+                                    :class="getQuizOptionClass(qIdx, oIdx)"
+                                    class="p-3 rounded-lg border text-left transition flex items-center justify-between">
+                                <span>{{ opt }}</span>
+                                <i v-if="q.userAnswer === oIdx && oIdx === q.correct" class="fa-solid fa-check text-emerald-400"></i>
+                                <i v-if="q.userAnswer === oIdx && oIdx !== q.correct" class="fa-solid fa-xmark text-rose-400"></i>
+                            </button>
+                        </div>
+                        <div v-if="q.userAnswer !== null" class="mt-3 p-3 bg-slate-950 rounded border border-slate-800 text-xs text-slate-300">
+                            <strong>Penjelasan:</strong> {{ q.explanation }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800 mt-auto py-6 text-center text-xs text-slate-500 no-print">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>© 2026 Interactive Learning Hub - Analisis Investasi Tambang.</p>
+            <p class="mt-1 text-slate-400">Disusun oleh <strong class="text-amber-400">Ir. Agus Budianto Ulil Absyor S.T., M.M., M.LScm., M.AIB.</strong></p>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    const { createApp } = Vue;
+
+    createApp({
+        data() {
+            return {
+                activeTab: 'summary',
+                selectedChapter: 0,
+                selectedCaseStudy: 0,
+
+                // Deep Chapter Contents (Bab I to Bab VIII)
+                chapters: [
+                    {
+                        num: 'I',
+                        title: 'Pengantar Investasi Pertambangan',
+                        subtitle: 'Karakteristik Usaha, Risiko Industri & Kerangka Kerja Ekonomi Teknik',
+                        points: [
+                            {
+                                heading: 'Sifat Dasar & Karakteristik Unik Industri Tambang',
+                                body: 'Industri pertambangan memiliki karakteristik spesifik yang membedakannya dari industri biasa: <br>• <strong>Capital Intensive:</strong> Kebutuhan modal awal yang sangat besar untuk kegiatan eksplorasi, penyiapan infrastruktur, pengolahan, dan pembelian armada berat.<br>• <strong>Long Gestation Period:</strong> Masa pra-produksi membutuhkan waktu bertahun-tahun (seringkali 5–10 tahun) sebelum tambang menghasilkan arus kas pendapatan pertama.<br>• <strong>Non-Renewable Asset:</strong> Sumber daya mineral bersifat terbatas dan terdeplesi seiring waktu penambangan, mensyaratkan strategi pengembalian modal (Capital Recovery) yang cermat.<br>• <strong>High Risk & High Return:</strong> Tingginya ketidakpastian geologi, geoteknik, fluktuasi komoditas global, dan izin lingkungan.'
+                            },
+                            {
+                                heading: 'Prosedur 7-Langkah Ekonomi Teknik dalam Pertambangan',
+                                body: 'Kerangka kerja pengembalian keputusan rasional pada proyek pertambangan: <br>1. Memahami masalah dan menetapkan tujuan evaluasi. <br>2. Mengumpulkan informasi teknis geologi, tambang, dan data keuangan. <br>3. Mengembangkan alternatif keputusan yang realistis. <br>4. Menetapkan kriteria evaluasi (NPV, IRR, Payback, BEP). <br>5. Membangun model matematika arus kas (cash flow modeling). <br>6. Menganalisis estimasi hasil tiap alternatif. <br>7. Memilih alternatif terbaik dan melakukan pengawasan kinerjanya.'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Deplesi Cadangan', desc: 'Pengurangan kuantitas fisik cadangan mineral yang diakui dalam laporan akuntansi tambang.' },
+                            { title: 'Hurdle Rate / MARR', desc: 'Tingkat pengembalian minimum yang disyaratkan investor untuk mengompensasi risiko tinggi industri pertambangan.' }
+                        ],
+                        examTip: 'Hafalkan 4 karakteristik utama usaha tambang dan 7 langkah prosedur analisis ekonomi teknik!'
+                    },
+                    {
+                        num: 'II',
+                        title: 'Konsep Dasar Investasi & Valuasi Aset Tambang',
+                        subtitle: 'Metodologi Valuasi, Standar IFRS 6, PSAK 33 & Uji Penurunan Nilai (IAS 36)',
+                        points: [
+                            {
+                                heading: 'Definisi & Perbedaan Valuasi vs Evaluasi Kelayakan',
+                                body: '<strong>Valuasi (Valuation)</strong> adalah proses menentukan nilai moneter (Dollar/Rupiah) dari aset cadangan atau entitas perusahaan tambang berdasarkan estimasi potensi pendapatan masa depan. <strong>Evaluasi Kelayakan (Feasibility Study)</strong> adalah studi komprehensif multidisiplin (geologi, penambangan, lingkungan, finansial) untuk memutuskan apakah proyek tambang layak dijalankan atau ditolak.'
+                            },
+                            {
+                                heading: 'Tiga Metodologi Utama Valuasi Cadangan Tambang',
+                                body: '• <strong>Income Approach (DCF / NAV):</strong> Menghitung nilai sekarang bersih dari arus kas diskonto proyeksi masa depan berdasarkan Cadangan Terbukti & Terduga (Proved & Probable Reserves).<br>• <strong>Market Approach:</strong> Membandingkan nilai aset dengan transaksi jual-beli tambang sejenis di pasar (Multiple $ EV/Ton Reserve, $ EV/Kapasitas Produksi).<br>• <strong>Cost Approach (Appraised Value Method):</strong> Menghitung total biaya eksplorasi yang telah dikeluarkan dikalikan faktor keberhasilan geologi (Prospectivity Enhancement Factor).'
+                            },
+                            {
+                                heading: 'Kerangka Standar Akuntansi: IFRS 6, PSAK 33 & Uji Penurunan Nilai (IAS 36)',
+                                body: 'Mengatur 4 tahapan biaya: Eksplorasi-Evaluasi, Pengembangan, Produksi, dan Penutupan Tambang. Biaya eksplorasi dapat dikapitalisasi sebagai Aset Takberwujud jika terdapat keterbukaan kelayakan ekonomis cadangan. Sesuai <strong>IAS 36</strong>, jika harga komoditas global anjlok secara drastis, perusahaan wajib melakukan Uji Penurunan Nilai (Impairment Test). Jika Nilai Tercatat (Carrying Amount) > Nilai Terpulihkan (Recoverable Amount), selisihnya diakui sebagai Rugi Penurunan Nilai pada Laporan Laba Rugi.'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Successful Efforts Method', desc: 'Hanya mengkapitalisasi biaya eksplorasi pada blok/area yang terbukti menemukan cadangan ekonomis.' },
+                            { title: 'Impairment Loss Formula', desc: 'Rugi Impairment = Nilai Buku Aset - Maksimum(Nilai Wajar Kurang Biaya Pelepasan, Nilai Pakai/DCF).' }
+                        ],
+                        examTip: 'Pahami kondisi kapan biaya eksplorasi dikapitalisasi sebagai aset vs dibebankan langsung ke Laba Rugi!'
+                    },
+                    {
+                        num: 'III',
+                        title: 'Estimasi Biaya CAPEX, OPEX & Proyeksi Pendapatan',
+                        subtitle: 'Pengklasifikasian Biaya, Deferred Stripping Cost & Model Penjualan',
+                        points: [
+                            {
+                                heading: 'Struktur CAPEX (Capital Expenditure) Tambang',
+                                body: '• <strong>Initial CAPEX:</strong> Pengadaan lahan/IUP, studi AMDAL/ESIA, pembersihan lahan (land clearing), konstruksi jalan angkut (haul road), dermaga/pelabuhan (jetty), crusher plant, camp pekerja, dan pengadaan armada tambang utama.<br>• <strong>Sustaining CAPEX:</strong> Pengeluaran modal berkala selama masa operasi untuk peremajaan/overhaul peralatan berat dan perluasan tambang.<br>• <strong>Closure CAPEX:</strong> Biaya penutupan tambang dan reklamasi paska-tambang.'
+                            },
+                            {
+                                heading: 'Struktur OPEX (Operational Expenditure) & Stripping Ratio Differential',
+                                body: '• Biaya Langsung: Pemboran (drilling), peledakan (blasting), penggalian/pemuatan (digging/loading), pengangkutan (hauling), dan pengolahan (crushing/washing).<br>• Biaya Tidak Langsung: General & Administrative (G&A), royalti pemerintah, dan biaya pengelolaan lingkungan.<br>• <strong>Deferred Stripping Costs (PSAK 33):</strong> Kegiatan pengupasan tanah penutup (overburden) pada periode produksi yang melebihi Stripping Ratio (SR) rata-rata umur tambang dikapitalisasi sebagai Aset Pengupasan Tanah Penutup dan diamortisasi pada periode saat SR berada di bawah rata-rata.'
+                            },
+                            {
+                                heading: 'Model Proyeksi Pendapatan (Revenue) & Penyesuaian Kualitas',
+                                body: 'Pendapatan dihitung dari volume penjualan dikalikan harga acuan komoditas (misal HBA untuk batubara, LME untuk nikel/tembaga) dengan memperhitungkan penyesuaian spesifikasi kualitas (Gar/Nar, kadar abu, moisture, kadar logam/grade) serta syarat penyerahan moda pengapalan (FOB Vessel/Barge vs CIF).'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Sunk Cost', desc: 'Biaya historis masa lalu yang sudah dikeluarkan dan TIDAK BOLEH diperhitungkan dalam evaluasi NPV arus kas mendatang.' },
+                            { title: 'Cash Operating Cost ($/Ton)', desc: 'Total biaya operasional langsung untuk menghasilkan 1 ton komoditas siap jual.' }
+                        ],
+                        examTip: 'Ingat! Sunk Cost wajib diabaikan dalam perhitungan proyeksi Net Cash Flow!'
+                    },
+                    {
+                        num: 'IV',
+                        title: 'Konsep Nilai Uang Terhadap Waktu (Time Value of Money)',
+                        subtitle: 'Bunga Majemuk, Anuitas, Deret Gradien & Formulasinya',
+                        points: [
+                            {
+                                heading: 'Nilai Waktu Uang & Earning Power dari Capital',
+                                body: 'Uang memiliki nilai yang berubah seiring waktu akibat inflasi, ketidakpastian risiko, dan potensi kemampuan menghasilkan bunga (earning power). Satu dolar hari ini bernilai lebih tinggi daripada satu dolar pada masa depan.'
+                            },
+                            {
+                                heading: 'Formulasi Matematika Faktor Bunga Majemuk Utama',
+                                body: '• <strong>Single Payment Future Worth (F/P, i, n):</strong> $F = P(1+i)^n$<br>• <strong>Single Payment Present Worth (P/F, i, n):</strong> $P = F(1+i)^{-n}$<br>• <strong>Uniform Series Present Worth (P/A, i, n):</strong> $P = A \\left[ \\frac{(1+i)^n - 1}{i(1+i)^n} \\right]$<br>• <strong>Capital Recovery Factor (A/P, i, n):</strong> $A = P \\left[ \\frac{i(1+i)^n}{(1+i)^n - 1} \\right]$'
+                            },
+                            {
+                                heading: 'Deret Gradien Linier & Suku Bunga Efektif',
+                                body: 'Untuk penerimaan/pengeluaran yang bertambah atau berkurang secara linier konstan ($G$), rumus Present Value-nya: $P = A_1 (P/A, i, n) \\pm G (P/G, i, n)$. Suku bunga nominal ($r$) dengan pemajemukan $m$ kali setahun menghasilkan suku bunga efektif $i_{eff} = \\left(1 + \\frac{r}{m}\\right)^m - 1$.'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Discount Factor (DF)', desc: 'Faktor pengali $DF = (1+i)^{-t}$ untuk mengonversi arus kas masa depan menjadi nilai sekarang.' },
+                            { title: 'WACC', desc: 'Weighted Average Cost of Capital = $w_d \\cdot r_d (1-T) + w_e \\cdot r_e$. Menjadi acuan dasar penentuan MARR.' }
+                        ],
+                        examTip: 'Kuasai konversi tabel atau formula $(P/A, i, n)$ dan $(A/P, i, n)$ untuk menghitung anuitas biaya alat berat.'
+                    },
+                    {
+                        num: 'V',
+                        title: 'Penyusunan Arus Kas (Cashflow) & Laporan Keuangan Tambang',
+                        subtitle: 'Struktur Net Cash Flow, Depresiasi Alat, Tax Shield & Modal Kerja',
+                        points: [
+                            {
+                                heading: 'Anatomi Struktur Net Cash Flow (NCF) Pertambangan',
+                                body: 'Persamaan baku penyusunan NCF tambang:<br>$$\\text{Pendapatan Penjualan (Gross Revenue)}$$<br>$$ - \\text{Biaya Operasional (OPEX + Royalti)}$$<br>$$ - \\text{Depresiasi \\& Amortisasi (D\\&A)}$$<br>$$ = \\text{Laba Sebelum Pajak (EBIT)}$$<br>$$ - \\text{Pajak Penghasilan Badan (Tax)}$$<br>$$ = \\text{Laba Bersih Setelah Pajak (EAT)}$$<br>$$ + \\text{Depresiasi \\& Amortisasi (Non-cash expense)}$$<br>$$ - \\text{Belanja Modal (CAPEX)}$$<br>$$ - \\text{Perubahan Modal Kerja (}\\Delta\\text{NWC)}$$<br>$$ = \\text{Net Cash Flow (NCF)}$$'
+                            },
+                            {
+                                heading: 'Metode Depresiasi Alat Berat & Manfaat Tax Shield',
+                                body: '• <strong>Garis Lurus (Straight Line):</strong> $D = \\frac{I_0 - S}{n}$<br>• <strong>Units of Production (Satuan Hasil Produksi):</strong> $D_t = \\frac{\\text{Produksi Tahun } t}{\text{Total Estimasi Cadangan}} \\times (I_0 - S)$ (Paling mencerminkan keausan riil tambang).<br>Depresiasi dikurangkan sebelum pajak untuk memberikan penghematan pajak (Tax Shield = $D \\times \\text{Tarif Pajak}$).'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Non-Cash Expense', desc: 'Depresiasi diikutsertakan untuk mengurangi beban pajak, lalu ditambahkan kembali ke EAT karena tidak ada kas keluar.' },
+                            { title: 'Working Capital Recapture', desc: 'Modal kerja yang dikeluarkan pada Tahun 0 akan dipulihkan penuh pada tahun terakhir umur tambang.' }
+                        ],
+                        examTip: 'Jangan pernah lupa menambahkan kembali nilai Depresiasi ke Laba Bersih saat menghitung Net Cash Flow!'
+                    },
+                    {
+                        num: 'VI',
+                        title: 'Indikator Evaluasi & Kelayakan Investasi Pertambangan',
+                        subtitle: 'NPV, IRR, MIRR, Payback Period, Profitability Index (PI) & Analisis BEP',
+                        points: [
+                            {
+                                heading: 'Net Present Value (NPV) & Kriteria Keputusan',
+                                body: '$$NPV = \\sum_{t=0}^{n} \\frac{CF_t}{(1+i)^t}$$<br>NPV mengukur nilai tambah nilai bersih absolut yang dihasilkan proyek bagi pemegang saham. Kriteria: Jika $NPV \\ge 0$, proyek diterima (Layak); jika $NPV < 0$, proyek ditolak.'
+                            },
+                            {
+                                heading: 'Internal Rate of Return (IRR) & Interpolasi Linier',
+                                body: 'IRR adalah tingkat diskonto yang membuat nilai $NPV = 0$. Dihitung dengan interpolasi linier:<br>$$IRR = i_1 + \\left[ \\frac{NPV_1}{NPV_1 - NPV_2} \\right] \\times (i_2 - i_1)$$<br>Kriteria: Terima jika $IRR \\ge MARR$. Jika terdapat arus kas non-konvensional, gunakan **Modified IRR (MIRR)**.'
+                            },
+                            {
+                                heading: 'Payback Period & Titik Impas Produksi (BEP)',
+                                body: '• <strong>Payback Period (PBP):</strong> Waktu yang dibutuhkan untuk mengembalikan pengeluaran investasi awal.<br>• <strong>Break-Even Point (BEP):</strong> Volume produksi impas di mana Total Revenue = Total Cost:<br>$$Q_{BEP} = \\frac{FC}{P - VC}$$'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'NPV vs IRR Conflict', desc: 'Jika terdapat konflik pemeringkatan pada proyek mutually exclusive, indikator NPV SELALU menjadi acuan utama.' },
+                            { title: 'Profitability Index (PI)', desc: '$PI = \\frac{\\text{PV Cash Inflows}}{\\text{Initial Investment}}$. Layak jika $PI > 1.0$.' }
+                        ],
+                        examTip: 'Bila memilih dua alternatif bersaing, pilih proyek dengan nilai NPV tertinggi!'
+                    },
+                    {
+                        num: 'VII',
+                        title: 'Pemilihan Alternatif Investasi Tambang',
+                        subtitle: 'Mutually Exclusive Analysis, Incremental Cashflow & Replacement Analysis',
+                        points: [
+                            {
+                                heading: 'Klasifikasi Keputusan: Mutually Exclusive vs Independent Projects',
+                                body: '• <strong>Mutually Exclusive:</strong> Memilih satu opsi secara otomatis membatalkan opsi lainnya (misal: memilih tambang terbuka vs tambang bawah tanah; atau memilih Crusher Merk A vs Merk B).<br>• <strong>Independent Projects:</strong> Beberapa proyek dapat dilaksanakan bersamaan selama modal mencukupi.'
+                            },
+                            {
+                                heading: 'Penanganan Alternatif Umur Ekonomis Berbeda (EAC / EAW)',
+                                body: 'Jika opsi memiliki umur ekonomis berbeda, metode **Equivalent Annual Cost (EAC)** digunakan dengan mengonversi seluruh arus kas menjadi pengeluaran tahunan konstan seragam: $EAC = NPV \\times (A/P, i, n)$. Opsi dengan pengeluaran tahunan terendah dipilih.'
+                            },
+                            {
+                                heading: 'Analisis Inkremental (\\Delta Cashflow)',
+                                body: 'Langkah analisis incremental: (1) Urutkan alternatif berdasarkan modal investasi awal terbesar, (2) Hitung selisih arus kas $\\Delta CF = CF_B - CF_A$, (3) Hitung $\\Delta NPV$ atau $\\Delta IRR$. Jika $\\Delta IRR > MARR$, pilih alternatif B (modal lebih besar).'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Do-Nothing Option', desc: 'Opsi untuk tidak melakukan investasi tetap wajib dipertimbangkan sebagai baseline comparison.' },
+                            { title: 'Challenger vs Defender', desc: 'Dalam replacement analysis, unit lama (defender) dibandingkan dengan unit baru (challenger) menggunakan EAC.' }
+                        ],
+                        examTip: 'Selalu urutkan dari modal terkecil sebelum melakukan uji $\\Delta IRR$ pada analisis inkremental!'
+                    },
+                    {
+                        num: 'VIII',
+                        title: 'Analisis Rasio Keuangan & Kesehatan Finansial Tambang',
+                        subtitle: 'Likuiditas, Solvabilitas, EBITDA Margin & Altman Z-Score Tambang',
+                        points: [
+                            {
+                                heading: 'Rasio Likuiditas & Pengelolaan Modal Kerja Tambang',
+                                body: '• <strong>Current Ratio:</strong> $\\frac{\\text{Aktiva Lancar}}{\text{Hutang Lancar}}$ (Batas aman tambang $\\ge 1.5\\times$).<br>• <strong>Quick Ratio (Acid-Test):</strong> $\\frac{\\text{Aktiva Lancar} - \\text{Persediaan}}{\\text{Hutang Lancar}}$ (Penting saat harga pasar minerba drop dan persediaan tertahan di stockpile).'
+                            },
+                            {
+                                heading: 'Rasio Solvabilitas (Leverage) & DSCR',
+                                body: '• <strong>Debt to Equity Ratio (DER):</strong> $\\frac{\\text{Total Utang}}{\\text{Total Ekuitas}}$. Umumnya dibatasi $< 1.5\\times$.<br>• <strong>Debt Service Coverage Ratio (DSCR):</strong> $\\frac{\\text{EBITDA} - \\text{Tax}}{\\text{Pokok Pinjaman} + \\text{Bunga}}$. Batas aman kreditor $\\ge 1.25\\times$.'
+                            },
+                            {
+                                heading: 'Rasio Profitabilitas & Efisiensi Operasional',
+                                body: '• <strong>EBITDA Margin:</strong> $\\frac{EBITDA}{\\text{Pendapatan Penjualan}}$ (Indikator murni efisiensi biaya operasional penambangan).<br>• <strong>Return on Equity (ROE):</strong> $\\frac{\\text{Laba Bersih (EAT)}}{\\text{Ekuitas Pemegang Saham}}$.'
+                            }
+                        ],
+                        keyTakeaways: [
+                            { title: 'Cyclical Industry Effect', desc: 'Rasio keuangan tambang sangat berfluktuasi mengikuti siklus boom & bust harga komoditas global.' },
+                            { title: 'EBITDA Margin', desc: 'Indikator terbaik membandingkan efisiensi operasional tambang tanpa terdistorsi beda struktur utang dan kebijakan depresiasi.' }
+                        ],
+                        examTip: 'Pahami mengapa EBITDA Margin lebih disukai daripada Net Profit Margin dalam membandingkan efisiensi dua tambang!'
+                    }
+                ],
+
+                // Simulator Data
+                calc: {
+                    initialInvestment: 100000,
+                    discountRate: 10,
+                    years: 5,
+                    cashflows: [30000, 35000, 40000, 30000, 25000],
+                    bepFC: 50000,
+                    bepPrice: 80,
+                    bepVC: 30
+                },
+
+                // DCF Valuation Model Data
+                dcf: {
+                    reserves: 10000000, // Ton
+                    annualProd: 2000000, // Ton/Year
+                    price: 75, // $/Ton
+                    opexPerTon: 42, // $/Ton
+                    royaltyRate: 10.0, // %
+                    taxRate: 22.0, // %
+                    wacc: 10.0, // %
+                    initialCapex: 25000000, // $
+                    netDebt: 10000000 // $
+                },
+                dcfSensitivityWaccs: [8, 10, 12, 14],
+
+                // Financial Model Data
+                fm: {
+                    prodVol: 1000000, // Ton
+                    price: 80, // $/Ton
+                    sr: 5.0, // bcm/ton
+                    costOb: 2.2, // $/bcm
+                    costCoal: 5.0, // $/ton
+                    royaltyPct: 10.0, // %
+                    gaCost: 4.0, // $/ton
+                    capex: 12000000, // $
+                    debtPct: 60, // %
+                    interestRate: 8.0, // %
+                    debtTenor: 5 // Years
+                },
+
+                // Sample Solved Math Problems
+                sampleProblems: [
+                    {
+                        category: 'Bab IV - Time Value of Money',
+                        title: 'Perhitungan Nilai Mendatang (Future Value) Dana Sinking Fund Alat Tambang',
+                        open: true,
+                        question: 'Sebuah perusahaan tambang merencanakan menyisihkan dana sebesar **$500,000** setiap akhir tahun selama **5 tahun** ke dalam rekening khusus berinvestasi dengan suku bunga majemuk **8% per tahun** untuk pengadaan armada Excavator kelak. Berapakah akumulasi dana yang terkumpul pada akhir tahun ke-5?',
+                        solution: `<strong>1. Diketahui:</strong>
+• $A = \\$500,000$ (Anuitas tahunan seragam)
+• $i = 8\\% = 0.08$
+• $n = 5 \\text{ tahun}$
+
+<strong>2. Formulasi Uniform Series Future Worth $(F/A, i, n)$:</strong>
+$$F = A \\times \\left[ \\frac{(1+i)^n - 1}{i} \\right]$$
+
+<strong>3. Substitusi & Perhitungan:</strong>
+$$F = 500,000 \\times \\left[ \\frac{(1+0.08)^5 - 1}{0.08} \\right]$$
+$$F = 500,000 \\times \\left[ \\frac{1.469328 - 1}{0.08} \\right]$$
+$$F = 500,000 \\times 5.8666 = \\mathbf{\\$2,933,300}$$
+
+<strong>Kesimpulan Analisis:</strong>
+Akumulasi dana sinking fund yang berhasil dikumpulkan pada akhir tahun ke-5 adalah sebesar **$2,933,300**.`
+                    },
+                    {
+                        category: 'Bab VI - Kelayakan Investasi (NPV & IRR)',
+                        title: 'Evaluasi Kelayakan Pembelian Unit Dump Truck Hauling',
+                        open: false,
+                        question: 'Pengadaan 1 unit Dump Truck Tambang membutuhkan investasi awal modal sebesar **$100,000**. Alat ini diproyeksikan memberikan Arus Kas Bersih (NCF) sebesar **$35,000/tahun** selama **4 tahun**. Jika tingkat suku bunga pengembalian minimum (MARR) ditetapkan **10%**, tentukan:\n1. Nilai Net Present Value (NPV)\n2. Evaluasi keputusan kelayakan.',
+                        solution: `<strong>1. Diketahui:</strong>
+• $I_0 = \\$100,000$
+• $A = \\$35,000 / \\text{tahun}$
+• $n = 4 \\text{ tahun}$
+• $i = 10\\% = 0.10$
+
+<strong>2. Formulasi NPV:</strong>
+$$NPV = -I_0 + A \\times (P/A, i, n)$$
+$$(P/A, 10\\%, 4) = \\frac{(1+0.10)^4 - 1}{0.10(1+0.10)^4} = 3.16986$$
+
+<strong>3. Perhitungan:</strong>
+$$NPV = -100,000 + (35,000 \\times 3.16986)$$
+$$NPV = -100,000 + 110,945 = \\mathbf{+\\$10,945}$$
+
+<strong>4. Kesimpulan Keputusan:</strong>
+Karena nilai **NPV > 0** ($+\\$10,945$), maka investasi pengadaan unit Dump Truck ini **LAYAK / DITERIMA (FEASIBLE)**.`
+                    },
+                    {
+                        category: 'Bab VI - Titik Impas (BEP)',
+                        title: 'Penentuan BEP Volumetrik Operasi Tambang Batubara',
+                        open: false,
+                        question: 'PT Tambang Perkasa memiliki Total Biaya Tetap (Fixed Cost) operasional sebesar **$1,200,000 / tahun**. Biaya Variabel per ton batubara adalah **$35 / ton**, dan harga jual rata-rata batubara acuan ditetapkan sebesar **$60 / ton**.\nHitunglah berapa ton volume batubara minimal yang harus diproduksi dan dijual agar mencapai Titik Impas (BEP)!',
+                        solution: `<strong>1. Diketahui:</strong>
+• $FC = \\$1,200,000$
+• $VC = \\$35 / \\text{ton}$
+• $P = \\$60 / \\text{ton}$
+
+<strong>2. Formulasi BEP Unit Produksi:</strong>
+$$Q_{BEP} = \\frac{FC}{P - VC}$$
+
+<strong>3. Perhitungan:</strong>
+$$Q_{BEP} = \\frac{1,200,000}{60 - 35} = \\frac{1,200,000}{25} = \\mathbf{48,000 \\text{ Ton}}$$
+
+<strong>Kesimpulan Analisis:</strong>
+Perusahaan harus mencapai target produksi & penjualan minimum **48,000 ton batubara/tahun** agar berada dalam posisi tidak rugi dan tidak untung.`
+                    },
+                    {
+                        category: 'Bab VII - Inkremental Analisis',
+                        title: 'Pemilihan Opsi Alat Crusher (Mesin A vs Mesin B)',
+                        open: false,
+                        question: 'Perusahaan dihadapkan pada 2 pilihan Mesin Crusher:\n• **Mesin A:** CAPEX = $50,000; Hemat OPEX = $15,000/thn selama 5 thn.\n• **Mesin B:** CAPEX = $80,000; Hemat OPEX = $23,000/thn selama 5 thn.\nJika MARR = 12%, gunakan analisis inkremental $(\\Delta NPV)$ untuk menentukan mesin mana yang harus dipilih!',
+                        solution: `<strong>1. Urutkan Alternatif berdasarkan CAPEX Terbesar:</strong>
+Alternatif B ($80k) vs Alternatif A ($50k).
+• $\\Delta CAPEX = \\$80,000 - \\$50,000 = \\$30,000$
+• $\\Delta \\text{Anuitas Penghematan} = \\$23,000 - \\$15,000 = \\$8,000 / \\text{tahun}$
+• $n = 5 \\text{ tahun}, i = 12\\%$
+
+<strong>2. Hitung $\\Delta NPV_{(B-A)}$:</strong>
+$$\\Delta NPV = -\\Delta CAPEX + \\Delta A \\times (P/A, 12\\%, 5)$$
+$$(P/A, 12\\%, 5) = 3.6048$$
+$$\\Delta NPV = -30,000 + (8,000 \\times 3.6048) = -30,000 + 28,838 = \\mathbf{-\\$1,162}$$
+
+<strong>3. Kesimpulan Keputusan:</strong>
+Karena $\\Delta NPV_{(B-A)} < 0$, maka penambahan modal $30,000 pada Mesin B **TIDAK LAYAK**. Maka **Mesin A yang dipilih**.`
+                    }
+                ],
+
+                // Real Mining Case Studies
+                caseStudies: [
+                    {
+                        shortName: 'Studi 1: Tambang Batubara',
+                        category: 'Studi Kasus 1: Open Pit Coal Mine',
+                        title: 'Evaluasi Kelayakan Kelayakan Finansial PT Awfa Coal Mine',
+                        status: 'DITERIMA (FEASIBLE)',
+                        description: 'PT Awfa Coal Mine merencanakan pembukaan tambang batubara terbuka di Sumatera Selatan dengan umur tambang 5 tahun. Evaluasi mencakup pendapatan penjualan, OPEX, royalti pemerintah 13.5%, depresiasi alat, dan pajak badan 22%.',
+                        parameters: [
+                            { label: 'Target Produksi', value: '1,000,000 Ton / Tahun' },
+                            { label: 'Stripping Ratio (SR)', value: '5.0 : 1 (bcm/ton)' },
+                            { label: 'Harga Batubara Jual', value: '$75.00 / Ton' },
+                            { label: 'Biaya Capital (CAPEX)', value: '$12,000,000' },
+                            { label: 'Biaya Operasi (OPEX)', value: '$45.00 / Ton' },
+                            { label: 'Royalti & Pajak', value: '13.5% Royalti + 22% Pajak' },
+                            { label: 'MARR (Discount Rate)', value: '12.0% / Tahun' }
+                        ],
+                        tableHeaders: ['Komponen Finansial ($ k)', 'Tahun 0', 'Tahun 1 - 5 (Per Tahun)'],
+                        tableRows: [
+                            { cells: ['Pendapatan Penjualan', '-', '$75,000'], isBold: false },
+                            { cells: ['Biaya Operasi (OPEX)', '-', '($45,000)'], isBold: false },
+                            { cells: ['Royalti Pemerintah (13.5%)', '-', '($10,125)'], isBold: false },
+                            { cells: ['Depresiasi Peralatan', '-', '($2,400)'], isBold: false },
+                            { cells: ['Laba Sebelum Pajak (EBIT)', '-', '$17,475'], isBold: true },
+                            { cells: ['Pajak Penghasilan (22%)', '-', '($3,844.5)'], isBold: false },
+                            { cells: ['Laba Bersih (EAT)', '-', '$13,630.5'], isBold: false },
+                            { cells: ['+ Depresiasi Alat', '-', '+$2,400'], isBold: false },
+                            { cells: ['Net Cash Flow (NCF)', '($12,000)', '$16,030.5'], isBold: true }
+                        ],
+                        metrics: {
+                            npv: '+$45,786 k',
+                            irr: '131.2%',
+                            pbp: '0.75 Tahun'
+                        },
+                        recommendation: 'Proyek tambang batubara ini **SANGAT LAYAK** untuk dilaksanakan. Nilai NPV bernilai positif tinggi (+$45.78 Juta) dengan IRR 131.2% yang jauh melampaui hurdle rate (MARR 12%), serta modal kembali dalam waktu kurang dari 1 tahun.'
+                    },
+                    {
+                        shortName: 'Studi 2: Smelter Nikel HPAL',
+                        category: 'Studi Kasus 2: Smelter Nikel / HPAL Processing',
+                        title: 'Analisis Sensitivitas & Kelayakan Investasi Proyek Smelter Nikel',
+                        status: 'LAYAK BERSYARAT (SENSITIF HARGA)',
+                        description: 'Evaluasi pembangunan fasilitas pengolahan High-Pressure Acid Leaching (HPAL) bijih nikel kadar rendah (limonit). Membutuhkan CAPEX sangat tinggi dengan risiko penurunan harga komoditas nikel LME.',
+                        parameters: [
+                            { label: 'Kapasitas MHP (Nikel)', value: '20,000 Ton Ni / Tahun' },
+                            { label: 'Harga Nikel LME Baseline', value: '$18,000 / Ton Ni' },
+                            { label: 'Total Initial CAPEX', value: '$350,000,000' },
+                            { label: 'OPEX Pengolahan', value: '$11,000 / Ton Ni' },
+                            { label: 'Umur Proyek', value: '10 Tahun' },
+                            { label: 'MARR / Cost of Capital', value: '10.0%' }
+                        ],
+                        tableHeaders: ['Skenario Harga Nikel', 'NPV Proyek ($ M)', 'IRR (%)', 'Status Kelayakan'],
+                        tableRows: [
+                            { cells: ['Skenario Pesimis ($15,000/ton)', '-$18.4 Juta', '8.2%', '<span class="text-rose-400 font-bold">Tidak Layak</span>'], isBold: false },
+                            { cells: ['Skenario Baseline ($18,000/ton)', '+$80.5 Juta', '15.4%', '<span class="text-emerald-400 font-bold">Layak</span>'], isBold: true },
+                            { cells: ['Skenario Optimis ($22,000/ton)', '+$212.1 Juta', '23.8%', '<span class="text-emerald-400 font-bold">Sangat Layak</span>'], isBold: false }
+                        ],
+                        metrics: {
+                            npv: '+$80.5 M',
+                            irr: '15.4%',
+                            pbp: '4.8 Tahun'
+                        },
+                        recommendation: 'Proyek Smelter Nikel HPAL layak pada skenario baseline, namun sangat sensitif terhadap kejatuhan harga nikel di bawah $15,500/ton. Direkomendasikan melakukan **hedging harga nikel** untuk mengamankan pendapatan.'
+                    },
+                    {
+                        shortName: 'Studi 3: Armada Dump Truck',
+                        category: 'Studi Kasus 3: Capital Budgeting Alat Berat',
+                        title: 'Analisis Komparasi EAC: Beli Sendiri vs Leasing vs Subkontraktor',
+                        status: 'MEMILIH SUBKONTRAKTOR',
+                        description: 'Manajemen tambang membandingkan 3 opsi strategi pengadaan 10 unit Dump Truck 100-ton untuk pengangkutan material overburden selama 4 tahun operasi produksi.',
+                        parameters: [
+                            { label: 'Jumlah Armada', value: '10 Unit Dump Truck' },
+                            { label: 'Umur Proyek Hauling', value: '4 Tahun' },
+                            { label: 'MARR Perusahaan', value: '10.0%' }
+                        ],
+                        tableHeaders: ['Opsi Pengadaan', 'Initial CAPEX', 'OPEX & Maint / Thn', 'Equivalent Annual Cost (EAC)'],
+                        tableRows: [
+                            { cells: ['Opsi A: Beli Modal Sendiri', '$4,000,000', '$1,200,000 / thn', '$2,461,800 / thn'], isBold: false },
+                            { cells: ['Opsi B: Leasing Alat', '$800,000', '$1,800,000 / thn', '$2,052,300 / thn'], isBold: false },
+                            { cells: ['Opsi C: Subkontraktor Terikat', '$0', '$1,950,000 / thn', '<span class="text-emerald-400 font-bold">$1,950,000 / thn</span>'], isBold: true }
+                        ],
+                        metrics: {
+                            npv: 'N/A (Cost Only)',
+                            irr: 'EAC Minimized',
+                            pbp: 'EAC: $1.95M/yr'
+                        },
+                        recommendation: 'Ditinjau dari pengeluaran tahunan setara terendah (Equivalent Annual Cost / EAC), **Opsi C (Subkontraktor)** adalah opsi paling efisien karena meminimalkan arus kas keluar tahunan dan menghilangkan risiko biaya perbaikan tak terduga.'
+                    }
+                ],
+
+                // Self Assessment Quiz Questions
+                quizQuestions: [
+                    {
+                        question: 'Manakah di bawah ini yang BUKAN merupakan karakteristik unik industri pertambangan?',
+                        options: ['Capital Intensive', 'Short Gestation Period', 'Non-Renewable Resource', 'High Risk Profile'],
+                        correct: 1,
+                        userAnswer: null,
+                        explanation: 'Industri pertambangan memiliki Long Gestation Period (masa pra-produksi bertahun-tahun), bukan short gestation period.'
+                    },
+                    {
+                        question: 'Sesuai PSAK 33 / IFRS 6, perlakuan akuntansi atas biaya eksplorasi pada area yang terbukti TIDAK memiliki cadangan ekonomis adalah:',
+                        options: ['Dikapitalisasi sebagai aset tetap', 'Ditangguhkan selama 10 tahun', 'Dibebankan langsung (expensed) pada laporan laba rugi berjalan', 'Diabaikan'],
+                        correct: 2,
+                        userAnswer: null,
+                        explanation: 'Biaya eksplorasi yang gagal (unsuccessful efforts) wajib dibebankan langsung pada periode berjalan.'
+                    },
+                    {
+                        question: 'Dalam analisis arus kas (cashflow) pertambangan, biaya yang sudah tertanam di masa lalu dan tidak boleh mempengaruhi keputusan mendatang disebut:',
+                        options: ['Opportunity Cost', 'Sunk Cost', 'Sustaining CAPEX', 'Variable Cost'],
+                        correct: 1,
+                        userAnswer: null,
+                        explanation: 'Sunk Cost adalah biaya historis yang sudah hangus dan tidak relevan lagi dalam perhitungan NPV masa depan.'
+                    },
+                    {
+                        question: 'Kondisi di mana pemilihan satu opsi alternatif proyek tambang secara otomatis menolak opsi alternatif lainnya disebut:',
+                        options: ['Independent Projects', 'Mutually Exclusive', 'Capital Rationing', 'Complementary Projects'],
+                        correct: 1,
+                        userAnswer: null,
+                        explanation: 'Mutually Exclusive berarti hanya satu alternatif terbaik yang dapat dipilih.'
+                    },
+                    {
+                        question: 'Jika terjadi konflik pemeringkatan antara kriteria NPV dan IRR pada dua alternatif mutually exclusive, kriteria manakah yang harus dijadikan acuan utama?',
+                        options: ['IRR', 'NPV', 'Payback Period', 'Benefit/Cost Ratio'],
+                        correct: 1,
+                        userAnswer: null,
+                        explanation: 'NPV mengukur penambahan nilai bersih absolut bagi pemegang saham, sehingga selalu menjadi acuan keputusan tertinggi.'
+                    }
+                ]
+            }
+        },
+        computed: {
+            // Simulator NPV & IRR Results
+            calcResults() {
+                const I0 = this.calc.initialInvestment;
+                const rate = this.calc.discountRate / 100;
+                let npv = -I0;
+                let cumPV = -I0;
+                let table = [];
+                let pbp = 0;
+                let pbpFound = false;
+
+                this.calc.cashflows.forEach((cf, index) => {
+                    const year = index + 1;
+                    const df = 1 / Math.pow(1 + rate, year);
+                    const pv = cf * df;
+                    cumPV += pv;
+                    npv += pv;
+
+                    if (!pbpFound && cumPV >= 0) {
+                        const prevCum = cumPV - pv;
+                        pbp = (year - 1) + (-prevCum / pv);
+                        pbpFound = true;
+                    }
+
+                    table.push({ year, cf, df, pv, cumPV });
+                });
+
+                if (!pbpFound) pbp = this.calc.years;
+
+                // IRR estimation using Bisection Method
+                let irrLow = 0.0;
+                let irrHigh = 2.0;
+                let irr = 0.0;
+                for (let i = 0; i < 40; i++) {
+                    irr = (irrLow + irrHigh) / 2;
+                    let testNPV = -I0;
+                    this.calc.cashflows.forEach((cf, idx) => {
+                        testNPV += cf / Math.pow(1 + irr, idx + 1);
+                    });
+                    if (testNPV > 0) {
+                        irrLow = irr;
+                    } else {
+                        irrHigh = irr;
+                    }
+                }
+
+                const fc = this.calc.bepFC;
+                const p = this.calc.bepPrice;
+                const vc = this.calc.bepVC;
+                const bepUnits = (p - vc) > 0 ? fc / (p - vc) : 0;
+
+                return {
+                    npv,
+                    irr: irr * 100,
+                    pbp,
+                    bepUnits,
+                    table
+                };
+            },
+
+            // DCF Valuation Model Computations
+            dcfResults() {
+                const mineLife = this.dcf.annualProd > 0 ? Math.ceil(this.dcf.reserves / this.dcf.annualProd) : 0;
+                const waccDec = this.dcf.wacc / 100;
+                let ev = -this.dcf.initialCapex;
+                let rows = [];
+
+                const annualRev = this.dcf.annualProd * this.dcf.price;
+                const annualOpex = this.dcf.annualProd * this.dcf.opexPerTon;
+                const royalty = annualRev * (this.dcf.royaltyRate / 100);
+                const ebitda = annualRev - annualOpex - royalty;
+                const tax = Math.max(0, ebitda * (this.dcf.taxRate / 100));
+                const annualNCF = ebitda - tax;
+
+                for (let y = 1; y <= mineLife; y++) {
+                    const df = 1 / Math.pow(1 + waccDec, y);
+                    const pvNcf = annualNCF * df;
+                    ev += pvNcf;
+                    rows.push({
+                        year: y,
+                        revenue: annualRev,
+                        opex: annualOpex + royalty,
+                        ebitda: ebitda,
+                        ncf: annualNCF,
+                        pvNcf: pvNcf
+                    });
+                }
+
+                const equityVal = ev - this.dcf.netDebt;
+
+                return {
+                    mineLife,
+                    annualNCF,
+                    ev,
+                    equityVal,
+                    rows
+                };
+            },
+
+            // Mining Financial Model Pro-Forma Computations
+            fmResults() {
+                const vol = this.fm.prodVol;
+                const p = this.fm.price;
+                const annualRev = vol * p;
+                const royaltyVal = annualRev * (this.fm.royaltyPct / 100);
+                const netRev = annualRev - royaltyVal;
+
+                const obCostTotal = vol * this.fm.sr * this.fm.costOb;
+                const coalCostTotal = vol * this.fm.costCoal;
+                const miningOpex = obCostTotal + coalCostTotal;
+                const gaVal = vol * this.fm.gaCost;
+
+                const ebitda = netRev - miningOpex - gaVal;
+                const depr = this.fm.capex / 5; // 5 Year Straight line
+                const ebit = ebitda - depr;
+
+                const debtVal = this.fm.capex * (this.fm.debtPct / 100);
+                const interestVal = debtVal * (this.fm.interestRate / 100);
+                const ebt = ebit - interestVal;
+                const taxVal = Math.max(0, ebt * 0.22);
+                const eat = ebt - taxVal;
+
+                const fcff = ebitda - taxVal - (this.fm.capex / 5);
+                const cashCostPerTon = (miningOpex + gaVal + royaltyVal) / vol;
+                const ebitdaMargin = annualRev > 0 ? (ebitda / annualRev) * 100 : 0;
+
+                const annualPrincipal = debtVal / (this.fm.debtTenor || 1);
+                const debtService = annualPrincipal + interestVal;
+                const dscr = debtService > 0 ? (ebitda - taxVal) / debtService : 0;
+
+                return {
+                    annualRev,
+                    royaltyVal,
+                    netRev,
+                    miningOpex,
+                    gaVal,
+                    ebitda,
+                    depr,
+                    ebit,
+                    interestVal,
+                    taxVal,
+                    eat,
+                    fcff,
+                    cashCostPerTon,
+                    ebitdaMargin,
+                    dscr
+                };
+            },
+
+            quizScore() {
+                return this.quizQuestions.reduce((score, q) => {
+                    return q.userAnswer === q.correct ? score + 10 : score;
+                }, 0);
+            }
+        },
+        methods: {
+            setActiveTab(tabName) {
+                this.activeTab = tabName;
+                this.retypesetMath();
+            },
+            selectChapter(idx) {
+                this.selectedChapter = idx;
+                this.retypesetMath();
+            },
+            adjustCashflows() {
+                const targetLen = this.calc.years;
+                while (this.calc.cashflows.length < targetLen) {
+                    this.calc.cashflows.push(30000);
+                }
+                if (this.calc.cashflows.length > targetLen) {
+                    this.calc.cashflows = this.calc.cashflows.slice(0, targetLen);
+                }
+            },
+            calculateNAV(priceFactor, waccVal) {
+                const mineLife = this.dcf.annualProd > 0 ? Math.ceil(this.dcf.reserves / this.dcf.annualProd) : 0;
+                const waccDec = waccVal / 100;
+                let ev = -this.dcf.initialCapex;
+
+                const price = this.dcf.price * priceFactor;
+                const annualRev = this.dcf.annualProd * price;
+                const annualOpex = this.dcf.annualProd * this.dcf.opexPerTon;
+                const royalty = annualRev * (this.dcf.royaltyRate / 100);
+                const ebitda = annualRev - annualOpex - royalty;
+                const tax = Math.max(0, ebitda * (this.dcf.taxRate / 100));
+                const annualNCF = ebitda - tax;
+
+                for (let y = 1; y <= mineLife; y++) {
+                    ev += annualNCF / Math.pow(1 + waccDec, y);
+                }
+
+                return ev - this.dcf.netDebt;
+            },
+            formatCurrency(val) {
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+            },
+            formatNumber(val) {
+                return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(val);
+            },
+            selectQuizOption(qIdx, oIdx) {
+                this.quizQuestions[qIdx].userAnswer = oIdx;
+            },
+            getQuizOptionClass(qIdx, oIdx) {
+                const q = this.quizQuestions[qIdx];
+                if (q.userAnswer === null) {
+                    return 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700';
+                }
+                if (oIdx === q.correct) {
+                    return 'bg-emerald-500/20 text-emerald-300 border-emerald-500 font-bold';
+                }
+                if (q.userAnswer === oIdx && oIdx !== q.correct) {
+                    return 'bg-rose-500/20 text-rose-300 border-rose-500';
+                }
+                return 'bg-slate-800/50 text-slate-500 border-slate-800';
+            },
+            retypesetMath() {
+                this.$nextTick(() => {
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        window.MathJax.typesetPromise();
+                    }
+                });
+            },
+            downloadPDF() {
+                window.print();
+            }
+        },
+        mounted() {
+            this.retypesetMath();
+        },
+        updated() {
+            this.retypesetMath();
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

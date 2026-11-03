@@ -1,0 +1,1365 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Project Control AI — Platform Kendali Proyek Konstruksi</title>
+<style>html,body,#root{height:100%;margin:0;}body{margin:0;}</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/plain" id="app-source">
+const { useState, useEffect, useMemo, useCallback } = React;
+
+/* =========================================================================
+   ICONS (hand-rolled, lucide-style outline icons — no external icon package)
+   ========================================================================= */
+
+function IconBase({ size = 16, children, style }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={style}>
+      {children}
+    </svg>
+  );
+}
+const LayoutDashboard = (p) => <IconBase {...p}><rect x="3" y="3" width="7" height="9" rx="1" /><rect x="14" y="3" width="7" height="5" rx="1" /><rect x="14" y="12" width="7" height="9" rx="1" /><rect x="3" y="16" width="7" height="5" rx="1" /></IconBase>;
+const Building2 = (p) => <IconBase {...p}><path d="M4 21V6a1 1 0 0 1 1-1h7v16" /><path d="M12 21V10a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v11" /><path d="M8 8h.01M8 12h.01M8 16h.01M16 12h.01M16 16h.01" /></IconBase>;
+const ListTree = (p) => <IconBase {...p}><path d="M4 4v6a2 2 0 0 0 2 2h4" /><path d="M4 4v16" /><path d="M10 12h6" /><path d="M4 20h6" /></IconBase>;
+const Wallet = (p) => <IconBase {...p}><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3" /><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1h-4a2 2 0 0 0 0 4h5" /></IconBase>;
+const ShieldAlert = (p) => <IconBase {...p}><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" /><path d="M12 8v4M12 16h.01" /></IconBase>;
+const FileText = (p) => <IconBase {...p}><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></IconBase>;
+const Sparkles = (p) => <IconBase {...p}><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" /><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z" /></IconBase>;
+const Plus = (p) => <IconBase {...p}><path d="M12 5v14M5 12h14" /></IconBase>;
+const Trash2 = (p) => <IconBase {...p}><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V6h12z" /><path d="M10 11v6M14 11v6" /></IconBase>;
+const AlertTriangle = (p) => <IconBase {...p}><path d="M10.3 3.9 1.8 18a1 1 0 0 0 .9 1.5h18.6a1 1 0 0 0 .9-1.5L13.7 3.9a1 1 0 0 0-1.7 0z" /><path d="M12 9v4M12 17h.01" /></IconBase>;
+const CheckCircle2 = (p) => <IconBase {...p}><circle cx="12" cy="12" r="9" /><path d="M8.5 12.5l2.5 2.5 5-5" /></IconBase>;
+const Download = (p) => <IconBase {...p}><path d="M12 3v12m0 0l-4-4m4 4l4-4" /><path d="M4 19h16" /></IconBase>;
+const Loader2 = (p) => <IconBase {...p} style={{ animation: "spin 0.9s linear infinite" }}><path d="M12 3a9 9 0 1 0 9 9" /></IconBase>;
+const RefreshCw = (p) => <IconBase {...p}><path d="M20 11a8 8 0 0 0-14.6-4.6M4 5v5h5" /><path d="M4 13a8 8 0 0 0 14.6 4.6M20 19v-5h-5" /></IconBase>;
+const Eraser = (p) => <IconBase {...p}><path d="M18 13l-7.5 7.5a1 1 0 0 1-1.4 0L4 15.4a1 1 0 0 1 0-1.4L14.6 3.4a1 1 0 0 1 1.4 0L21 8.4a1 1 0 0 1 0 1.4L15 16" /><path d="M8 20h11" /></IconBase>;
+const KeyRound = (p) => <IconBase {...p}><circle cx="8" cy="15" r="4" /><path d="M10.8 12.2 20 3m-3 3 2 2m-5 1 2 2" /></IconBase>;
+
+/* =========================================================================
+   SIMPLE SVG CHARTS (no chart library — self-contained line & bar charts)
+   ========================================================================= */
+
+function SCurveSvg({ data }) {
+  if (!data.length) return null;
+  const W = 640, H = 260, padL = 54, padR = 12, padT = 10, padB = 26;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const allVals = data.flatMap((d) => [d.PV, d.EV, d.AC]).filter((v) => v !== null && v !== undefined);
+  const maxY = Math.max(1, ...allVals) * 1.12;
+  const x = (i) => padL + (i / Math.max(1, data.length - 1)) * innerW;
+  const y = (v) => padT + innerH - (v / maxY) * innerH;
+  const seg = (key) => {
+    const paths = []; let cur = [];
+    data.forEach((d, i) => {
+      const v = d[key];
+      if (v === null || v === undefined) { if (cur.length > 1) paths.push(cur); cur = []; return; }
+      cur.push(`${cur.length ? "L" : "M"}${x(i)},${y(v)}`);
+    });
+    if (cur.length > 1) paths.push(cur);
+    return paths.map((p) => p.join(" "));
+  };
+  const gridLines = [0, 0.25, 0.5, 0.75, 1];
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} style={{ overflow: "visible" }}>
+      {gridLines.map((g, i) => (
+        <g key={i}>
+          <line x1={padL} x2={W - padR} y1={padT + innerH * (1 - g)} y2={padT + innerH * (1 - g)} stroke="#EEF1F2" />
+          <text x={padL - 8} y={padT + innerH * (1 - g) + 4} fontSize="10" fill="#5B6B76" textAnchor="end" fontFamily="IBM Plex Mono, monospace">{fmtIDR(maxY * g)}</text>
+        </g>
+      ))}
+      {data.map((d, i) => (i % 3 === 0 || i === data.length - 1) && (
+        <text key={i} x={x(i)} y={H - 6} fontSize="10" fill="#5B6B76" textAnchor="middle">{d.label}</text>
+      ))}
+      {seg("PV").map((d, i) => <path key={"pv" + i} d={d} fill="none" stroke="#5B6B76" strokeWidth="2" strokeDasharray="4 3" />)}
+      {seg("AC").map((d, i) => <path key={"ac" + i} d={d} fill="none" stroke="#C97A1E" strokeWidth="2.5" />)}
+      {seg("EV").map((d, i) => <path key={"ev" + i} d={d} fill="none" stroke="#2F7DA6" strokeWidth="2.5" />)}
+    </svg>
+  );
+}
+
+function LegendRow({ items }) {
+  return (
+    <div style={{ display: "flex", gap: 16, marginTop: 8, flexWrap: "wrap" }}>
+      {items.map((it) => (
+        <span key={it.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, color: "var(--ink-soft)" }}>
+          <span style={{ width: 12, height: it.dash ? 2 : 3, background: it.color, display: "inline-block", borderTop: it.dash ? `2px dashed ${it.color}` : "none" }} />
+          {it.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function GroupedBarSvg({ data }) {
+  if (!data.length) return null;
+  const W = 640, H = 220, padL = 54, padR = 12, padT = 10, padB = 34;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const maxY = Math.max(1, ...data.flatMap((d) => [d.Anggaran, d.Aktual])) * 1.15;
+  const groupW = innerW / data.length;
+  const barW = Math.min(28, groupW * 0.3);
+  const y = (v) => padT + innerH - (v / maxY) * innerH;
+  const gridLines = [0, 0.25, 0.5, 0.75, 1];
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H}>
+      {gridLines.map((g, i) => (
+        <g key={i}>
+          <line x1={padL} x2={W - padR} y1={padT + innerH * (1 - g)} y2={padT + innerH * (1 - g)} stroke="#EEF1F2" />
+          <text x={padL - 8} y={padT + innerH * (1 - g) + 4} fontSize="10" fill="#5B6B76" textAnchor="end" fontFamily="IBM Plex Mono, monospace">{fmtIDR(maxY * g)}</text>
+        </g>
+      ))}
+      {data.map((d, i) => {
+        const cx = padL + groupW * i + groupW / 2;
+        return (
+          <g key={d.name}>
+            <rect x={cx - barW - 2} y={y(d.Anggaran)} width={barW} height={innerH - (y(d.Anggaran) - padT)} fill="#5B6B76" rx="2" />
+            <rect x={cx + 2} y={y(d.Aktual)} width={barW} height={innerH - (y(d.Aktual) - padT)} fill="#C97A1E" rx="2" />
+            <text x={cx} y={H - 12} fontSize="10" fill="#5B6B76" textAnchor="middle">{d.name}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* =========================================================================
+   HELPERS
+   ========================================================================= */
+
+const uid = (p) => `${p}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+const DAY = 86400000;
+const addDays = (d, n) => new Date(d.getTime() + n * DAY);
+const iso = (d) => new Date(d).toISOString().slice(0, 10);
+const today = new Date();
+
+const fmtIDR = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return "—";
+  const abs = Math.abs(n);
+  if (abs >= 1e9) return (n / 1e9).toFixed(2).replace(/\.00$/, "") + " M";
+  if (abs >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, "") + " Jt";
+  return n.toLocaleString("id-ID");
+};
+const fmtFull = (n) => (n === null || n === undefined || isNaN(n) ? "—" : "Rp " + Math.round(n).toLocaleString("id-ID"));
+const fmtPct = (n, d = 1) => (n === null || n === undefined || isNaN(n) ? "—" : n.toFixed(d) + "%");
+const fmtIdx = (n) => (n === null || n === undefined || isNaN(n) ? "—" : n.toFixed(2));
+const fmtDate = (d) => (d ? new Date(d).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" }) : "—");
+
+/* =========================================================================
+   ENGINE FUNCTIONS
+   ========================================================================= */
+
+function plannedPercentAt(activity, asOf) {
+  const s = new Date(activity.planned_start).getTime();
+  const f = new Date(activity.planned_finish).getTime();
+  const t = asOf.getTime();
+  if (t <= s) return 0;
+  if (t >= f) return 100;
+  if (f === s) return 100;
+  return ((t - s) / (f - s)) * 100;
+}
+
+function latestActualPercent(activityId, progress) {
+  const rows = progress.filter((p) => p.activity_id === activityId);
+  if (!rows.length) return 0;
+  rows.sort((a, b) => new Date(b.date) - new Date(a.date));
+  return rows[0].percent_complete;
+}
+
+function isOverdue(activity, actualPct, asOf) {
+  return new Date(activity.planned_finish) < asOf && actualPct < 100;
+}
+
+function computeEngines(db, projectId, asOf) {
+  const project = db.projects.find((p) => p.id === projectId);
+  const wbsList = db.wbs.filter((w) => w.project_id === projectId);
+  const activities = db.activities.filter((a) => a.project_id === projectId);
+  const boq = db.boq.filter((b) => b.project_id === projectId);
+  const budget = db.budget.filter((b) => b.project_id === projectId);
+  const actualCost = db.actual_cost.filter((c) => c.project_id === projectId);
+  const risks = db.risks.filter((r) => r.project_id === projectId);
+  const progress = db.progress;
+
+  // --- QUANTITY ENGINE ---
+  const boqRows = boq.map((b) => {
+    const planValue = b.qty_plan * b.unit_price;
+    const actValue = b.qty_actual * b.unit_price;
+    return {
+      ...b,
+      pct: b.qty_plan > 0 ? (b.qty_actual / b.qty_plan) * 100 : 0,
+      planValue,
+      actValue,
+    };
+  });
+  const qtyPlanValue = boqRows.reduce((s, b) => s + b.planValue, 0);
+  const qtyActValue = boqRows.reduce((s, b) => s + b.actValue, 0);
+  const quantityProgressPct = qtyPlanValue > 0 ? (qtyActValue / qtyPlanValue) * 100 : 0;
+
+  // --- SCHEDULE + PROGRESS ENGINE ---
+  const actRows = activities.map((a) => {
+    const actualPct = latestActualPercent(a.id, progress);
+    const plannedPct = plannedPercentAt(a, asOf);
+    return {
+      ...a,
+      actualPct,
+      plannedPct,
+      overdue: isOverdue(a, actualPct, asOf),
+      varianceDays: Math.round(((actualPct - plannedPct) / 100) *
+        ((new Date(a.planned_finish) - new Date(a.planned_start)) / DAY)),
+    };
+  });
+  const totalWeight = actRows.reduce((s, a) => s + a.weight, 0) || 1;
+  const plannedOverallPct = actRows.reduce((s, a) => s + a.weight * a.plannedPct, 0) / totalWeight;
+  const actualOverallPct = actRows.reduce((s, a) => s + a.weight * a.actualPct, 0) / totalWeight;
+  const overdueActivities = actRows.filter((a) => a.overdue);
+
+  // --- COST ENGINE (per WBS) ---
+  const wbsCost = wbsList.map((w) => {
+    const bud = budget.filter((b) => b.wbs_id === w.id).reduce((s, b) => s + b.amount, 0);
+    const act = actualCost.filter((c) => c.wbs_id === w.id).reduce((s, c) => s + c.amount, 0);
+    return { ...w, budget: bud, actual: act, variance: bud - act, pctSpent: bud > 0 ? (act / bud) * 100 : 0 };
+  });
+
+  // --- EVM / KPI ENGINE ---
+  const BAC = budget.reduce((s, b) => s + b.amount, 0) || project?.budget_total || 0;
+  const AC = actualCost.reduce((s, c) => s + c.amount, 0);
+  const PV = BAC * (plannedOverallPct / 100);
+  const EV = BAC * (actualOverallPct / 100);
+  const CPI = AC > 0 ? EV / AC : null;
+  const SPI = PV > 0 ? EV / PV : null;
+  const CV = EV - AC;
+  const SV = EV - PV;
+
+  // --- FORECAST ENGINE ---
+  const EAC = CPI && CPI > 0 ? AC + (BAC - EV) / CPI : BAC;
+  const ETC = EAC - AC;
+  const VAC = BAC - EAC;
+  let forecastFinish = null;
+  if (activities.length) {
+    const minStart = new Date(Math.min(...activities.map((a) => new Date(a.planned_start).getTime())));
+    const maxFinish = new Date(Math.max(...activities.map((a) => new Date(a.planned_finish).getTime())));
+    const originalDays = Math.max((maxFinish - minStart) / DAY, 1);
+    const effectiveSPI = SPI && SPI > 0 ? SPI : 1;
+    forecastFinish = addDays(minStart, originalDays / effectiveSPI);
+  }
+
+  // --- RISK ENGINE ---
+  const riskRows = risks.map((r) => {
+    const score = r.probability * r.impact;
+    const level = score >= 15 ? "Tinggi" : score >= 8 ? "Sedang" : "Rendah";
+    return { ...r, score, level };
+  });
+  const openRisks = riskRows.filter((r) => r.status !== "Selesai");
+  const highRisks = openRisks.filter((r) => r.level === "Tinggi");
+  const heatmap = {};
+  for (let i = 1; i <= 5; i++) for (let j = 1; j <= 5; j++) heatmap[`${i}-${j}`] = 0;
+  openRisks.forEach((r) => { heatmap[`${r.impact}-${r.probability}`] = (heatmap[`${r.impact}-${r.probability}`] || 0) + 1; });
+
+  // --- EARLY WARNING SYSTEM ---
+  const warnings = [];
+  if (CPI !== null && CPI < 0.95) {
+    warnings.push({
+      id: "cost", severity: CPI < 0.85 ? "critical" : "warning",
+      title: "Indikasi pembengkakan biaya",
+      detail: `CPI saat ini ${fmtIdx(CPI)} — setiap Rp1.000 yang dibelanjakan hanya menghasilkan Rp${Math.round(CPI * 1000)} nilai pekerjaan.`,
+    });
+  }
+  if (SPI !== null && SPI < 0.95) {
+    warnings.push({
+      id: "schedule", severity: SPI < 0.85 ? "critical" : "warning",
+      title: "Indikasi keterlambatan jadwal",
+      detail: `SPI saat ini ${fmtIdx(SPI)} — progres aktual tertinggal dari rencana sebesar ${fmtPct(100 - (SPI * 100))} secara nilai bobot.`,
+    });
+  }
+  if (overdueActivities.length > 0) {
+    warnings.push({
+      id: "overdue", severity: "warning",
+      title: `${overdueActivities.length} aktivitas melewati tanggal rencana selesai`,
+      detail: overdueActivities.slice(0, 3).map((a) => a.name).join(", ") + (overdueActivities.length > 3 ? ", dll." : ""),
+    });
+  }
+  if (highRisks.length > 0) {
+    warnings.push({
+      id: "risk", severity: "critical",
+      title: `${highRisks.length} risiko berstatus TINGGI masih terbuka`,
+      detail: highRisks.map((r) => r.description).slice(0, 2).join(" | "),
+    });
+  }
+  const negativeVarianceWbs = wbsCost.filter((w) => w.variance < 0);
+  if (negativeVarianceWbs.length > 0) {
+    warnings.push({
+      id: "wbs-cost", severity: "warning",
+      title: `${negativeVarianceWbs.length} WBS melebihi anggarannya`,
+      detail: negativeVarianceWbs.map((w) => w.name).join(", "),
+    });
+  }
+
+  // --- DECISION SUPPORT (rule-based) ---
+  const actions = [];
+  if (warnings.some((w) => w.id === "cost")) actions.push("Lakukan cost review meeting mingguan dan bekukan pengeluaran non-esensial pada WBS yang boros.");
+  if (warnings.some((w) => w.id === "schedule")) actions.push("Evaluasi jalur kritis, pertimbangkan penambahan shift kerja atau resource pada aktivitas yang tertinggal.");
+  if (warnings.some((w) => w.id === "overdue")) actions.push("Terbitkan instruksi percepatan (acceleration notice) untuk aktivitas yang telah melewati tanggal rencana.");
+  if (warnings.some((w) => w.id === "risk")) actions.push("Eskalasi risiko bernilai tinggi ke manajemen puncak dan aktifkan rencana mitigasi yang sudah disusun.");
+  if (warnings.some((w) => w.id === "wbs-cost")) actions.push("Ajukan revisi anggaran atau variation order untuk WBS yang sudah melampaui pagu biaya.");
+  if (actions.length === 0) actions.push("Kinerja proyek dalam batas toleransi — lanjutkan pemantauan rutin mingguan.");
+
+  return {
+    project, wbsList, activities: actRows, boq: boqRows, wbsCost, risks: riskRows, openRisks, highRisks, heatmap,
+    quantityProgressPct, plannedOverallPct, actualOverallPct, overdueActivities,
+    BAC, AC, PV, EV, CPI, SPI, CV, SV, EAC, ETC, VAC, forecastFinish, warnings, actions,
+  };
+}
+
+/* =========================================================================
+   SAMPLE DATA
+   ========================================================================= */
+
+function buildSampleDb() {
+  const pid = "proj_sample";
+  const projects = [{
+    id: pid, name: "Pembangunan Gedung Perkantoran 8 Lantai", owner: "PT Kontraktor Utama",
+    start_date: iso(addDays(today, -120)), end_date: iso(addDays(today, 240)),
+    currency: "IDR", budget_total: 45000000000, status: "Berjalan",
+  }];
+
+  const wbs = [
+    { id: "w1", project_id: pid, code: "1", name: "Pekerjaan Persiapan", parent_id: null },
+    { id: "w2", project_id: pid, code: "2", name: "Pekerjaan Struktur", parent_id: null },
+    { id: "w3", project_id: pid, code: "3", name: "Pekerjaan Arsitektur", parent_id: null },
+    { id: "w4", project_id: pid, code: "4", name: "Pekerjaan MEP", parent_id: null },
+  ];
+
+  const actDefs = [
+    ["a1", "w1", "Mobilisasi & Direksi Keet", 3, -120, -105, 100],
+    ["a2", "w1", "Pekerjaan Tanah & Galian", 5, -105, -80, 100],
+    ["a3", "w2", "Pondasi & Pile Cap", 12, -80, -40, 100],
+    ["a4", "w2", "Struktur Kolom & Balok Lt.1-4", 20, -40, 20, 62],
+    ["a5", "w2", "Struktur Kolom & Balok Lt.5-8", 18, 20, 70, 0],
+    ["a6", "w3", "Pasangan Dinding & Plester", 15, 10, 100, 18],
+    ["a7", "w3", "Finishing Lantai & Pengecatan", 10, 90, 160, 0],
+    ["a8", "w4", "Instalasi Mekanikal Elektrikal", 12, 30, 180, 14],
+    ["a9", "w4", "Testing & Commissioning", 5, 180, 220, 0],
+  ];
+  const activities = actDefs.map(([id, wbs_id, name, weight, s, f]) => ({
+    id, project_id: pid, wbs_id, name, weight,
+    planned_start: iso(addDays(today, s)), planned_finish: iso(addDays(today, f)),
+    predecessor: "",
+  }));
+  const progress = actDefs.map(([id, , , , , , pct]) => ({
+    id: uid("prog"), activity_id: id, date: iso(addDays(today, -2)), percent_complete: pct, note: "Update mingguan",
+  }));
+
+  const boq = [
+    { id: uid("boq"), project_id: pid, wbs_id: "w2", item: "Beton K-350", unit: "m3", qty_plan: 3200, unit_price: 1750000, qty_actual: 2100 },
+    { id: uid("boq"), project_id: pid, wbs_id: "w2", item: "Besi Tulangan", unit: "kg", qty_plan: 480000, unit_price: 16500, qty_actual: 300000 },
+    { id: uid("boq"), project_id: pid, wbs_id: "w3", item: "Bata Ringan", unit: "m2", qty_plan: 9000, unit_price: 95000, qty_actual: 1800 },
+    { id: uid("boq"), project_id: pid, wbs_id: "w3", item: "Keramik Lantai 60x60", unit: "m2", qty_plan: 7200, unit_price: 145000, qty_actual: 0 },
+    { id: uid("boq"), project_id: pid, wbs_id: "w4", item: "Kabel NYY 3x2.5", unit: "m", qty_plan: 12000, unit_price: 32000, qty_actual: 1500 },
+  ];
+
+  const resources = [
+    { id: uid("res"), project_id: pid, type: "Tenaga Kerja", name: "Tukang Besi", unit: "OH", rate: 150000 },
+    { id: uid("res"), project_id: pid, type: "Tenaga Kerja", name: "Tukang Batu", unit: "OH", rate: 140000 },
+    { id: uid("res"), project_id: pid, type: "Alat", name: "Tower Crane", unit: "Bulan", rate: 85000000 },
+    { id: uid("res"), project_id: pid, type: "Material", name: "Semen PCC 50kg", unit: "Zak", rate: 68000 },
+  ];
+
+  const budget = [
+    { id: uid("bud"), project_id: pid, wbs_id: "w1", amount: 1500000000 },
+    { id: uid("bud"), project_id: pid, wbs_id: "w2", amount: 22000000000 },
+    { id: uid("bud"), project_id: pid, wbs_id: "w3", amount: 12500000000 },
+    { id: uid("bud"), project_id: pid, wbs_id: "w4", amount: 9000000000 },
+  ];
+  const actual_cost = [
+    { id: uid("ac"), project_id: pid, wbs_id: "w1", period: iso(addDays(today, -30)), amount: 1450000000 },
+    { id: uid("ac"), project_id: pid, wbs_id: "w2", period: iso(addDays(today, -15)), amount: 14200000000 },
+    { id: uid("ac"), project_id: pid, wbs_id: "w3", period: iso(addDays(today, -15)), amount: 2400000000 },
+    { id: uid("ac"), project_id: pid, wbs_id: "w4", period: iso(addDays(today, -10)), amount: 1650000000 },
+  ];
+
+  const risks = [
+    { id: uid("risk"), project_id: pid, description: "Keterlambatan pengiriman baja akibat kondisi pasar global", category: "Rantai Pasok", probability: 4, impact: 4, status: "Terbuka", mitigation: "Percepat PO & cari alternatif pemasok lokal", owner: "Procurement Manager" },
+    { id: uid("risk"), project_id: pid, description: "Cuaca ekstrem musim hujan mengganggu jadwal pengecoran", category: "Eksternal", probability: 3, impact: 3, status: "Dipantau", mitigation: "Jadwalkan pengecoran di luar prediksi hujan, siapkan terpal", owner: "Site Manager" },
+    { id: uid("risk"), project_id: pid, description: "Perubahan desain MEP dari klien di tengah pelaksanaan", category: "Desain", probability: 2, impact: 4, status: "Terbuka", mitigation: "Freeze desain, proses melalui variation order", owner: "Project Manager" },
+    { id: uid("risk"), project_id: pid, description: "Produktivitas tukang di bawah target rencana", category: "Sumber Daya", probability: 3, impact: 2, status: "Dipantau", mitigation: "Evaluasi mandor, tambah shift kerja", owner: "Site Manager" },
+    { id: uid("risk"), project_id: pid, description: "Keterlambatan approval shop drawing dari konsultan", category: "Administrasi", probability: 2, impact: 2, status: "Selesai", mitigation: "Sudah disetujui klien", owner: "Drafter" },
+  ];
+
+  const drawings = [
+    { id: uid("dwg"), project_id: pid, title: "Denah Struktur Lt.1-4", discipline: "Struktur", revision: "Rev.3", status: "Approved" },
+    { id: uid("dwg"), project_id: pid, title: "Shop Drawing MEP Lt.5", discipline: "MEP", revision: "Rev.1", status: "Under Review" },
+    { id: uid("dwg"), project_id: pid, title: "Detail Arsitektur Fasad", discipline: "Arsitektur", revision: "Rev.2", status: "Approved" },
+  ];
+  const documents = [
+    { id: uid("doc"), project_id: pid, title: "Kontrak Induk", type: "Legal", status: "Aktif" },
+    { id: uid("doc"), project_id: pid, title: "Laporan Mingguan Minggu-32", type: "Laporan", status: "Terkirim" },
+    { id: uid("doc"), project_id: pid, title: "Method Statement Pengecoran", type: "Teknis", status: "Approved" },
+  ];
+  const approvals = [
+    { id: uid("apr"), project_id: pid, ref_type: "Shop Drawing", ref_title: "MEP Lt.5", status: "Menunggu", approver: "Konsultan MK", date: iso(today) },
+    { id: uid("apr"), project_id: pid, ref_type: "Variation Order", ref_title: "Perubahan Desain MEP", status: "Menunggu", approver: "Klien", date: iso(today) },
+    { id: uid("apr"), project_id: pid, ref_type: "Material", ref_title: "Sample Keramik Lantai", status: "Disetujui", approver: "Konsultan MK", date: iso(addDays(today, -10)) },
+  ];
+
+  return { projects, wbs, activities, boq, resources, budget, actual_cost, progress, drawings, documents, risks, approvals };
+}
+
+const EMPTY_DB = { projects: [], wbs: [], activities: [], boq: [], resources: [], budget: [], actual_cost: [], progress: [], drawings: [], documents: [], risks: [], approvals: [] };
+const STORAGE_KEY = "pc-platform-db-v1";
+const API_KEY_STORAGE = "pc-platform-anthropic-key";
+
+/* =========================================================================
+   SMALL UI PRIMITIVES
+   ========================================================================= */
+
+function Panel({ title, meta, accent = "var(--blue-500)", children, actions }) {
+  return (
+    <section className="panel" style={{ "--accent": accent }}>
+      <div className="panel-head">
+        <h3>{title}</h3>
+        <div className="panel-head-right">
+          {meta && <span className="panel-meta">{meta}</span>}
+          {actions}
+        </div>
+      </div>
+      <div className="panel-body">{children}</div>
+    </section>
+  );
+}
+
+function Kpi({ label, value, sub, tone }) {
+  return (
+    <div className={`kpi ${tone || ""}`}>
+      <div className="kpi-label">{label}</div>
+      <div className="kpi-value">{value}</div>
+      {sub && <div className="kpi-sub">{sub}</div>}
+    </div>
+  );
+}
+
+function Bar1({ pct, tone }) {
+  const clamped = Math.max(0, Math.min(100, pct || 0));
+  return (
+    <div className="bar1">
+      <div className={`bar1-fill ${tone || ""}`} style={{ width: `${clamped}%` }} />
+    </div>
+  );
+}
+
+function StatusPill({ status }) {
+  const map = {
+    Approved: "good", Disetujui: "good", Aktif: "good", Selesai: "good",
+    "Under Review": "warn", Menunggu: "warn", Terkirim: "warn", Dipantau: "warn",
+    Terbuka: "bad", Rejected: "bad",
+  };
+  return <span className={`pill ${map[status] || "neutral"}`}>{status}</span>;
+}
+
+function IconBtn({ onClick, children, title }) {
+  return <button className="icon-btn" onClick={onClick} title={title}>{children}</button>;
+}
+
+/* =========================================================================
+   MAIN APP
+   ========================================================================= */
+
+const NAV = [
+  { id: "dashboard", label: "Dasbor", icon: LayoutDashboard },
+  { id: "project", label: "Proyek & WBS", icon: Building2 },
+  { id: "schedule", label: "Aktivitas & BOQ", icon: ListTree },
+  { id: "cost", label: "Anggaran & Biaya", icon: Wallet },
+  { id: "risk", label: "Risiko", icon: ShieldAlert },
+  { id: "docs", label: "Dokumen & Persetujuan", icon: FileText },
+  { id: "ai", label: "Analisis AI & Laporan", icon: Sparkles },
+];
+
+function App() {
+  const [db, setDb] = useState(EMPTY_DB);
+  const [loaded, setLoaded] = useState(false);
+  const [tab, setTab] = useState("dashboard");
+  const [projectId, setProjectId] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiText, setAiText] = useState("");
+  const [aiError, setAiError] = useState("");
+  const [apiKey, setApiKey] = useState(() => {
+    try { return localStorage.getItem(API_KEY_STORAGE) || ""; } catch (e) { return ""; }
+  });
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        setDb(parsed);
+        if (parsed.projects && parsed.projects.length) setProjectId(parsed.projects[0].id);
+      }
+    } catch (e) {
+      // no saved data yet, or corrupted — start fresh
+    } finally {
+      setLoaded(true);
+    }
+  }, []);
+
+  const persist = useCallback((next) => {
+    setDb(next);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch (e) { /* storage full or unavailable */ }
+  }, []);
+
+  const saveApiKey = (key) => {
+    setApiKey(key);
+    try { if (key) localStorage.setItem(API_KEY_STORAGE, key); else localStorage.removeItem(API_KEY_STORAGE); } catch (e) { /* ignore */ }
+  };
+
+  const loadSample = () => {
+    const sample = buildSampleDb();
+    persist(sample);
+    setProjectId(sample.projects[0].id);
+    setAiText(""); setAiError("");
+  };
+
+  const resetAll = () => {
+    persist(EMPTY_DB);
+    setProjectId(null);
+    setAiText(""); setAiError("");
+  };
+
+  const addRow = (table, row) => {
+    const next = { ...db, [table]: [...db[table], { id: uid(table), project_id: projectId, ...row }] };
+    persist(next);
+  };
+  const removeRow = (table, id) => {
+    persist({ ...db, [table]: db[table].filter((r) => r.id !== id) });
+  };
+  const addProgress = (activity_id, percent_complete) => {
+    persist({ ...db, progress: [...db.progress, { id: uid("prog"), activity_id, date: iso(today), percent_complete: Number(percent_complete), note: "Update manual" }] });
+  };
+
+  const engines = useMemo(() => (projectId ? computeEngines(db, projectId, today) : null), [db, projectId]);
+
+  const sCurveData = useMemo(() => {
+    if (!engines || !engines.activities.length) return [];
+    const starts = engines.activities.map((a) => new Date(a.planned_start).getTime());
+    const finishes = engines.activities.map((a) => new Date(a.planned_finish).getTime());
+    const minStart = new Date(Math.min(...starts));
+    const maxFinish = new Date(Math.max(...finishes, engines.forecastFinish ? engines.forecastFinish.getTime() : 0));
+    const totalWeight = engines.activities.reduce((s, a) => s + a.weight, 0) || 1;
+    const points = [];
+    const steps = 16;
+    for (let i = 0; i <= steps; i++) {
+      const t = new Date(minStart.getTime() + ((maxFinish - minStart) * i) / steps);
+      const plannedPct = engines.activities.reduce((s, a) => s + a.weight * plannedPercentAt(a, t), 0) / totalWeight;
+      const isPast = t <= today;
+      const frac = Math.min(1, Math.max(0, (t - minStart) / Math.max(1, today - minStart)));
+      points.push({
+        label: t.toLocaleDateString("id-ID", { month: "short", yy: undefined, year: "2-digit" }),
+        PV: Math.round(engines.BAC * (plannedPct / 100)),
+        EV: isPast ? Math.round(engines.EV * frac) : null,
+        AC: isPast ? Math.round(engines.AC * frac) : null,
+      });
+    }
+    return points;
+  }, [engines]);
+
+  const wbsCostChart = useMemo(() => {
+    if (!engines) return [];
+    return engines.wbsCost.map((w) => ({ name: w.name.replace("Pekerjaan ", ""), Anggaran: Math.round(w.budget), Aktual: Math.round(w.actual) }));
+  }, [engines]);
+
+  const runAiAnalysis = async () => {
+    if (!engines) return;
+    if (!apiKey) { setAiError("Masukkan Anthropic API key Anda terlebih dahulu untuk mengaktifkan analisis AI."); return; }
+    setAiLoading(true); setAiError(""); setAiText("");
+    const payload = {
+      proyek: engines.project?.name,
+      progresRencana: fmtPct(engines.plannedOverallPct),
+      progresAktual: fmtPct(engines.actualOverallPct),
+      BAC: engines.BAC, EV: Math.round(engines.EV), AC: Math.round(engines.AC), PV: Math.round(engines.PV),
+      CPI: engines.CPI, SPI: engines.SPI, EAC: Math.round(engines.EAC), VAC: Math.round(engines.VAC),
+      perkiraanSelesai: engines.forecastFinish ? iso(engines.forecastFinish) : null,
+      aktivitasTerlambat: engines.overdueActivities.map((a) => a.name),
+      risikoTinggi: engines.highRisks.map((r) => ({ deskripsi: r.description, mitigasi: r.mitigation })),
+      wbsMelebihiAnggaran: engines.wbsCost.filter((w) => w.variance < 0).map((w) => w.name),
+      peringatanOtomatis: engines.warnings.map((w) => w.title),
+    };
+    const prompt = `Anda adalah konsultan senior project control untuk proyek konstruksi. Berikut adalah data kinerja proyek terkini dalam format JSON:\n\n${JSON.stringify(payload, null, 2)}\n\nBerikan analisis dalam Bahasa Indonesia dengan struktur berikut, ringkas dan tegas (maks. sekitar 300 kata):\n1. Ringkasan kondisi proyek (1-2 kalimat)\n2. Temuan utama (bullet, maksimal 4 poin, sebutkan angka pendukung)\n3. Rekomendasi tindakan prioritas (bullet, maksimal 4 poin, urutkan dari paling mendesak)\nJangan gunakan markdown heading (#), gunakan judul biasa diikuti titik dua.`;
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-5",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }],
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data?.error?.message || "Permintaan ditolak API.");
+      const text = (data.content || []).map((c) => c.text || "").join("\n").trim();
+      if (!text) throw new Error("Respons kosong dari model.");
+      setAiText(text);
+    } catch (e) {
+      setAiError("Analisis AI gagal dimuat: " + (e.message || "periksa API key dan koneksi Anda."));
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const downloadReport = () => {
+    if (!engines) return;
+    const lines = [];
+    lines.push(`LAPORAN MANAJEMEN PROYEK`);
+    lines.push(`${engines.project?.name}`);
+    lines.push(`Per tanggal: ${fmtDate(today)}`);
+    lines.push("");
+    lines.push(`RINGKASAN KINERJA`);
+    lines.push(`- Progres Rencana: ${fmtPct(engines.plannedOverallPct)}`);
+    lines.push(`- Progres Aktual : ${fmtPct(engines.actualOverallPct)}`);
+    lines.push(`- BAC: ${fmtFull(engines.BAC)}  |  PV: ${fmtFull(engines.PV)}  |  EV: ${fmtFull(engines.EV)}  |  AC: ${fmtFull(engines.AC)}`);
+    lines.push(`- CPI: ${fmtIdx(engines.CPI)}  |  SPI: ${fmtIdx(engines.SPI)}`);
+    lines.push(`- Estimasi Biaya Akhir (EAC): ${fmtFull(engines.EAC)}  |  Selisih Anggaran (VAC): ${fmtFull(engines.VAC)}`);
+    lines.push(`- Perkiraan Selesai: ${engines.forecastFinish ? fmtDate(engines.forecastFinish) : "—"}`);
+    lines.push("");
+    lines.push(`PERINGATAN DINI`);
+    engines.warnings.forEach((w) => lines.push(`- [${w.severity.toUpperCase()}] ${w.title} — ${w.detail}`));
+    lines.push("");
+    lines.push(`REKOMENDASI TINDAKAN`);
+    engines.actions.forEach((a) => lines.push(`- ${a}`));
+    lines.push("");
+    lines.push(`RISIKO TERBUKA BERNILAI TINGGI`);
+    engines.highRisks.forEach((r) => lines.push(`- ${r.description} (Skor ${r.score}) — Mitigasi: ${r.mitigation}`));
+    if (aiText) { lines.push(""); lines.push(`ANALISIS AI`); lines.push(aiText); }
+    const blob = new Blob([lines.join("\n")], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `laporan-${(engines.project?.name || "proyek").replace(/\s+/g, "-").toLowerCase()}.md`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="pc-root">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+        .pc-root {
+          --navy-900:#0B2138; --navy-700:#123353; --navy-600:#1B4266;
+          --blue-500:#2F7DA6; --blue-100:#E4EEF3;
+          --paper:#F1F3F4; --panel:#FFFFFF; --line:#DCE2E6;
+          --ink:#16232E; --ink-soft:#5B6B76;
+          --amber:#C97A1E; --amber-bg:#FBF0DE;
+          --red:#B33B27; --red-bg:#FBE7E2;
+          --green:#2E7D50; --green-bg:#E3F3E9;
+          font-family:'IBM Plex Sans', sans-serif;
+          color:var(--ink);
+          background:var(--paper);
+          min-height:100%;
+          display:flex;
+          font-size:13.5px;
+          line-height:1.5;
+        }
+        .pc-root * { box-sizing:border-box; }
+        .pc-root h1, .pc-root h2, .pc-root h3 { font-family:'Space Grotesk', sans-serif; margin:0; }
+        .mono { font-family:'IBM Plex Mono', monospace; }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar { width:230px; flex-shrink:0; background:var(--navy-900); color:#CBD9E3; display:flex; flex-direction:column; min-height:100vh; }
+        .brand { padding:20px 18px 14px; border-bottom:1px solid rgba(255,255,255,0.08); }
+        .brand-mark { font-family:'Space Grotesk'; font-weight:700; font-size:16px; color:#fff; letter-spacing:0.2px; }
+        .brand-sub { font-size:11px; color:#7E97AB; margin-top:3px; }
+        .nav { flex:1; padding:10px 8px; display:flex; flex-direction:column; gap:2px; }
+        .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:3px; cursor:pointer; color:#B9CBD8; border-left:3px solid transparent; font-size:13px; }
+        .nav-item:hover { background:rgba(255,255,255,0.05); color:#fff; }
+        .nav-item.active { background:var(--navy-700); color:#fff; border-left:3px solid var(--amber); }
+        .nav-item svg { flex-shrink:0; }
+        .sidebar-foot { padding:12px; border-top:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; gap:6px; }
+        .ghost-btn { background:transparent; border:1px solid rgba(255,255,255,0.2); color:#CBD9E3; border-radius:3px; padding:7px 10px; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:6px; justify-content:center; }
+        .ghost-btn:hover { border-color:var(--amber); color:#fff; }
+
+        /* ---------- Main ---------- */
+        .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+        .topbar { background:var(--panel); border-bottom:1px solid var(--line); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+        .topbar h1 { font-size:17px; }
+        .topbar-sub { font-size:12px; color:var(--ink-soft); margin-top:2px; }
+        select.proj-select { font-family:'IBM Plex Sans'; font-size:13px; padding:7px 10px; border:1px solid var(--line); border-radius:3px; background:#fff; color:var(--ink); }
+        .content { padding:22px 24px 60px; overflow-y:auto; }
+
+        /* ---------- Panels ---------- */
+        .panel { background:var(--panel); border:1px solid var(--line); border-top:3px solid var(--accent); border-radius:2px; margin-bottom:18px; }
+        .panel-head { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--line); }
+        .panel-head h3 { font-size:14px; }
+        .panel-head-right { display:flex; align-items:center; gap:10px; }
+        .panel-meta { font-size:11.5px; color:var(--ink-soft); }
+        .panel-body { padding:16px; }
+
+        /* ---------- Grid layout ---------- */
+        .grid-2 { display:grid; grid-template-columns:1.4fr 1fr; gap:18px; }
+        .grid-kpi { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:18px; }
+        @media (max-width:980px){ .grid-2{grid-template-columns:1fr;} .grid-kpi{grid-template-columns:repeat(2,1fr);} }
+
+        /* ---------- KPI card ---------- */
+        .kpi { background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:13px 14px; }
+        .kpi-label { font-size:11.5px; color:var(--ink-soft); margin-bottom:6px; }
+        .kpi-value { font-family:'IBM Plex Mono'; font-weight:600; font-size:19px; }
+        .kpi-sub { font-size:11px; color:var(--ink-soft); margin-top:4px; }
+        .kpi.good .kpi-value { color:var(--green); }
+        .kpi.warn .kpi-value { color:var(--amber); }
+        .kpi.bad .kpi-value { color:var(--red); }
+
+        /* ---------- table ---------- */
+        table { width:100%; border-collapse:collapse; font-size:12.8px; }
+        th { text-align:left; font-weight:600; color:var(--ink-soft); font-size:11.5px; padding:6px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+        td { padding:8px 10px; border-bottom:1px solid #EEF1F2; vertical-align:middle; }
+        tr:last-child td { border-bottom:none; }
+        td.num, th.num { text-align:right; font-family:'IBM Plex Mono'; }
+        .row-name { font-weight:500; }
+        .row-sub { font-size:11px; color:var(--ink-soft); }
+
+        /* ---------- bar ---------- */
+        .bar1 { width:100%; height:6px; background:#E7EBEC; border-radius:3px; overflow:hidden; }
+        .bar1-fill { height:100%; background:var(--blue-500); }
+        .bar1-fill.good { background:var(--green); }
+        .bar1-fill.warn { background:var(--amber); }
+        .bar1-fill.bad { background:var(--red); }
+
+        /* ---------- pill ---------- */
+        .pill { font-size:10.5px; padding:2px 8px; border-radius:10px; font-weight:600; white-space:nowrap; }
+        .pill.good { background:var(--green-bg); color:var(--green); }
+        .pill.warn { background:var(--amber-bg); color:var(--amber); }
+        .pill.bad { background:var(--red-bg); color:var(--red); }
+        .pill.neutral { background:#EEF1F2; color:var(--ink-soft); }
+
+        /* ---------- warning card ---------- */
+        .warn-card { display:flex; gap:10px; padding:11px 12px; border-radius:2px; margin-bottom:8px; border:1px solid; }
+        .warn-card.critical { background:var(--red-bg); border-color:#EFC5BA; }
+        .warn-card.warning { background:var(--amber-bg); border-color:#F0D6AE; }
+        .warn-card svg { flex-shrink:0; margin-top:1px; }
+        .warn-card.critical svg { color:var(--red); }
+        .warn-card.warning svg { color:var(--amber); }
+        .warn-title { font-weight:600; font-size:12.8px; }
+        .warn-detail { font-size:12px; color:var(--ink-soft); margin-top:2px; }
+
+        /* ---------- forms ---------- */
+        .inline-form { display:flex; flex-wrap:wrap; gap:8px; align-items:end; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); }
+        .field { display:flex; flex-direction:column; gap:4px; }
+        .field label { font-size:10.5px; color:var(--ink-soft); }
+        .field input, .field select { font-family:'IBM Plex Sans'; font-size:12.5px; padding:6px 8px; border:1px solid var(--line); border-radius:3px; min-width:110px; }
+        .add-btn { background:var(--navy-700); color:#fff; border:none; border-radius:3px; padding:7px 12px; font-size:12.5px; cursor:pointer; display:flex; align-items:center; gap:6px; height:31px; }
+        .add-btn:hover { background:var(--navy-600); }
+        .icon-btn { background:none; border:none; color:var(--ink-soft); cursor:pointer; padding:4px; display:flex; }
+        .icon-btn:hover { color:var(--red); }
+
+        /* ---------- tab-scoped bits ---------- */
+        .empty-state { text-align:center; padding:60px 20px; color:var(--ink-soft); }
+        .empty-state h2 { font-size:18px; margin-bottom:8px; color:var(--ink); }
+        .primary-btn { background:var(--amber); color:#fff; border:none; border-radius:3px; padding:10px 18px; font-size:13px; cursor:pointer; margin-top:14px; display:inline-flex; align-items:center; gap:8px; }
+
+        .heatmap { display:grid; grid-template-columns:repeat(5, 32px); gap:3px; }
+        .heat-cell { width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; font-size:11px; border-radius:2px; color:#fff; }
+
+        .ai-box { background:var(--navy-900); color:#E7EEF2; border-radius:2px; padding:18px; white-space:pre-wrap; font-size:13px; line-height:1.65; }
+        .toolbar { display:flex; gap:10px; margin-bottom:16px; }
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+      `}</style>
+
+      <aside className="sidebar">
+        <div className="brand">
+          <div className="brand-mark">Project Control AI</div>
+          <div className="brand-sub">Konstruksi & Rekayasa</div>
+        </div>
+        <nav className="nav">
+          {NAV.map((n) => {
+            const Icon = n.icon;
+            return (
+              <div key={n.id} className={`nav-item ${tab === n.id ? "active" : ""}`} onClick={() => setTab(n.id)}>
+                <Icon size={16} /> <span>{n.label}</span>
+              </div>
+            );
+          })}
+        </nav>
+        <div className="sidebar-foot">
+          <button className="ghost-btn" onClick={loadSample}><RefreshCw size={13} /> Muat data contoh</button>
+          <button className="ghost-btn" onClick={resetAll}><Eraser size={13} /> Kosongkan data</button>
+        </div>
+      </aside>
+
+      <div className="main">
+        <div className="topbar">
+          <div>
+            <h1>{NAV.find((n) => n.id === tab)?.label}</h1>
+            <div className="topbar-sub">Per tanggal {fmtDate(today)}</div>
+          </div>
+          {db.projects.length > 0 && (
+            <select className="proj-select" value={projectId || ""} onChange={(e) => setProjectId(e.target.value)}>
+              {db.projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          )}
+        </div>
+
+        <div className="content">
+          {!loaded ? (
+            <div className="empty-state">Memuat data...</div>
+          ) : db.projects.length === 0 ? (
+            <div className="empty-state">
+              <Building2 size={32} strokeWidth={1.3} />
+              <h2>Belum ada proyek</h2>
+              <p>Muat data contoh untuk melihat platform bekerja, atau mulai dengan menambah proyek di tab "Proyek & WBS".</p>
+              <button className="primary-btn" onClick={loadSample}><Sparkles size={15} /> Muat data contoh</button>
+            </div>
+          ) : !engines ? (
+            <div className="empty-state">Pilih proyek terlebih dahulu.</div>
+          ) : (
+            <>
+              {tab === "dashboard" && <DashboardTab engines={engines} sCurveData={sCurveData} wbsCostChart={wbsCostChart} />}
+              {tab === "project" && <ProjectTab db={db} engines={engines} projectId={projectId} addRow={addRow} removeRow={removeRow} setProjectId={setProjectId} persist={persist} />}
+              {tab === "schedule" && <ScheduleTab db={db} engines={engines} addRow={addRow} removeRow={removeRow} addProgress={addProgress} />}
+              {tab === "cost" && <CostTab db={db} engines={engines} addRow={addRow} removeRow={removeRow} />}
+              {tab === "risk" && <RiskTab engines={engines} addRow={addRow} removeRow={removeRow} />}
+              {tab === "docs" && <DocsTab db={db} addRow={addRow} removeRow={removeRow} />}
+              {tab === "ai" && <AiTab engines={engines} aiLoading={aiLoading} aiText={aiText} aiError={aiError} runAiAnalysis={runAiAnalysis} downloadReport={downloadReport} apiKey={apiKey} saveApiKey={saveApiKey} />}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================================
+   TAB: DASHBOARD
+   ========================================================================= */
+
+function DashboardTab({ engines, sCurveData, wbsCostChart }) {
+  const cpiTone = engines.CPI == null ? "" : engines.CPI >= 1 ? "good" : engines.CPI >= 0.9 ? "warn" : "bad";
+  const spiTone = engines.SPI == null ? "" : engines.SPI >= 1 ? "good" : engines.SPI >= 0.9 ? "warn" : "bad";
+  return (
+    <>
+      <div className="grid-kpi">
+        <Kpi label="Progres Aktual vs Rencana" value={fmtPct(engines.actualOverallPct)} sub={`Rencana: ${fmtPct(engines.plannedOverallPct)}`} tone={engines.actualOverallPct >= engines.plannedOverallPct ? "good" : "warn"} />
+        <Kpi label="Cost Performance Index (CPI)" value={fmtIdx(engines.CPI)} sub={engines.CPI >= 1 ? "Efisien" : "Boros anggaran"} tone={cpiTone} />
+        <Kpi label="Schedule Performance Index (SPI)" value={fmtIdx(engines.SPI)} sub={engines.SPI >= 1 ? "Sesuai/lebih cepat" : "Tertinggal jadwal"} tone={spiTone} />
+        <Kpi label="Estimasi Biaya Akhir (EAC)" value={fmtIDR(engines.EAC)} sub={`VAC: ${engines.VAC >= 0 ? "+" : ""}${fmtIDR(engines.VAC)}`} tone={engines.VAC >= 0 ? "good" : "bad"} />
+      </div>
+
+      <div className="grid-2">
+        <Panel title="Kurva-S: Nilai Rencana, Perolehan & Biaya Aktual" accent="var(--blue-500)" meta="PV · EV · AC">
+          <SCurveSvg data={sCurveData} />
+          <LegendRow items={[
+            { label: "Rencana (PV)", color: "#5B6B76", dash: true },
+            { label: "Perolehan (EV)", color: "#2F7DA6" },
+            { label: "Biaya Aktual (AC)", color: "#C97A1E" },
+          ]} />
+        </Panel>
+
+        <Panel title="Peringatan Dini" accent="var(--red)" meta={`${engines.warnings.length} peringatan aktif`}>
+          {engines.warnings.length === 0 ? (
+            <div style={{ color: "var(--green)", display: "flex", alignItems: "center", gap: 8 }}><CheckCircle2 size={16} /> Tidak ada peringatan — kinerja proyek dalam batas normal.</div>
+          ) : engines.warnings.map((w) => (
+            <div key={w.id} className={`warn-card ${w.severity}`}>
+              <AlertTriangle size={16} />
+              <div><div className="warn-title">{w.title}</div><div className="warn-detail">{w.detail}</div></div>
+            </div>
+          ))}
+        </Panel>
+      </div>
+
+      <div className="grid-2">
+        <Panel title="Anggaran vs Biaya Aktual per WBS" accent="var(--amber)">
+          <GroupedBarSvg data={wbsCostChart} />
+          <LegendRow items={[
+            { label: "Anggaran", color: "#5B6B76" },
+            { label: "Biaya Aktual", color: "#C97A1E" },
+          ]} />
+        </Panel>
+
+        <Panel title="Progres per WBS" accent="var(--green)">
+          <table>
+            <thead><tr><th>WBS</th><th className="num">Progres</th></tr></thead>
+            <tbody>
+              {engines.wbsList.map((w) => {
+                const acts = engines.activities.filter((a) => a.wbs_id === w.id);
+                const tw = acts.reduce((s, a) => s + a.weight, 0) || 1;
+                const pct = acts.reduce((s, a) => s + a.weight * a.actualPct, 0) / tw;
+                return (
+                  <tr key={w.id}>
+                    <td className="row-name">{w.name}</td>
+                    <td className="num">
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
+                        <div style={{ width: 80 }}><Bar1 pct={pct} tone={pct >= 60 ? "good" : pct >= 25 ? "warn" : ""} /></div>
+                        {fmtPct(pct)}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </Panel>
+      </div>
+    </>
+  );
+}
+
+/* =========================================================================
+   TAB: PROJECT & WBS
+   ========================================================================= */
+
+function ProjectTab({ db, projectId, addRow, removeRow, setProjectId, persist }) {
+  const [form, setForm] = useState({ name: "", owner: "", start_date: iso(today), end_date: iso(addDays(today, 180)), budget_total: "" });
+  const [wbsForm, setWbsForm] = useState({ code: "", name: "" });
+
+  const createProject = () => {
+    if (!form.name) return;
+    const np = { id: uid("proj"), project_id: undefined, ...form, budget_total: Number(form.budget_total) || 0, currency: "IDR", status: "Berjalan" };
+    delete np.project_id;
+    const next = { ...db, projects: [...db.projects, np] };
+    persist(next);
+    setProjectId(np.id);
+    setForm({ name: "", owner: "", start_date: iso(today), end_date: iso(addDays(today, 180)), budget_total: "" });
+  };
+
+  const project = db.projects.find((p) => p.id === projectId);
+  const wbsList = db.wbs.filter((w) => w.project_id === projectId);
+
+  return (
+    <>
+      <Panel title="Daftar Proyek" accent="var(--blue-500)" meta={`${db.projects.length} proyek`}>
+        <table>
+          <thead><tr><th>Nama Proyek</th><th>Pemilik/Kontraktor</th><th>Mulai</th><th>Selesai</th><th className="num">Anggaran</th><th></th></tr></thead>
+          <tbody>
+            {db.projects.map((p) => (
+              <tr key={p.id}>
+                <td className="row-name">{p.name}</td>
+                <td>{p.owner}</td>
+                <td>{fmtDate(p.start_date)}</td>
+                <td>{fmtDate(p.end_date)}</td>
+                <td className="num">{fmtFull(p.budget_total)}</td>
+                <td><IconBtn onClick={() => { removeRow("projects", p.id); if (projectId === p.id) setProjectId(null); }}><Trash2 size={14} /></IconBtn></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="inline-form">
+          <div className="field"><label>Nama proyek</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Cth: Jalan Tol Seksi 2" /></div>
+          <div className="field"><label>Pemilik/Kontraktor</label><input value={form.owner} onChange={(e) => setForm({ ...form, owner: e.target.value })} /></div>
+          <div className="field"><label>Mulai</label><input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} /></div>
+          <div className="field"><label>Selesai</label><input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} /></div>
+          <div className="field"><label>Anggaran total (Rp)</label><input type="number" value={form.budget_total} onChange={(e) => setForm({ ...form, budget_total: e.target.value })} /></div>
+          <button className="add-btn" onClick={createProject}><Plus size={14} /> Tambah proyek</button>
+        </div>
+      </Panel>
+
+      {project && (
+        <Panel title={`Struktur WBS — ${project.name}`} accent="var(--amber)" meta={`${wbsList.length} elemen`}>
+          <table>
+            <thead><tr><th>Kode</th><th>Nama WBS</th><th></th></tr></thead>
+            <tbody>
+              {wbsList.map((w) => (
+                <tr key={w.id}><td className="mono">{w.code}</td><td>{w.name}</td>
+                  <td><IconBtn onClick={() => removeRow("wbs", w.id)}><Trash2 size={14} /></IconBtn></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="inline-form">
+            <div className="field"><label>Kode</label><input value={wbsForm.code} onChange={(e) => setWbsForm({ ...wbsForm, code: e.target.value })} style={{ minWidth: 60 }} /></div>
+            <div className="field"><label>Nama WBS</label><input value={wbsForm.name} onChange={(e) => setWbsForm({ ...wbsForm, name: e.target.value })} placeholder="Cth: Pekerjaan Struktur" /></div>
+            <button className="add-btn" onClick={() => { if (wbsForm.name) { addRow("wbs", { ...wbsForm, parent_id: null }); setWbsForm({ code: "", name: "" }); } }}><Plus size={14} /> Tambah WBS</button>
+          </div>
+        </Panel>
+      )}
+    </>
+  );
+}
+
+/* =========================================================================
+   TAB: SCHEDULE (activities) & BOQ
+   ========================================================================= */
+
+function ScheduleTab({ db, engines, addRow, removeRow, addProgress }) {
+  const [form, setForm] = useState({ wbs_id: "", name: "", weight: "", planned_start: iso(today), planned_finish: iso(addDays(today, 30)) });
+  const [boqForm, setBoqForm] = useState({ wbs_id: "", item: "", unit: "", qty_plan: "", unit_price: "", qty_actual: "" });
+
+  return (
+    <>
+      <Panel title="Aktivitas & Jadwal" accent="var(--blue-500)" meta={`${engines.activities.length} aktivitas`}>
+        <table>
+          <thead><tr><th>Aktivitas</th><th>WBS</th><th>Rencana</th><th className="num">Bobot</th><th className="num">Progres</th><th></th></tr></thead>
+          <tbody>
+            {engines.activities.map((a) => {
+              const w = engines.wbsList.find((x) => x.id === a.wbs_id);
+              return (
+                <tr key={a.id}>
+                  <td className="row-name">{a.name}{a.overdue && <span style={{ marginLeft: 6 }}><StatusPill status="Terbuka" /></span>}
+                    <div className="row-sub">{fmtDate(a.planned_start)} → {fmtDate(a.planned_finish)}</div>
+                  </td>
+                  <td>{w?.name}</td>
+                  <td className="num">{fmtPct(a.plannedPct, 0)}</td>
+                  <td className="num">{a.weight}%</td>
+                  <td className="num">
+                    <div style={{ display: "flex", gap: 6, alignItems: "center", justifyContent: "flex-end" }}>
+                      <input type="number" min="0" max="100" defaultValue={a.actualPct} style={{ width: 52, padding: "4px 6px", border: "1px solid var(--line)", borderRadius: 3 }}
+                        onBlur={(e) => { const v = Number(e.target.value); if (!isNaN(v) && v !== a.actualPct) addProgress(a.id, v); }} />%
+                    </div>
+                  </td>
+                  <td><IconBtn onClick={() => removeRow("activities", a.id)}><Trash2 size={14} /></IconBtn></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div className="inline-form">
+          <div className="field"><label>WBS</label>
+            <select value={form.wbs_id} onChange={(e) => setForm({ ...form, wbs_id: e.target.value })}>
+              <option value="">Pilih WBS</option>
+              {engines.wbsList.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+            </select>
+          </div>
+          <div className="field"><label>Nama aktivitas</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+          <div className="field"><label>Bobot (%)</label><input type="number" value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} style={{ width: 70 }} /></div>
+          <div className="field"><label>Mulai</label><input type="date" value={form.planned_start} onChange={(e) => setForm({ ...form, planned_start: e.target.value })} /></div>
+          <div className="field"><label>Selesai</label><input type="date" value={form.planned_finish} onChange={(e) => setForm({ ...form, planned_finish: e.target.value })} /></div>
+          <button className="add-btn" onClick={() => {
+            if (form.name && form.wbs_id) { addRow("activities", { ...form, weight: Number(form.weight) || 0, predecessor: "" }); setForm({ wbs_id: "", name: "", weight: "", planned_start: iso(today), planned_finish: iso(addDays(today, 30)) }); }
+          }}><Plus size={14} /> Tambah aktivitas</button>
+        </div>
+      </Panel>
+
+      <Panel title="Bill of Quantity (BOQ)" accent="var(--amber)" meta={`${engines.boq.length} item`}>
+        <table>
+          <thead><tr><th>Item</th><th>WBS</th><th className="num">Qty Rencana</th><th className="num">Qty Aktual</th><th className="num">Harga Satuan</th><th className="num">Progres Qty</th><th></th></tr></thead>
+          <tbody>
+            {engines.boq.map((b) => {
+              const w = engines.wbsList.find((x) => x.id === b.wbs_id);
+              return (
+                <tr key={b.id}>
+                  <td className="row-name">{b.item}</td>
+                  <td>{w?.name}</td>
+                  <td className="num">{b.qty_plan.toLocaleString("id-ID")} {b.unit}</td>
+                  <td className="num">{b.qty_actual.toLocaleString("id-ID")} {b.unit}</td>
+                  <td className="num">{fmtFull(b.unit_price)}</td>
+                  <td className="num">{fmtPct(b.pct, 0)}</td>
+                  <td><IconBtn onClick={() => removeRow("boq", b.id)}><Trash2 size={14} /></IconBtn></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div className="inline-form">
+          <div className="field"><label>WBS</label>
+            <select value={boqForm.wbs_id} onChange={(e) => setBoqForm({ ...boqForm, wbs_id: e.target.value })}>
+              <option value="">Pilih WBS</option>
+              {engines.wbsList.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+            </select>
+          </div>
+          <div className="field"><label>Nama item</label><input value={boqForm.item} onChange={(e) => setBoqForm({ ...boqForm, item: e.target.value })} /></div>
+          <div className="field"><label>Satuan</label><input value={boqForm.unit} onChange={(e) => setBoqForm({ ...boqForm, unit: e.target.value })} style={{ width: 60 }} /></div>
+          <div className="field"><label>Qty rencana</label><input type="number" value={boqForm.qty_plan} onChange={(e) => setBoqForm({ ...boqForm, qty_plan: e.target.value })} style={{ width: 90 }} /></div>
+          <div className="field"><label>Qty aktual</label><input type="number" value={boqForm.qty_actual} onChange={(e) => setBoqForm({ ...boqForm, qty_actual: e.target.value })} style={{ width: 90 }} /></div>
+          <div className="field"><label>Harga satuan</label><input type="number" value={boqForm.unit_price} onChange={(e) => setBoqForm({ ...boqForm, unit_price: e.target.value })} style={{ width: 110 }} /></div>
+          <button className="add-btn" onClick={() => {
+            if (boqForm.item && boqForm.wbs_id) { addRow("boq", { ...boqForm, qty_plan: Number(boqForm.qty_plan) || 0, qty_actual: Number(boqForm.qty_actual) || 0, unit_price: Number(boqForm.unit_price) || 0 }); setBoqForm({ wbs_id: "", item: "", unit: "", qty_plan: "", unit_price: "", qty_actual: "" }); }
+          }}><Plus size={14} /> Tambah item</button>
+        </div>
+      </Panel>
+    </>
+  );
+}
+
+/* =========================================================================
+   TAB: COST
+   ========================================================================= */
+
+function CostTab({ db, engines, addRow, removeRow }) {
+  const [budForm, setBudForm] = useState({ wbs_id: "", amount: "" });
+  const [acForm, setAcForm] = useState({ wbs_id: "", period: iso(today), amount: "" });
+
+  return (
+    <>
+      <div className="grid-kpi">
+        <Kpi label="Anggaran Total (BAC)" value={fmtIDR(engines.BAC)} />
+        <Kpi label="Nilai Perolehan (EV)" value={fmtIDR(engines.EV)} />
+        <Kpi label="Biaya Aktual (AC)" value={fmtIDR(engines.AC)} />
+        <Kpi label="Varian Biaya (CV)" value={`${engines.CV >= 0 ? "+" : ""}${fmtIDR(engines.CV)}`} tone={engines.CV >= 0 ? "good" : "bad"} />
+      </div>
+
+      <Panel title="Anggaran & Biaya Aktual per WBS" accent="var(--amber)">
+        <table>
+          <thead><tr><th>WBS</th><th className="num">Anggaran</th><th className="num">Biaya Aktual</th><th className="num">Varian</th><th className="num">% Terpakai</th></tr></thead>
+          <tbody>
+            {engines.wbsCost.map((w) => (
+              <tr key={w.id}>
+                <td className="row-name">{w.name}</td>
+                <td className="num">{fmtFull(w.budget)}</td>
+                <td className="num">{fmtFull(w.actual)}</td>
+                <td className="num" style={{ color: w.variance < 0 ? "var(--red)" : "var(--green)" }}>{w.variance >= 0 ? "+" : ""}{fmtIDR(w.variance)}</td>
+                <td className="num">
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "flex-end" }}>
+                    <div style={{ width: 70 }}><Bar1 pct={w.pctSpent} tone={w.pctSpent > 100 ? "bad" : w.pctSpent > 85 ? "warn" : "good"} /></div>
+                    {fmtPct(w.pctSpent, 0)}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="inline-form">
+          <div className="field"><label>WBS</label>
+            <select value={budForm.wbs_id} onChange={(e) => setBudForm({ ...budForm, wbs_id: e.target.value })}>
+              <option value="">Pilih WBS</option>
+              {engines.wbsList.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+            </select>
+          </div>
+          <div className="field"><label>Tambah anggaran (Rp)</label><input type="number" value={budForm.amount} onChange={(e) => setBudForm({ ...budForm, amount: e.target.value })} /></div>
+          <button className="add-btn" onClick={() => { if (budForm.wbs_id && budForm.amount) { addRow("budget", { wbs_id: budForm.wbs_id, amount: Number(budForm.amount) }); setBudForm({ wbs_id: "", amount: "" }); } }}><Plus size={14} /> Catat anggaran</button>
+          <div className="field"><label>Periode biaya aktual</label><input type="date" value={acForm.period} onChange={(e) => setAcForm({ ...acForm, period: e.target.value })} /></div>
+          <div className="field"><label>Biaya aktual (Rp)</label><input type="number" value={acForm.amount} onChange={(e) => setAcForm({ ...acForm, amount: e.target.value })} /></div>
+          <button className="add-btn" onClick={() => { if (budForm.wbs_id && acForm.amount) { addRow("actual_cost", { wbs_id: budForm.wbs_id, period: acForm.period, amount: Number(acForm.amount) }); setAcForm({ ...acForm, amount: "" }); } }}><Plus size={14} /> Catat biaya aktual</button>
+        </div>
+      </Panel>
+
+      <Panel title="Riwayat Biaya Aktual" accent="var(--red)" meta={`${db.actual_cost.filter(c=>c.project_id===engines.project.id).length} entri`}>
+        <table>
+          <thead><tr><th>WBS</th><th>Periode</th><th className="num">Jumlah</th><th></th></tr></thead>
+          <tbody>
+            {db.actual_cost.filter((c) => c.project_id === engines.project.id).map((c) => (
+              <tr key={c.id}>
+                <td>{engines.wbsList.find((w) => w.id === c.wbs_id)?.name}</td>
+                <td>{fmtDate(c.period)}</td>
+                <td className="num">{fmtFull(c.amount)}</td>
+                <td><IconBtn onClick={() => removeRow("actual_cost", c.id)}><Trash2 size={14} /></IconBtn></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Panel>
+    </>
+  );
+}
+
+/* =========================================================================
+   TAB: RISK
+   ========================================================================= */
+
+const RISK_COLORS = { Rendah: "#2E7D50", Sedang: "#C97A1E", Tinggi: "#B33B27" };
+
+function RiskTab({ engines, addRow, removeRow }) {
+  const [form, setForm] = useState({ description: "", category: "", probability: 3, impact: 3, status: "Terbuka", mitigation: "", owner: "" });
+
+  return (
+    <>
+      <div className="grid-2">
+        <Panel title="Daftar Risiko" accent="var(--red)" meta={`${engines.risks.length} risiko`}>
+          <table>
+            <thead><tr><th>Deskripsi</th><th>Kategori</th><th className="num">Skor</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              {engines.risks.map((r) => (
+                <tr key={r.id}>
+                  <td className="row-name">{r.description}<div className="row-sub">Mitigasi: {r.mitigation}</div></td>
+                  <td>{r.category}</td>
+                  <td className="num"><span className="pill" style={{ background: RISK_COLORS[r.level] + "22", color: RISK_COLORS[r.level] }}>{r.score} · {r.level}</span></td>
+                  <td><StatusPill status={r.status} /></td>
+                  <td><IconBtn onClick={() => removeRow("risks", r.id)}><Trash2 size={14} /></IconBtn></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="inline-form">
+            <div className="field"><label>Deskripsi risiko</label><input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} style={{ minWidth: 220 }} /></div>
+            <div className="field"><label>Kategori</label><input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} style={{ width: 110 }} /></div>
+            <div className="field"><label>Probabilitas (1-5)</label><input type="number" min="1" max="5" value={form.probability} onChange={(e) => setForm({ ...form, probability: Number(e.target.value) })} style={{ width: 60 }} /></div>
+            <div className="field"><label>Dampak (1-5)</label><input type="number" min="1" max="5" value={form.impact} onChange={(e) => setForm({ ...form, impact: Number(e.target.value) })} style={{ width: 60 }} /></div>
+            <div className="field"><label>Status</label>
+              <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                <option>Terbuka</option><option>Dipantau</option><option>Selesai</option>
+              </select>
+            </div>
+            <div className="field"><label>Mitigasi</label><input value={form.mitigation} onChange={(e) => setForm({ ...form, mitigation: e.target.value })} style={{ minWidth: 160 }} /></div>
+            <div className="field"><label>PIC</label><input value={form.owner} onChange={(e) => setForm({ ...form, owner: e.target.value })} style={{ width: 110 }} /></div>
+            <button className="add-btn" onClick={() => { if (form.description) { addRow("risks", form); setForm({ description: "", category: "", probability: 3, impact: 3, status: "Terbuka", mitigation: "", owner: "" }); } }}><Plus size={14} /> Tambah risiko</button>
+          </div>
+        </Panel>
+
+        <Panel title="Peta Risiko" accent="var(--amber)" meta="Dampak × Probabilitas">
+          <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column-reverse", gap: 3, justifyContent: "flex-end" }}>
+              {[1, 2, 3, 4, 5].map((impact) => (
+                <div key={impact} className="heatmap" style={{ gridTemplateColumns: "repeat(5, 32px)" }}>
+                  {[1, 2, 3, 4, 5].map((prob) => {
+                    const score = impact * prob;
+                    const count = engines.heatmap[`${impact}-${prob}`] || 0;
+                    const color = score >= 15 ? RISK_COLORS.Tinggi : score >= 8 ? RISK_COLORS.Sedang : RISK_COLORS.Rendah;
+                    return <div key={prob} className="heat-cell" style={{ background: color, opacity: count > 0 ? 1 : 0.35 }}>{count > 0 ? count : ""}</div>;
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ fontSize: 11, color: "var(--ink-soft)", marginTop: 10 }}>Baris = dampak (1 bawah → 5 atas) · Kolom = probabilitas (1 kiri → 5 kanan). Angka menunjukkan jumlah risiko terbuka pada sel tersebut.</div>
+          <div style={{ marginTop: 16, display: "flex", gap: 14, fontSize: 11.5 }}>
+            <span style={{ color: RISK_COLORS.Rendah }}>■ Rendah</span>
+            <span style={{ color: RISK_COLORS.Sedang }}>■ Sedang</span>
+            <span style={{ color: RISK_COLORS.Tinggi }}>■ Tinggi</span>
+          </div>
+        </Panel>
+      </div>
+    </>
+  );
+}
+
+/* =========================================================================
+   TAB: DOCS (drawings, documents, approvals)
+   ========================================================================= */
+
+function DocsTab({ db, addRow, removeRow }) {
+  const projectId = db.projects[0]?.id;
+  const [dwgForm, setDwgForm] = useState({ title: "", discipline: "", revision: "", status: "Under Review" });
+  const [docForm, setDocForm] = useState({ title: "", type: "", status: "Aktif" });
+  const [aprForm, setAprForm] = useState({ ref_type: "", ref_title: "", status: "Menunggu", approver: "", date: iso(today) });
+
+  const drawings = db.drawings;
+  const documents = db.documents;
+  const approvals = db.approvals;
+
+  return (
+    <>
+      <div className="grid-2">
+        <Panel title="Gambar Kerja (Drawings)" accent="var(--blue-500)" meta={`${drawings.length} gambar`}>
+          <table>
+            <thead><tr><th>Judul</th><th>Disiplin</th><th>Revisi</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              {drawings.map((d) => (
+                <tr key={d.id}><td className="row-name">{d.title}</td><td>{d.discipline}</td><td className="mono">{d.revision}</td><td><StatusPill status={d.status} /></td>
+                  <td><IconBtn onClick={() => removeRow("drawings", d.id)}><Trash2 size={14} /></IconBtn></td></tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="inline-form">
+            <div className="field"><label>Judul</label><input value={dwgForm.title} onChange={(e) => setDwgForm({ ...dwgForm, title: e.target.value })} /></div>
+            <div className="field"><label>Disiplin</label><input value={dwgForm.discipline} onChange={(e) => setDwgForm({ ...dwgForm, discipline: e.target.value })} style={{ width: 100 }} /></div>
+            <div className="field"><label>Revisi</label><input value={dwgForm.revision} onChange={(e) => setDwgForm({ ...dwgForm, revision: e.target.value })} style={{ width: 70 }} /></div>
+            <div className="field"><label>Status</label>
+              <select value={dwgForm.status} onChange={(e) => setDwgForm({ ...dwgForm, status: e.target.value })}>
+                <option>Under Review</option><option>Approved</option><option>Rejected</option>
+              </select>
+            </div>
+            <button className="add-btn" onClick={() => { if (dwgForm.title) { addRow("drawings", dwgForm); setDwgForm({ title: "", discipline: "", revision: "", status: "Under Review" }); } }}><Plus size={14} /> Tambah</button>
+          </div>
+        </Panel>
+
+        <Panel title="Dokumen Proyek" accent="var(--amber)" meta={`${documents.length} dokumen`}>
+          <table>
+            <thead><tr><th>Judul</th><th>Jenis</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              {documents.map((d) => (
+                <tr key={d.id}><td className="row-name">{d.title}</td><td>{d.type}</td><td><StatusPill status={d.status} /></td>
+                  <td><IconBtn onClick={() => removeRow("documents", d.id)}><Trash2 size={14} /></IconBtn></td></tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="inline-form">
+            <div className="field"><label>Judul</label><input value={docForm.title} onChange={(e) => setDocForm({ ...docForm, title: e.target.value })} /></div>
+            <div className="field"><label>Jenis</label><input value={docForm.type} onChange={(e) => setDocForm({ ...docForm, type: e.target.value })} style={{ width: 100 }} /></div>
+            <div className="field"><label>Status</label><input value={docForm.status} onChange={(e) => setDocForm({ ...docForm, status: e.target.value })} style={{ width: 100 }} /></div>
+            <button className="add-btn" onClick={() => { if (docForm.title) { addRow("documents", docForm); setDocForm({ title: "", type: "", status: "Aktif" }); } }}><Plus size={14} /> Tambah</button>
+          </div>
+        </Panel>
+      </div>
+
+      <Panel title="Persetujuan (Approvals)" accent="var(--green)" meta={`${approvals.length} pengajuan`}>
+        <table>
+          <thead><tr><th>Jenis</th><th>Referensi</th><th>Approver</th><th>Tanggal</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            {approvals.map((a) => (
+              <tr key={a.id}><td>{a.ref_type}</td><td className="row-name">{a.ref_title}</td><td>{a.approver}</td><td>{fmtDate(a.date)}</td><td><StatusPill status={a.status} /></td>
+                <td><IconBtn onClick={() => removeRow("approvals", a.id)}><Trash2 size={14} /></IconBtn></td></tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="inline-form">
+          <div className="field"><label>Jenis</label><input value={aprForm.ref_type} onChange={(e) => setAprForm({ ...aprForm, ref_type: e.target.value })} style={{ width: 110 }} /></div>
+          <div className="field"><label>Referensi</label><input value={aprForm.ref_title} onChange={(e) => setAprForm({ ...aprForm, ref_title: e.target.value })} /></div>
+          <div className="field"><label>Approver</label><input value={aprForm.approver} onChange={(e) => setAprForm({ ...aprForm, approver: e.target.value })} style={{ width: 130 }} /></div>
+          <div className="field"><label>Tanggal</label><input type="date" value={aprForm.date} onChange={(e) => setAprForm({ ...aprForm, date: e.target.value })} /></div>
+          <div className="field"><label>Status</label>
+            <select value={aprForm.status} onChange={(e) => setAprForm({ ...aprForm, status: e.target.value })}>
+              <option>Menunggu</option><option>Disetujui</option><option>Rejected</option>
+            </select>
+          </div>
+          <button className="add-btn" onClick={() => { if (aprForm.ref_title) { addRow("approvals", aprForm); setAprForm({ ref_type: "", ref_title: "", status: "Menunggu", approver: "", date: iso(today) }); } }}><Plus size={14} /> Tambah</button>
+        </div>
+      </Panel>
+    </>
+  );
+}
+
+/* =========================================================================
+   TAB: AI ANALYSIS & REPORT
+   ========================================================================= */
+
+function AiTab({ engines, aiLoading, aiText, aiError, runAiAnalysis, downloadReport, apiKey, saveApiKey }) {
+  const [keyInput, setKeyInput] = useState(apiKey);
+  return (
+    <>
+      <Panel title="Rekomendasi Tindakan (Decision Support)" accent="var(--amber)">
+        <ul style={{ margin: 0, paddingLeft: 18 }}>
+          {engines.actions.map((a, i) => <li key={i} style={{ marginBottom: 6 }}>{a}</li>)}
+        </ul>
+      </Panel>
+
+      <Panel title="Analisis AI Naratif" accent="var(--blue-500)"
+        actions={<button className="add-btn" onClick={runAiAnalysis} disabled={aiLoading}>{aiLoading ? <Loader2 size={14} className="spin" /> : <Sparkles size={14} />} {aiLoading ? "Menganalisis..." : "Jalankan analisis AI"}</button>}>
+        <div className="inline-form" style={{ marginTop: 0, paddingTop: 0, borderTop: "none", marginBottom: 14 }}>
+          <div className="field" style={{ flex: 1, minWidth: 260 }}>
+            <label><KeyRound size={11} style={{ verticalAlign: "-1px", marginRight: 4 }} />Anthropic API key (disimpan hanya di browser ini)</label>
+            <input type="password" value={keyInput} placeholder="sk-ant-..." onChange={(e) => setKeyInput(e.target.value)} onBlur={() => saveApiKey(keyInput)} style={{ minWidth: 260 }} />
+          </div>
+        </div>
+        <div style={{ fontSize: 11.5, color: "var(--ink-soft)", marginBottom: 12 }}>
+          Fitur ini memanggil API Claude langsung dari browser Anda menggunakan API key milik Anda sendiri (dari <span className="mono">console.anthropic.com</span>). Key hanya tersimpan lokal di komputer ini, tidak dikirim ke server manapun selain Anthropic.
+        </div>
+        {aiError && <div style={{ color: "var(--red)", marginBottom: 10 }}>{aiError}</div>}
+        {aiText ? <div className="ai-box">{aiText}</div> : !aiLoading && <div style={{ color: "var(--ink-soft)" }}>Klik "Jalankan analisis AI" untuk mendapatkan ringkasan kondisi proyek, temuan utama, dan rekomendasi prioritas berbasis data terkini.</div>}
+      </Panel>
+
+      <Panel title="Laporan Manajemen" accent="var(--green)"
+        actions={<button className="add-btn" onClick={downloadReport}><Download size={14} /> Unduh laporan (.md)</button>}>
+        <table>
+          <tbody>
+            <tr><td className="row-name">Progres Rencana / Aktual</td><td className="num">{fmtPct(engines.plannedOverallPct)} / {fmtPct(engines.actualOverallPct)}</td></tr>
+            <tr><td className="row-name">BAC / PV / EV / AC</td><td className="num">{fmtIDR(engines.BAC)} / {fmtIDR(engines.PV)} / {fmtIDR(engines.EV)} / {fmtIDR(engines.AC)}</td></tr>
+            <tr><td className="row-name">CPI / SPI</td><td className="num">{fmtIdx(engines.CPI)} / {fmtIdx(engines.SPI)}</td></tr>
+            <tr><td className="row-name">EAC / VAC</td><td className="num">{fmtIDR(engines.EAC)} / {engines.VAC >= 0 ? "+" : ""}{fmtIDR(engines.VAC)}</td></tr>
+            <tr><td className="row-name">Perkiraan Tanggal Selesai</td><td className="num">{engines.forecastFinish ? fmtDate(engines.forecastFinish) : "—"}</td></tr>
+            <tr><td className="row-name">Risiko Terbuka Bernilai Tinggi</td><td className="num">{engines.highRisks.length}</td></tr>
+          </tbody>
+        </table>
+      </Panel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+<script>
+(function () {
+  var src = document.getElementById('app-source').textContent;
+  var output = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+  var s = document.createElement('script');
+  s.text = output;
+  document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>

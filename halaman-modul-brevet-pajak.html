@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul Referensi &amp; Latihan — Brevet Pajak AB + CFTR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#0a1e38;
+    --navy-800:#0f2a4d;
+    --navy-700:#1a3c66;
+    --gold-500:#c69a4e;
+    --gold-300:#e3c383;
+    --paper:#f7f2e6;
+    --paper-2:#f1e9d6;
+    --line:#dccfa6;
+    --ink:#1d2331;
+    --ink-soft:#535a6b;
+    --ok:#2f6a4c;
+    --no:#96393c;
+    --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans:"Inter", -apple-system, "Segoe UI", sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy-900);
+    color:#f2e9d6;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:.7rem 1.2rem;
+    border-bottom:2px solid var(--gold-500);
+  }
+  .topbar-brand{display:flex; align-items:center; gap:.6rem; font-family:var(--serif); font-weight:600; letter-spacing:.02em;}
+  .topbar-brand small{display:block; font-family:var(--mono); font-size:.62rem; letter-spacing:.14em; color:var(--gold-300); text-transform:uppercase;}
+  .btn-print{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase;
+    background:transparent; color:var(--gold-300); border:1px solid var(--gold-500);
+    padding:.5rem .9rem; border-radius:2px; cursor:pointer;
+  }
+  .btn-print:hover{background:var(--gold-500); color:var(--navy-900);}
+
+  /* ---------- Shell / layout ---------- */
+  .shell{display:grid; grid-template-columns:270px 1fr; align-items:start;}
+  @media (max-width:920px){ .shell{grid-template-columns:1fr;} }
+
+  nav.toc{
+    position:sticky; top:52px;
+    align-self:start;
+    height:calc(100vh - 52px);
+    overflow-y:auto;
+    background:var(--navy-800);
+    color:#e7ddc4;
+    padding:1.4rem 1.1rem 2rem;
+    font-family:var(--mono);
+    font-size:.78rem;
+  }
+  @media (max-width:920px){ nav.toc{position:relative; top:0; height:auto; max-height:280px;} }
+  nav.toc .toc-title{color:var(--gold-300); text-transform:uppercase; letter-spacing:.12em; font-size:.68rem; margin-bottom:.9rem;}
+  nav.toc ol{list-style:none; margin:0; padding:0; counter-reset:tocnum;}
+  nav.toc li{counter-increment:tocnum; margin-bottom:.15rem;}
+  nav.toc a{
+    display:flex; gap:.5rem; padding:.42rem .5rem; border-radius:2px; text-decoration:none;
+    color:#d8cfb4; border-left:2px solid transparent;
+  }
+  nav.toc a::before{content:counter(tocnum,decimal-leading-zero); color:var(--gold-500);}
+  nav.toc a:hover, nav.toc a.active{background:rgba(230,195,131,.1); border-left-color:var(--gold-500); color:#fff;}
+  nav.toc .toc-sep{margin:1rem 0 .5rem; border-top:1px dashed rgba(230,195,131,.3); padding-top:.8rem;}
+
+  main{min-width:0;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:
+      radial-gradient(1100px 420px at 85% -10%, rgba(198,154,78,.18), transparent 60%),
+      linear-gradient(180deg, var(--navy-900), var(--navy-800));
+    color:#f2ead4;
+    padding:3.6rem 2.2rem 3rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:center; max-width:1180px; margin:0 auto;}
+  .eyebrow{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--gold-300); margin:0 0 .8rem;
+  }
+  .hero h1{
+    font-family:var(--serif); font-weight:700; font-size:clamp(1.8rem,4vw,2.9rem);
+    margin:0 0 .8rem; line-height:1.12;
+  }
+  .hero h1 em{font-style:normal; color:var(--gold-300);}
+  .hero p.lead{max-width:60ch; color:#d9d0b6; font-size:1.02rem;}
+  .hero-meta{display:flex; flex-wrap:wrap; gap:1.4rem; margin-top:1.6rem;}
+  .hero-meta div{border-left:2px solid var(--gold-500); padding-left:.7rem;}
+  .hero-meta b{display:block; font-family:var(--serif); font-size:1.35rem; color:#fff;}
+  .hero-meta span{font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:#c9bf9f;}
+
+  .seal{flex-shrink:0;}
+  .seal svg{width:150px; height:150px; display:block;}
+  @media (max-width:700px){ .hero-grid{grid-template-columns:1fr;} .seal{justify-self:start;} }
+
+  /* ---------- Section / module ---------- */
+  .modul{
+    max-width:880px; margin:0 auto; padding:3.2rem 1.6rem 1.4rem;
+    scroll-margin-top:60px;
+  }
+  .modul-head{display:flex; align-items:flex-start; gap:1rem; margin-bottom:.4rem;}
+  .stamp{
+    flex-shrink:0; width:54px; height:54px; border-radius:50%;
+    border:2px solid var(--navy-800); display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-weight:700; font-size:1.1rem; color:var(--navy-800);
+    position:relative;
+  }
+  .stamp::after{
+    content:""; position:absolute; inset:-6px; border-radius:50%; border:1px dashed var(--gold-500);
+  }
+  .modul-head h2{font-family:var(--serif); font-size:1.65rem; margin:.1rem 0 .15rem; color:var(--navy-900);}
+  .modul-head .sub{color:var(--ink-soft); font-size:.92rem;}
+  .modul hr.rule{border:none; border-top:1px solid var(--line); margin:1.4rem 0 1.6rem;}
+
+  h3.h-label{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--navy-700); margin:1.8rem 0 .8rem; display:flex; align-items:center; gap:.6rem;
+  }
+  h3.h-label::after{content:""; flex:1; border-top:1px solid var(--line);}
+
+  .modul ul.points{margin:0 0 1rem; padding-left:1.15rem;}
+  .modul ul.points li{margin-bottom:.55rem;}
+  .modul p{margin:0 0 1rem;}
+
+  .pasal-box{
+    background:var(--paper-2);
+    border-left:3px solid var(--gold-500);
+    padding:.7rem 1rem;
+    margin:.6rem 0;
+    font-size:.92rem;
+  }
+  .pasal-box b{font-family:var(--mono); color:var(--navy-800); font-size:.82rem; letter-spacing:.02em;}
+  .pasal-list{display:grid; gap:.5rem; margin:0 0 1rem;}
+
+  /* ---------- Quiz ---------- */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:4px; padding:1.3rem 1.4rem; margin:.6rem 0 1.6rem;}
+  .quiz-item{padding:1rem 0; border-top:1px dotted var(--line);}
+  .quiz-item:first-child{border-top:none; padding-top:.2rem;}
+  .quiz-item .q{font-weight:600; margin-bottom:.5rem;}
+  .quiz-item .q span.qn{font-family:var(--mono); color:var(--gold-500); margin-right:.4rem;}
+  .options{list-style:none; margin:0 0 .6rem; padding:0; display:grid; gap:.3rem;}
+  .options li{padding:.35rem .6rem; border:1px solid var(--line); border-radius:3px; font-size:.93rem; background:var(--paper);}
+  .options li b{font-family:var(--mono); color:var(--navy-700); margin-right:.4rem;}
+
+  details.answer{margin-top:.4rem;}
+  details.answer summary{
+    cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:.4rem;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--navy-800); border:1px solid var(--gold-500); border-radius:20px; padding:.35rem .9rem;
+  }
+  details.answer summary::-webkit-details-marker{display:none;}
+  details.answer summary::before{content:"＋"; color:var(--gold-500); font-weight:700;}
+  details.answer[open] summary::before{content:"－";}
+  details.answer[open] summary{background:var(--navy-900); color:var(--gold-300); border-color:var(--navy-900);}
+  .answer-body{
+    margin-top:.6rem; padding:.85rem 1rem; background:var(--paper-2); border-radius:3px;
+    font-size:.92rem; border-left:3px solid var(--ok);
+  }
+  .answer-body .kunci{font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ok); margin-bottom:.4rem; display:block;}
+
+  /* ---------- Case study ---------- */
+  .case{border:1px solid var(--navy-800); border-radius:4px; overflow:hidden; margin:.6rem 0 1.6rem; background:#fff;}
+  .case-head{
+    background:var(--navy-900); color:#f2ead4; padding:.65rem 1.1rem;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .case-head span.tag{background:var(--gold-500); color:var(--navy-900); padding:.15rem .55rem; border-radius:20px; font-weight:600;}
+  .case-body{padding:1.1rem 1.2rem;}
+  .case-body table{border-collapse:collapse; width:100%; font-size:.9rem; margin:.6rem 0;}
+  .case-body td, .case-body th{border:1px solid var(--line); padding:.4rem .55rem; text-align:left;}
+  .case-body th{background:var(--paper-2); font-family:var(--mono); font-size:.72rem; text-transform:uppercase;}
+  .case-body td.num{text-align:right; font-family:var(--mono);}
+
+  /* ---------- Footer / disclaimer ---------- */
+  .disclaimer{
+    max-width:880px; margin:2rem auto 0; padding:1.6rem 1.6rem 3rem;
+    color:var(--ink-soft); font-size:.85rem; border-top:2px solid var(--gold-500);
+  }
+  footer{background:var(--navy-900); color:#c9bf9f; text-align:center; padding:1.6rem; font-family:var(--mono); font-size:.72rem; letter-spacing:.06em;}
+
+  @media print{
+    .topbar, nav.toc, .btn-print{display:none !important;}
+    .shell{display:block;}
+    body{background:#fff;}
+    .modul{page-break-inside:avoid; max-width:none;}
+    details.answer{ }
+    details.answer[open]{}
+    a{text-decoration:none; color:inherit;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    🧾 Modul Brevet Pajak AB + CFTR
+    <small>Materi &middot; Dasar Hukum &middot; Latihan &amp; Pembahasan</small>
+  </div>
+  <button class="btn-print" onclick="window.print()">⬇ Simpan sebagai PDF</button>
+</div>
+
+<div class="shell">
+  <nav class="toc">
+    <div class="toc-title">Daftar Modul</div>
+    <ol>
+      <li><a href="#m1">KUP</a></li>
+      <li><a href="#m2">Akuntansi Pajak</a></li>
+      <li><a href="#m3">Pemeriksaan Pajak</a></li>
+      <li><a href="#m4">PBB &amp; BPHTB</a></li>
+      <li><a href="#m5">Sistem Coretax</a></li>
+      <li><a href="#m6">PPh Orang Pribadi</a></li>
+      <li><a href="#m7">PPh Pemotongan/Pemungutan</a></li>
+      <li><a href="#m8">PPh Badan</a></li>
+      <li><a href="#m9">PPN</a></li>
+      <li><a href="#m10">Sertifikasi CFTR</a></li>
+    </ol>
+    <div class="toc-sep">Gunakan tombol <b>Simpan sebagai PDF</b> di kanan atas untuk mengunduh seluruh modul ini sebagai berkas yang bisa disimpan &amp; dicetak.</div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Modul Referensi &amp; Bank Soal</p>
+          <h1>Brevet Pajak AB + <em>CFTR</em><br>Certified Fundamental Tax Reporting</h1>
+          <p class="lead">Ringkasan teori, dasar hukum dan kutipan pasal, dilengkapi latihan soal serta studi kasus dengan pembahasan lengkap — mencakup KUP, Akuntansi Pajak, Pemeriksaan, PBB &amp; BPHTB, Coretax, PPh OP, PPh Potput, PPh Badan, PPN, dan ruang lingkup Sertifikasi CFTR.</p>
+          <div class="hero-meta">
+            <div><b>10</b><span>Modul Materi</span></div>
+            <div><b>30</b><span>Soal Pilihan Ganda</span></div>
+            <div><b>10</b><span>Studi Kasus</span></div>
+            <div><b>40</b><span>Pembahasan Lengkap</span></div>
+          </div>
+        </div>
+        <div class="seal">
+          <svg viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="76" fill="none" stroke="#c69a4e" stroke-width="1.5" stroke-dasharray="2 4"/>
+            <circle cx="80" cy="80" r="64" fill="none" stroke="#c69a4e" stroke-width="2"/>
+            <circle cx="80" cy="80" r="58" fill="none" stroke="#c69a4e" stroke-width="1"/>
+            <text x="80" y="55" text-anchor="middle" fill="#e3c383" font-family="IBM Plex Mono, monospace" font-size="8" letter-spacing="2">BREVET AB</text>
+            <text x="80" y="86" text-anchor="middle" fill="#f2ead4" font-family="Source Serif 4, serif" font-weight="700" font-size="20">CFTR</text>
+            <text x="80" y="112" text-anchor="middle" fill="#e3c383" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="1.5">FUNDAMENTAL TAX</text>
+            <text x="80" y="122" text-anchor="middle" fill="#e3c383" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing="1.5">REPORTING</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 1 — KUP ================= -->
+    <section class="modul" id="m1">
+      <div class="modul-head">
+        <div class="stamp">01</div>
+        <div>
+          <h2>Ketentuan Umum dan Tata Cara Perpajakan (KUP)</h2>
+          <div class="sub">Fondasi hukum administrasi perpajakan Indonesia — sistem self assessment</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Self assessment system</b>: wajib pajak (WP) menghitung, memperhitungkan, membayar, dan melaporkan sendiri kewajiban pajaknya. DJP berperan mengawasi melalui penelitian, pemeriksaan, dan penegakan hukum.</li>
+        <li><b>NPWP</b>: setiap WP yang memenuhi syarat subjektif dan objektif wajib mendaftarkan diri untuk memperoleh Nomor Pokok Wajib Pajak. Sejak era Coretax, NPWP Orang Pribadi memakai format 16 digit yang terintegrasi dengan NIK.</li>
+        <li><b>SPT (Surat Pemberitahuan)</b>: sarana WP melaporkan penghitungan/pembayaran pajak. Terdiri dari SPT Masa (bulanan) dan SPT Tahunan. Batas waktu SPT Tahunan OP adalah 3 bulan setelah akhir tahun pajak, SPT Tahunan Badan 4 bulan setelah akhir tahun pajak.</li>
+        <li><b>Pembayaran &amp; penyetoran</b>: dilakukan melalui sistem billing (kode billing) sebelum jatuh tempo masing-masing jenis pajak.</li>
+        <li><b>Produk hukum penetapan</b>: SKPKB (kurang bayar), SKPKBT (tambahan kurang bayar karena data baru), SKPLB (lebih bayar), SKPN (nihil), dan STP (Surat Tagihan Pajak) untuk menagih sanksi administrasi atau kekurangan bayar akibat salah tulis/hitung.</li>
+        <li><b>Upaya hukum WP</b>: keberatan diajukan ke DJP paling lama 3 bulan sejak SKP diterima (WP wajib melunasi jumlah yang disetujui dalam pembahasan akhir pemeriksaan sebelum mengajukan keberatan); banding diajukan ke Pengadilan Pajak paling lama 3 bulan sejak keputusan keberatan, dengan syarat membayar 50% dari jumlah yang masih terutang.</li>
+        <li><b>Daluwarsa penagihan</b>: hak DJP menagih pajak daluwarsa setelah lampau 5 tahun sejak terbitnya SKP/STP, kecuali tertangguh oleh tindakan penagihan aktif (surat paksa, pengakuan utang, dsb).</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>UU No. 6 Tahun 1983 s.t.d.t.d. UU No. 7 Tahun 2021 (UU HPP) — Pasal 2</b><br>Kewajiban pendaftaran NPWP dan pengukuhan Pengusaha Kena Pajak (PKP).</div>
+        <div class="pasal-box"><b>Pasal 3 &amp; Pasal 3 ayat (4)</b><br>Kewajiban penyampaian SPT dan perpanjangan jangka waktu penyampaian SPT Tahunan maksimal 2 bulan.</div>
+        <div class="pasal-box"><b>Pasal 7</b><br>Sanksi administrasi denda keterlambatan SPT: Rp500.000 (Masa PPN), Rp100.000 (Masa lainnya), Rp1.000.000 (Tahunan Badan), Rp100.000 (Tahunan OP).</div>
+        <div class="pasal-box"><b>Pasal 8</b><br>Hak WP membetulkan SPT atas kemauan sendiri sebelum DJP melakukan tindakan pemeriksaan, dengan konsekuensi sanksi bunga per bulan atas kekurangan bayar.</div>
+        <div class="pasal-box"><b>Pasal 13, 14, 15, 17</b><br>Dasar penerbitan SKPKB, STP, SKPKBT, dan SKPLB/SKPN, termasuk jangka waktu penetapan (5 tahun) dan sanksi bunga berbasis tarif bunga acuan bulanan yang ditetapkan Menteri Keuangan.</div>
+        <div class="pasal-box"><b>Pasal 22</b><br>Daluwarsa penagihan pajak 5 tahun.</div>
+        <div class="pasal-box"><b>Pasal 25 &amp; Pasal 27</b><br>Tata cara dan syarat pengajuan keberatan dan banding.</div>
+        <div class="pasal-box"><b>Pasal 38 &amp; Pasal 39</b><br>Sanksi pidana perpajakan — kealpaan dan kesengajaan.</div>
+        <div class="pasal-box"><b>PP No. 50 Tahun 2022</b> tentang Tata Cara Pelaksanaan Hak dan Pemenuhan Kewajiban Perpajakan sebagai peraturan pelaksana UU HPP di bidang KUP.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Wajib Pajak Badan terlambat menyampaikan SPT Tahunan. Berapa sanksi denda administrasi yang dikenakan sesuai Pasal 7 UU KUP?</div>
+          <ul class="options">
+            <li><b>A.</b> Rp100.000</li><li><b>B.</b> Rp500.000</li><li><b>C.</b> Rp1.000.000</li><li><b>D.</b> Rp2.000.000</li>
+          </ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Pasal 7 UU KUP menetapkan denda keterlambatan SPT Tahunan Badan sebesar Rp1.000.000, berbeda dengan SPT Tahunan OP (Rp100.000) dan SPT Masa PPN (Rp500.000).</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Apabila WP tidak setuju atas SKPKB hasil pemeriksaan, upaya hukum pertama yang dapat ditempuh adalah…</div>
+          <ul class="options">
+            <li><b>A.</b> Langsung banding ke Pengadilan Pajak</li><li><b>B.</b> Mengajukan gugatan perdata</li><li><b>C.</b> Mengajukan keberatan ke DJP</li><li><b>D.</b> Mengajukan Peninjauan Kembali ke MA</li>
+          </ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Sesuai Pasal 25 UU KUP, upaya hukum administratif pertama adalah keberatan ke DJP dalam 3 bulan. Banding (Pasal 27) baru dapat diajukan setelah ada keputusan keberatan.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Hak DJP untuk menagih pajak menjadi daluwarsa setelah lampau waktu…</div>
+          <ul class="options">
+            <li><b>A.</b> 3 tahun</li><li><b>B.</b> 5 tahun</li><li><b>C.</b> 10 tahun</li><li><b>D.</b> Tidak ada batas waktu</li>
+          </ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Pasal 22 UU KUP mengatur daluwarsa penagihan pajak selama 5 tahun sejak terbitnya SKP/STP, kecuali tertangguh oleh tindakan penagihan aktif.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 01 <span class="tag">KUP</span></div>
+        <div class="case-body">
+          <p>PT Sinar Abadi terlambat menyampaikan SPT Tahunan PPh Badan Tahun Pajak 2025 (batas waktu 30 April 2026, baru disampaikan 15 Juni 2026). Dalam SPT tersebut terdapat kekurangan bayar pajak sebesar Rp20.000.000 yang juga baru disetor pada 15 Juni 2026 (terlambat 2 bulan dari jatuh tempo pembayaran).</p>
+          <p><b>Pertanyaan:</b> Sanksi administrasi apa saja yang timbul dan berapa estimasi totalnya?</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <p>Terdapat dua jenis sanksi yang berbeda dasarnya:</p>
+              <table>
+                <tr><th>Komponen</th><th>Dasar Hukum</th><th class="num">Nilai</th></tr>
+                <tr><td>Denda keterlambatan SPT Tahunan Badan</td><td>Pasal 7 UU KUP</td><td class="num">Rp1.000.000</td></tr>
+                <tr><td>Sanksi bunga atas kurang bayar (2 bulan telat, ilustrasi tarif bunga acuan bulanan 0,75%)</td><td>Pasal 9 &amp; Pasal 13 UU KUP</td><td class="num">Rp20.000.000 × 0,75% × 2 = Rp300.000</td></tr>
+                <tr><td><b>Total sanksi administrasi</b></td><td>—</td><td class="num"><b>Rp1.300.000</b></td></tr>
+              </table>
+              <p>Kedua sanksi ditagih melalui Surat Tagihan Pajak (STP) sesuai Pasal 14 UU KUP dan mempunyai kekuatan hukum yang sama dengan Surat Ketetapan Pajak. Perlu dicatat bahwa tarif bunga acuan bulanan ditetapkan dan diumumkan setiap bulan oleh Menteri Keuangan (bukan tarif tetap), sehingga angka 0,75% di atas hanya ilustrasi — dalam praktik harus dicek pada Keputusan Menteri Keuangan bulan bersangkutan.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 2 — AKUNTANSI PAJAK ================= -->
+    <section class="modul" id="m2">
+      <div class="modul-head">
+        <div class="stamp">02</div>
+        <div>
+          <h2>Akuntansi Pajak</h2>
+          <div class="sub">Menjembatani laporan keuangan komersial dengan ketentuan fiskal</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Kewajiban pembukuan</b>: WP dengan peredaran bruto di atas Rp4,8 miliar/tahun wajib menyelenggarakan pembukuan; di bawah itu boleh memilih pencatatan (untuk OP) menggunakan Norma Penghitungan Penghasilan Neto.</li>
+        <li><b>Koreksi fiskal</b>: laporan laba rugi komersial (berbasis PSAK) disesuaikan menjadi laba fiskal karena adanya beda pengakuan penghasilan/biaya antara standar akuntansi dan UU PPh.</li>
+        <li><b>Koreksi fiskal positif</b> (menambah laba fiskal): biaya yang tidak boleh dikurangkan menurut Pasal 9 UU PPh — pembagian laba, sanksi administrasi perpajakan, PPh yang ditanggung sendiri, sumbangan di luar yang diperkenankan, biaya untuk kepentingan pribadi pemegang saham.</li>
+        <li><b>Koreksi fiskal negatif</b> (mengurangi laba fiskal): penghasilan yang bukan objek pajak (Pasal 4 ayat 3) atau sudah dikenakan PPh final sehingga tidak digabung lagi dalam penghitungan PPh tidak final.</li>
+        <li><b>Penyusutan &amp; amortisasi fiskal</b>: menggunakan kelompok harta berwujud/tidak berwujud dan metode (garis lurus atau saldo menurun) sesuai Pasal 11 dan 11A UU PPh — dapat berbeda dari kebijakan penyusutan komersial perusahaan.</li>
+        <li><b>Pajak tangguhan</b>: PSAK 46 mengatur pengakuan aset/liabilitas pajak tangguhan atas beda temporer (misal beda metode penyusutan), sedangkan beda permanen (misal biaya non-deductible) tidak menimbulkan pajak tangguhan.</li>
+        <li><b>Lampiran wajib</b>: Rekonsiliasi fiskal (laba komersial → laba fiskal) wajib dilampirkan dalam SPT Tahunan PPh Badan (Formulir 1771).</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>Pasal 28 UU KUP</b><br>Kewajiban pembukuan dan syarat penyelenggaraannya (itikad baik, mencerminkan keadaan sebenarnya, bahasa Indonesia/asing yang diizinkan).</div>
+        <div class="pasal-box"><b>Pasal 4 ayat (3), Pasal 6, dan Pasal 9 UU PPh</b><br>Klasifikasi penghasilan bukan objek pajak, biaya yang boleh (deductible) dan tidak boleh (non-deductible) dikurangkan dari penghasilan bruto.</div>
+        <div class="pasal-box"><b>Pasal 11 &amp; Pasal 11A UU PPh</b><br>Metode dan tarif penyusutan harta berwujud serta amortisasi harta tidak berwujud/biaya lain.</div>
+        <div class="pasal-box"><b>PMK No. 72/PMK.03/2023</b><br>Ketentuan natura/kenikmatan yang kini dapat dibiayakan (deductible) bagi pemberi kerja sekaligus menjadi objek pajak bagi penerima, sebagai konsekuensi UU HPP.</div>
+        <div class="pasal-box"><b>PSAK 46</b><br>Standar akuntansi keuangan mengenai pajak penghasilan (deferred tax) yang relevan untuk penyusunan laporan keuangan komersial.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Manakah yang merupakan koreksi fiskal <b>positif</b>?</div>
+          <ul class="options"><li><b>A.</b> Pendapatan bunga deposito yang sudah dikenakan PPh final</li><li><b>B.</b> Sumbangan yang tidak memenuhi syarat Pasal 6 ayat (1) huruf i–m</li><li><b>C.</b> Dividen dalam negeri yang dikecualikan dari objek pajak</li><li><b>D.</b> Hibah yang memenuhi syarat sebagai bukan objek pajak</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Sumbangan yang tidak memenuhi syarat sebagai pengurang menurut Pasal 9 ayat (1) huruf g UU PPh harus dikoreksi positif (ditambahkan kembali ke laba fiskal) karena sudah dibebankan secara komersial namun tidak boleh menjadi pengurang secara fiskal. Opsi A, C, dan D adalah penghasilan yang sudah final/bukan objek sehingga menjadi koreksi negatif.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Batas peredaran bruto yang mewajibkan penyelenggaraan pembukuan (bukan pencatatan) adalah…</div>
+          <ul class="options"><li><b>A.</b> Rp600 juta/tahun</li><li><b>B.</b> Rp1,8 miliar/tahun</li><li><b>C.</b> Rp4,8 miliar/tahun</li><li><b>D.</b> Rp50 miliar/tahun</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Sesuai Pasal 28 UU KUP, WP OP dengan peredaran bruto di bawah Rp4,8 miliar boleh menggunakan pencatatan dan Norma Penghitungan Penghasilan Neto; di atas itu wajib pembukuan.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>PPh Badan yang dibayar sendiri oleh perusahaan dan dibebankan sebagai biaya dalam laporan komersial harus…</div>
+          <ul class="options"><li><b>A.</b> Dibiarkan karena sudah sesuai akuntansi</li><li><b>B.</b> Dikoreksi fiskal negatif</li><li><b>C.</b> Dikoreksi fiskal positif</li><li><b>D.</b> Dikreditkan langsung ke PPN Keluaran</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Pasal 9 ayat (1) huruf h UU PPh menegaskan PPh yang ditanggung sendiri bukan pengurang penghasilan bruto, sehingga harus dikoreksi fiskal positif.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 02 <span class="tag">Akuntansi Pajak</span></div>
+        <div class="case-body">
+          <p>Laba komersial sebelum pajak PT Abadi Jaya Tahun 2025 sebesar Rp500.000.000. Rincian yang sudah termasuk di dalamnya:</p>
+          <ul class="points">
+            <li>Sumbangan bencana alam yang tidak memenuhi syarat Pasal 6 ayat (1) huruf i–m: Rp10.000.000 (sudah dibebankan sebagai biaya)</li>
+            <li>Beban PPh Badan tahun berjalan: Rp15.000.000 (sudah dibebankan sebagai biaya)</li>
+            <li>Pendapatan bunga deposito (sudah dipotong PPh final 20%): Rp5.000.000 (sudah termasuk sebagai pendapatan)</li>
+          </ul>
+          <p><b>Pertanyaan:</b> Hitunglah laba fiskal (Penghasilan Kena Pajak sebelum kompensasi kerugian) PT Abadi Jaya.</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <table>
+                <tr><th>Uraian</th><th class="num">Nilai</th></tr>
+                <tr><td>Laba komersial sebelum pajak</td><td class="num">Rp500.000.000</td></tr>
+                <tr><td>Koreksi positif: sumbangan tidak memenuhi syarat</td><td class="num">+ Rp10.000.000</td></tr>
+                <tr><td>Koreksi positif: beban PPh Badan (non-deductible, Ps. 9(1)h)</td><td class="num">+ Rp15.000.000</td></tr>
+                <tr><td>Koreksi negatif: pendapatan bunga deposito (sudah final, Ps. 4(2))</td><td class="num">− Rp5.000.000</td></tr>
+                <tr><td><b>Laba Fiskal (PKP sebelum kompensasi rugi)</b></td><td class="num"><b>Rp520.000.000</b></td></tr>
+              </table>
+              <p>Bunga deposito dikeluarkan dari penghasilan yang digabung karena sudah dikenakan PPh final 20% (Pasal 4 ayat 2 UU PPh) sehingga tidak boleh dihitung lagi dengan tarif Pasal 17.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 3 — PEMERIKSAAN ================= -->
+    <section class="modul" id="m3">
+      <div class="modul-head">
+        <div class="stamp">03</div>
+        <div>
+          <h2>Pemeriksaan Pajak</h2>
+          <div class="sub">Instrumen pengawasan kepatuhan dalam sistem self assessment</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Tujuan pemeriksaan</b>: menguji kepatuhan pemenuhan kewajiban perpajakan (misal SPT lebih bayar, SPT rugi, SPT tidak/terlambat disampaikan) dan/atau tujuan lain (pemberian NPWP jabatan, penghapusan NPWP, pencabutan PKP, dsb).</li>
+        <li><b>Jenis pemeriksaan</b>: Pemeriksaan Kantor (dilakukan di kantor DJP) dan Pemeriksaan Lapangan (dilakukan di tempat WP); berdasarkan sifatnya ada Pemeriksaan Rutin, Khusus, dan Pemeriksaan Bukti Permulaan.</li>
+        <li><b>Jangka waktu</b>: Pemeriksaan Lapangan maksimal 6 bulan (dapat diperpanjang), Pemeriksaan Kantor maksimal 4 bulan, dihitung sejak Surat Perintah Pemeriksaan (SP2) disampaikan.</li>
+        <li><b>Hak WP</b>: meminta SP2 dan tanda pengenal pemeriksa, meminta penjelasan tujuan pemeriksaan, menerima Surat Pemberitahuan Hasil Pemeriksaan (SPHP), memberikan tanggapan tertulis, hadir dalam Pembahasan Akhir Hasil Pemeriksaan (closing conference), serta mengajukan permohonan pembahasan dengan tim Quality Assurance (QA) apabila masih terdapat perbedaan pendapat.</li>
+        <li><b>Kewajiban WP</b>: meminjamkan buku, catatan, dan dokumen pendukung dalam jangka waktu 1 bulan sejak diminta; memberikan akses data elektronik.</li>
+        <li><b>Alur hasil pemeriksaan</b>: SPHP → tanggapan tertulis WP (7 hari kerja, dapat diperpanjang 3 hari) → Pembahasan Akhir → Risalah Pembahasan &amp; Berita Acara → penerbitan Surat Ketetapan Pajak (SKP).</li>
+        <li>Jika WP tidak memenuhi kewajiban peminjaman dokumen, pembukuan dapat dianggap tidak lengkap dan penghitungan pajak dapat dilakukan secara jabatan.</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>Pasal 29 UU KUP</b><br>Kewenangan DJP melakukan pemeriksaan serta hak dan kewajiban WP dalam proses pemeriksaan.</div>
+        <div class="pasal-box"><b>Pasal 29A</b><br>Pemeriksaan dengan kriteria tertentu (misal WP dengan tingkat kepatuhan tinggi) dapat dilakukan dengan pemeriksaan kantor yang lebih sederhana.</div>
+        <div class="pasal-box"><b>PMK No. 17/PMK.03/2013 s.t.d.t.d. PMK No. 18/PMK.03/2021</b><br>Tata cara pemeriksaan: jenis, jangka waktu, SPHP, pembahasan akhir, dan Quality Assurance.</div>
+        <div class="pasal-box"><b>Pasal 13 ayat (1) huruf d/e UU KUP</b><br>Dasar penghitungan pajak secara jabatan apabila kewajiban pembukuan/peminjaman dokumen tidak dipenuhi.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Dokumen resmi yang memberitahukan hasil temuan pemeriksa kepada WP sebelum diterbitkannya SKP disebut…</div>
+          <ul class="options"><li><b>A.</b> Surat Perintah Pemeriksaan (SP2)</li><li><b>B.</b> Surat Pemberitahuan Hasil Pemeriksaan (SPHP)</li><li><b>C.</b> Surat Tagihan Pajak (STP)</li><li><b>D.</b> Berita Acara Tidak Dipenuhinya Peminjaman Dokumen</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>SPHP memuat koreksi dan dasar hukum temuan pemeriksa, menjadi dasar bagi WP menyampaikan tanggapan tertulis sebelum Pembahasan Akhir.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Jangka waktu maksimal Pemeriksaan Lapangan adalah…</div>
+          <ul class="options"><li><b>A.</b> 2 bulan</li><li><b>B.</b> 4 bulan</li><li><b>C.</b> 6 bulan</li><li><b>D.</b> 12 bulan</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Pemeriksaan Lapangan maksimal 6 bulan sejak SP2 disampaikan (dapat diperpanjang sesuai ketentuan), sedangkan Pemeriksaan Kantor maksimal 4 bulan.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Jika WP masih tidak sependapat dengan tim pemeriksa setelah Pembahasan Akhir, forum yang dapat dimintakan sebelum SKP terbit adalah…</div>
+          <ul class="options"><li><b>A.</b> Keberatan ke Kanwil DJP</li><li><b>B.</b> Banding ke Pengadilan Pajak</li><li><b>C.</b> Pembahasan dengan Tim Quality Assurance (QA)</li><li><b>D.</b> Gugatan perdata ke Pengadilan Negeri</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Sebelum SKP diterbitkan, WP dapat mengajukan permohonan pembahasan dengan Tim Quality Assurance untuk menengahi perbedaan pendapat teknis dengan tim pemeriksa. Keberatan dan banding baru relevan setelah SKP terbit.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 03 <span class="tag">Pemeriksaan</span></div>
+        <div class="case-body">
+          <p>CV Makmur Sejahtera diperiksa DJP karena SPT Tahunan menyatakan lebih bayar. Hasil pemeriksaan dituangkan dalam SPHP dengan usulan koreksi tambahan pajak terutang Rp50.000.000. Setelah menelaah, manajemen CV Makmur Sejahtera setuju atas koreksi sebesar Rp30.000.000, namun tidak setuju atas sisa Rp20.000.000 karena menganggap bukti pendukung biaya sudah lengkap.</p>
+          <p><b>Pertanyaan:</b> Apa langkah prosedural yang seharusnya ditempuh CV Makmur Sejahtera, dan apa upaya hukum yang tersedia setelah SKP terbit?</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <ol style="margin:0; padding-left:1.2rem;">
+                <li>Menyampaikan tanggapan tertulis atas SPHP dalam 7 hari kerja (dapat diperpanjang 3 hari) yang merinci bagian yang disetujui (Rp30.000.000) dan yang tidak disetujui (Rp20.000.000) beserta bukti pendukung.</li>
+                <li>Menghadiri Pembahasan Akhir Hasil Pemeriksaan (closing conference) dan menandatangani Risalah Pembahasan/Berita Acara yang mencatat poin sepakat dan tidak sepakat.</li>
+                <li>Jika perbedaan pendapat atas Rp20.000.000 belum selesai, dapat mengajukan permohonan pembahasan dengan Tim Quality Assurance sebelum SKP terbit.</li>
+                <li>Setelah SKPKB terbit, CV wajib melunasi bagian yang telah disetujui (Rp30.000.000) sebagai syarat formal, kemudian dapat mengajukan <b>keberatan</b> (Pasal 25 UU KUP) khusus atas sisa Rp20.000.000 dalam 3 bulan sejak SKP diterima, dan bila ditolak dapat melanjutkan ke <b>banding</b> ke Pengadilan Pajak (Pasal 27) dengan syarat membayar 50% dari jumlah yang masih disengketakan.</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 4 — PBB & BPHTB ================= -->
+    <section class="modul" id="m4">
+      <div class="modul-head">
+        <div class="stamp">04</div>
+        <div>
+          <h2>PBB dan BPHTB</h2>
+          <div class="sub">Pajak atas tanah dan bangunan — kini terbagi pajak pusat dan pajak daerah</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>PBB Perdesaan &amp; Perkotaan (PBB-P2)</b>: sejak pengalihan melalui UU PDRD 2009 dan kini diatur dalam UU HKPD, PBB sektor perdesaan dan perkotaan menjadi <b>pajak daerah</b> kabupaten/kota, dengan tarif ditetapkan Peraturan Daerah maksimal 0,5% dari (NJOP − NJOPTKP).</li>
+        <li><b>PBB sektor Perkebunan, Perhutanan, dan Pertambangan (PBB-P3)</b>: tetap menjadi <b>pajak pusat</b> yang dikelola DJP, dengan tarif efektif 0,5% × NJKP, di mana NJKP adalah persentase tertentu (20% atau 40%) dari (NJOP − NJOPTKP).</li>
+        <li><b>BPHTB</b>: sejak UU HKPD, BPHTB sepenuhnya menjadi <b>pajak daerah</b>, dikenakan atas perolehan hak atas tanah dan/atau bangunan (jual beli, hibah, waris, pemasukan dalam perseroan, dsb), dengan tarif maksimal 5% ditetapkan Perda.</li>
+        <li><b>Dasar pengenaan BPHTB</b>: Nilai Perolehan Objek Pajak (NPOP); apabila NPOP lebih rendah dari NJOP PBB, maka dasar pengenaan menggunakan NJOP.</li>
+        <li><b>NPOPTKP</b> (batas tidak kena pajak BPHTB) ditetapkan oleh masing-masing Pemerintah Daerah dan umumnya lebih tinggi untuk perolehan karena waris/hibah wasiat.</li>
+        <li><b>Saat terutang</b>: BPHTB terutang sejak tanggal dibuat dan ditandatanganinya akta (untuk jual beli) atau sejak tanggal pendaftaran (untuk waris).</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>UU No. 12 Tahun 1985 s.t.d.t.d. UU No. 12 Tahun 1994</b><br>Dasar hukum PBB yang kini berlaku terbatas untuk sektor Perkebunan, Perhutanan, dan Pertambangan (P3) di bawah kewenangan DJP.</div>
+        <div class="pasal-box"><b>UU No. 1 Tahun 2022 tentang Hubungan Keuangan antara Pemerintah Pusat dan Pemerintah Daerah (UU HKPD)</b><br>Payung hukum baru PBB-P2 dan BPHTB sebagai pajak daerah, menggantikan sebagian besar ketentuan UU No. 28 Tahun 2009 (PDRD) dan UU No. 21 Tahun 1997 jo. UU No. 20 Tahun 2000 (BPHTB).</div>
+        <div class="pasal-box"><b>Pasal 41–49 UU HKPD (ketentuan BPHTB)</b><br>Objek, subjek, tarif maksimal, NPOPTKP, dan saat terutang BPHTB sebagai pajak daerah.</div>
+        <div class="pasal-box">Peraturan Daerah (Perda) masing-masing Kabupaten/Kota<br>Menetapkan tarif definitif PBB-P2 dan BPHTB (dalam rentang yang diizinkan UU HKPD) serta NJOPTKP/NPOPTKP setempat.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Sejak berlakunya UU HKPD, PBB sektor Perdesaan dan Perkotaan (P2) dikelola oleh…</div>
+          <ul class="options"><li><b>A.</b> Direktorat Jenderal Pajak</li><li><b>B.</b> Pemerintah Kabupaten/Kota</li><li><b>C.</b> Kementerian ATR/BPN</li><li><b>D.</b> Bank Indonesia</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>PBB-P2 merupakan pajak daerah yang dikelola dan dipungut oleh Pemerintah Kabupaten/Kota, berbeda dengan PBB-P3 (Perkebunan, Perhutanan, Pertambangan) yang tetap dikelola DJP.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Jika NPOP transaksi jual beli tanah lebih rendah dari NJOP PBB atas objek yang sama, maka dasar pengenaan BPHTB menggunakan…</div>
+          <ul class="options"><li><b>A.</b> NPOP</li><li><b>B.</b> NJOP</li><li><b>C.</b> Rata-rata NPOP dan NJOP</li><li><b>D.</b> Harga pasar wajar independen</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Ketentuan BPHTB mensyaratkan penggunaan NJOP sebagai dasar pengenaan pajak apabila nilai tersebut lebih tinggi daripada NPOP transaksi, untuk mencegah penghindaran pajak lewat harga transaksi yang direndahkan.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Tarif maksimal BPHTB yang diperkenankan berdasarkan UU HKPD adalah…</div>
+          <ul class="options"><li><b>A.</b> 2,5%</li><li><b>B.</b> 5%</li><li><b>C.</b> 10%</li><li><b>D.</b> 11%</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Tarif BPHTB ditetapkan Perda dengan batas maksimal 5% sesuai UU HKPD.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 04 <span class="tag">PBB &amp; BPHTB</span></div>
+        <div class="case-body">
+          <p>Sebuah rumah di suatu kabupaten memiliki tanah 200 m² (NJOP Rp3.000.000/m²) dan bangunan 100 m² (NJOP Rp2.000.000/m²). NJOPTKP kabupaten tersebut Rp10.000.000 dan tarif PBB-P2 sesuai Perda 0,1%. Rumah tersebut dijual dengan harga transaksi (NPOP) Rp850.000.000. NPOPTKP menurut Perda setempat Rp80.000.000, tarif BPHTB 5%.</p>
+          <p><b>Pertanyaan:</b> Hitunglah (a) PBB-P2 terutang atas objek tersebut, dan (b) BPHTB yang harus dibayar pembeli.</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <p><b>(a) PBB-P2</b></p>
+              <table>
+                <tr><th>Uraian</th><th class="num">Nilai</th></tr>
+                <tr><td>NJOP tanah (200 m² × Rp3.000.000)</td><td class="num">Rp600.000.000</td></tr>
+                <tr><td>NJOP bangunan (100 m² × Rp2.000.000)</td><td class="num">Rp200.000.000</td></tr>
+                <tr><td>Total NJOP</td><td class="num">Rp800.000.000</td></tr>
+                <tr><td>NJOPTKP</td><td class="num">(Rp10.000.000)</td></tr>
+                <tr><td>Dasar pengenaan</td><td class="num">Rp790.000.000</td></tr>
+                <tr><td><b>PBB-P2 terutang (× 0,1%)</b></td><td class="num"><b>Rp790.000</b></td></tr>
+              </table>
+              <p><b>(b) BPHTB</b> — karena NPOP (Rp850.000.000) lebih besar dari NJOP (Rp800.000.000), dasar pengenaan menggunakan NPOP:</p>
+              <table>
+                <tr><th>Uraian</th><th class="num">Nilai</th></tr>
+                <tr><td>NPOP</td><td class="num">Rp850.000.000</td></tr>
+                <tr><td>NPOPTKP</td><td class="num">(Rp80.000.000)</td></tr>
+                <tr><td>Dasar pengenaan</td><td class="num">Rp770.000.000</td></tr>
+                <tr><td><b>BPHTB terutang (× 5%)</b></td><td class="num"><b>Rp38.500.000</b></td></tr>
+              </table>
+              <p>BPHTB dibayar oleh pihak pembeli sebelum akta jual beli ditandatangani PPAT, sedangkan PBB-P2 dibayar oleh pihak yang memiliki hak/manfaat atas objek pada tanggal 1 Januari tahun pajak berjalan.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 5 — CORETAX ================= -->
+    <section class="modul" id="m5">
+      <div class="modul-head">
+        <div class="stamp">05</div>
+        <div>
+          <h2>Sistem Coretax (Core Tax Administration System)</h2>
+          <div class="sub">Transformasi digital administrasi perpajakan Indonesia</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Coretax DJP</b> (dikenal juga sebagai Sistem Inti Administrasi Perpajakan/SIAP) adalah sistem administrasi perpajakan terintegrasi yang menggantikan sistem-sistem lama yang terpisah (DJP Online, e-Filing, e-Faktur, e-Bupot generasi sebelumnya) dengan satu portal WP tunggal.</li>
+        <li><b>Akun WP terpadu</b>: seluruh kewajiban pajak (PPh, PPN, PBB pusat, dsb) dan seluruh cabang/lokasi usaha dikelola dalam satu akun induk, bukan lagi akun terpisah per NPWP cabang.</li>
+        <li><b>NITKU (Nomor Identitas Tempat Kegiatan Usaha)</b>: menggantikan fungsi NPWP cabang 15 digit yang lama; setiap lokasi/gerai usaha memperoleh NITKU tersendiri di bawah satu NPWP pusat.</li>
+        <li><b>NPWP format baru</b>: NPWP Orang Pribadi kini menyatu dengan NIK (16 digit), sedangkan NPWP Badan dan Instansi menggunakan format 16 digit tersendiri.</li>
+        <li><b>Prepopulated data</b>: data faktur pajak dan bukti potong yang telah diterbitkan pihak lain otomatis terisi (prepopulated) dalam SPT WP, mengurangi input manual dan potensi selisih data.</li>
+        <li><b>e-Faktur &amp; e-Bupot terintegrasi</b>: penerbitan faktur pajak dan bukti pemotongan/pemungutan dilakukan langsung melalui portal Coretax dengan penomoran otomatis oleh sistem.</li>
+        <li><b>Implikasi praktik</b>: WP dan konsultan pajak perlu melakukan migrasi data akun, penyesuaian format faktur/bukti potong, serta pembaruan prosedur internal untuk approval dan otorisasi elektronik.</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>PMK No. 81/PMK.03/2024</b> tentang Ketentuan Umum Perpajakan dalam Rangka Penerapan Sistem Inti Administrasi Perpajakan<br>Menjadi payung hukum administratif atas implementasi Coretax, termasuk NITKU, tata cara pendaftaran, dan format dokumen perpajakan baru.</div>
+        <div class="pasal-box">Peraturan Dirjen Pajak (PER-DJP) turunan<br>Mengatur petunjuk teknis operasional Coretax: migrasi akun WP, tata cara penerbitan e-Faktur/e-Bupot melalui portal Coretax, dan mekanisme transisi dari sistem lama.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Dalam sistem Coretax, identitas yang digunakan untuk setiap cabang/lokasi usaha WP disebut…</div>
+          <ul class="options"><li><b>A.</b> NPWP Cabang</li><li><b>B.</b> NITKU</li><li><b>C.</b> NIK</li><li><b>D.</b> SPPKP</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>NITKU (Nomor Identitas Tempat Kegiatan Usaha) menggantikan fungsi NPWP cabang di bawah satu akun WP terpadu.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Dasar hukum utama implementasi Coretax dalam ketentuan umum perpajakan adalah…</div>
+          <ul class="options"><li><b>A.</b> PMK No. 81/PMK.03/2024</li><li><b>B.</b> PMK No. 131/PMK.03/2024</li><li><b>C.</b> UU No. 1 Tahun 2022</li><li><b>D.</b> PP No. 55 Tahun 2022</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: A</span>PMK No. 81/PMK.03/2024 mengatur ketentuan umum perpajakan dalam rangka penerapan Sistem Inti Administrasi Perpajakan (Coretax).</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Manfaat utama fitur "prepopulated data" pada Coretax bagi WP adalah…</div>
+          <ul class="options"><li><b>A.</b> Menghapus kewajiban lapor SPT</li><li><b>B.</b> Mengurangi input manual karena data faktur/bukti potong otomatis terisi</li><li><b>C.</b> Membebaskan WP dari kewajiban PPN</li><li><b>D.</b> Menghilangkan kewajiban pembukuan</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Data yang sudah dilaporkan pihak lain (faktur pajak/bukti potong) otomatis muncul di SPT WP, sehingga mengurangi kesalahan input manual dan mempercepat pelaporan.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 05 <span class="tag">Coretax</span></div>
+        <div class="case-body">
+          <p>PT Karya Mandiri memiliki kantor pusat di Jakarta dan tiga gerai ritel di Bandung, Surabaya, dan Medan. Sebelum era Coretax, setiap gerai memiliki NPWP cabang 15 digit terpisah dengan kewajiban lapor SPT Masa yang berbeda-beda per cabang.</p>
+          <p><b>Pertanyaan:</b> Bagaimana perubahan pengelolaan administrasi keempat lokasi tersebut setelah migrasi ke Coretax, dan apa dampaknya terhadap proses pelaporan?</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <ol style="margin:0; padding-left:1.2rem;">
+                <li>Keempat lokasi (pusat Jakarta + 3 gerai) dikonsolidasikan di bawah satu akun WP induk menggunakan NPWP Badan 16 digit milik PT Karya Mandiri.</li>
+                <li>Setiap gerai (Bandung, Surabaya, Medan) memperoleh NITKU tersendiri sebagai identitas lokasi kegiatan usaha, menggantikan NPWP cabang lama.</li>
+                <li>Transaksi dan faktur pajak yang diterbitkan oleh masing-masing gerai tetap dapat diidentifikasi per lokasi melalui NITKU, namun pelaporan SPT Masa PPN dan administrasi lainnya terkonsolidasi dalam satu portal Coretax milik entitas pusat.</li>
+                <li>Data faktur pajak masukan yang diterbitkan pemasok kepada salah satu gerai otomatis ter-prepopulated pada akun induk, mempermudah rekonsiliasi PPN Masukan-Keluaran secara korporat.</li>
+                <li>PT Karya Mandiri perlu memastikan tim keuangan di setiap gerai memahami alur otorisasi elektronik baru dan melakukan migrasi data historis sesuai petunjuk teknis PMK 81/PMK.03/2024 dan PER-DJP turunannya.</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 6 — PPh OP ================= -->
+    <section class="modul" id="m6">
+      <div class="modul-head">
+        <div class="stamp">06</div>
+        <div>
+          <h2>PPh Orang Pribadi (PPh OP)</h2>
+          <div class="sub">Penghitungan pajak penghasilan wajib pajak orang pribadi dalam negeri</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Subjek pajak dalam negeri OP</b>: orang pribadi yang bertempat tinggal di Indonesia, berada di Indonesia lebih dari 183 hari dalam 12 bulan, atau berniat bertempat tinggal di Indonesia.</li>
+        <li><b>Objek pajak</b>: setiap tambahan kemampuan ekonomis, baik berasal dari pekerjaan, usaha/pekerjaan bebas, modal, maupun penghasilan lain-lain.</li>
+        <li><b>Pengurang penghasilan bruto</b>: biaya untuk mendapatkan, menagih, dan memelihara penghasilan (biaya 3M), serta Penghasilan Tidak Kena Pajak (PTKP).</li>
+        <li><b>PTKP</b> (masih mengacu PMK No. 101/PMK.010/2016): Rp54.000.000 untuk WP sendiri (TK/0), tambahan Rp4.500.000 untuk status kawin, dan tambahan Rp4.500.000 per tanggungan sedarah/semenda maksimal 3 orang.</li>
+        <li><b>Tarif progresif Pasal 17 ayat (1) huruf a</b> (berlaku sejak Tahun Pajak 2022 sesuai UU HPP): 5% (s.d. Rp60 juta), 15% (>Rp60 juta–Rp250 juta), 25% (>Rp250 juta–Rp500 juta), 30% (>Rp500 juta–Rp5 miliar), 35% (>Rp5 miliar).</li>
+        <li><b>Jenis SPT Tahunan OP</b>: Formulir 1770 (usaha/pekerjaan bebas), 1770S (karyawan dengan >1 pemberi kerja atau penghasilan lain), 1770SS (karyawan 1 pemberi kerja, penghasilan bruto setahun ≤ Rp60 juta).</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>Pasal 2 UU PPh</b><br>Kriteria subjek pajak dalam negeri orang pribadi.</div>
+        <div class="pasal-box"><b>Pasal 4 ayat (1) UU PPh</b><br>Definisi dan cakupan objek pajak penghasilan.</div>
+        <div class="pasal-box"><b>Pasal 6 &amp; Pasal 7 UU PPh</b><br>Pengurang penghasilan bruto dan besaran PTKP.</div>
+        <div class="pasal-box"><b>Pasal 17 ayat (1) huruf a UU PPh s.t.d.t.d. UU HPP</b><br>Lapisan tarif progresif PPh OP yang berlaku sejak Tahun Pajak 2022.</div>
+        <div class="pasal-box"><b>PMK No. 101/PMK.010/2016</b><br>Penyesuaian besaran PTKP yang masih menjadi acuan hingga saat ini.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Berapa PTKP untuk WP OP berstatus kawin dengan 2 orang tanggungan (K/2)?</div>
+          <ul class="options"><li><b>A.</b> Rp58.500.000</li><li><b>B.</b> Rp63.000.000</li><li><b>C.</b> Rp67.500.000</li><li><b>D.</b> Rp72.000.000</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>PTKP = 54.000.000 (WP sendiri) + 4.500.000 (kawin) + 2 × 4.500.000 (2 tanggungan) = Rp67.500.000.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Formulir SPT Tahunan yang tepat untuk karyawan dengan satu pemberi kerja dan penghasilan bruto setahun Rp55 juta adalah…</div>
+          <ul class="options"><li><b>A.</b> 1770</li><li><b>B.</b> 1770S</li><li><b>C.</b> 1770SS</li><li><b>D.</b> 1771</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>1770SS digunakan karyawan dengan satu pemberi kerja dan penghasilan bruto setahun tidak lebih dari Rp60 juta.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Lapisan tarif 25% menurut Pasal 17 ayat (1) huruf a UU PPh berlaku untuk Penghasilan Kena Pajak pada rentang…</div>
+          <ul class="options"><li><b>A.</b> s.d. Rp60 juta</li><li><b>B.</b> >Rp60 juta–Rp250 juta</li><li><b>C.</b> >Rp250 juta–Rp500 juta</li><li><b>D.</b> >Rp500 juta–Rp5 miliar</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Lapisan tarif progresif: 5% (s.d. 60jt), 15% (60–250jt), 25% (250–500jt), 30% (500jt–5M), 35% (>5M).</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 06 <span class="tag">PPh OP</span></div>
+        <div class="case-body">
+          <p>Budi, karyawan tetap berstatus TK/0 (belum menikah, tanpa tanggungan), memperoleh penghasilan bruto setahun Rp180.000.000. Ia membayar iuran pensiun sebesar Rp1.200.000 setahun. Biaya jabatan dihitung sesuai ketentuan (5% dari penghasilan bruto, maksimal Rp500.000/bulan atau Rp6.000.000/tahun).</p>
+          <p><b>Pertanyaan:</b> Hitunglah PPh Pasal 21 terutang Budi untuk setahun.</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <table>
+                <tr><th>Uraian</th><th class="num">Nilai</th></tr>
+                <tr><td>Penghasilan bruto setahun</td><td class="num">Rp180.000.000</td></tr>
+                <tr><td>Biaya jabatan (5%, maks. Rp6.000.000)</td><td class="num">(Rp6.000.000)</td></tr>
+                <tr><td>Iuran pensiun</td><td class="num">(Rp1.200.000)</td></tr>
+                <tr><td>Penghasilan neto setahun</td><td class="num">Rp172.800.000</td></tr>
+                <tr><td>PTKP (TK/0)</td><td class="num">(Rp54.000.000)</td></tr>
+                <tr><td><b>Penghasilan Kena Pajak</b></td><td class="num"><b>Rp118.800.000</b></td></tr>
+              </table>
+              <table>
+                <tr><th>Lapisan</th><th class="num">Dasar</th><th class="num">Tarif</th><th class="num">PPh</th></tr>
+                <tr><td>s.d. Rp60.000.000</td><td class="num">Rp60.000.000</td><td class="num">5%</td><td class="num">Rp3.000.000</td></tr>
+                <tr><td>>Rp60.000.000–Rp118.800.000</td><td class="num">Rp58.800.000</td><td class="num">15%</td><td class="num">Rp8.820.000</td></tr>
+                <tr><td><b>Total PPh Pasal 21 setahun</b></td><td></td><td></td><td class="num"><b>Rp11.820.000</b></td></tr>
+              </table>
+              <p>Dalam praktik pemotongan bulanan, pemberi kerja menggunakan Tarif Efektif Rata-rata (TER) sesuai PP No. 58 Tahun 2023 dan PMK No. 168/PMK.03/2023 untuk Masa Januari–November, kemudian pada Masa Desember dilakukan penghitungan ulang setahun penuh menggunakan tarif Pasal 17 seperti perhitungan di atas untuk menentukan kurang/lebih potong.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 7 — PPh POTPUT ================= -->
+    <section class="modul" id="m7">
+      <div class="modul-head">
+        <div class="stamp">07</div>
+        <div>
+          <h2>PPh Pemotongan &amp; Pemungutan (Potput)</h2>
+          <div class="sub">PPh 21, 22, 23, 26, dan PPh Final Pasal 4 ayat (2)</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>PPh Pasal 21</b>: pemotongan atas penghasilan sehubungan dengan pekerjaan, jasa, atau kegiatan yang diterima OP dalam negeri (gaji, honorarium, upah, dsb). Sejak 2024, pemotongan bulanan (Masa Januari–November) menggunakan Tarif Efektif Rata-rata (TER bulanan kategori A/B/C sesuai status PTKP), sedangkan Masa Desember dihitung ulang setahun penuh dengan tarif Pasal 17.</li>
+        <li><b>PPh Pasal 22</b>: pemungutan atas kegiatan tertentu seperti impor barang, pembelian oleh bendahara pemerintah/BUMN tertentu, dan penjualan barang tergolong mewah.</li>
+        <li><b>PPh Pasal 23</b>: pemotongan atas penghasilan dividen, bunga, royalti, hadiah/penghargaan (tarif 15%), serta sewa (selain tanah/bangunan) dan imbalan jasa tertentu (tarif 2%). WP tanpa NPWP dikenakan tarif 100% lebih tinggi.</li>
+        <li><b>PPh Pasal 26</b>: pemotongan atas penghasilan yang diterima WP luar negeri (bukan BUT) dengan tarif umum 20% dari jumlah bruto, dapat lebih rendah sesuai Persetujuan Penghindaran Pajak Berganda (P3B/tax treaty) dengan syarat penerima melampirkan Surat Keterangan Domisili (Form DGT).</li>
+        <li><b>PPh Final Pasal 4 ayat (2)</b>: mencakup antara lain PPh final UMKM 0,5% dari omzet bruto (PP No. 55 Tahun 2022), sewa tanah/bangunan 10%, pengalihan hak atas tanah/bangunan 2,5%, bunga deposito/tabungan 20%, dan jasa konstruksi (PP No. 9 Tahun 2022) dengan tarif bervariasi menurut kualifikasi penyedia jasa.</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>Pasal 21 UU PPh; PP No. 58 Tahun 2023; PMK No. 168/PMK.03/2023</b><br>Mekanisme pemotongan PPh 21 dengan skema Tarif Efektif Rata-rata (TER).</div>
+        <div class="pasal-box"><b>Pasal 22 UU PPh; PMK No. 34/PMK.010/2017 s.t.d.t.d.</b><br>Pemungut, objek, dan tarif PPh Pasal 22.</div>
+        <div class="pasal-box"><b>Pasal 23 UU PPh</b><br>Objek dan tarif pemotongan atas dividen, bunga, royalti, hadiah (15%) dan sewa/jasa lain (2%).</div>
+        <div class="pasal-box"><b>Pasal 26 UU PPh</b><br>Pemotongan atas penghasilan WP luar negeri, tarif 20% atau sesuai P3B.</div>
+        <div class="pasal-box"><b>Pasal 4 ayat (2) UU PPh; PP No. 55 Tahun 2022; PP No. 9 Tahun 2022</b><br>Payung hukum berbagai jenis PPh final, termasuk PPh final UMKM, sewa tanah/bangunan, pengalihan hak tanah/bangunan, dan jasa konstruksi.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Tarif PPh Pasal 23 atas imbalan jasa konsultan yang diterima WP ber-NPWP adalah…</div>
+          <ul class="options"><li><b>A.</b> 2%</li><li><b>B.</b> 4%</li><li><b>C.</b> 15%</li><li><b>D.</b> 20%</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: A</span>Imbalan jasa (selain jasa yang telah dikenakan PPh final) dikenakan PPh Pasal 23 sebesar 2% dari jumlah bruto bagi penerima yang memiliki NPWP.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Tarif PPh final UMKM berdasarkan PP No. 55 Tahun 2022 adalah…</div>
+          <ul class="options"><li><b>A.</b> 0,5% dari omzet bruto</li><li><b>B.</b> 1% dari omzet bruto</li><li><b>C.</b> 2,5% dari omzet bruto</li><li><b>D.</b> 5% dari laba bersih</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: A</span>PPh final UMKM sebesar 0,5% dikenakan atas omzet bruto WP dengan peredaran bruto tertentu (≤Rp4,8 miliar/tahun), dengan jangka waktu penggunaan yang dibatasi (OP maksimal 7 tahun, PT maksimal 3 tahun, CV/firma/koperasi maksimal 4 tahun).</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Tarif umum PPh Pasal 26 atas penghasilan bruto yang diterima WP luar negeri (tanpa P3B) adalah…</div>
+          <ul class="options"><li><b>A.</b> 10%</li><li><b>B.</b> 15%</li><li><b>C.</b> 20%</li><li><b>D.</b> 25%</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Tarif umum PPh Pasal 26 adalah 20% dari jumlah bruto, dapat lebih rendah jika terdapat P3B dan penerima melampirkan Form DGT (Surat Keterangan Domisili).</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 07 <span class="tag">PPh Potput</span></div>
+        <div class="case-body">
+          <p>PT Cahaya Nusantara membayar dua transaksi dalam bulan Juli 2026:</p>
+          <ul class="points">
+            <li>Fee jasa konsultan pajak sebesar Rp50.000.000 kepada seorang konsultan lepas yang <b>belum memiliki NPWP</b>.</li>
+            <li>Sewa gedung kantor sebesar Rp100.000.000 kepada pemilik gedung berstatus orang pribadi.</li>
+          </ul>
+          <p><b>Pertanyaan:</b> Berapa PPh yang wajib dipotong PT Cahaya Nusantara atas masing-masing transaksi, dan pasal apa yang mendasarinya?</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <table>
+                <tr><th>Transaksi</th><th>Dasar Hukum</th><th class="num">Tarif</th><th class="num">PPh Dipotong</th></tr>
+                <tr><td>Fee jasa konsultan (tanpa NPWP)</td><td>Pasal 23 jo. Pasal 23(1a) UU PPh — tarif 2% × 200% karena tanpa NPWP</td><td class="num">4%</td><td class="num">Rp2.000.000</td></tr>
+                <tr><td>Sewa gedung/bangunan</td><td>Pasal 4 ayat (2) — PPh final atas sewa tanah/bangunan</td><td class="num">10%</td><td class="num">Rp10.000.000</td></tr>
+              </table>
+              <p>Fee jasa konsultan dikenakan PPh Pasal 23 tidak final (dapat dikreditkan penerima penghasilan di SPT Tahunannya), sedangkan sewa gedung/bangunan bersifat final sehingga tidak digabung kembali dalam penghitungan PPh terutang pemilik gedung setahun.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 8 — PPh BADAN ================= -->
+    <section class="modul" id="m8">
+      <div class="modul-head">
+        <div class="stamp">08</div>
+        <div>
+          <h2>PPh Badan</h2>
+          <div class="sub">Pajak penghasilan atas subjek pajak badan usaha</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Tarif umum</b>: 22% dari Penghasilan Kena Pajak, berlaku sejak Tahun Pajak 2022 dan seterusnya sesuai Pasal 17 ayat (1) huruf b jo. ayat (2a) UU PPh.</li>
+        <li><b>Fasilitas Pasal 31E</b>: badan dengan peredaran bruto setahun sampai dengan Rp50 miliar memperoleh pengurangan tarif 50% dari tarif normal atas bagian PKP dari peredaran bruto sampai dengan Rp4,8 miliar; sisanya dikenakan tarif normal.</li>
+        <li><b>PPh Final UMKM Badan</b>: badan dengan omzet ≤Rp4,8 miliar/tahun dapat memilih PPh final 0,5% dari omzet bruto (PP No. 55 Tahun 2022), dengan jangka waktu penggunaan terbatas (PT maksimal 3 tahun, CV/Firma/Koperasi maksimal 4 tahun sejak terdaftar).</li>
+        <li><b>Kompensasi kerugian</b>: kerugian fiskal dapat dikompensasikan ke penghasilan neto tahun-tahun berikutnya maksimal 5 tahun berturut-turut (Pasal 6 ayat 2), dengan pengecualian sektor tertentu yang dapat memperoleh perpanjangan melalui fasilitas investasi khusus.</li>
+        <li><b>SPT Tahunan Badan</b>: menggunakan Formulir 1771, disampaikan paling lambat 4 bulan setelah akhir tahun pajak (umumnya 30 April), dilengkapi laporan keuangan dan rekonsiliasi fiskal.</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>Pasal 17 ayat (1) huruf b dan ayat (2a) UU PPh s.t.d.t.d. UU HPP</b><br>Tarif umum PPh Badan 22%.</div>
+        <div class="pasal-box"><b>Pasal 31E UU PPh</b><br>Fasilitas pengurangan tarif 50% bagi badan dengan omzet sampai dengan Rp50 miliar.</div>
+        <div class="pasal-box"><b>PP No. 55 Tahun 2022</b><br>PPh final 0,5% bagi WP dengan peredaran bruto tertentu, termasuk badan usaha UMKM.</div>
+        <div class="pasal-box"><b>Pasal 6 ayat (2) UU PPh</b><br>Ketentuan kompensasi kerugian fiskal maksimal 5 tahun.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Tarif umum PPh Badan yang berlaku sejak Tahun Pajak 2022 adalah…</div>
+          <ul class="options"><li><b>A.</b> 20%</li><li><b>B.</b> 22%</li><li><b>C.</b> 25%</li><li><b>D.</b> 28%</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Pasal 17 ayat (1) huruf b jo. ayat (2a) UU PPh menetapkan tarif 22% sejak Tahun Pajak 2022, meski sempat direncanakan turun ke 20% sesuai UU sebelumnya, rencana tersebut dibatalkan oleh pemerintah melalui UU HPP.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Fasilitas Pasal 31E berlaku bagi badan dengan peredaran bruto setahun sampai dengan…</div>
+          <ul class="options"><li><b>A.</b> Rp4,8 miliar</li><li><b>B.</b> Rp10 miliar</li><li><b>C.</b> Rp50 miliar</li><li><b>D.</b> Rp100 miliar</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Fasilitas berlaku bagi badan dengan omzet setahun sampai dengan Rp50 miliar, memberikan pengurangan tarif 50% khusus untuk bagian PKP dari omzet sampai dengan Rp4,8 miliar.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Kompensasi kerugian fiskal dapat dilakukan maksimal selama…</div>
+          <ul class="options"><li><b>A.</b> 2 tahun</li><li><b>B.</b> 3 tahun</li><li><b>C.</b> 5 tahun</li><li><b>D.</b> 10 tahun</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Pasal 6 ayat (2) UU PPh mengatur kompensasi kerugian fiskal maksimal 5 tahun berturut-turut sejak tahun terjadinya kerugian.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 08 <span class="tag">PPh Badan</span></div>
+        <div class="case-body">
+          <p>PT Sumber Rejeki mencatat peredaran bruto Tahun Pajak 2025 sebesar Rp40.000.000.000 (memenuhi syarat fasilitas Pasal 31E karena ≤Rp50 miliar) dengan Penghasilan Kena Pajak (PKP) sebesar Rp3.000.000.000.</p>
+          <p><b>Pertanyaan:</b> Hitunglah PPh Badan terutang PT Sumber Rejeki dengan memperhitungkan fasilitas Pasal 31E.</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <p>Bagian PKP yang memperoleh fasilitas (pengurangan tarif 50%) dihitung proporsional:</p>
+              <table>
+                <tr><th>Uraian</th><th class="num">Nilai</th></tr>
+                <tr><td>PKP mendapat fasilitas = (Rp4.800.000.000 ÷ Rp40.000.000.000) × Rp3.000.000.000</td><td class="num">Rp360.000.000</td></tr>
+                <tr><td>PKP tidak mendapat fasilitas = Rp3.000.000.000 − Rp360.000.000</td><td class="num">Rp2.640.000.000</td></tr>
+                <tr><td>PPh atas PKP fasilitas: Rp360.000.000 × (50% × 22%) = Rp360.000.000 × 11%</td><td class="num">Rp39.600.000</td></tr>
+                <tr><td>PPh atas PKP tidak fasilitas: Rp2.640.000.000 × 22%</td><td class="num">Rp580.800.000</td></tr>
+                <tr><td><b>Total PPh Badan terutang</b></td><td class="num"><b>Rp620.400.000</b></td></tr>
+              </table>
+              <p>Fasilitas Pasal 31E hanya mengurangi tarif atas bagian PKP yang proporsional terhadap Rp4,8 miliar dari total omzet, bukan mengurangi seluruh PKP.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 9 — PPN ================= -->
+    <section class="modul" id="m9">
+      <div class="modul-head">
+        <div class="stamp">09</div>
+        <div>
+          <h2>Pajak Pertambahan Nilai (PPN)</h2>
+          <div class="sub">Pajak atas konsumsi barang dan jasa dalam daerah pabean</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan Teori</h3>
+      <ul class="points">
+        <li><b>Objek PPN (Pasal 4)</b>: penyerahan Barang Kena Pajak (BKP)/Jasa Kena Pajak (JKP) di dalam daerah pabean, impor BKP, ekspor BKP/JKP, dan pemanfaatan BKP/JKP tidak berwujud dari luar daerah pabean.</li>
+        <li><b>Tarif</b>: tarif PPN menurut Pasal 7 UU PPh adalah 12%, namun untuk penyerahan barang/jasa non-mewah pemerintah menetapkan Dasar Pengenaan Pajak (DPP) Nilai Lain sebesar 11/12 dari harga jual/penggantian/nilai impor (PMK No. 131 Tahun 2024 &amp; PMK No. 11 Tahun 2025), sehingga <b>tarif efektif tetap 11%</b> untuk transaksi umum. Khusus barang tergolong mewah (objek PPnBM), PPN dikenakan penuh 12% dari harga jual/nilai impor tanpa DPP nilai lain. Barang/jasa ekspor dikenakan tarif 0%.</li>
+        <li><b>Barang/jasa kebutuhan pokok</b> (Pasal 4A) seperti beras, daging, ikan, telur, sayur, susu segar, jasa pendidikan, jasa kesehatan, jasa angkutan umum, dan air minum tetap tidak dikenakan PPN/dibebaskan.</li>
+        <li><b>Mekanisme kredit pajak</b> (Pasal 9): PPN Masukan (atas pembelian) dikreditkan terhadap PPN Keluaran (atas penjualan) dalam masa pajak yang sama; jika PPN Masukan lebih besar dapat dikompensasikan ke masa berikutnya atau dimintakan restitusi.</li>
+        <li><b>Pengusaha Kena Pajak (PKP)</b> (Pasal 3A): pengusaha dengan omzet di atas Rp4,8 miliar/tahun wajib dikukuhkan sebagai PKP dan menerbitkan Faktur Pajak (kini melalui e-Faktur pada Coretax) paling lambat akhir bulan penyerahan.</li>
+        <li><b>Sanksi Faktur Pajak cacat/terlambat</b>: dikenakan denda 1% dari Dasar Pengenaan Pajak (Pasal 14 UU KUP).</li>
+      </ul>
+
+      <h3 class="h-label">Dasar Hukum &amp; Pasal Terkait</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>UU No. 8 Tahun 1983 s.t.d.t.d. UU No. 7 Tahun 2021 (UU HPP) — Pasal 4, 4A, 7, 9, 13</b><br>Objek, pengecualian objek, tarif, mekanisme kredit pajak, dan kewajiban Faktur Pajak.</div>
+        <div class="pasal-box"><b>PMK No. 131/PMK.03/2024</b><br>Penetapan PPN 12% khusus atas barang tergolong mewah (objek PPnBM), berlaku sejak 1 Januari 2025.</div>
+        <div class="pasal-box"><b>PMK No. 11 Tahun 2025</b><br>Penetapan Dasar Pengenaan Pajak Nilai Lain sebesar 11/12 untuk barang/jasa non-mewah, sehingga beban PPN efektif tetap setara 11%.</div>
+        <div class="pasal-box"><b>PP No. 44 Tahun 2022</b><br>Ketentuan PPN atas barang dan jasa tertentu serta fasilitas PPN di kawasan tertentu.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Tarif efektif PPN yang dikenakan atas penyerahan barang/jasa non-mewah pada tahun 2026 adalah…</div>
+          <ul class="options"><li><b>A.</b> 10%</li><li><b>B.</b> 11%</li><li><b>C.</b> 12%</li><li><b>D.</b> 15%</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Meski tarif nominal UU PPh 12%, pemerintah menetapkan DPP Nilai Lain 11/12 untuk barang/jasa non-mewah sehingga beban PPN efektif tetap 11%, sesuai PMK No. 131/2024 dan PMK No. 11/2025.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Batas peredaran bruto yang mewajibkan pengusaha dikukuhkan sebagai PKP adalah…</div>
+          <ul class="options"><li><b>A.</b> Rp600 juta/tahun</li><li><b>B.</b> Rp1,8 miliar/tahun</li><li><b>C.</b> Rp4,8 miliar/tahun</li><li><b>D.</b> Rp50 miliar/tahun</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Pengusaha dengan omzet di atas Rp4,8 miliar/tahun wajib dikukuhkan sebagai PKP sesuai Pasal 3A UU PPN.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Jasa yang dikecualikan dari objek PPN menurut Pasal 4A adalah…</div>
+          <ul class="options"><li><b>A.</b> Jasa konsultan pajak</li><li><b>B.</b> Jasa pendidikan</li><li><b>C.</b> Jasa persewaan kendaraan</li><li><b>D.</b> Jasa konstruksi</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Jasa pendidikan termasuk dalam daftar jasa yang tidak dikenakan PPN sesuai Pasal 4A UU PPN, bersama jasa kesehatan, jasa keuangan, dan jasa angkutan umum.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 09 <span class="tag">PPN</span></div>
+        <div class="case-body">
+          <p>PT Dagang Sejahtera (PKP) pada Masa Pajak Juli 2026 menjual barang dagangan non-mewah dengan harga jual Rp100.000.000 (belum termasuk PPN). Pada masa yang sama, PT Dagang Sejahtera membeli bahan baku dari PKP lain senilai Rp40.000.000 (belum termasuk PPN) yang PPN Masukannya dapat dikreditkan.</p>
+          <p><b>Pertanyaan:</b> Hitunglah PPN Keluaran, PPN Masukan, dan PPN kurang/lebih bayar Masa Juli 2026.</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan</span>
+              <table>
+                <tr><th>Uraian</th><th class="num">Dasar</th><th class="num">Tarif Efektif</th><th class="num">PPN</th></tr>
+                <tr><td>PPN Keluaran (penjualan)</td><td class="num">Rp100.000.000</td><td class="num">11%</td><td class="num">Rp11.000.000</td></tr>
+                <tr><td>PPN Masukan (pembelian bahan baku)</td><td class="num">Rp40.000.000</td><td class="num">11%</td><td class="num">Rp4.400.000</td></tr>
+                <tr><td><b>PPN Kurang Bayar (disetor)</b></td><td></td><td></td><td class="num"><b>Rp6.600.000</b></td></tr>
+              </table>
+              <p>Karena barang dagangan tergolong non-mewah, penghitungan PPN menggunakan tarif efektif 11% (DPP Nilai Lain 11/12 dari tarif nominal 12%). PPN kurang bayar wajib disetor paling lambat akhir bulan berikutnya sebelum SPT Masa PPN disampaikan.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MODUL 10 — SERTIFIKASI CFTR ================= -->
+    <section class="modul" id="m10">
+      <div class="modul-head">
+        <div class="stamp">10</div>
+        <div>
+          <h2>Ruang Lingkup Sertifikasi CFTR</h2>
+          <div class="sub">Certified Fundamental Tax Reporting — kompetensi pelaporan pajak tingkat dasar</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <h3 class="h-label">Ringkasan &amp; Cakupan Materi</h3>
+      <ul class="points">
+        <li>CFTR umumnya diposisikan sebagai sertifikasi kompetensi tingkat dasar yang menjadi bagian dari kurikulum pelatihan Brevet Pajak A-B, dengan fokus pada kemampuan teknis <b>menyusun dan melaporkan</b> kewajiban perpajakan sehari-hari — bukan hanya memahami teori.</li>
+        <li>Cakupan yang lazim diujikan meliputi: administrasi NPWP/PKP, penyusunan SPT Masa PPh Pasal 21/23/26/4(2), penyusunan SPT Masa PPN, penyusunan SPT Tahunan PPh OP dan Badan, rekonsiliasi fiskal dasar, serta penggunaan aplikasi pelaporan resmi DJP (e-Bupot, e-Faktur, dan portal Coretax).</li>
+        <li>Manfaat praktis: menjadi bukti kompetensi teknis bagi staf pajak/akuntansi junior, nilai tambah dalam CV, dan pada sebagian lowongan kerja tax officer/staff pajak menjadi salah satu pertimbangan seleksi.</li>
+        <li><b>Catatan penting</b>: berbeda dengan Ujian Sertifikasi Konsultan Pajak (USKP) yang diselenggarakan resmi terkait izin praktik kuasa/konsultan pajak, CFTR adalah sertifikasi kompetensi yang diselenggarakan oleh lembaga pelatihan penyelenggara Brevet. Peserta disarankan mengonfirmasi langsung kurikulum, silabus ujian, dan pengakuan sertifikat kepada penyelenggara brevet terkait sebelum mendaftar.</li>
+      </ul>
+
+      <h3 class="h-label">Checklist Kompetensi yang Diuji</h3>
+      <div class="pasal-list">
+        <div class="pasal-box"><b>Administrasi Dasar</b><br>Pendaftaran NPWP/NITKU, pengukuhan PKP, pemahaman struktur akun WP pada Coretax.</div>
+        <div class="pasal-box"><b>Pelaporan PPh Potput</b><br>Menghitung dan melaporkan PPh 21 (termasuk skema TER), PPh 23, PPh 4(2) final melalui e-Bupot.</div>
+        <div class="pasal-box"><b>Pelaporan PPN</b><br>Menerbitkan e-Faktur, menyusun SPT Masa PPN, rekonsiliasi PPN Masukan-Keluaran.</div>
+        <div class="pasal-box"><b>Pelaporan Tahunan</b><br>Menyusun SPT Tahunan 1770/1770S untuk OP dan 1771 untuk Badan, termasuk lampiran rekonsiliasi fiskal.</div>
+      </div>
+
+      <h3 class="h-label">Latihan Soal — Pilihan Ganda</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Aplikasi resmi DJP yang digunakan untuk menerbitkan bukti potong PPh saat ini adalah…</div>
+          <ul class="options"><li><b>A.</b> e-Filing</li><li><b>B.</b> e-Bupot (melalui portal Coretax)</li><li><b>C.</b> e-Registration</li><li><b>D.</b> e-SPOP</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>Penerbitan bukti pemotongan/pemungutan PPh kini terintegrasi dalam portal Coretax melalui fitur e-Bupot.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Kompetensi utama yang membedakan sertifikasi CFTR dari sekadar pemahaman teori pajak adalah…</div>
+          <ul class="options"><li><b>A.</b> Hafalan seluruh pasal UU Pajak</li><li><b>B.</b> Kemampuan menyusun dan melaporkan SPT secara praktis menggunakan sistem DJP</li><li><b>C.</b> Kemampuan litigasi di Pengadilan Pajak</li><li><b>D.</b> Kemampuan audit laporan keuangan sesuai SAK</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: B</span>CFTR menitikberatkan pada kompetensi teknis pelaporan (fundamental tax reporting), bukan litigasi atau audit keuangan.</div>
+          </details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Formulir SPT Tahunan yang relevan dipelajari untuk badan usaha dalam materi CFTR adalah…</div>
+          <ul class="options"><li><b>A.</b> 1770SS</li><li><b>B.</b> 1770S</li><li><b>C.</b> 1771</li><li><b>D.</b> 1721</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body"><span class="kunci">Kunci: C</span>Formulir 1771 digunakan untuk SPT Tahunan PPh Badan, dilengkapi laporan keuangan dan rekonsiliasi fiskal.</div>
+          </details>
+        </div>
+      </div>
+
+      <h3 class="h-label">Studi Kasus</h3>
+      <div class="case">
+        <div class="case-head">Studi Kasus 10 <span class="tag">Simulasi Ujian CFTR</span></div>
+        <div class="case-body">
+          <p>Sebagai staf pajak junior yang baru bergabung di sebuah perusahaan dagang (PKP), Anda ditugaskan menyiapkan pelaporan pajak akhir bulan yang mencakup: gaji karyawan, pembayaran sewa gudang ke perorangan, transaksi penjualan dan pembelian barang dagangan kena PPN.</p>
+          <p><b>Pertanyaan:</b> Susunlah langkah-langkah kerja (checklist) pelaporan yang harus Anda selesaikan sebelum tanggal jatuh tempo, dari administrasi hingga penyetoran.</p>
+          <details class="answer"><summary>Lihat Pembahasan</summary>
+            <div class="answer-body">
+              <span class="kunci">Pembahasan — Checklist Kerja</span>
+              <ol style="margin:0; padding-left:1.2rem;">
+                <li>Rekap daftar gaji karyawan bulan berjalan → hitung PPh 21 menggunakan TER sesuai kategori PTKP masing-masing karyawan → terbitkan bukti potong melalui e-Bupot pada Coretax.</li>
+                <li>Rekap pembayaran sewa gudang ke pihak perorangan → hitung PPh final Pasal 4(2) sebesar 10% dari nilai sewa → terbitkan bukti potong final.</li>
+                <li>Rekap seluruh Faktur Pajak Keluaran (penjualan) dan Faktur Pajak Masukan (pembelian) yang telah diterbitkan/diterima melalui e-Faktur pada Coretax; pastikan data pemasok berstatus PKP aktif agar PPN Masukan dapat dikreditkan.</li>
+                <li>Hitung PPN Kurang/Lebih Bayar = PPN Keluaran − PPN Masukan yang dapat dikreditkan.</li>
+                <li>Buat kode billing dan setorkan seluruh kewajiban (PPh 21, PPh final sewa, PPN kurang bayar) sebelum tanggal jatuh tempo penyetoran masing-masing jenis pajak.</li>
+                <li>Sampaikan SPT Masa PPh dan SPT Masa PPN melalui portal Coretax sebelum batas waktu pelaporan, dan simpan bukti lapor (Bukti Penerimaan Elektronik/BPE) sebagai dokumentasi.</li>
+              </ol>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="disclaimer">
+      <p><b>Catatan &amp; Disclaimer:</b> Modul ini disusun untuk keperluan pembelajaran peserta Brevet Pajak AB + CFTR dan merangkum ketentuan yang berlaku secara umum. Peraturan perpajakan bersifat dinamis (tarif, ambang batas, dan prosedur dapat berubah melalui PMK/PER-DJP baru) — pastikan untuk selalu memverifikasi ketentuan terkini melalui situs resmi Direktorat Jenderal Pajak (pajak.go.id) atau basis data resmi peraturan perundang-undangan (peraturan.bpk.go.id) sebelum digunakan sebagai dasar pengambilan keputusan bisnis. Materi ini bukan merupakan nasihat pajak atau hukum profesional untuk kasus spesifik; untuk kebutuhan penghitungan atau sengketa pajak yang kompleks, konsultasikan dengan konsultan pajak bersertifikat atau kuasa hukum pajak.</p>
+    </section>
+  </main>
+</div>
+
+<footer>Modul Referensi &amp; Latihan — Brevet Pajak AB + CFTR &middot; Disusun sebagai materi belajar mandiri</footer>
+
+<script>
+  // Highlight active TOC item on scroll
+  const sections = document.querySelectorAll('.modul');
+  const links = document.querySelectorAll('nav.toc a');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const id = e.target.getAttribute('id');
+        const match = document.querySelector('nav.toc a[href="#'+id+'"]');
+        if(match) match.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-20% 0px -70% 0px'});
+  sections.forEach(s=>obs.observe(s));
+</script>
+
+</body>
+</html>

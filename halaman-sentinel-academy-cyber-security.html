@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel Academy — Belajar Cyber Security dari Nol</title>
+<style>
+:root{--bg:#070b12;--panel:#0e1522;--panel2:#131d2e;--line:#1f2d45;--tx:#d6e2f0;--mut:#8497b3;--ac:#5ad1ff;--wr:#ffb454;--ok:#6ee7a8;--bad:#ff7a8a;--mono:ui-monospace,"JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;--sans:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:16px/1.65 var(--sans);background-image:radial-gradient(circle at 20% -10%,#12294a55,transparent 50%),linear-gradient(#ffffff05 1px,transparent 1px),linear-gradient(90deg,#ffffff05 1px,transparent 1px);background-size:auto,44px 44px,44px 44px}
+a{color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:22px;align-items:center;padding:12px 5vw;background:#070b12ee;border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+nav b{font-family:var(--mono);color:var(--ac);margin-right:auto}
+nav a{color:var(--mut);text-decoration:none;font-size:14px}nav a:hover{color:var(--tx)}
+section{padding:72px 5vw;max-width:1180px;margin:auto}
+h1{font:700 clamp(2.2rem,5vw,3.8rem)/1.08 var(--mono);letter-spacing:-.03em}
+h2{font:700 clamp(1.5rem,3vw,2.1rem)/1.2 var(--mono);margin-bottom:8px}
+.sub{color:var(--mut);max-width:62ch;margin-bottom:28px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding-top:56px}
+.hero p{color:var(--mut);margin:18px 0 26px;max-width:46ch}
+.btn{display:inline-block;border:1px solid var(--ac);background:var(--ac);color:#04121c;padding:10px 18px;border-radius:6px;font:600 14px var(--mono);cursor:pointer;text-decoration:none}
+.btn.g{background:transparent;color:var(--ac)}.btn:hover{filter:brightness(1.15)}
+.stats{display:flex;gap:28px;margin-top:30px;font-family:var(--mono);font-size:13px;color:var(--mut)}.stats b{display:block;color:var(--tx);font-size:22px}
+.term{background:#05080e;border:1px solid var(--line);border-radius:10px;box-shadow:0 20px 60px #0008;overflow:hidden}
+.tbar{display:flex;gap:6px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);font:12px var(--mono);color:var(--mut);align-items:center}
+.tbar i{width:10px;height:10px;border-radius:50%;background:#2a3a55}.tbar span{margin-left:8px}
+#out{height:270px;overflow:auto;padding:14px;font:13px/1.55 var(--mono);white-space:pre-wrap}
+#out .c{color:var(--ac)}#out .o{color:var(--ok)}#out .w{color:var(--wr)}
+.prm{display:flex;gap:8px;padding:0 14px 14px;font:13px var(--mono);color:var(--ac)}
+.prm input{flex:1;background:none;border:0;color:var(--tx);font:inherit;outline:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--mut);padding:6px 14px;border-radius:99px;font:13px var(--mono);cursor:pointer}
+.chip[aria-pressed=true]{border-color:var(--ac);color:var(--ac);background:#5ad1ff12}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px}
+.road{display:grid;grid-template-columns:300px 1fr;gap:20px}
+.mods{display:flex;flex-direction:column;gap:6px}
+.mod{display:flex;gap:12px;text-align:left;background:var(--panel);border:1px solid var(--line);color:var(--tx);padding:11px 14px;border-radius:8px;cursor:pointer;font:14px var(--sans);align-items:center}
+.mod small{display:block;color:var(--mut);font:11px var(--mono)}
+.mod .n{font:700 13px var(--mono);color:var(--mut);width:22px}
+.mod[aria-selected=true]{border-color:var(--ac);background:var(--panel2)}
+.mod.rec{box-shadow:inset 3px 0 var(--wr)}
+.mod.done .n::after{content:" ✓";color:var(--ok)}
+.pbar{height:6px;background:var(--line);border-radius:9px;margin:4px 0 14px;overflow:hidden}.pbar div{height:100%;width:0;background:var(--ac);transition:width .4s}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tab{background:none;border:0;color:var(--mut);padding:9px 16px;font:14px var(--mono);cursor:pointer;border-bottom:2px solid transparent}
+.tab[aria-selected=true]{color:var(--ac);border-color:var(--ac)}
+.pane h3{font:600 20px var(--mono);margin-bottom:10px}
+.pane ul,.pane ol{padding-left:20px;max-width:70ch}.pane li{margin:8px 0}
+code{font:13px var(--mono);background:#05080e;border:1px solid var(--line);padding:1px 6px;border-radius:4px;color:var(--ok)}
+.warn{border-left:3px solid var(--wr);background:#ffb45410;padding:10px 14px;margin-top:16px;font-size:14px;border-radius:0 6px 6px 0}
+.opt{display:block;width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);color:var(--tx);padding:10px 14px;margin:8px 0;border-radius:6px;cursor:pointer;font:inherit}
+.opt:hover:not(:disabled){border-color:var(--ac)}.opt.y{border-color:var(--ok);background:#6ee7a812}.opt.x{border-color:var(--bad);background:#ff7a8a12}
+.fb{margin-top:10px;font-size:14px;color:var(--mut)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.cases{display:grid;grid-template-columns:260px 1fr;gap:20px}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:6px 16px;margin:14px 0;font-size:15px}.kv dt{font:12px var(--mono);color:var(--wr);padding-top:3px}.kv dd{margin:0;max-width:65ch}
+.dl{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:16px}
+.dl button{background:var(--panel);border:1px solid var(--line);color:var(--tx);padding:14px;border-radius:8px;text-align:left;cursor:pointer;font:14px var(--sans)}.dl button:hover{border-color:var(--ac)}.dl small{display:block;color:var(--mut);font:11px var(--mono)}
+.focus li{margin:6px 0}
+footer{border-top:1px solid var(--line);padding:30px 5vw;color:var(--mut);font-size:13px;text-align:center}
+@media(max-width:860px){.hero,.road,.cases{grid-template-columns:1fr}nav a{display:none}section{padding:48px 5vw}.kv{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<nav><b>▮ sentinel.academy</b><a href="#kurikulum">Kurikulum</a><a href="#industri">Industri</a><a href="#kasus">Studi kasus</a><a href="#unduh">Unduh</a></nav>
+
+<section class="hero">
+<div>
+<h1>Jadilah pembela yang berpikir seperti penyerang.</h1>
+<p>Kurikulum cyber security 8 modul untuk semua industri: teori, praktik di lab legal, soal latihan, dan 5 studi kasus insiden nyata. Semua bisa diunduh.</p>
+<a class="btn" href="#kurikulum">Mulai Modul 1</a> <a class="btn g" href="#unduh">Unduh materi</a>
+<div class="stats"><div><b>8</b>modul</div><div><b>5</b>studi kasus</div><div><b>6</b>industri</div></div>
+</div>
+<div class="term" aria-label="Terminal interaktif">
+<div class="tbar"><i></i><i></i><i></i><span>sentinel@lab:~</span></div>
+<div id="out" role="log" aria-live="polite"></div>
+<label class="prm">$<input id="cmd" autocomplete="off" spellcheck="false" aria-label="Ketik perintah" placeholder="ketik: help"></label>
+</div>
+</section>
+
+<section id="kurikulum">
+<h2>Kurikulum step by step</h2>
+<p class="sub">Ikuti urutan dari Modul 1. Tiap modul punya teori, praktik, dan soal. Tandai selesai untuk melihat progres Anda.</p>
+<div class="pbar" aria-hidden="true"><div id="prog"></div></div>
+<div class="road">
+<div class="mods" id="mods" role="tablist" aria-orientation="vertical"></div>
+<div class="box" id="detail"></div>
+</div>
+</section>
+
+<section id="industri">
+<h2>Pilih industri Anda</h2>
+<p class="sub">Dasar ilmunya sama, prioritasnya berbeda. Pilih industri untuk melihat fokus dan modul yang ditandai di kurikulum.</p>
+<div class="chips" id="chips"></div>
+<div class="box focus" id="focus"></div>
+</section>
+
+<section id="kasus">
+<h2>5 studi kasus insiden nyata</h2>
+<p class="sub">Semua kasus bersumber dari insiden yang sudah dilaporkan publik. Fokusnya pada akar masalah dan pelajaran bagi pembela.</p>
+<div class="cases"><div class="mods" id="clist" role="tablist" aria-orientation="vertical"></div><div class="box" id="cdet"></div></div>
+</section>
+
+<section id="unduh">
+<h2>Pusat unduhan</h2>
+<p class="sub">File Markdown berisi teori, langkah praktik, soal beserta jawaban, dan studi kasus. Bisa dibuka di editor teks apa pun.</p>
+<button class="btn" id="dlAll">Unduh seluruh kurikulum (.md)</button>
+<div class="dl" id="dl"></div>
+<p class="sub" style="margin-top:20px">Untuk menyimpan halaman ini, tekan Ctrl+S (atau Simpan Halaman) di browser Anda.</p>
+</section>
+
+<footer>Untuk edukasi dan pertahanan. Latihan hanya di sistem milik sendiri atau lab yang mengizinkan secara tertulis. Akses tanpa izin melanggar hukum, termasuk UU ITE di Indonesia.</footer>
+
+<script>
+const M=[
+{t:"Fondasi & etika",lv:"Pemula",teori:["Segitiga CIA: <b>Confidentiality</b> (rahasia), <b>Integrity</b> (utuh), <b>Availability</b> (tersedia). Setiap serangan merusak satu atau lebih dari ketiganya.","Aktor ancaman: penjahat finansial, insider, aktivis, negara. Motif menentukan taktik.","Pertahanan berlapis (defense in depth) dan prinsip least privilege.","Etika: izin tertulis (scope & rules of engagement) adalah pembeda profesional dan pelaku kejahatan."],prak:["Pasang VirtualBox dan buat 2 VM: Kali/Parrot dan target sengaja rentan (Metasploitable atau DVWA).","Set jaringan VM ke <code>Host-only</code> agar terisolasi dari internet.","Buat catatan lab: tujuan, scope, tanggal, temuan."],q:{q:"Pencurian data pelanggan terutama melanggar aspek apa?",o:["Confidentiality","Integrity","Availability","Accountability"],a:0,e:"Data yang terbaca pihak tak berhak berarti kerahasiaan bocor."}},
+{t:"Jaringan & protokol",lv:"Pemula",teori:["Model OSI/TCP-IP, alamat IP, subnet, port, DNS, HTTP/HTTPS.","Perangkat: firewall, router, switch, VPN, proxy, segmentasi VLAN.","Serangan umum di level jaringan: sniffing, spoofing, DoS, man-in-the-middle."],prak:["Pelajari lalu lintas dengan Wireshark pada jaringan lab Anda.","Pindai <b>hanya VM target Anda</b>: <code>nmap -sV 192.168.56.101</code> lalu catat layanan dan versinya.","Tulis aturan firewall yang hanya mengizinkan port yang dibutuhkan."],q:{q:"Mengapa segmentasi jaringan penting?",o:["Mempercepat internet","Membatasi penyebaran serangan antar sistem","Menghapus kebutuhan password","Mengganti antivirus"],a:1,e:"Jika satu segmen jebol, penyerang tidak otomatis menjangkau segmen lain."}},
+{t:"Linux & hardening",lv:"Pemula",teori:["Izin file, user/group, sudo, service dan proses.","Hardening: patch rutin, matikan layanan tak terpakai, konfigurasi minimal, log aktif.","Windows: Active Directory, GPO, dan pengelolaan akun admin."],prak:["Audit user: <code>cat /etc/passwd</code>, <code>sudo -l</code>, <code>ss -tulpn</code>.","Aktifkan firewall: <code>sudo ufw default deny incoming && sudo ufw allow 22/tcp && sudo ufw enable</code>.","Nonaktifkan login root via SSH dan wajibkan SSH key."],q:{q:"Prinsip least privilege berarti…",o:["Semua user jadi admin","Akses seminimal yang dibutuhkan tugas","Tanpa log","Password sama di semua sistem"],a:1,e:"Hak akses kecil memperkecil dampak jika akun diambil alih."}},
+{t:"Kriptografi & identitas",lv:"Menengah",teori:["Simetris (AES), asimetris (RSA, ECC), hash (SHA-256), tanda tangan digital, TLS.","Password: simpan dengan hash lambat dan salt (argon2, bcrypt), bukan enkripsi.","Identitas: MFA, SSO, manajemen rahasia, rotasi kredensial."],prak:["Hash file: <code>sha256sum berkas.txt</code> lalu ubah satu huruf dan bandingkan.","Buat sertifikat uji: <code>openssl req -x509 -newkey rsa:2048 -nodes -keyout k.pem -out c.pem -days 30</code>.","Aktifkan MFA di semua akun penting Anda hari ini."],q:{q:"Cara paling tepat menyimpan password pengguna?",o:["Plaintext terenkripsi AES","MD5 tanpa salt","Hash lambat dengan salt (bcrypt/argon2)","Base64"],a:2,e:"Hash lambat dengan salt menyulitkan tebakan massal setelah database bocor."}},
+{t:"Keamanan aplikasi web",lv:"Menengah",teori:["OWASP Top 10: broken access control, injection, kesalahan kriptografi, desain tidak aman, misconfiguration.","SQL injection terjadi saat input pengguna disatukan ke query. Solusinya <b>prepared statement</b>.","XSS, CSRF, SSRF, dan pentingnya validasi input serta output encoding.","Rantai pasok: dependensi usang adalah pintu masuk umum."],prak:["Jalankan DVWA di lab, pelajari tiap kategori kerentanan pada level <i>low</i> lalu <i>high</i>.","Bandingkan kode rentan dan kode aman, tulis perbedaannya.","Jalankan pemindai dependensi (mis. <code>npm audit</code> atau <code>pip-audit</code>) di proyek Anda."],q:{q:"Pertahanan utama terhadap SQL injection?",o:["Menyembunyikan halaman login","Prepared statement / query berparameter","Memperbesar font","Memakai HTTP saja"],a:1,e:"Query berparameter memisahkan data dari perintah SQL."}},
+{t:"Risiko & threat modeling",lv:"Menengah",teori:["Risiko = kemungkinan × dampak. Prioritaskan aset paling kritis.","STRIDE untuk memetakan ancaman; MITRE ATT&CK sebagai kamus teknik penyerang.","Penanganan risiko: hindari, kurangi, transfer, terima."],prak:["Gambar diagram alur data aplikasi sederhana (DFD).","Terapkan STRIDE pada tiap elemen, catat 10 ancaman.","Buat risk register: ancaman, skor, kontrol, pemilik."],q:{q:"Mana yang dihitung dalam penilaian risiko?",o:["Hanya jumlah firewall","Kemungkinan dan dampak","Hanya biaya tool","Jumlah karyawan"],a:1,e:"Risiko selalu kombinasi seberapa mungkin terjadi dan seberapa parah akibatnya."}},
+{t:"Deteksi & respons insiden",lv:"Lanjut",teori:["Log, SIEM, EDR, dan alert yang bisa ditindaklanjuti.","Siklus IR: persiapan, deteksi, penahanan, pemberantasan, pemulihan, evaluasi.","Digital forensics dasar: jaga bukti, catat rantai penguasaan (chain of custody).","Backup 3-2-1 yang diuji berkala adalah pertahanan terbaik terhadap ransomware."],prak:["Pasang Wazuh atau Security Onion di lab, kirim log dari VM.","Buat satu aturan deteksi untuk banyak login gagal beruntun.","Tulis playbook IR satu halaman: siapa menghubungi siapa dan kapan."],q:{q:"Langkah pertama saat sebuah server terindikasi ransomware?",o:["Bayar tebusan segera","Isolasi dari jaringan dan aktifkan prosedur IR","Hapus semua log","Restart berulang kali"],a:1,e:"Isolasi menahan penyebaran dan menjaga bukti sambil tim IR bergerak."}},
+{t:"Tata kelola & karier",lv:"Lanjut",teori:["Kerangka: ISO 27001, NIST CSF, CIS Controls.","Regulasi: UU PDP No. 27/2022, regulasi sektor (OJK, BI, Kemenkes) dan GDPR bila melayani warga Eropa.","Budaya keamanan: pelatihan phishing, kebijakan, pelaporan tanpa menyalahkan.","Jalur karier: SOC analyst, pentester, GRC, cloud security, DFIR. Sertifikasi: Security+, CEH, OSCP, CISSP."],prak:["Petakan 10 kontrol CIS ke organisasi Anda dan beri skor kematangan.","Susun kebijakan password dan akses satu halaman.","Rancang program simulasi phishing internal dengan persetujuan manajemen."],q:{q:"Apa fungsi ISO 27001?",o:["Alat pemindai port","Standar sistem manajemen keamanan informasi","Bahasa pemrograman","Jenis enkripsi"],a:1,e:"ISO 27001 mengatur pembangunan dan perbaikan ISMS secara berkelanjutan."}}];
+
+const I={"Keuangan & perbankan":{r:[3,4,5],f:["Pencegahan fraud dan keamanan transaksi","Kepatuhan OJK/BI dan PCI DSS","Pemisahan tugas dan monitoring 24/7","Keamanan API dan mobile banking"]},"Kesehatan":{r:[2,6,7],f:["Perlindungan rekam medis (data sensitif)","Patch perangkat medis dan sistem lama","Backup dan kelangsungan layanan pasien","Kepatuhan UU PDP dan regulasi Kemenkes"]},"Manufaktur & energi (OT)":{r:[1,2,6],f:["Pisahkan jaringan IT dan OT","Keselamatan proses lebih utama dari kerahasiaan","Akses jarak jauh vendor ber-MFA","Inventaris aset industri (SCADA/PLC)"]},"Ritel & e-commerce":{r:[4,3,5],f:["Keamanan checkout dan data kartu","Risiko vendor dan pihak ketiga","Pencegahan pengambilalihan akun","Ketersediaan saat promo besar"]},"Pemerintah":{r:[6,7,3],f:["Ketahanan pusat data dan DRP","Backup terisolasi dan diuji","Pengelolaan identitas ASN","Respons insiden lintas instansi"]},"Pendidikan & startup":{r:[0,4,3],f:["Keamanan akun dan MFA","Praktik secure coding sejak awal","Cloud misconfiguration (bucket, key bocor)","Budaya sadar keamanan"]}};
+
+const C=[
+{t:"Bangladesh Bank (2016)",ind:"Keuangan",ev:"Penyerang masuk ke jaringan bank sentral dan mengirim perintah transfer SWIFT palsu. Sekitar US$81 juta berhasil keluar; percobaan senilai sekitar US$1 miliar sebagian besar terhenti.",rc:"Jaringan lemah dan kurang tersegmentasi, kontrol operasional SWIFT longgar, monitoring minim di luar jam kerja.",ls:"Segmentasi sistem pembayaran, pemantauan transaksi, kontrol dua orang untuk perintah bernilai besar, dan IR yang siap di akhir pekan.",q:"Kontrol apa yang akan menggagalkan transfer ini lebih awal?"},
+{t:"Target (2013)",ind:"Ritel",ev:"Kredensial vendor HVAC dicuri, lalu dipakai masuk ke jaringan Target. Malware di kasir mencuri data sekitar 40 juta kartu.",rc:"Akses vendor terlalu luas, segmentasi jaringan lemah, alert dari sistem deteksi tidak ditindaklanjuti.",ls:"Kelola risiko pihak ketiga, batasi akses vendor ke segmen minimal, dan pastikan ada orang yang bertugas menindak alert.",q:"Bagaimana Anda mendesain akses vendor yang aman?"},
+{t:"WannaCry & NHS (2017)",ind:"Kesehatan",ev:"Ransomware menyebar otomatis lewat celah SMB pada Windows yang belum ditambal. Rumah sakit di Inggris membatalkan ribuan janji dan operasi.",rc:"Patch tertunda, sistem usang masih dipakai, jaringan datar sehingga cepat menyebar.",ls:"Manajemen patch yang disiplin, segmentasi perangkat medis, dan rencana operasi saat sistem mati.",q:"Apa rencana Anda jika sistem pasien tak bisa dipakai 48 jam?"},
+{t:"Colonial Pipeline (2021)",ind:"Energi / OT",ev:"Satu akun VPN lama tanpa MFA dipakai masuk. Ransomware melumpuhkan sistem bisnis; perusahaan menghentikan operasi pipa sebagai pencegahan dan akhirnya membayar tebusan sekitar US$4,4 juta.",rc:"Akun tak terpakai masih aktif, tidak ada MFA di akses jarak jauh, ketidakjelasan batas IT dan OT.",ls:"Wajibkan MFA, hapus akun nganggur, uji pemisahan IT/OT, dan latih keputusan krisis.",q:"Apa kriteria Anda untuk menghentikan operasi demi keselamatan?"},
+{t:"PDNS Indonesia (2024)",ind:"Pemerintah",ev:"Ransomware melumpuhkan Pusat Data Nasional Sementara pada Juni 2024 dan mengganggu banyak layanan publik, termasuk imigrasi. Pelaku meminta tebusan besar yang tidak dibayar.",rc:"Cadangan data tidak memadai dan tidak terisolasi, konsentrasi layanan pada satu platform, kontrol keamanan yang belum matang.",ls:"Backup 3-2-1 yang diuji dan offline, arsitektur tanpa titik kegagalan tunggal, latihan pemulihan rutin.",q:"Bagaimana desain backup agar ransomware tak bisa menghapusnya?"}];
+
+const $=s=>document.querySelector(s),done=new Set();
+// Terminal
+const out=$("#out"),cmd=$("#cmd");
+function pr(t,c){const d=document.createElement("div");if(c)d.className=c;d.textContent=t;out.appendChild(d);out.scrollTop=out.scrollHeight}
+const CMDS={help:()=>pr("perintah: whoami, modul, kasus, industri, mulai, clear","o"),whoami:()=>pr("kamu: calon defender. izin tertulis dulu, baru praktik.","o"),modul:()=>M.forEach((m,i)=>pr(`[${i+1}] ${m.t} (${m.lv})`)),kasus:()=>C.forEach(c=>pr(`- ${c.t}`)),industri:()=>Object.keys(I).forEach(k=>pr(`- ${k}`)),mulai:()=>{pr("membuka Modul 1…","w");sel(0);location.hash="#kurikulum"},clear:()=>out.replaceChildren()};
+pr("Sentinel Academy v1.0 — lab edukasi","c");pr("ketik 'help' untuk daftar perintah.");
+cmd.addEventListener("keydown",e=>{if(e.key!=="Enter")return;const v=cmd.value.trim().toLowerCase();cmd.value="";if(!v)return;pr("$ "+v,"c");(CMDS[v]||(()=>pr("perintah tidak dikenal. ketik 'help'.","w")))()});
+// Modules
+let cur=0,tab="teori",rec=[];
+function md(m,i){return `# Modul ${i+1}: ${m.t} (${m.lv})\n\n## Teori\n${m.teori.map(x=>"- "+x.replace(/<[^>]+>/g,"")).join("\n")}\n\n## Praktik (lab legal)\n${m.prak.map((x,j)=>`${j+1}. `+x.replace(/<[^>]+>/g,"")).join("\n")}\n\n## Contoh soal\n${m.q.q}\n${m.q.o.map((o,j)=>`${"ABCD"[j]}. ${o}`).join("\n")}\nJawaban: ${"ABCD"[m.q.a]}. ${m.q.e}\n`}
+const cs=(c,i)=>`## Kasus ${i+1}: ${c.t} (${c.ind})\n- Kejadian: ${c.ev}\n- Akar masalah: ${c.rc}\n- Pelajaran: ${c.ls}\n- Diskusi: ${c.q}\n`;
+function dlf(name,txt){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/markdown"}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+function list(){$("#mods").innerHTML=M.map((m,i)=>`<button class="mod${rec.includes(i)?" rec":""}${done.has(i)?" done":""}" role="tab" aria-selected="${i==cur}" data-i="${i}"><span class="n">${i+1}</span><span>${m.t}<small>${m.lv}${rec.includes(i)?" · prioritas industri":""}</small></span></button>`).join("");
+$("#prog").style.width=done.size/M.length*100+"%"}
+function show(){const m=M[cur];let h=`<div class="tabs" role="tablist">${[["teori","Teori"],["praktik","Praktik"],["soal","Contoh soal"]].map(([k,l])=>`<button class="tab" role="tab" aria-selected="${tab==k}" data-t="${k}">${l}</button>`).join("")}</div><div class="pane"><h3>Modul ${cur+1}: ${m.t}</h3>`;
+if(tab=="teori")h+=`<ul>${m.teori.map(x=>`<li>${x}</li>`).join("")}</ul>`;
+if(tab=="praktik")h+=`<ol>${m.prak.map(x=>`<li>${x}</li>`).join("")}</ol><div class="warn">Lakukan hanya pada VM dan sistem milik Anda sendiri.</div>`;
+if(tab=="soal")h+=`<p>${m.q.q}</p>${m.q.o.map((o,j)=>`<button class="opt" data-o="${j}">${"ABCD"[j]}. ${o}</button>`).join("")}<div class="fb" id="fb"></div>`;
+h+=`</div><div class="row"><button class="btn" id="mark">${done.has(cur)?"Batalkan selesai":"Tandai selesai"}</button><button class="btn g" id="dlm">Unduh modul ini</button></div>`;$("#detail").innerHTML=h}
+function sel(i){cur=i;tab="teori";list();show()}
+$("#mods").onclick=e=>{const b=e.target.closest(".mod");if(b)sel(+b.dataset.i)};
+$("#detail").onclick=e=>{const t=e.target.closest(".tab"),o=e.target.closest(".opt");
+if(t){tab=t.dataset.t;show()}
+if(o){const q=M[cur].q,k=+o.dataset.o;document.querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(j==q.a)b.classList.add("y")});if(k!=q.a)o.classList.add("x");$("#fb").textContent=(k==q.a?"Benar. ":"Belum tepat. ")+q.e}
+if(e.target.id=="mark"){done.has(cur)?done.delete(cur):done.add(cur);list();show()}
+if(e.target.id=="dlm")dlf(`modul-${cur+1}.md`,md(M[cur],cur))};
+// Industry
+$("#chips").innerHTML=Object.keys(I).map(k=>`<button class="chip" aria-pressed="false">${k}</button>`).join("");
+$("#chips").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;const on=b.getAttribute("aria-pressed")=="true";document.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed","false"));
+if(on){rec=[];$("#focus").innerHTML="<p>Pilih satu industri di atas.</p>"}else{b.setAttribute("aria-pressed","true");const d=I[b.textContent];rec=d.r;$("#focus").innerHTML=`<h3 style="font:600 18px var(--mono);margin-bottom:8px">Fokus ${b.textContent}</h3><ul>${d.f.map(x=>`<li>${x}</li>`).join("")}</ul><p style="margin-top:12px;color:var(--mut)">Modul prioritas: ${d.r.map(i=>`${i+1}. ${M[i].t}`).join(", ")} (ditandai kuning di kurikulum).</p>`}list()};
+$("#focus").innerHTML="<p>Pilih satu industri di atas.</p>";
+// Cases
+let cc=0;
+function cl(){$("#clist").innerHTML=C.map((c,i)=>`<button class="mod" role="tab" aria-selected="${i==cc}" data-i="${i}"><span class="n">${i+1}</span><span>${c.t}<small>${c.ind}</small></span></button>`).join("");const c=C[cc];$("#cdet").innerHTML=`<h3 style="font:600 20px var(--mono)">${c.t}</h3><dl class="kv"><dt>Kejadian</dt><dd>${c.ev}</dd><dt>Akar masalah</dt><dd>${c.rc}</dd><dt>Pelajaran</dt><dd>${c.ls}</dd><dt>Diskusi</dt><dd>${c.q}</dd></dl><button class="btn g" id="dlc">Unduh kasus ini</button>`}
+$("#clist").onclick=e=>{const b=e.target.closest(".mod");if(b){cc=+b.dataset.i;cl()}};
+$("#cdet").onclick=e=>{if(e.target.id=="dlc")dlf(`kasus-${cc+1}.md`,"# Studi kasus\n\n"+cs(C[cc],cc))};
+// Downloads
+$("#dl").innerHTML=M.map((m,i)=>`<button data-m="${i}">Modul ${i+1}: ${m.t}<small>teori · praktik · soal (.md)</small></button>`).join("")+`<button data-c="1">5 studi kasus<small>ringkasan dan diskusi (.md)</small></button>`;
+$("#dl").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.m)dlf(`modul-${+b.dataset.m+1}.md`,md(M[b.dataset.m],+b.dataset.m));if(b.dataset.c)dlf("studi-kasus.md","# 5 Studi kasus\n\n"+C.map(cs).join("\n"))};
+$("#dlAll").onclick=()=>dlf("sentinel-academy-kurikulum.md","# Sentinel Academy: Kurikulum Cyber Security\n\nLatihan hanya pada sistem milik sendiri atau dengan izin tertulis.\n\n"+M.map(md).join("\n---\n\n")+"\n---\n\n# Studi kasus\n\n"+C.map(cs).join("\n"));
+sel(0);cl();
+</script>
+</body>
+</html>

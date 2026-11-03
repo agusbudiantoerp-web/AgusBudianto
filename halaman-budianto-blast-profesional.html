@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budianto Blast Profesional — Fragmentation Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════════════
+   BLASTPRO — HEAVY INDUSTRY MINING TERMINAL
+   Aesthetic: Industrial Brutalism / Mining Control Room
+   Palette: Volcanic dark + amber + hazard yellow
+   ═══════════════════════════════════════════════════ */
+:root {
+  --bg-deep:   #07080a;
+  --bg-base:   #0c0e12;
+  --bg-panel:  #111418;
+  --bg-card:   #161b22;
+  --bg-input:  #1a2028;
+  --bg-hover:  #1f2630;
+  --line:      #1e2530;
+  --line2:     #263040;
+  --amber:     #f59e0b;
+  --amber2:    #fbbf24;
+  --amber-dim: rgba(245,158,11,0.09);
+  --hazard:    #ef4444;
+  --hazard-dim:rgba(239,68,68,0.09);
+  --safe:      #22c55e;
+  --safe-dim:  rgba(34,197,94,0.09);
+  --sky:       #38bdf8;
+  --sky-dim:   rgba(56,189,248,0.09);
+  --warn:      #f97316;
+  --warn-dim:  rgba(249,115,22,0.09);
+  --text:      #c9d5e0;
+  --text2:     #5a7080;
+  --text3:     #2a3a48;
+  --font-head: 'Rajdhani', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --glow-a:    0 0 18px rgba(245,158,11,0.30);
+  --glow-s:    0 0 14px rgba(34,197,94,0.30);
+  --glow-h:    0 0 14px rgba(239,68,68,0.30);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 14px; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 14px;
+  min-height: 100vh;
+  line-height: 1.5;
+  background-image:
+    radial-gradient(ellipse 80% 30% at 50% 0%, rgba(245,158,11,0.04) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(30,37,48,0.3) 40px, rgba(30,37,48,0.3) 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(30,37,48,0.2) 40px, rgba(30,37,48,0.2) 41px);
+}
+
+/* ══ TOPBAR ══════════════════════════════════════ */
+.topbar {
+  background: var(--bg-panel);
+  border-bottom: 2px solid var(--amber);
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 40px rgba(245,158,11,0.18);
+}
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--amber) 20%, var(--amber2) 50%, var(--amber) 80%, transparent 100%);
+  opacity: .6;
+}
+.brand {
+  display: flex; align-items: center; gap: 14px;
+}
+.brand-logo {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--amber) 0%, var(--warn) 100%);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  box-shadow: var(--glow-a);
+  flex-shrink: 0;
+}
+.brand-text { line-height: 1; }
+.brand-name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 4px;
+  font-family: var(--font-mono);
+}
+.brand-sub {
+  font-size: 10px;
+  color: var(--amber);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+.topbar-pills {
+  display: flex; gap: 8px; align-items: center;
+}
+.pill {
+  padding: 4px 11px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pill-amber { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber); }
+.pill-sky   { background: var(--sky-dim);   color: var(--sky);   border: 1px solid var(--sky); }
+.pill-gray  { background: rgba(90,112,128,0.1); color: var(--text2); border: 1px solid var(--line2); }
+
+/* ══ LAYOUT ══════════════════════════════════════ */
+.app-wrap {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 0;
+  min-height: calc(100vh - 64px);
+}
+
+/* ══ LEFT SIDEBAR ════════════════════════════════ */
+.sidebar {
+  background: var(--bg-panel);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line2) transparent;
+  padding-bottom: 80px;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 2px; }
+
+.section-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-card);
+  position: sticky; top: 0; z-index: 10;
+}
+.section-icon {
+  width: 28px; height: 28px;
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.icon-amber { background: var(--amber-dim); border: 1px solid rgba(245,158,11,.4); }
+.icon-sky   { background: var(--sky-dim);   border: 1px solid rgba(56,189,248,.4); }
+.icon-safe  { background: var(--safe-dim);  border: 1px solid rgba(34,197,94,.4); }
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 2px;
+}
+.section-body { padding: 16px 20px; }
+
+/* ══ FORM ════════════════════════════════════════ */
+.form-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text2);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-family: var(--font-mono);
+}
+.form-label .req { color: var(--amber); }
+
+.field-wrap { position: relative; margin-bottom: 10px; }
+.field-unit {
+  position: absolute; right: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text3); pointer-events: none;
+}
+input[type="number"] {
+  width: 100%; padding: 8px 40px 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--line2);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font-head); font-size: 14px;
+  outline: none; transition: border-color .18s, box-shadow .18s;
+  -moz-appearance: textfield;
+}
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+input[type="number"]:focus {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgba(245,158,11,.12);
+}
+
+select {
+  width: 100%; padding: 8px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--line2);
+  border-radius: 4px; color: var(--text);
+  font-family: var(--font-head); font-size: 14px;
+  outline: none; cursor: pointer;
+  transition: border-color .18s;
+  -webkit-appearance: none; appearance: none;
+}
+select:focus { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(245,158,11,.12); }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.subsection {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  color: var(--amber);
+  text-transform: uppercase;
+  padding: 8px 0 7px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+  margin-top: 4px;
+}
+.subsection:first-child { margin-top: 0; }
+
+/* ══ EXCAVATOR PICKER ════════════════════════════ */
+.exc-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-top: 6px;
+}
+.exc-pick {
+  background: var(--bg-input);
+  border: 1px solid var(--line2);
+  border-radius: 5px;
+  padding: 9px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .18s;
+  user-select: none;
+}
+.exc-pick:hover { border-color: rgba(245,158,11,.5); background: var(--bg-hover); }
+.exc-pick.active {
+  border-color: var(--amber);
+  background: var(--amber-dim);
+  box-shadow: var(--glow-a);
+}
+.exc-pick .ep-ico { font-size: 20px; margin-bottom: 3px; }
+.exc-pick .ep-name {
+  font-family: var(--font-mono); font-size: 10px;
+  font-weight: 600; color: #fff; letter-spacing: .5px;
+}
+.exc-pick .ep-spec { font-size: 9px; color: var(--text2); margin-top: 2px; }
+
+/* ══ CTA BUTTON ══════════════════════════════════ */
+.cta-zone { padding: 16px 20px; border-top: 1px solid var(--line); background: var(--bg-panel); }
+.btn-calc {
+  width: 100%;
+  background: linear-gradient(135deg, #b45309 0%, var(--amber) 50%, var(--amber2) 100%);
+  border: none; border-radius: 6px;
+  padding: 15px;
+  color: #000; font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  letter-spacing: 3px; cursor: pointer;
+  box-shadow: var(--glow-a);
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.btn-calc::before {
+  content: '';
+  position: absolute; top: -100%; left: -50%; width: 30%; height: 300%;
+  background: rgba(255,255,255,0.2);
+  transform: skewX(-20deg);
+  transition: left .4s;
+}
+.btn-calc:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(245,158,11,.45); }
+.btn-calc:hover::before { left: 160%; }
+.btn-calc:active { transform: translateY(0); }
+.btn-reset {
+  width: 100%; margin-top: 8px;
+  background: transparent; border: 1px solid var(--line2);
+  border-radius: 5px; padding: 9px;
+  color: var(--text2); font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 2px; cursor: pointer; transition: all .18s;
+}
+.btn-reset:hover { border-color: var(--text2); color: var(--text); }
+
+/* ══ RIGHT — OUTPUT ══════════════════════════════ */
+.output-area {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line2) transparent;
+  background: var(--bg-base);
+  padding: 20px;
+}
+.output-area::-webkit-scrollbar { width: 4px; }
+.output-area::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 2px; }
+
+/* ══ IDLE STATE ═══════════════════════════════════ */
+.idle-screen {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: calc(100vh - 104px);
+  gap: 16px; color: var(--text3);
+}
+.idle-big { font-size: 64px; opacity: .3; }
+.idle-title { font-family: var(--font-mono); font-size: 14px; letter-spacing: 3px; color: var(--text2); }
+.idle-sub { font-size: 11px; letter-spacing: 1px; color: var(--text3); }
+
+/* ══ KPI ROW ══════════════════════════════════════ */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.kpi {
+  background: var(--bg-panel);
+  border: 1px solid var(--line2);
+  border-radius: 7px;
+  padding: 14px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.kpi-amber::before { background: linear-gradient(90deg, var(--amber), var(--amber2)); }
+.kpi-green::before { background: linear-gradient(90deg, var(--safe), #4ade80); }
+.kpi-sky::before   { background: linear-gradient(90deg, var(--sky), #7dd3fc); }
+.kpi-red::before   { background: linear-gradient(90deg, var(--hazard), var(--warn)); }
+.kpi-lbl { font-family: var(--font-mono); font-size: 9px; color: var(--text2); letter-spacing: 1.5px; }
+.kpi-val {
+  font-family: var(--font-mono); font-size: 26px; font-weight: 600;
+  line-height: 1.15; margin: 4px 0 2px;
+}
+.kpi-sub { font-size: 10px; color: var(--text3); }
+
+/* ══ OUTPUT CARDS ════════════════════════════════ */
+.out-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--line2);
+  border-radius: 7px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.out-card-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--line);
+}
+.out-card-title {
+  font-family: var(--font-mono); font-size: 11px;
+  font-weight: 600; color: #fff; letter-spacing: 2px;
+}
+.out-card-body { padding: 18px; }
+
+/* ══ GRADATION TABLE ══════════════════════════════ */
+.grad-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.grad-tbl thead th {
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--amber);
+  padding: 8px 12px;
+  text-align: left;
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--amber); letter-spacing: 1.5px;
+}
+.grad-tbl tbody tr { border-bottom: 1px solid var(--line); transition: background .12s; }
+.grad-tbl tbody tr:hover { background: var(--bg-hover); }
+.grad-tbl tbody td { padding: 8px 12px; vertical-align: middle; }
+
+.size-tag {
+  display: inline-flex; align-items: center;
+  padding: 3px 9px; border-radius: 3px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+}
+.bar-cell { display: flex; align-items: center; gap: 8px; min-width: 180px; }
+.bar-bg { flex: 1; height: 8px; background: var(--bg-input); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(.4,0,.2,1); width: 0; }
+.bar-pct { font-family: var(--font-mono); font-size: 11px; font-weight: 600; min-width: 44px; text-align: right; }
+.cumul-txt { font-family: var(--font-mono); font-size: 10px; color: var(--text2); }
+.jaw-chip {
+  font-size: 9px; padding: 2px 7px; border-radius: 3px;
+  font-family: var(--font-mono); font-weight: 700; letter-spacing: 1px;
+}
+
+/* ══ CHARTS 2-COL ════════════════════════════════ */
+.chart-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.chart-box { height: 240px; position: relative; }
+
+/* ══ JAW CRUSHER PANEL ════════════════════════════ */
+.jaw-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.jaw-main { display: flex; flex-direction: column; gap: 10px; }
+.jaw-big-pct {
+  font-family: var(--font-mono); font-size: 48px; font-weight: 700; line-height: 1;
+}
+.jaw-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.jaw-bar {
+  height: 14px; background: var(--bg-input); border-radius: 7px;
+  overflow: hidden; border: 1px solid var(--line2); margin-top: 4px;
+}
+.jaw-bar-fill { height: 100%; border-radius: 7px; transition: width 1.4s ease; }
+.jaw-stats { display: flex; flex-direction: column; gap: 8px; }
+.jaw-stat-box {
+  background: var(--bg-card); border: 1px solid var(--line2);
+  border-radius: 6px; padding: 12px;
+}
+.jaw-stat-v { font-family: var(--font-mono); font-size: 22px; font-weight: 600; line-height: 1; }
+.jaw-stat-l { font-size: 10px; color: var(--text2); margin-top: 3px; }
+.jaw-reco {
+  margin-top: 12px; padding: 11px 14px;
+  border-radius: 5px; font-size: 12px; line-height: 1.6;
+}
+
+/* ══ EXCAVATOR RESULTS ════════════════════════════ */
+.exc-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.exc-result-card {
+  background: var(--bg-card); border: 1px solid var(--line2);
+  border-radius: 7px; padding: 14px 10px;
+  text-align: center; transition: border-color .18s;
+}
+.exc-result-card.highlight {
+  border-color: var(--amber);
+  background: var(--amber-dim);
+  box-shadow: var(--glow-a);
+}
+.erc-ico { font-size: 28px; margin-bottom: 5px; }
+.erc-name { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.erc-spec { font-size: 10px; color: var(--text2); margin-top: 2px; }
+.erc-pct {
+  font-family: var(--font-mono); font-size: 24px; font-weight: 700;
+  margin: 8px 0 2px; line-height: 1;
+}
+.erc-detail { font-size: 10px; color: var(--text3); }
+.erc-badge {
+  display: inline-block; margin-top: 7px;
+  font-size: 8px; padding: 2px 7px; border-radius: 2px;
+  font-family: var(--font-mono); font-weight: 700; letter-spacing: 1px;
+}
+.badge-ok   { background: var(--safe-dim);  color: var(--safe);  border: 1px solid var(--safe); }
+.badge-warn { background: var(--warn-dim);  color: var(--warn);  border: 1px solid var(--warn); }
+.badge-bad  { background: var(--hazard-dim);color: var(--hazard);border: 1px solid var(--hazard); }
+
+/* ══ BLAST SUMMARY ROW ═════════════════════════ */
+.blast-row {
+  display: flex; gap: 0;
+  background: var(--bg-card); border-radius: 6px;
+  overflow: hidden; margin-bottom: 14px;
+  border: 1px solid var(--line2);
+}
+.bp {
+  flex: 1; padding: 10px 12px; text-align: center;
+  border-right: 1px solid var(--line);
+}
+.bp:last-child { border-right: none; }
+.bp-val { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: var(--amber); }
+.bp-lbl { font-size: 9px; color: var(--text3); letter-spacing: 1px; margin-top: 2px; }
+
+/* ══ VOLUME & EXPLOSIVE WEIGHT PANEL ═════════════ */
+.vol-exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.ve-block {
+  background: var(--bg-card);
+  border: 1px solid var(--line2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.ve-block-head {
+  padding: 9px 14px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 1.5px; border-bottom: 1px solid var(--line);
+}
+.ve-block-head.amber { background: var(--amber-dim); color: var(--amber); }
+.ve-block-head.sky   { background: var(--sky-dim);   color: var(--sky); }
+.ve-block-head.safe  { background: var(--safe-dim);  color: var(--safe); }
+.ve-block-head.warn  { background: var(--warn-dim);  color: var(--warn); }
+.ve-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 14px; border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.ve-row:last-child { border-bottom: none; }
+.ve-row-lbl { color: var(--text2); }
+.ve-row-val { font-family: var(--font-mono); font-weight: 600; }
+
+.exp-detail-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 8px; margin-top: 14px;
+}
+.exp-det-card {
+  background: var(--bg-card); border: 1px solid var(--line2);
+  border-radius: 5px; padding: 10px 8px; text-align: center;
+}
+.exp-det-val { font-family: var(--font-mono); font-size: 16px; font-weight: 700; }
+.exp-det-lbl { font-size: 9px; color: var(--text2); margin-top: 3px; letter-spacing: .5px; }
+
+.vol-visual {
+  margin: 10px 0;
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+}
+.vv-box {
+  background: var(--bg-card); border: 1px solid var(--line2);
+  border-radius: 5px; padding: 10px 8px; text-align: center;
+}
+.vv-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; }
+.vv-lbl { font-size: 9px; color: var(--text2); margin-top: 3px; }
+
+.swell-bar-wrap { margin-top: 8px; }
+.swell-lbl-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text2); margin-bottom: 4px; }
+.swell-bar { height: 10px; background: var(--bg-input); border-radius: 5px; overflow: hidden; border: 1px solid var(--line2); position: relative; }
+.swell-fill { height: 100%; border-radius: 5px; }
+
+/* ══ FOTO AKTUAL — PHOTO ANALYSIS ════════════════ */
+.photo-section {
+  margin-top: 6px;
+}
+.photo-tab-bar {
+  display: flex; gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--line2);
+  border-radius: 6px 6px 0 0;
+  overflow: hidden;
+}
+.photo-tab {
+  flex: 1; padding: 10px 6px;
+  text-align: center; cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text2); letter-spacing: 1px;
+  border-right: 1px solid var(--line);
+  transition: all .18s; user-select: none;
+  background: transparent;
+}
+.photo-tab:last-child { border-right: none; }
+.photo-tab:hover { background: var(--bg-hover); color: var(--text); }
+.photo-tab.active { background: var(--amber-dim); color: var(--amber); }
+
+.photo-drop-zone {
+  border: 2px dashed var(--line2);
+  border-radius: 0 0 6px 6px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--bg-card);
+  position: relative;
+  overflow: hidden;
+}
+.photo-drop-zone:hover, .photo-drop-zone.drag-over {
+  border-color: var(--amber);
+  background: var(--amber-dim);
+}
+.photo-drop-zone input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.drop-ico { font-size: 32px; margin-bottom: 8px; }
+.drop-txt { font-size: 12px; color: var(--text2); }
+.drop-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* Photo preview card */
+.photo-preview-wrap {
+  position: relative;
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--line2);
+  border-top: none;
+}
+.photo-preview-wrap img {
+  width: 100%; display: block;
+  max-height: 320px; object-fit: contain;
+  background: #000;
+}
+.photo-canvas-wrap {
+  position: relative; display: inline-block; width: 100%;
+}
+.photo-canvas-wrap canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.photo-actions {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line2);
+  border-top: 1px solid var(--line);
+}
+.pa-btn {
+  padding: 6px 12px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 10px;
+  cursor: pointer; transition: all .16s;
+  letter-spacing: 1px; border: 1px solid var(--line2);
+  background: var(--bg-input); color: var(--text2);
+}
+.pa-btn:hover { border-color: var(--amber); color: var(--amber); }
+.pa-btn.active { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+
+/* Reference object selector */
+.ref-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 7px;
+  margin: 10px 0;
+}
+.ref-card {
+  background: var(--bg-input); border: 1px solid var(--line2);
+  border-radius: 5px; padding: 8px 5px;
+  text-align: center; cursor: pointer;
+  transition: all .18s; user-select: none;
+}
+.ref-card:hover { border-color: rgba(245,158,11,.5); }
+.ref-card.selected { border-color: var(--amber); background: var(--amber-dim); }
+.ref-ico { font-size: 20px; }
+.ref-name { font-size: 9px; color: var(--text2); margin-top: 3px; font-family: var(--font-mono); }
+.ref-size { font-size: 8px; color: var(--amber); margin-top: 1px; font-family: var(--font-mono); }
+
+/* Measurement ruler on photo */
+.ruler-info {
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line2);
+  border-top: 1px solid var(--line);
+  font-size: 11px; color: var(--text2);
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+}
+.ruler-badge {
+  padding: 2px 8px; border-radius: 3px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+}
+
+/* Comparison output */
+.comparison-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--line2);
+  border-radius: 7px; overflow: hidden;
+  margin-bottom: 16px;
+}
+.comparison-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--line);
+}
+.comparison-title {
+  font-family: var(--font-mono); font-size: 11px;
+  font-weight: 600; color: #fff; letter-spacing: 2px;
+}
+.comparison-body { padding: 18px; }
+
+.design-vs-actual {
+  display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0;
+  align-items: stretch; margin-bottom: 16px;
+}
+.dva-col {
+  background: var(--bg-card);
+  border: 1px solid var(--line2); border-radius: 6px;
+  overflow: hidden;
+}
+.dva-head {
+  padding: 9px 14px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 6px;
+}
+.dva-head.design { background: var(--sky-dim); color: var(--sky); }
+.dva-head.actual { background: var(--safe-dim); color: var(--safe); }
+.dva-vs {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  color: var(--amber); background: transparent;
+}
+.dva-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 14px; border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.dva-row:last-child { border-bottom: none; }
+.dva-lbl { color: var(--text2); font-size: 11px; }
+.dva-val { font-family: var(--font-mono); font-weight: 600; }
+
+/* Accuracy meter */
+.accuracy-meter {
+  background: var(--bg-card); border: 1px solid var(--line2);
+  border-radius: 6px; padding: 16px; margin-top: 14px;
+}
+.acc-title {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text2);
+  letter-spacing: 1.5px; margin-bottom: 12px;
+}
+.acc-rows { display: flex; flex-direction: column; gap: 10px; }
+.acc-row { display: grid; grid-template-columns: 140px 1fr 70px; gap: 10px; align-items: center; }
+.acc-lbl { font-size: 11px; color: var(--text2); }
+.acc-bar-bg { height: 10px; background: var(--bg-input); border-radius: 5px; overflow: hidden; border: 1px solid var(--line2); position: relative; }
+.acc-bar-fill { height: 100%; border-radius: 5px; transition: width 1.2s ease; }
+.acc-bar-target {
+  position: absolute; top: -2px; height: 14px; width: 2px;
+  background: var(--amber); border-radius: 1px;
+}
+.acc-val { font-family: var(--font-mono); font-size: 11px; text-align: right; }
+
+/* Photo gallery strip */
+.photo-gallery {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+  margin-top: 10px;
+}
+.gallery-thumb {
+  position: relative; border-radius: 5px; overflow: hidden;
+  border: 1px solid var(--line2); cursor: pointer;
+  transition: border-color .18s; aspect-ratio: 4/3;
+  background: var(--bg-card);
+}
+.gallery-thumb:hover { border-color: var(--amber); }
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-thumb .thumb-del {
+  position: absolute; top: 4px; right: 4px;
+  background: rgba(239,68,68,.85); color: #fff;
+  border: none; border-radius: 3px; width: 20px; height: 20px;
+  font-size: 12px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .18s;
+}
+.gallery-thumb:hover .thumb-del { opacity: 1; }
+.gallery-thumb .thumb-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,.7); font-size: 9px;
+  color: var(--text2); padding: 3px 6px;
+  font-family: var(--font-mono); letter-spacing: .5px;
+}
+.gallery-empty {
+  grid-column: 1/-1; text-align: center;
+  padding: 20px; color: var(--text3); font-size: 11px;
+}
+
+/* Fragment size drawing tool */
+.draw-tool-bar {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  padding: 10px 14px; background: var(--bg-input);
+  border: 1px solid var(--line2); border-radius: 5px; margin: 10px 0;
+}
+.draw-mode-btn {
+  padding: 5px 11px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 1px;
+  cursor: pointer; border: 1px solid var(--line2);
+  background: transparent; color: var(--text2); transition: all .16s;
+}
+.draw-mode-btn:hover { border-color: var(--sky); color: var(--sky); }
+.draw-mode-btn.active { background: var(--sky-dim); border-color: var(--sky); color: var(--sky); }
+.draw-info { font-size: 10px; color: var(--text3); margin-left: auto; }
+
+/* Live size estimate */
+.live-size-box {
+  padding: 10px 14px; margin-top: 8px;
+  background: var(--bg-card); border: 1px solid var(--line2);
+  border-radius: 5px;
+}
+.lsb-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.lsb-item { text-align: center; }
+.lsb-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; line-height: 1; }
+.lsb-lbl { font-size: 9px; color: var(--text2); margin-top: 2px; letter-spacing: .5px; }
+
+/* ══ FOOTER ═══════════════════════════════════════ */
+.app-footer {
+  text-align: center; padding: 14px; font-size: 10px;
+  color: var(--text3); border-top: 1px solid var(--line);
+  letter-spacing: 1px; background: var(--bg-panel);
+}
+
+/* ══ FADE ANIM ════════════════════════════════════ */
+@keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+.fade-up { animation: fadeUp .4s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- ════════ TOPBAR ════════ -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">💥</div>
+    <div class="brand-text">
+      <div class="brand-name">BUDIANTO BLAST</div>
+      <div class="brand-sub">Profesional Fragmentation Analysis Software</div>
+    </div>
+  </div>
+  <div class="topbar-pills">
+    <span class="pill pill-amber">KUZ-RAM MODEL</span>
+    <span class="pill pill-sky">ROSIN-RAMMLER</span>
+    <span class="pill pill-gray">v2.0 — Budianto Blast Profesional</span>
+  </div>
+</header>
+
+<!-- ════════ APP LAYOUT ════════ -->
+<div class="app-wrap">
+
+  <!-- ────── SIDEBAR / INPUT ────── -->
+  <aside class="sidebar">
+
+    <!-- GEOMETRI PELEDAKAN -->
+    <div class="section-header">
+      <div class="section-icon icon-amber">📐</div>
+      <div class="section-title">GEOMETRI PELEDAKAN</div>
+    </div>
+    <div class="section-body">
+      <div class="subsection">Parameter Lubang Bor</div>
+      <div class="grid-2">
+        <div>
+          <label class="form-label">BURDEN (B) <span class="req">*</span></label>
+          <div class="field-wrap">
+            <input type="number" id="burden" value="3.5" min="0.5" max="20" step="0.1">
+            <span class="field-unit">m</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">SPASI (S) <span class="req">*</span></label>
+          <div class="field-wrap">
+            <input type="number" id="spasi" value="4.0" min="0.5" max="25" step="0.1">
+            <span class="field-unit">m</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">KEDALAMAN (H) <span class="req">*</span></label>
+          <div class="field-wrap">
+            <input type="number" id="depth" value="8.0" min="1" max="60" step="0.1">
+            <span class="field-unit">m</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">DIA. LUBANG BOR <span class="req">*</span></label>
+          <div class="field-wrap">
+            <input type="number" id="holedia" value="89" min="50" max="450" step="1">
+            <span class="field-unit">mm</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">SUBDRILL (J)</label>
+          <div class="field-wrap">
+            <input type="number" id="subdrill" value="0.8" min="0" max="5" step="0.1">
+            <span class="field-unit">m</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">STEMMING (T)</label>
+          <div class="field-wrap">
+            <input type="number" id="stemming" value="2.5" min="0.5" max="10" step="0.1">
+            <span class="field-unit">m</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">Volume & Lubang</div>
+      <div class="grid-2">
+        <div>
+          <label class="form-label">LUBANG / BARIS</label>
+          <div class="field-wrap">
+            <input type="number" id="hpr" value="10" min="1" max="100" step="1">
+            <span class="field-unit">lbg</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">JUMLAH BARIS</label>
+          <div class="field-wrap">
+            <input type="number" id="rows" value="3" min="1" max="30" step="1">
+            <span class="field-unit">baris</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAHAN PELEDAK & BATUAN -->
+    <div class="section-header">
+      <div class="section-icon icon-amber">🧨</div>
+      <div class="section-title">BAHAN PELEDAK & BATUAN</div>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div>
+          <label class="form-label">POWDER FACTOR <span class="req">*</span></label>
+          <div class="field-wrap">
+            <input type="number" id="pf" value="0.35" min="0.05" max="2.0" step="0.01">
+            <span class="field-unit">kg/t</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">DENSITAS BATUAN <span class="req">*</span></label>
+          <div class="field-wrap">
+            <input type="number" id="density" value="2.6" min="1.2" max="4.0" step="0.05">
+            <span class="field-unit">t/m³</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="form-label">BAHAN PELEDAK</label>
+        <select id="explosive">
+          <option value="ANFO">ANFO — Bulk (RWS 100)</option>
+          <option value="EMULSION" selected>Emulsion (RWS 115)</option>
+          <option value="HANEX">Heavy ANFO / Hanex (RWS 105)</option>
+          <option value="POWERGEL">Powergel / Slurry (RWS 125)</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">JENIS / KEKERASAN BATUAN</label>
+        <select id="rocktype">
+          <option value="2.0">Batubara / Tanah lunak (A = 2.0)</option>
+          <option value="2.5">Batugamping lunak (A = 2.5)</option>
+          <option value="3.0">Batugamping keras / Shale (A = 3.0)</option>
+          <option value="4.0" selected>Andesit / Diorit (A = 4.0)</option>
+          <option value="4.5">Granit (A = 4.5)</option>
+          <option value="5.0">Basalt / Quartzite keras (A = 5.0)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PERALATAN -->
+    <div class="section-header">
+      <div class="section-icon icon-safe">⚙️</div>
+      <div class="section-title">PERALATAN CRUSHING & LOADING</div>
+    </div>
+    <div class="section-body">
+      <div class="subsection">Jaw Crusher — Bukaan Mulut (CSS)</div>
+      <div class="grid-2">
+        <div>
+          <label class="form-label">PILIH UKURAN JAW</label>
+          <select id="jawselect" onchange="toggleCustomJaw()">
+            <option value="400">400 mm — Jaw 24×36"</option>
+            <option value="500" selected>500 mm — Jaw 30×40"</option>
+            <option value="600">600 mm — Jaw 36×48"</option>
+            <option value="700">700 mm — Jaw 42×48"</option>
+            <option value="800">800 mm — Jaw 48×60"</option>
+            <option value="1000">1000 mm — Jaw 60×72"</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
+        <div id="customJawField" style="display:none">
+          <label class="form-label">CUSTOM CSS</label>
+          <div class="field-wrap">
+            <input type="number" id="customjaw" value="550" min="100" max="2000" step="10">
+            <span class="field-unit">mm</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection" style="margin-top:10px">Excavator Komatsu PC Series</div>
+      <div class="exc-pick-grid" id="excGrid"></div>
+    </div>
+
+    <!-- HITUNG -->
+    <div class="cta-zone">
+      <button class="btn-calc" onclick="calculate()">💥 &nbsp;HITUNG FRAGMENTASI</button>
+      <button class="btn-reset" onclick="resetAll()">↺ &nbsp;RESET INPUT</button>
+    </div>
+
+    <!-- FOTO AKTUAL -->
+    <div class="section-header">
+      <div class="section-icon" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.4)">📸</div>
+      <div class="section-title" style="color:#a78bfa">FOTO HASIL PELEDAKAN</div>
+    </div>
+    <div class="section-body">
+
+      <div class="subsection" style="color:#a78bfa">Objek Referensi Skala</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Pilih objek referensi yang terlihat di foto untuk kalibrasi ukuran fragment:</div>
+      <div class="ref-grid" id="refGrid"></div>
+
+      <div id="customRefWrap" style="display:none;margin-bottom:10px">
+        <label class="form-label">UKURAN REFERENSI CUSTOM</label>
+        <div class="field-wrap">
+          <input type="number" id="customRefSize" value="300" min="10" max="5000" step="10">
+          <span class="field-unit">mm</span>
+        </div>
+      </div>
+
+      <div class="subsection" style="color:#a78bfa;margin-top:4px">Upload Foto (Maks. 6 foto)</div>
+      <div class="photo-tab-bar">
+        <div class="photo-tab active" onclick="switchPhotoTab('upload')" id="ptab-upload">📂 UPLOAD</div>
+        <div class="photo-tab" onclick="switchPhotoTab('annotate')" id="ptab-annotate">✏️ ANOTASI</div>
+        <div class="photo-tab" onclick="switchPhotoTab('gallery')" id="ptab-gallery">🖼 GALERI</div>
+      </div>
+
+      <!-- UPLOAD TAB -->
+      <div id="ptab-content-upload">
+        <div class="photo-drop-zone" id="dropZone" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
+          <input type="file" id="photoInput" accept="image/*" multiple onchange="onFileSelect(event)">
+          <div class="drop-ico">📷</div>
+          <div class="drop-txt">Klik atau seret foto ke sini</div>
+          <div class="drop-sub">Mendukung JPG, PNG, WEBP · Maks 6 foto</div>
+        </div>
+        <div id="photoGalleryStrip" style="margin-top:10px"></div>
+      </div>
+
+      <!-- ANNOTATE TAB -->
+      <div id="ptab-content-annotate" style="display:none">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px">Pilih foto dari galeri lalu gambar garis pengukuran di atas fragment:</div>
+        <select id="annotateSelect" style="margin-bottom:10px" onchange="loadAnnotatePhoto()">
+          <option value="">— Pilih foto —</option>
+        </select>
+        <div id="annotateCanvas" style="display:none">
+          <div class="draw-tool-bar">
+            <button class="draw-mode-btn active" id="btn-ruler" onclick="setDrawMode('ruler')">📏 RULER</button>
+            <button class="draw-mode-btn" id="btn-circle" onclick="setDrawMode('circle')">⭕ FRAGMENT</button>
+            <button class="draw-mode-btn" id="btn-ref" onclick="setDrawMode('ref')">🔵 REFERENSI</button>
+            <button class="draw-mode-btn" onclick="clearAnnotations()" style="color:var(--hazard);border-color:var(--hazard)">🗑 HAPUS</button>
+            <span class="draw-info" id="drawInfo">Klik dan seret untuk mengukur</span>
+          </div>
+          <div style="position:relative;border:1px solid var(--line2);border-radius:5px;overflow:hidden;cursor:crosshair">
+            <img id="annotateImg" style="width:100%;display:block;max-height:260px;object-fit:contain;background:#000">
+            <canvas id="annotateOverlay" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:all"></canvas>
+          </div>
+          <div class="live-size-box" id="liveSizeBox" style="display:none">
+            <div class="lsb-row">
+              <div class="lsb-item">
+                <div class="lsb-val" id="lsb-frag" style="color:var(--safe)">—</div>
+                <div class="lsb-lbl">Estimasi Fragment (mm)</div>
+              </div>
+              <div class="lsb-item">
+                <div class="lsb-val" id="lsb-px" style="color:var(--sky)">—</div>
+                <div class="lsb-lbl">Panjang (px)</div>
+              </div>
+              <div class="lsb-item">
+                <div class="lsb-val" id="lsb-scale" style="color:var(--amber)">—</div>
+                <div class="lsb-lbl">Skala (mm/px)</div>
+              </div>
+              <div class="lsb-item">
+                <div class="lsb-val" id="lsb-class" style="color:var(--warn)">—</div>
+                <div class="lsb-lbl">Kelas Ukuran</div>
+              </div>
+            </div>
+          </div>
+          <div id="fragmentList" style="margin-top:8px"></div>
+        </div>
+        <div id="annotateEmpty" style="text-align:center;padding:20px;color:var(--text3);font-size:11px">
+          📸 Upload foto terlebih dahulu
+        </div>
+      </div>
+
+      <!-- GALLERY TAB -->
+      <div id="ptab-content-gallery" style="display:none">
+        <div class="photo-gallery" id="galleryGrid">
+          <div class="gallery-empty">Belum ada foto. Upload foto terlebih dahulu.</div>
+        </div>
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- ────── OUTPUT AREA ────── -->
+  <main class="output-area" id="outputArea">
+    <div class="idle-screen" id="idleScreen">
+      <div class="idle-big">💥</div>
+      <div class="idle-title">MASUKKAN PARAMETER & KLIK HITUNG</div>
+      <div class="idle-sub">Kalkulasi menggunakan model Kuz-Ram + distribusi Rosin-Rammler</div>
+    </div>
+    <div id="results" style="display:none"></div>
+  </main>
+
+</div>
+
+<div class="app-footer">
+  BlastPro v2.0 &nbsp;|&nbsp; Model: Kuz-Ram (Cunningham 1987) + Rosin-Rammler Distribution &nbsp;|&nbsp; Budianto Blast Profesional — Untuk perencanaan & evaluasi peledakan tambang terbuka
+</div>
+
+<script>
+'use strict';
+// ════════════════════════════════════════════════════════
+//  DATA — EXCAVATORS
+// ════════════════════════════════════════════════════════
+const EXCAVATORS = [
+  { id:0, model:'PC 200',  ico:'🚜', bVol:0.80,  bW:2.20, cap:1.6,  class:'small'  },
+  { id:1, model:'PC 300',  ico:'🚜', bVol:1.40,  bW:2.80, cap:2.8,  class:'medium' },
+  { id:2, model:'PC 400',  ico:'🚜', bVol:1.80,  bW:3.00, cap:3.6,  class:'medium' },
+  { id:3, model:'PC 600',  ico:'🏗',  bVol:2.90,  bW:3.40, cap:5.8,  class:'large'  },
+  { id:4, model:'PC 1250', ico:'🏗',  bVol:5.00,  bW:3.80, cap:10.0, class:'xlarge' },
+  { id:5, model:'PC 2000', ico:'⛏',  bVol:12.00, bW:5.20, cap:24.0, class:'mining' },
+];
+
+let selExc = 1;
+let chartCDF = null, chartBar = null;
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+function initExcGrid(){
+  const g = document.getElementById('excGrid');
+  g.innerHTML = EXCAVATORS.map((e,i) => `
+    <div class="exc-pick ${i===selExc?'active':''}" id="ep${i}" onclick="pickExc(${i})">
+      <div class="ep-ico">${e.ico}</div>
+      <div class="ep-name">${e.model}</div>
+      <div class="ep-spec">🪣 ${e.bVol} m³</div>
+      <div class="ep-spec">${e.bW} m lebar</div>
+    </div>`).join('');
+}
+function pickExc(i){
+  selExc = i;
+  document.querySelectorAll('.exc-pick').forEach((el,j)=>el.classList.toggle('active',j===i));
+}
+function toggleCustomJaw(){
+  const v = document.getElementById('jawselect').value;
+  document.getElementById('customJawField').style.display = v==='custom' ? 'block' : 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+const fmtN = (n, d=1) => Number(n).toLocaleString('id-ID', {minimumFractionDigits:d, maximumFractionDigits:d});
+const fmtI = n => Math.round(n).toLocaleString('id-ID');
+function fmtTon(t){
+  if(t >= 1e6) return (t/1e6).toFixed(2) + ' Mt';
+  if(t >= 1e3) return (t/1e3).toFixed(1) + ' kt';
+  return fmtI(t) + ' t';
+}
+
+// Rosin-Rammler CDF: P(x) = 1 - exp(-(x/xc)^n) → returns % passing
+function rrCDF(x_mm, xc_cm, n){
+  const x_cm = x_mm / 10;
+  return Math.min(100, (1 - Math.exp(-Math.pow(x_cm/xc_cm, n))) * 100);
+}
+
+// ════════════════════════════════════════════════════════
+//  MAIN CALCULATION ENGINE — KUZ-RAM
+// ════════════════════════════════════════════════════════
+function calculate(){
+  const B  = +document.getElementById('burden').value;
+  const S  = +document.getElementById('spasi').value;
+  const H  = +document.getElementById('depth').value;
+  const D  = +document.getElementById('holedia').value / 1000; // mm → m
+  const J  = +document.getElementById('subdrill').value;
+  const T  = +document.getElementById('stemming').value;
+  const PF = +document.getElementById('pf').value;
+  const rho= +document.getElementById('density').value;
+  const A  = +document.getElementById('rocktype').value;
+  const HPR= +document.getElementById('hpr').value;
+  const NR = +document.getElementById('rows').value;
+
+  if(!B||!S||!H||!D||!PF||!rho){
+    alert('⚠ Harap isi semua parameter wajib (Burden, Spasi, Kedalaman, Diameter Lubang, PF, Densitas)');
+    return;
+  }
+
+  const explosive = document.getElementById('explosive').value;
+  const jawCSS_sel = document.getElementById('jawselect').value;
+  const jawCSS = jawCSS_sel==='custom' ? +document.getElementById('customjaw').value : +jawCSS_sel;
+  const exc = EXCAVATORS[selExc];
+
+  // RWS per explosive type
+  const RWS_MAP = { ANFO:100, EMULSION:115, HANEX:105, POWERGEL:125 };
+  const RWS = RWS_MAP[explosive];
+  const EXP_DENSITY = { ANFO:850, EMULSION:1100, HANEX:1000, POWERGEL:1200 }[explosive];
+
+  // ── Geometry ──────────────────────────────────────────
+  const totalHoles = HPR * NR;
+  const benLen = S * HPR;          // bench length m
+  const benWid = B * NR;           // bench width m
+  const V_hole = B * S * (H + J);  // volume per hole m³
+  const V_total = V_hole * totalHoles;
+  const tonnage = V_total * rho;
+
+  // ── Charge per hole ───────────────────────────────────
+  const chargeLen = H + J - T;                      // explosive column length m
+  const holeArea  = Math.PI * Math.pow(D/2, 2);     // m²
+  const Q_hole    = holeArea * chargeLen * EXP_DENSITY; // kg
+  const Q_total   = Q_hole * totalHoles;
+  const PF_actual = Q_total / tonnage;
+
+  // ── Kuz-Ram: X50 (cm) ─────────────────────────────────
+  // Cunningham (1987): X50 = A × (V/Q)^0.8 × Q^(1/6) × (115/RWS)^0.633
+  let X50 = A * Math.pow(V_hole/Q_hole, 0.8) * Math.pow(Q_hole, 1/6) * Math.pow(115/RWS, 0.633);
+  // PF correction: higher PF → smaller fragments
+  const pfCorr = Math.pow(0.35 / PF_actual, 0.25);
+  X50 *= pfCorr;
+  const X50_mm = X50 * 10; // cm → mm
+
+  // ── Uniformity Index (n) ──────────────────────────────
+  const W_m = D * 0.10;   // drill deviation ≈ 10% of diameter
+  let n = (2.2 - 14*(D/B)) * Math.sqrt((1+S/B)/2) * Math.pow(chargeLen/H, 0.5) * (1 - W_m/B);
+  n = Math.max(0.8, Math.min(2.5, n));
+
+  // ── Xc from X50 ──────────────────────────────────────
+  const xc = X50 / Math.pow(Math.LN2, 1/n); // characteristic size (cm)
+
+  // ── D80, D90 ─────────────────────────────────────────
+  const D80_mm = xc * Math.pow(-Math.log(0.20), 1/n) * 10;
+  const D90_mm = xc * Math.pow(-Math.log(0.10), 1/n) * 10;
+
+  // ── Size classes (mm) ─────────────────────────────────
+  const CLASSES = [
+    { lbl:'< 50 mm',      lo:0,    hi:50    },
+    { lbl:'50 – 100 mm',  lo:50,   hi:100   },
+    { lbl:'100 – 200 mm', lo:100,  hi:200   },
+    { lbl:'200 – 300 mm', lo:200,  hi:300   },
+    { lbl:'300 – 500 mm', lo:300,  hi:500   },
+    { lbl:'500 – 750 mm', lo:500,  hi:750   },
+    { lbl:'750 mm – 1 m', lo:750,  hi:1000  },
+    { lbl:'> 1000 mm',    lo:1000, hi:99999 },
+  ];
+
+  let prevCDF = 0;
+  const gradData = CLASSES.map(cls => {
+    const cdfHi = cls.hi < 99999 ? rrCDF(cls.hi, xc, n) : 100;
+    const pct = Math.max(0, cdfHi - prevCDF);
+    prevCDF = cdfHi;
+    return { ...cls, cdf: cdfHi, pct };
+  });
+
+  // ── Jaw crusher ───────────────────────────────────────
+  const jawPass    = rrCDF(jawCSS, xc, n);  // % passing
+  const jawBlocked = 100 - jawPass;
+
+  // ── Oversize (>800mm) ─────────────────────────────────
+  const ovPct = 100 - rrCDF(800, xc, n);
+
+  // ── Excavator analysis ────────────────────────────────
+  const calcExcResult = ex => {
+    const maxFrag = ex.bW * 1000 * 0.85;   // max fragment handleable (mm) = 85% bucket width
+    const pctOK   = rrCDF(maxFrag, xc, n);
+    return { maxFrag, pctOK, pctBad: 100-pctOK };
+  };
+
+  const excResults = EXCAVATORS.map(ex => ({ ...ex, ...calcExcResult(ex) }));
+  const selExcRes  = excResults[selExc];
+
+  // ── Blast quality index (0-100) ───────────────────────
+  const bqi = Math.round(
+    (jawPass/100)*45 +
+    (1-ovPct/100)*30 +
+    Math.min(1, PF/0.6)*25
+  );
+
+  // ── Swell factor ─────────────────────────────────────
+  // After blasting, rock swells ~25–35% for typical hard rock
+  const swellFactor = 1.30; // 30% swell typical
+  const V_muckpile  = V_total * swellFactor;   // m³ muck pile
+  const V_per_hole  = V_hole;                  // m³ per hole (in-situ)
+  const V_per_row   = V_hole * HPR;            // m³ per row
+  const bench_area  = r => r.B * r.NR * r.S * r.HPR; // plan area m²
+
+  // ── Bench dimensions ──────────────────────────────────
+  const bench_plan_area = B * NR * S * HPR;    // m²
+  const V_insitu = V_total;                    // m³ in-situ (same as V_total)
+
+  // ── Explosive per hole detail ─────────────────────────
+  const priming_weight = 0.3;  // kg primer/detonator per hole (NONEL or eDet)
+  const primer_total   = priming_weight * totalHoles;
+  const booster_kg     = 0.5;  // kg booster per hole
+  const booster_total  = booster_kg * totalHoles;
+  const main_charge    = Q_total;  // kg main charge
+  const total_explosive_system = Q_total + primer_total + booster_total;
+
+  // ── Detonator & accessories estimation ────────────────
+  const num_detonators = totalHoles;  // 1 per hole minimum
+  const det_in_row_delay = HPR * NR;  // surface delays
+
+  // ── Specific charge (kg/m³) ───────────────────────────
+  const spec_charge_m3 = Q_total / V_total;  // kg/m³
+
+  // ── Emulsion/ANFO bags if bulk is not used ────────────
+  // Typical cartridge: 25kg bag → how many bags?
+  const bags_25kg = Math.ceil(Q_total / 25);
+  const bags_50kg = Math.ceil(Q_total / 50);
+
+  renderResults({
+    B,S,H,D,J,T,PF,rho,A,explosive,HPR,NR,
+    totalHoles, V_total, tonnage, Q_total, PF_actual,
+    X50_mm, xc, n, D80_mm, D90_mm,
+    gradData, jawCSS, jawPass, jawBlocked,
+    ovPct, bqi,
+    excResults, selExcRes, exc,
+    benLen, benWid,
+    // NEW: volume & explosive
+    V_insitu, V_muckpile, swellFactor,
+    V_per_hole, V_per_row,
+    bench_plan_area,
+    spec_charge_m3,
+    Q_hole, chargeLen,
+    main_charge, primer_total, booster_total, total_explosive_system,
+    num_detonators, det_in_row_delay,
+    bags_25kg, bags_50kg,
+    Q_total
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════════════
+function renderResults(r){
+  document.getElementById('idleScreen').style.display = 'none';
+  const box = document.getElementById('results');
+  box.style.display = 'block';
+
+  // Color helpers
+  const greenOrRed = v => v >= 80 ? 'var(--safe)' : v >= 60 ? 'var(--warn)' : 'var(--hazard)';
+  const jawColor   = greenOrRed(r.jawPass);
+  const ovColor    = r.ovPct < 5 ? 'var(--safe)' : r.ovPct < 15 ? 'var(--warn)' : 'var(--hazard)';
+
+  // Gradation table rows
+  const CLASS_COLORS = ['#22c55e','#38bdf8','#818cf8','#fb923c','#f97316','#ef4444','#b91c1c','#7f1d1d'];
+  const gradRows = r.gradData.map((cls, i) => {
+    const c = CLASS_COLORS[i];
+    const barW = Math.min(100, cls.pct * 2.2).toFixed(1);
+    const jawOK = cls.hi <= r.jawCSS || cls.lo < r.jawCSS;
+    const chipTxt = cls.hi <= r.jawCSS ? '✓ MASUK JAW' : cls.lo < r.jawCSS ? '~ SEBAGIAN' : '✗ BESAR';
+    const chipStyle = cls.hi <= r.jawCSS
+      ? `background:var(--safe-dim);color:var(--safe);border:1px solid var(--safe)`
+      : cls.lo < r.jawCSS
+      ? `background:var(--warn-dim);color:var(--warn);border:1px solid var(--warn)`
+      : `background:var(--hazard-dim);color:var(--hazard);border:1px solid var(--hazard)`;
+    return `
+    <tr>
+      <td><span class="size-tag" style="background:${c}18;border:1px solid ${c};color:${c}">${cls.lbl}</span></td>
+      <td>
+        <div class="bar-cell">
+          <div class="bar-bg"><div class="bar-fill" style="background:${c}" data-w="${barW}"></div></div>
+          <span class="bar-pct" style="color:${c}">${cls.pct.toFixed(1)}%</span>
+        </div>
+      </td>
+      <td><span class="cumul-txt">${cls.cdf.toFixed(1)}%</span></td>
+      <td><span class="jaw-chip" style="${chipStyle}">${chipTxt}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Excavator result cards
+  const excCards = r.excResults.map((e, i) => {
+    const isSel = i === selExc;
+    const pctOK = e.pctOK;
+    const pctColor = pctOK >= 90 ? 'var(--safe)' : pctOK >= 72 ? 'var(--warn)' : 'var(--hazard)';
+    let badge, bClass;
+    if(pctOK >= 90)     { badge='✓ DIREKOMENDASIKAN'; bClass='badge-ok'; }
+    else if(pctOK >= 72){ badge='⚠ PERLU SEKUNDER';   bClass='badge-warn'; }
+    else                { badge='✗ KURANG SESUAI';     bClass='badge-bad'; }
+    return `
+    <div class="exc-result-card ${isSel?'highlight':''}">
+      <div class="erc-ico">${e.ico}</div>
+      <div class="erc-name">${e.model}</div>
+      <div class="erc-spec">Bucket ${e.bVol} m³ · Lebar ${e.bW} m</div>
+      <div class="erc-pct" style="color:${pctColor}">${pctOK.toFixed(0)}%</div>
+      <div class="erc-detail">langsung terangkat</div>
+      <div><span class="erc-badge ${bClass}">${badge}</span></div>
+      <div style="font-size:9px;color:var(--text3);margin-top:5px">Max frag: ${fmtI(e.maxFrag)} mm</div>
+    </div>`;
+  }).join('');
+
+  // Jaw recommendation text
+  const jawReco = r.jawPass >= 85
+    ? `<span style="color:var(--safe)">SANGAT BAIK</span> — Mayoritas material (${r.jawPass.toFixed(0)}%) langsung bisa diumpan ke jaw crusher tanpa secondary breaking.`
+    : r.jawPass >= 65
+    ? `<span style="color:var(--warn)">CUKUP BAIK</span> — ${r.jawPass.toFixed(0)}% material bisa masuk jaw. ${r.jawBlocked.toFixed(0)}% perlu secondary breaking atau pemecahan manual.`
+    : `<span style="color:var(--hazard)">PERLU PERBAIKAN</span> — Hanya ${r.jawPass.toFixed(0)}% material yang lolos jaw. Tingkatkan powder factor atau optimalkan geometri peledakan.`;
+
+  // Excavator recommendation
+  const excReco = r.selExcRes.pctOK >= 90
+    ? `<span style="color:var(--safe)">SANGAT SESUAI</span> untuk fragmentasi ini. ${r.selExcRes.pctOK.toFixed(0)}% material dapat diangkat langsung oleh bucket ${r.exc.model}.`
+    : r.selExcRes.pctOK >= 72
+    ? `<span style="color:var(--warn)">CUKUP SESUAI</span>. ${r.selExcRes.pctOK.toFixed(0)}% material dapat diangkat ${r.exc.model}, namun ${r.selExcRes.pctBad.toFixed(0)}% masih memerlukan bantuan secondary breaking.`
+    : `<span style="color:var(--hazard)">KURANG SESUAI</span>. Pertimbangkan unit yang lebih besar atau tingkatkan fragmentasi untuk meningkatkan produktivitas ${r.exc.model}.`;
+
+  box.innerHTML = `
+  <div class="fade-up">
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi kpi-amber">
+      <div class="kpi-lbl">X₅₀ — UKURAN RATA-RATA</div>
+      <div class="kpi-val" style="color:var(--amber)">${fmtI(r.X50_mm)} mm</div>
+      <div class="kpi-sub">D₈₀ = ${fmtI(r.D80_mm)} mm</div>
+    </div>
+    <div class="kpi kpi-green">
+      <div class="kpi-lbl">LOLOS JAW (CSS ${r.jawCSS} mm)</div>
+      <div class="kpi-val" style="color:${jawColor}">${r.jawPass.toFixed(1)}%</div>
+      <div class="kpi-sub">Blocked ${r.jawBlocked.toFixed(1)}%</div>
+    </div>
+    <div class="kpi kpi-sky">
+      <div class="kpi-lbl">TOTAL TONNASE</div>
+      <div class="kpi-val" style="color:var(--sky)">${fmtTon(r.tonnage)}</div>
+      <div class="kpi-sub">${fmtI(r.V_total)} m³ · ${r.totalHoles} lubang</div>
+    </div>
+    <div class="kpi kpi-red">
+      <div class="kpi-lbl">BOULDER > 800 mm</div>
+      <div class="kpi-val" style="color:${ovColor}">${r.ovPct.toFixed(1)}%</div>
+      <div class="kpi-sub">BQI Score: ${r.bqi} / 100</div>
+    </div>
+  </div>
+
+  <!-- BLAST SUMMARY BAR -->
+  <div class="blast-row">
+    <div class="bp"><div class="bp-val">B=${r.B}m</div><div class="bp-lbl">BURDEN</div></div>
+    <div class="bp"><div class="bp-val">S=${r.S}m</div><div class="bp-lbl">SPASI</div></div>
+    <div class="bp"><div class="bp-val">H=${r.H}m</div><div class="bp-lbl">KEDALAMAN</div></div>
+    <div class="bp"><div class="bp-val">${(r.D*1000).toFixed(0)}mm</div><div class="bp-lbl">DIA. BOR</div></div>
+    <div class="bp"><div class="bp-val">${r.PF_actual.toFixed(3)}</div><div class="bp-lbl">PF AKTUAL (kg/t)</div></div>
+    <div class="bp"><div class="bp-val">${r.n.toFixed(3)}</div><div class="bp-lbl">INDEX UNIFORMITY (n)</div></div>
+    <div class="bp"><div class="bp-val">${fmtI(r.Q_total)} kg</div><div class="bp-lbl">TOTAL PELEDAK</div></div>
+  </div>
+
+  <!-- KPI ROW 2: VOLUME & EXPLOSIVE -->
+  <div class="kpi-row" style="margin-bottom:16px">
+    <div class="kpi kpi-sky">
+      <div class="kpi-lbl">VOLUME IN-SITU</div>
+      <div class="kpi-val" style="color:var(--sky)">${fmtI(r.V_insitu)} m³</div>
+      <div class="kpi-sub">Muckpile ±${fmtI(r.V_muckpile)} m³ (swell 30%)</div>
+    </div>
+    <div class="kpi kpi-amber">
+      <div class="kpi-lbl">BERAT MUATAN UTAMA</div>
+      <div class="kpi-val" style="color:var(--amber)">${r.Q_total.toFixed(0)} kg</div>
+      <div class="kpi-sub">${r.Q_hole.toFixed(1)} kg/lubang · ${r.explosive}</div>
+    </div>
+    <div class="kpi kpi-red">
+      <div class="kpi-lbl">TOTAL SISTEM PELEDAKAN</div>
+      <div class="kpi-val" style="color:var(--warn)">${r.total_explosive_system.toFixed(0)} kg</div>
+      <div class="kpi-sub">Termasuk primer & booster</div>
+    </div>
+    <div class="kpi" style="border-color:var(--line2)">
+      <div class="kpi-lbl">SPECIFIC CHARGE</div>
+      <div class="kpi-val" style="color:var(--text)">${r.spec_charge_m3.toFixed(3)} kg/m³</div>
+      <div class="kpi-sub">PF aktual ${r.PF_actual.toFixed(3)} kg/ton</div>
+    </div>
+  </div>
+
+  <!-- VOLUME & EXPLOSIVE PANELS -->
+  <div class="vol-exp-grid">
+
+    <!-- ESTIMASI VOLUME PELEDAKAN -->
+    <div class="out-card" style="margin-bottom:0">
+      <div class="out-card-head">
+        <div class="section-icon icon-sky">📦</div>
+        <div class="out-card-title">ESTIMASI VOLUME BLASTING</div>
+      </div>
+      <div class="out-card-body">
+        <div class="vol-visual">
+          <div class="vv-box">
+            <div class="vv-val" style="color:var(--sky)">${fmtI(r.V_insitu)} m³</div>
+            <div class="vv-lbl">Volume In-Situ</div>
+          </div>
+          <div class="vv-box">
+            <div class="vv-val" style="color:var(--amber)">${fmtI(r.V_muckpile)} m³</div>
+            <div class="vv-lbl">Volume Muckpile</div>
+          </div>
+          <div class="vv-box">
+            <div class="vv-val" style="color:var(--safe)">${fmtTon(r.tonnage)}</div>
+            <div class="vv-lbl">Total Tonnase</div>
+          </div>
+        </div>
+        <div class="swell-bar-wrap">
+          <div class="swell-lbl-row">
+            <span>In-situ → Muckpile (Swell Factor ${((r.swellFactor-1)*100).toFixed(0)}%)</span>
+            <span style="color:var(--amber)">${r.V_insitu.toFixed(0)} m³ → ${r.V_muckpile.toFixed(0)} m³</span>
+          </div>
+          <div class="swell-bar">
+            <div class="swell-fill" style="width:${(1/r.swellFactor*100).toFixed(0)}%;background:var(--sky)"></div>
+          </div>
+        </div>
+        <div class="ve-block" style="margin-top:12px">
+          <div class="ve-block-head sky">RINCIAN VOLUME PER UNIT</div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Volume per lubang bor</span>
+            <span class="ve-row-val" style="color:var(--sky)">${r.V_per_hole.toFixed(2)} m³/lubang</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Volume per baris</span>
+            <span class="ve-row-val" style="color:var(--sky)">${r.V_per_row.toFixed(1)} m³/baris</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Luas area peledakan (plan)</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.bench_plan_area.toFixed(0)} m²</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Dimensi bench (P × L)</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.benLen.toFixed(1)} m × ${r.benWid.toFixed(1)} m</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Tinggi bench efektif</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.H} m + subdrill ${r.J} m</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Total lubang bor</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.totalHoles} lubang (${r.HPR} × ${r.NR} baris)</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Specific charge</span>
+            <span class="ve-row-val" style="color:var(--amber)">${r.spec_charge_m3.toFixed(3)} kg/m³</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTIMASI BERAT BAHAN PELEDAK -->
+    <div class="out-card" style="margin-bottom:0">
+      <div class="out-card-head">
+        <div class="section-icon icon-amber">🧨</div>
+        <div class="out-card-title">ESTIMASI BERAT BAHAN PELEDAK</div>
+      </div>
+      <div class="out-card-body">
+        <div class="exp-detail-grid">
+          <div class="exp-det-card">
+            <div class="exp-det-val" style="color:var(--amber)">${r.Q_total.toFixed(0)} kg</div>
+            <div class="exp-det-lbl">Muatan Utama Total</div>
+          </div>
+          <div class="exp-det-card">
+            <div class="exp-det-val" style="color:var(--sky)">${r.Q_hole.toFixed(1)} kg</div>
+            <div class="exp-det-lbl">Muatan / Lubang</div>
+          </div>
+          <div class="exp-det-card">
+            <div class="exp-det-val" style="color:var(--safe)">${r.primer_total.toFixed(1)} kg</div>
+            <div class="exp-det-lbl">Total Primer</div>
+          </div>
+          <div class="exp-det-card">
+            <div class="exp-det-val" style="color:var(--warn)">${r.total_explosive_system.toFixed(0)} kg</div>
+            <div class="exp-det-lbl">TOTAL SISTEM</div>
+          </div>
+        </div>
+        <div class="ve-block" style="margin-top:14px">
+          <div class="ve-block-head amber">RINCIAN BAHAN PELEDAK PER KOMPONEN</div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Jenis bahan peledak</span>
+            <span class="ve-row-val" style="color:var(--amber)">${r.explosive}</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Panjang kolom isian per lubang</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.chargeLen.toFixed(2)} m</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Muatan utama (main charge)</span>
+            <span class="ve-row-val" style="color:var(--amber)">${r.main_charge.toFixed(1)} kg</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Primer/detonator (est. 0.3 kg/lubang)</span>
+            <span class="ve-row-val" style="color:var(--safe)">${r.primer_total.toFixed(1)} kg (${r.num_detonators} buah)</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Booster (est. 0.5 kg/lubang)</span>
+            <span class="ve-row-val" style="color:var(--warn)">${r.booster_total.toFixed(1)} kg</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl" style="font-weight:600;color:var(--text)">TOTAL SISTEM PELEDAKAN</span>
+            <span class="ve-row-val" style="color:var(--warn);font-size:14px">${r.total_explosive_system.toFixed(1)} kg</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Powder factor aktual</span>
+            <span class="ve-row-val" style="color:var(--amber)">${r.PF_actual.toFixed(4)} kg/ton</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Specific charge</span>
+            <span class="ve-row-val" style="color:var(--amber)">${r.spec_charge_m3.toFixed(3)} kg/m³</span>
+          </div>
+        </div>
+        <div class="ve-block" style="margin-top:10px">
+          <div class="ve-block-head warn">ESTIMASI KEMASAN (jika kartrid/sak)</div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Sak 25 kg</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.bags_25kg} sak</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Sak 50 kg</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.bags_50kg} sak</span>
+          </div>
+          <div class="ve-row">
+            <span class="ve-row-lbl">Detonator surface delay (est.)</span>
+            <span class="ve-row-val" style="color:var(--text)">${r.det_in_row_delay} buah</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div style="height:16px"></div>
+
+  <!-- GRADATION TABLE -->
+  <div class="out-card">
+    <div class="out-card-head">
+      <div class="section-icon icon-amber">🪨</div>
+      <div class="out-card-title">DISTRIBUSI GRADASI FRAGMENTASI — MODEL ROSIN-RAMMLER</div>
+    </div>
+    <div class="out-card-body">
+      <div style="overflow-x:auto">
+        <table class="grad-tbl">
+          <thead><tr>
+            <th>KELAS UKURAN</th>
+            <th>PERSENTASE GRADASI</th>
+            <th>KUMULATIF LOLOS</th>
+            <th>STATUS vs JAW ${r.jawCSS} mm</th>
+          </tr></thead>
+          <tbody>${gradRows}</tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:18px;flex-wrap:wrap;padding:10px;background:var(--bg-card);border-radius:5px;border:1px solid var(--line2);font-size:11px">
+        <span>📐 <b style="color:var(--amber)">X₅₀ = ${fmtI(r.X50_mm)} mm</b> ukuran median</span>
+        <span>📐 <b style="color:var(--sky)">X₈₀ = ${fmtI(r.D80_mm)} mm</b> 80% material lebih kecil dari ini</span>
+        <span>📐 <b style="color:var(--safe)">n = ${r.n.toFixed(3)}</b> uniformity index</span>
+        <span>📐 <b style="color:var(--warn)">xc = ${(r.xc*10).toFixed(0)} mm</b> ukuran karakteristik</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-duo">
+    <div class="out-card" style="margin-bottom:0">
+      <div class="out-card-head">
+        <div class="section-icon icon-amber">📈</div>
+        <div class="out-card-title">KURVA KUMULATIF ROSIN-RAMMLER</div>
+      </div>
+      <div class="out-card-body"><div class="chart-box"><canvas id="cdfChart"></canvas></div></div>
+    </div>
+    <div class="out-card" style="margin-bottom:0">
+      <div class="out-card-head">
+        <div class="section-icon icon-amber">📊</div>
+        <div class="out-card-title">DISTRIBUSI PER FRAKSI</div>
+      </div>
+      <div class="out-card-body"><div class="chart-box"><canvas id="barChart"></canvas></div></div>
+    </div>
+  </div>
+  <div style="height:16px"></div>
+
+  <!-- JAW CRUSHER -->
+  <div class="out-card">
+    <div class="out-card-head">
+      <div class="section-icon icon-safe">⚙️</div>
+      <div class="out-card-title">ANALISIS JAW CRUSHER — CSS ${r.jawCSS} mm</div>
+    </div>
+    <div class="out-card-body">
+      <div class="jaw-grid">
+        <div class="jaw-main">
+          <div>
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--text2);letter-spacing:1.5px;margin-bottom:6px">MATERIAL BISA MASUK JAW CRUSHER</div>
+            <div class="jaw-big-pct" style="color:${jawColor}">${r.jawPass.toFixed(1)}%</div>
+            <div class="jaw-bar"><div class="jaw-bar-fill" style="background:${jawColor}" data-jaww="${r.jawPass.toFixed(1)}"></div></div>
+          </div>
+          <div class="jaw-desc">
+            Dari total <b>${fmtTon(r.tonnage)}</b> material blasting:<br>
+            • <span style="color:${jawColor};font-weight:600">${fmtTon(r.tonnage * r.jawPass/100)}</span> langsung masuk jaw crusher<br>
+            • <span style="color:var(--hazard);font-weight:600">${fmtTon(r.tonnage * r.jawBlocked/100)}</span> perlu secondary breaking
+          </div>
+        </div>
+        <div class="jaw-stats">
+          <div class="jaw-stat-box">
+            <div class="jaw-stat-v" style="color:var(--hazard)">${r.jawBlocked.toFixed(1)}%</div>
+            <div class="jaw-stat-l">⚠ MATERIAL TERLALU BESAR — Perlu pemecahan sekunder</div>
+          </div>
+          <div class="jaw-stat-box">
+            <div class="jaw-stat-v" style="color:var(--sky)">${fmtI(r.D80_mm)} mm</div>
+            <div class="jaw-stat-l">D₈₀ — 80% material lebih kecil dari ukuran ini</div>
+          </div>
+          <div class="jaw-stat-box">
+            <div class="jaw-stat-v" style="color:${ovColor}">${r.ovPct.toFixed(1)}%</div>
+            <div class="jaw-stat-l">Boulder > 800 mm yang memerlukan penanganan khusus</div>
+          </div>
+        </div>
+      </div>
+      <div class="jaw-reco" style="background:${r.jawPass>=65?'var(--safe-dim)':'var(--hazard-dim)'};border:1px solid ${r.jawPass>=65?'var(--safe)':'var(--hazard)'};color:var(--text)">
+        💡 <b>Rekomendasi:</b> ${jawReco}
+      </div>
+    </div>
+  </div>
+
+  <!-- EXCAVATOR -->
+  <div class="out-card">
+    <div class="out-card-head">
+      <div class="section-icon icon-sky">🏗</div>
+      <div class="out-card-title">ANALISIS EXCAVATOR LOADING — SEMUA UNIT PC SERIES</div>
+    </div>
+    <div class="out-card-body">
+      <div style="margin-bottom:12px;padding:9px 14px;background:var(--bg-card);border-radius:5px;font-size:12px;color:var(--text2);border:1px solid var(--line2)">
+        📌 Unit yang diseleksi: <b style="color:var(--amber)">${r.exc.model}</b> | Bucket ${r.exc.bVol} m³ | Lebar ${r.exc.bW} m | Max fragment handleable ≈ <b style="color:var(--amber)">${fmtI(r.selExcRes.maxFrag)} mm</b>
+      </div>
+      <div class="exc-result-grid">${excCards}</div>
+      <div class="jaw-reco" style="margin-top:14px;background:${r.selExcRes.pctOK>=85?'var(--sky-dim)':'var(--warn-dim)'};border:1px solid ${r.selExcRes.pctOK>=85?'var(--sky)':'var(--warn)'};color:var(--text)">
+        💡 <b>${r.exc.model}:</b> ${excReco}
+        Est. produktivitas: ~${fmtI(r.exc.bVol * r.exc.cap * 180)} ton/jam
+      </div>
+    </div>
+  </div>
+
+  <!-- KOMPARASI DESIGN vs AKTUAL -->
+  <div class="comparison-panel" id="comparisonPanel">
+    <div class="comparison-head">
+      <div class="section-icon" style="background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.4)">📸</div>
+      <div class="comparison-title" style="color:#a78bfa">KOMPARASI FRAGMENTASI — DESAIN vs AKTUAL</div>
+      <span style="margin-left:auto;font-size:10px;color:var(--text3);font-family:var(--font-mono)">Upload foto di sidebar kiri untuk memulai</span>
+    </div>
+    <div class="comparison-body" id="comparisonBody">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">
+
+        <!-- DESIGN SIDE -->
+        <div class="dva-col">
+          <div class="dva-head design">📐 FRAGMENTASI DESAIN (Kuz-Ram)</div>
+          <div class="dva-row"><span class="dva-lbl">X₅₀ — Ukuran median</span><span class="dva-val" style="color:var(--sky)">${fmtI(r.X50_mm)} mm</span></div>
+          <div class="dva-row"><span class="dva-lbl">X₈₀ — 80% lolos</span><span class="dva-val" style="color:var(--sky)">${fmtI(r.D80_mm)} mm</span></div>
+          <div class="dva-row"><span class="dva-lbl">Uniformity Index (n)</span><span class="dva-val" style="color:var(--text)">${r.n.toFixed(3)}</span></div>
+          <div class="dva-row"><span class="dva-lbl">% Lolos Jaw ${r.jawCSS} mm</span><span class="dva-val" style="color:var(--safe)">${r.jawPass.toFixed(1)}%</span></div>
+          <div class="dva-row"><span class="dva-lbl">Boulder > 800 mm</span><span class="dva-val" style="color:${ovColor}">${r.ovPct.toFixed(1)}%</span></div>
+          <div class="dva-row"><span class="dva-lbl">PF aktual</span><span class="dva-val" style="color:var(--amber)">${r.PF_actual.toFixed(3)} kg/t</span></div>
+        </div>
+
+        <!-- ACTUAL SIDE -->
+        <div class="dva-col">
+          <div class="dva-head actual">📸 FRAGMENTASI AKTUAL (Foto)</div>
+          <div class="dva-row"><span class="dva-lbl">X₅₀ Estimasi Aktual</span><span class="dva-val" style="color:var(--safe)" id="act-x50">— (belum diukur)</span></div>
+          <div class="dva-row"><span class="dva-lbl">Fragment Terukur</span><span class="dva-val" style="color:var(--safe)" id="act-count">0 titik ukur</span></div>
+          <div class="dva-row"><span class="dva-lbl">Fragment Terbesar</span><span class="dva-val" style="color:var(--hazard)" id="act-max">—</span></div>
+          <div class="dva-row"><span class="dva-lbl">Fragment Terkecil</span><span class="dva-val" style="color:var(--safe)" id="act-min">—</span></div>
+          <div class="dva-row"><span class="dva-lbl">Foto Terupload</span><span class="dva-val" style="color:var(--text)" id="act-photos">0 foto</span></div>
+          <div class="dva-row"><span class="dva-lbl">Referensi Skala</span><span class="dva-val" style="color:var(--amber)" id="act-ref">—</span></div>
+        </div>
+      </div>
+
+      <!-- ACCURACY METER -->
+      <div class="accuracy-meter" id="accuracyMeter" style="display:none">
+        <div class="acc-title">DEVIASI DESAIN vs AKTUAL</div>
+        <div class="acc-rows" id="accRows"></div>
+      </div>
+
+      <!-- FOTO STRIP in output -->
+      <div id="outputPhotoStrip" style="margin-top:14px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--text2);letter-spacing:1.5px;margin-bottom:8px">FOTO HASIL PELEDAKAN</div>
+        <div style="text-align:center;padding:16px;background:var(--bg-card);border:1px dashed var(--line2);border-radius:5px;color:var(--text3);font-size:11px" id="outputPhotoEmpty">
+          📷 Upload foto di panel kiri → tab FOTO HASIL PELEDAKAN
+        </div>
+        <div class="photo-gallery" id="outputGallery" style="display:none"></div>
+      </div>
+
+      <!-- JUDGMENT BOX -->
+      <div id="compJudgment" style="margin-top:14px;display:none"></div>
+
+    </div>
+  </div>
+
+  </div>`;
+
+  // animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.bar-fill[data-w]').forEach(el=>{
+      el.style.width = '0%';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.width = el.dataset.w + '%'; }));
+    });
+    document.querySelectorAll('.jaw-bar-fill[data-jaww]').forEach(el=>{
+      el.style.width = '0%';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.width = el.dataset.jaww + '%'; }));
+    });
+  }, 80);
+
+  drawCharts(r);
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ════════════════════════════════════════════════════════
+//  CHARTS
+// ════════════════════════════════════════════════════════
+function drawCharts(r){
+  if(chartCDF){ chartCDF.destroy(); chartCDF=null; }
+  if(chartBar){ chartBar.destroy(); chartBar=null; }
+
+  const CHART_OPTS = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a2028',
+        borderColor: '#263040', borderWidth: 1,
+        titleColor: '#f59e0b', bodyColor: '#c9d5e0', padding: 10
+      }
+    },
+    scales: {
+      x: { ticks:{ color:'#5a7080', font:{size:9} }, grid:{ color:'rgba(38,48,64,0.7)' } },
+      y: { ticks:{ color:'#5a7080', font:{size:9} }, grid:{ color:'rgba(38,48,64,0.7)' } }
+    }
+  };
+
+  // CDF curve
+  const cdfSizes = [10,25,50,75,100,150,200,300,400,500,600,700,800,1000,1200,1500,2000];
+  const cdfVals  = cdfSizes.map(s => rrCDF(s, r.xc, r.n));
+  const jawLine  = cdfSizes.map(()=> rrCDF(r.jawCSS, r.xc, r.n));
+
+  chartCDF = new Chart(document.getElementById('cdfChart'), {
+    type: 'line',
+    data: {
+      labels: cdfSizes.map(s=>s+'mm'),
+      datasets: [
+        {
+          label: 'Kumulatif Lolos (%)',
+          data: cdfVals,
+          borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.07)',
+          borderWidth: 2.5, pointRadius: 2, fill: true, tension: 0.4
+        },
+        {
+          label: `Jaw ${r.jawCSS}mm`,
+          data: jawLine,
+          borderColor: '#22c55e', borderWidth: 1.5,
+          borderDash: [5,4], pointRadius: 0, fill: false
+        }
+      ]
+    },
+    options: {
+      ...CHART_OPTS,
+      plugins: { ...CHART_OPTS.plugins, legend:{ display:true, labels:{ color:'#5a7080', font:{size:9} } } },
+      scales: {
+        x: { ...CHART_OPTS.scales.x, title:{ display:true, text:'Ukuran Fragment (mm)', color:'#5a7080', font:{size:9} } },
+        y: { ...CHART_OPTS.scales.y, min:0, max:100, title:{ display:true, text:'% Kumulatif Lolos', color:'#5a7080', font:{size:9} } }
+      }
+    }
+  });
+
+  // Bar distribution
+  const CLASS_COLORS = ['#22c55e','#38bdf8','#818cf8','#fb923c','#f97316','#ef4444','#b91c1c','#7f1d1d'];
+  chartBar = new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: r.gradData.map(d=>d.lbl.replace(' mm','')),
+      datasets: [{
+        data: r.gradData.map(d=>+d.pct.toFixed(2)),
+        backgroundColor: CLASS_COLORS.map(c=>c+'88'),
+        borderColor: CLASS_COLORS,
+        borderWidth: 1.5, borderRadius: 4
+      }]
+    },
+    options: {
+      ...CHART_OPTS,
+      scales: {
+        x: { ...CHART_OPTS.scales.x, title:{ display:true, text:'Kelas Ukuran', color:'#5a7080', font:{size:9} } },
+        y: { ...CHART_OPTS.scales.y, title:{ display:true, text:'% per Kelas', color:'#5a7080', font:{size:9} } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════
+//  RESET
+// ════════════════════════════════════════════════════════
+function resetAll(){
+  const DEF = {burden:'3.5',spasi:'4.0',depth:'8.0',holedia:'89',subdrill:'0.8',stemming:'2.5',pf:'0.35',density:'2.6',hpr:'10',rows:'3'};
+  Object.entries(DEF).forEach(([k,v])=>{ const el=document.getElementById(k); if(el) el.value=v; });
+  document.getElementById('explosive').value='EMULSION';
+  document.getElementById('rocktype').value='4.0';
+  document.getElementById('jawselect').value='500';
+  document.getElementById('customJawField').style.display='none';
+  selExc = 1;
+  initExcGrid();
+  document.getElementById('idleScreen').style.display='flex';
+  document.getElementById('results').style.display='none';
+  document.getElementById('results').innerHTML='';
+}
+
+// ════════════════════════════════════════════════════════
+//  PHOTO ANALYSIS ENGINE
+// ════════════════════════════════════════════════════════
+
+// Reference objects with known sizes
+const REFERENCE_OBJECTS = [
+  { id:'helmet',   name:'Helm Proyek',  size:310,  ico:'⛑️'  },
+  { id:'shoe',     name:'Sepatu Safety',size:280,  ico:'👟'  },
+  { id:'human',    name:'Orang Dewasa', size:1700, ico:'🧍'  },
+  { id:'drum',     name:'Drum 200L',    size:575,  ico:'🥁'  },
+  { id:'phone',    name:'Smartphone',   size:160,  ico:'📱'  },
+  { id:'tape',     name:'Roll Meter',   size:100,  ico:'📏'  },
+  { id:'excavator',name:'Bucket PC200', size:900,  ico:'🚜'  },
+  { id:'custom',   name:'Custom...',    size:300,  ico:'✏️'  },
+];
+
+let selectedRef   = 'helmet';
+let photos        = [];       // array of {id, name, dataURL, annotations:[]}
+let activePhotoId = null;
+let drawMode      = 'ruler';  // ruler | circle | ref
+let drawingState  = null;     // {startX,startY,drawing:true}
+let annotations   = [];       // {type,x1,y1,x2,y2,sizeEstMm,label}
+let refPixelLen   = null;     // pixels that span the reference object
+let scaleMMperPX  = null;     // mm per pixel
+let measuredFragments = [];   // array of measured sizes in mm
+let currentDesignX50  = null; // filled when calculate() runs
+
+// ── Init reference grid ───────────────────────────────
+function initRefGrid(){
+  const g = document.getElementById('refGrid');
+  if(!g) return;
+  g.innerHTML = REFERENCE_OBJECTS.map(r=>`
+    <div class="ref-card ${r.id===selectedRef?'selected':''}" id="ref-${r.id}" onclick="selectRef('${r.id}')">
+      <div class="ref-ico">${r.ico}</div>
+      <div class="ref-name">${r.name}</div>
+      <div class="ref-size">${r.size<1000?r.size+'mm':(r.size/1000).toFixed(1)+'m'}</div>
+    </div>`).join('');
+}
+
+function selectRef(id){
+  selectedRef = id;
+  document.querySelectorAll('.ref-card').forEach(c=>c.classList.remove('selected'));
+  const el = document.getElementById('ref-'+id);
+  if(el) el.classList.add('selected');
+  document.getElementById('customRefWrap').style.display = id==='custom'?'block':'none';
+  // If we have a ref measurement already, recalculate scale
+  if(refPixelLen) recalcScale();
+}
+
+function getRefSizeMM(){
+  if(selectedRef==='custom'){
+    return parseFloat(document.getElementById('customRefSize').value)||300;
+  }
+  return REFERENCE_OBJECTS.find(r=>r.id===selectedRef)?.size || 310;
+}
+
+// ── Photo Tab Switching ───────────────────────────────
+function switchPhotoTab(tab){
+  ['upload','annotate','gallery'].forEach(t=>{
+    document.getElementById('ptab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('ptab-content-'+t).style.display = t===tab?'block':'none';
+  });
+  if(tab==='gallery') renderGallery();
+  if(tab==='annotate') updateAnnotateSelect();
+}
+
+// ── File handling ─────────────────────────────────────
+function onDragOver(e){ e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); }
+function onDragLeave(){ document.getElementById('dropZone').classList.remove('drag-over'); }
+function onDrop(e){
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag-over');
+  handleFiles([...e.dataTransfer.files]);
+}
+function onFileSelect(e){ handleFiles([...e.target.files]); }
+
+function handleFiles(files){
+  const imgs = files.filter(f=>f.type.startsWith('image/'));
+  if(photos.length + imgs.length > 6){
+    alert('⚠ Maksimal 6 foto. Hapus beberapa foto terlebih dahulu.'); return;
+  }
+  imgs.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      const id = 'photo_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      photos.push({ id, name: file.name, dataURL: ev.target.result, annotations:[] });
+      renderPhotoStrip();
+      updateAnnotateSelect();
+      updateOutputPhotoStrip();
+      updateComparisonPanel();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── Photo strip in sidebar upload tab ────────────────
+function renderPhotoStrip(){
+  const el = document.getElementById('photoGalleryStrip');
+  if(!el) return;
+  if(!photos.length){ el.innerHTML=''; return; }
+  el.innerHTML = `<div class="photo-gallery">${photos.map(p=>`
+    <div class="gallery-thumb">
+      <img src="${p.dataURL}" loading="lazy">
+      <button class="thumb-del" onclick="deletePhoto('${p.id}')">×</button>
+      <div class="thumb-label">${p.name.slice(0,18)}</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderGallery(){
+  const g = document.getElementById('galleryGrid');
+  if(!g) return;
+  if(!photos.length){
+    g.innerHTML='<div class="gallery-empty">Belum ada foto. Upload foto terlebih dahulu.</div>';
+    return;
+  }
+  g.innerHTML = photos.map(p=>`
+    <div class="gallery-thumb">
+      <img src="${p.dataURL}" loading="lazy">
+      <button class="thumb-del" onclick="deletePhoto('${p.id}')">×</button>
+      <div class="thumb-label">${p.name.slice(0,18)}</div>
+    </div>`).join('');
+}
+
+function deletePhoto(id){
+  photos = photos.filter(p=>p.id!==id);
+  if(activePhotoId===id){ activePhotoId=null; clearAnnotations(); }
+  renderPhotoStrip();
+  renderGallery();
+  updateAnnotateSelect();
+  updateOutputPhotoStrip();
+  updateComparisonPanel();
+}
+
+// ── Annotate tab ──────────────────────────────────────
+function updateAnnotateSelect(){
+  const sel = document.getElementById('annotateSelect');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">— Pilih foto —</option>' +
+    photos.map(p=>`<option value="${p.id}">${p.name.slice(0,30)}</option>`).join('');
+  const hasPhotos = photos.length > 0;
+  document.getElementById('annotateCanvas').style.display = (hasPhotos && activePhotoId) ? 'block' : 'none';
+  document.getElementById('annotateEmpty').style.display  = hasPhotos ? 'none' : 'block';
+}
+
+function loadAnnotatePhoto(){
+  const id = document.getElementById('annotateSelect').value;
+  if(!id){ document.getElementById('annotateCanvas').style.display='none'; return; }
+  activePhotoId = id;
+  const photo = photos.find(p=>p.id===id);
+  if(!photo) return;
+
+  const img = document.getElementById('annotateImg');
+  img.src = photo.dataURL;
+  annotations = [...(photo.annotations||[])];
+  refPixelLen = null; scaleMMperPX = null;
+  measuredFragments = [];
+
+  img.onload = ()=>{
+    setupCanvas();
+    redrawCanvas();
+  };
+  document.getElementById('annotateCanvas').style.display='block';
+  document.getElementById('annotateEmpty').style.display='none';
+  document.getElementById('liveSizeBox').style.display='none';
+  renderFragmentList();
+}
+
+function setupCanvas(){
+  const img = document.getElementById('annotateImg');
+  const cv  = document.getElementById('annotateOverlay');
+  cv.width  = img.naturalWidth;
+  cv.height = img.naturalHeight;
+  cv.style.width  = '100%';
+  cv.style.height = '100%';
+
+  cv.onmousedown = startDraw;
+  cv.onmousemove = moveDraw;
+  cv.onmouseup   = endDraw;
+  cv.ontouchstart = e=>{ e.preventDefault(); startDraw(e.touches[0]); };
+  cv.ontouchmove  = e=>{ e.preventDefault(); moveDraw(e.touches[0]); };
+  cv.ontouchend   = e=>{ e.preventDefault(); endDraw(e.changedTouches[0]); };
+}
+
+function getCanvasPos(e){
+  const cv   = document.getElementById('annotateOverlay');
+  const rect = cv.getBoundingClientRect();
+  const scaleX = cv.width  / rect.width;
+  const scaleY = cv.height / rect.height;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top ) * scaleY
+  };
+}
+
+function setDrawMode(mode){
+  drawMode = mode;
+  ['ruler','circle','ref'].forEach(m=>{
+    const b = document.getElementById('btn-'+m);
+    if(b) b.classList.toggle('active', m===mode);
+  });
+  const hints = { ruler:'Seret garis untuk mengukur fragment', circle:'Seret lingkaran di sekitar fragment', ref:'Seret sepanjang objek referensi (helm/sepatu dll)' };
+  document.getElementById('drawInfo').textContent = hints[mode]||'';
+}
+
+function startDraw(e){
+  const pos = getCanvasPos(e);
+  drawingState = { startX:pos.x, startY:pos.y, drawing:true, mode:drawMode };
+}
+
+function moveDraw(e){
+  if(!drawingState?.drawing) return;
+  const pos = getCanvasPos(e);
+  redrawCanvas();
+  const cv  = document.getElementById('annotateOverlay');
+  const ctx = cv.getContext('2d');
+  const dx = pos.x - drawingState.startX;
+  const dy = pos.y - drawingState.startY;
+  const len = Math.sqrt(dx*dx+dy*dy);
+
+  ctx.save();
+  if(drawingState.mode==='ref'){
+    ctx.strokeStyle='#38bdf8'; ctx.lineWidth=3; ctx.setLineDash([8,4]);
+    ctx.beginPath(); ctx.moveTo(drawingState.startX, drawingState.startY);
+    ctx.lineTo(pos.x, pos.y); ctx.stroke();
+    ctx.fillStyle='#38bdf8'; ctx.font='bold 14px monospace';
+    ctx.fillText(`REF: ${getRefSizeMM()}mm`, drawingState.startX+4, drawingState.startY-8);
+  } else if(drawingState.mode==='ruler'){
+    ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2.5; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(drawingState.startX, drawingState.startY);
+    ctx.lineTo(pos.x, pos.y); ctx.stroke();
+    // tick marks
+    ctx.lineWidth=1.5;
+    const angle = Math.atan2(dy, dx) + Math.PI/2;
+    [[drawingState.startX,drawingState.startY],[pos.x,pos.y]].forEach(([x,y])=>{
+      ctx.beginPath(); ctx.moveTo(x+Math.cos(angle)*8,y+Math.sin(angle)*8);
+      ctx.lineTo(x-Math.cos(angle)*8,y-Math.sin(angle)*8); ctx.stroke();
+    });
+    if(scaleMMperPX){ const mm=(len*scaleMMperPX).toFixed(0); ctx.fillStyle='#f59e0b'; ctx.font='bold 13px monospace'; ctx.fillText(`${mm}mm`, (drawingState.startX+pos.x)/2+5, (drawingState.startY+pos.y)/2-8); }
+  } else if(drawingState.mode==='circle'){
+    const r = len;
+    ctx.strokeStyle='#22c55e'; ctx.lineWidth=2.5; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(drawingState.startX, drawingState.startY, r, 0, 2*Math.PI); ctx.stroke();
+    if(scaleMMperPX){ const mm=(r*2*scaleMMperPX).toFixed(0); ctx.fillStyle='#22c55e'; ctx.font='bold 13px monospace'; ctx.fillText(`⌀${mm}mm`, drawingState.startX+r+5, drawingState.startY); }
+  }
+  ctx.restore();
+
+  // Update live size
+  if(scaleMMperPX){
+    const est = drawingState.mode==='circle' ? len*2*scaleMMperPX : len*scaleMMperPX;
+    showLiveSize(len, est);
+  }
+}
+
+function endDraw(e){
+  if(!drawingState?.drawing) return;
+  const pos = getCanvasPos(e);
+  const dx = pos.x - drawingState.startX;
+  const dy = pos.y - drawingState.startY;
+  const len = Math.sqrt(dx*dx+dy*dy);
+  if(len < 5){ drawingState=null; return; }
+
+  if(drawingState.mode==='ref'){
+    refPixelLen = len;
+    recalcScale();
+    annotations.push({ type:'ref', x1:drawingState.startX, y1:drawingState.startY, x2:pos.x, y2:pos.y, label:`REF ${getRefSizeMM()}mm` });
+  } else {
+    const sizeEst = scaleMMperPX ? (drawingState.mode==='circle' ? len*2*scaleMMperPX : len*scaleMMperPX) : null;
+    const lbl = sizeEst ? `${sizeEst.toFixed(0)}mm` : '?mm (atur ref dulu)';
+    annotations.push({ type:drawingState.mode, x1:drawingState.startX, y1:drawingState.startY, x2:pos.x, y2:pos.y, sizeEstMm:sizeEst, label:lbl });
+    if(sizeEst){ measuredFragments.push(sizeEst); }
+  }
+
+  // save to photo object
+  const photo = photos.find(p=>p.id===activePhotoId);
+  if(photo) photo.annotations = [...annotations];
+
+  drawingState = null;
+  redrawCanvas();
+  renderFragmentList();
+  updateComparisonPanel();
+}
+
+function recalcScale(){
+  if(!refPixelLen) return;
+  scaleMMperPX = getRefSizeMM() / refPixelLen;
+  // recalc existing fragment sizes
+  annotations.forEach(a=>{
+    if(a.type!=='ref'){
+      const dx=a.x2-a.x1, dy=a.y2-a.y1;
+      const pxLen = a.type==='circle' ? Math.sqrt(dx*dx+dy*dy)*2 : Math.sqrt(dx*dx+dy*dy);
+      a.sizeEstMm = pxLen * scaleMMperPX;
+      a.label = `${a.sizeEstMm.toFixed(0)}mm`;
+    }
+  });
+  measuredFragments = annotations.filter(a=>a.type!=='ref'&&a.sizeEstMm).map(a=>a.sizeEstMm);
+  redrawCanvas();
+  renderFragmentList();
+  updateComparisonPanel();
+}
+
+function redrawCanvas(){
+  const cv  = document.getElementById('annotateOverlay');
+  if(!cv) return;
+  const ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+
+  annotations.forEach(a=>{
+    ctx.save();
+    if(a.type==='ref'){
+      ctx.strokeStyle='#38bdf8'; ctx.lineWidth=3; ctx.setLineDash([8,4]);
+      ctx.beginPath(); ctx.moveTo(a.x1,a.y1); ctx.lineTo(a.x2,a.y2); ctx.stroke();
+      // endpoints
+      ctx.fillStyle='#38bdf8'; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(a.x1,a.y1,5,0,2*Math.PI); ctx.fill();
+      ctx.beginPath(); ctx.arc(a.x2,a.y2,5,0,2*Math.PI); ctx.fill();
+      // label
+      ctx.font='bold 14px monospace'; ctx.fillStyle='#38bdf8';
+      ctx.fillText(a.label, (a.x1+a.x2)/2-30, (a.y1+a.y2)/2-12);
+    } else if(a.type==='ruler'){
+      ctx.strokeStyle='#f59e0b'; ctx.lineWidth=2.5; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(a.x1,a.y1); ctx.lineTo(a.x2,a.y2); ctx.stroke();
+      ctx.fillStyle='#f59e0b'; ctx.font='bold 13px monospace';
+      ctx.fillText(a.label, (a.x1+a.x2)/2+5, (a.y1+a.y2)/2-8);
+    } else if(a.type==='circle'){
+      const dx=a.x2-a.x1, dy=a.y2-a.y1;
+      const r = Math.sqrt(dx*dx+dy*dy);
+      ctx.strokeStyle='#22c55e'; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(a.x1,a.y1,r,0,2*Math.PI); ctx.stroke();
+      ctx.fillStyle='#22c55e22';
+      ctx.beginPath(); ctx.arc(a.x1,a.y1,r,0,2*Math.PI); ctx.fill();
+      ctx.fillStyle='#22c55e'; ctx.font='bold 13px monospace';
+      ctx.fillText(a.label, a.x1+r+5, a.y1);
+    }
+    ctx.restore();
+  });
+}
+
+function clearAnnotations(){
+  annotations = [];
+  measuredFragments = [];
+  refPixelLen = null; scaleMMperPX = null;
+  const photo = photos.find(p=>p.id===activePhotoId);
+  if(photo) photo.annotations = [];
+  redrawCanvas();
+  renderFragmentList();
+  updateComparisonPanel();
+}
+
+function showLiveSize(px, mm){
+  const box = document.getElementById('liveSizeBox');
+  if(!box) return;
+  box.style.display='block';
+  document.getElementById('lsb-px').textContent   = px.toFixed(0);
+  document.getElementById('lsb-frag').textContent = mm ? mm.toFixed(0)+' mm' : '— (atur ref)';
+  document.getElementById('lsb-scale').textContent= scaleMMperPX ? scaleMMperPX.toFixed(2) : '—';
+  document.getElementById('lsb-class').textContent= mm ? getSizeClass(mm) : '—';
+}
+
+function getSizeClass(mm){
+  if(mm<50)   return '<50mm';
+  if(mm<100)  return '50-100mm';
+  if(mm<200)  return '100-200mm';
+  if(mm<300)  return '200-300mm';
+  if(mm<500)  return '300-500mm';
+  if(mm<750)  return '500-750mm';
+  if(mm<1000) return '750mm-1m';
+  return '>1000mm';
+}
+
+function renderFragmentList(){
+  const el = document.getElementById('fragmentList');
+  if(!el) return;
+  const frags = annotations.filter(a=>a.type!=='ref'&&a.sizeEstMm);
+  if(!frags.length){ el.innerHTML=''; return; }
+  const sorted = [...frags].sort((a,b)=>a.sizeEstMm-b.sizeEstMm);
+  const avg = frags.reduce((s,f)=>s+f.sizeEstMm,0)/frags.length;
+  el.innerHTML = `
+  <div style="background:var(--bg-card);border:1px solid var(--line2);border-radius:5px;overflow:hidden;margin-top:8px">
+    <div style="padding:8px 12px;font-family:var(--font-mono);font-size:9px;color:var(--text2);letter-spacing:1.5px;border-bottom:1px solid var(--line);background:var(--bg-input)">
+      FRAGMENT TERUKUR (${frags.length} titik) — Rata-rata: <b style="color:var(--amber)">${avg.toFixed(0)} mm</b>
+    </div>
+    <div style="max-height:120px;overflow-y:auto;padding:6px 10px;display:flex;flex-wrap:wrap;gap:5px">
+      ${sorted.map((f,i)=>`
+        <span style="background:var(--bg-input);border:1px solid var(--line2);border-radius:3px;padding:2px 7px;font-family:var(--font-mono);font-size:10px;color:${f.sizeEstMm>800?'var(--hazard)':f.sizeEstMm>500?'var(--warn)':'var(--safe)'}">
+          ${f.sizeEstMm.toFixed(0)} mm
+        </span>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ── Output photo strip ────────────────────────────────
+function updateOutputPhotoStrip(){
+  const empty = document.getElementById('outputPhotoEmpty');
+  const grid  = document.getElementById('outputGallery');
+  if(!empty||!grid) return;
+  if(!photos.length){
+    empty.style.display='block'; grid.style.display='none'; return;
+  }
+  empty.style.display='none'; grid.style.display='grid';
+  grid.innerHTML = photos.map(p=>`
+    <div class="gallery-thumb">
+      <img src="${p.dataURL}" loading="lazy">
+      <div class="thumb-label">${p.name.slice(0,18)}</div>
+    </div>`).join('');
+}
+
+// ── Comparison Panel Update ───────────────────────────
+function updateComparisonPanel(){
+  // photo count
+  const actPhotos = document.getElementById('act-photos');
+  if(actPhotos) actPhotos.textContent = photos.length + ' foto';
+
+  // ref object
+  const actRef = document.getElementById('act-ref');
+  if(actRef){
+    const ref = REFERENCE_OBJECTS.find(r=>r.id===selectedRef);
+    actRef.textContent = ref ? `${ref.ico} ${ref.name} (${getRefSizeMM()}mm)` : '—';
+  }
+
+  // measured fragments (collect from all photos)
+  const allMeasured = photos.flatMap(p=>(p.annotations||[]).filter(a=>a.type!=='ref'&&a.sizeEstMm).map(a=>a.sizeEstMm));
+
+  const actCount = document.getElementById('act-count');
+  const actX50   = document.getElementById('act-x50');
+  const actMax   = document.getElementById('act-max');
+  const actMin   = document.getElementById('act-min');
+
+  if(allMeasured.length){
+    const sorted = [...allMeasured].sort((a,b)=>a-b);
+    const x50idx = Math.floor(sorted.length*0.5);
+    const x50act = sorted[x50idx];
+    if(actCount) actCount.textContent = allMeasured.length + ' titik ukur';
+    if(actX50)   actX50.textContent   = x50act.toFixed(0) + ' mm';
+    if(actMax)   actMax.textContent   = sorted[sorted.length-1].toFixed(0) + ' mm';
+    if(actMin)   actMin.textContent   = sorted[0].toFixed(0) + ' mm';
+
+    // Accuracy meter
+    if(currentDesignX50){
+      const acc = document.getElementById('accuracyMeter');
+      const rows = document.getElementById('accRows');
+      if(acc && rows){
+        acc.style.display='block';
+        const devX50 = ((x50act - currentDesignX50)/currentDesignX50*100);
+        const devMax = sorted[sorted.length-1];
+        rows.innerHTML = buildAccRow('X₅₀ — Ukuran Median', currentDesignX50, x50act, 'mm') +
+          buildAccRow('Fragment Terbesar', currentDesignX50*3, devMax, 'mm') +
+          buildAccRow('Jumlah Titik Ukur', 10, allMeasured.length, 'titik', true);
+        renderJudgment(devX50, x50act, allMeasured);
+      }
+    }
+  } else {
+    if(actCount) actCount.textContent = '0 titik ukur';
+    if(actX50)   actX50.textContent   = '— (belum diukur)';
+    if(actMax)   actMax.textContent   = '—';
+    if(actMin)   actMin.textContent   = '—';
+  }
+
+  updateOutputPhotoStrip();
+}
+
+function buildAccRow(label, design, actual, unit, countMode=false){
+  if(!design) return '';
+  const pct   = countMode ? Math.min(100, actual/design*100) : Math.min(100, actual/design*100);
+  const dPct  = countMode ? Math.min(100, design/design*100) : Math.min(100, design/design*100);
+  const dev   = countMode ? '' : ` (${actual>design?'+':''}${((actual-design)/design*100).toFixed(1)}%)`;
+  const color = countMode ? 'var(--safe)' : Math.abs((actual-design)/design) < 0.15 ? 'var(--safe)' : Math.abs((actual-design)/design) < 0.35 ? 'var(--warn)' : 'var(--hazard)';
+  const barPct= Math.min(100, pct);
+  return `
+  <div class="acc-row">
+    <span class="acc-lbl">${label}</span>
+    <div class="acc-bar-bg">
+      <div class="acc-bar-fill" style="width:${barPct}%;background:${color}"></div>
+      <div class="acc-bar-target" style="left:${Math.min(99,dPct)}%"></div>
+    </div>
+    <span class="acc-val" style="color:${color}">${actual.toFixed(0)} ${unit}${dev}</span>
+  </div>`;
+}
+
+function renderJudgment(devX50Pct, x50act, allMeasured){
+  const el = document.getElementById('compJudgment');
+  if(!el) return;
+  el.style.display='block';
+
+  let status, color, icon, msg;
+  const absdev = Math.abs(devX50Pct);
+  if(absdev <= 15){
+    status='SESUAI DESAIN'; color='var(--safe)'; icon='✅';
+    msg=`Hasil aktual sangat mendekati desain. X₅₀ aktual ${x50act.toFixed(0)} mm vs desain ${currentDesignX50.toFixed(0)} mm (deviasi ${devX50Pct.toFixed(1)}%). Peledakan berjalan sesuai rencana.`;
+  } else if(absdev <= 35){
+    status='DEVIASI SEDANG'; color='var(--warn)'; icon='⚠️';
+    msg=`Hasil aktual sedikit menyimpang dari desain (${devX50Pct.toFixed(1)}%). ${devX50Pct>0?'Fragment lebih besar dari desain — pertimbangkan peningkatan powder factor atau koreksi geometri.':'Fragment lebih kecil dari desain — desain dapat dioptimalkan untuk efisiensi bahan peledak.'}`;
+  } else {
+    status='DEVIASI BESAR'; color='var(--hazard)'; icon='🚨';
+    msg=`Terdapat penyimpangan signifikan antara desain dan aktual (${devX50Pct.toFixed(1)}%). Perlu evaluasi menyeluruh: geometri peledakan, kondisi batuan, kualitas charging, dan waktu delay.`;
+  }
+
+  el.innerHTML = `
+  <div style="padding:14px 16px;border-radius:6px;border:1px solid ${color};background:${color}18">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <span style="font-size:20px">${icon}</span>
+      <span style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:${color};letter-spacing:2px">${status}</span>
+      <span style="margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--text2)">
+        Desain X₅₀: ${currentDesignX50.toFixed(0)} mm → Aktual: ${x50act.toFixed(0)} mm
+      </span>
+    </div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7">${msg}</div>
+    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap">
+      <span style="font-size:10px;font-family:var(--font-mono)">
+        📊 Sampel: <b style="color:${color}">${allMeasured.length}</b> titik ukur
+      </span>
+      <span style="font-size:10px;font-family:var(--font-mono)">
+        📏 Range: <b style="color:var(--text)">${Math.min(...allMeasured).toFixed(0)} – ${Math.max(...allMeasured).toFixed(0)} mm</b>
+      </span>
+      <span style="font-size:10px;font-family:var(--font-mono)">
+        📐 Ref: <b style="color:var(--amber)">${REFERENCE_OBJECTS.find(r=>r.id===selectedRef)?.ico} ${getRefSizeMM()}mm</b>
+      </span>
+    </div>
+  </div>`;
+}
+
+// ── Hook into calculate() to store design X50 ────────
+const _origCalc = typeof calculate !== 'undefined' ? calculate : null;
+// We intercept after renderResults is called by storing X50 in a global
+const _origRender = renderResults;
+renderResults = function(r){
+  currentDesignX50 = r.X50_mm;
+  _origRender(r);
+  // Re-bind comparison panel which is now in the DOM
+  setTimeout(()=>{ updateComparisonPanel(); }, 200);
+};
+
+// ── Boot photo engine ─────────────────────────────────
+initRefGrid();
+
+// ════════════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════════════
+initExcGrid();
+</script>
+</body>
+</html>

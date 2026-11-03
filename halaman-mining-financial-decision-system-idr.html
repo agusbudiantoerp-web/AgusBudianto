@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mining Financial Decision System (IGKM) - Edisi Rupiah (IDR)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mining: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            gold: '#f59e0b',
+                            bronze: '#d97706'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS for Excel Generation -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 lg:px-8 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-gradient-to-tr from-amber-500 to-emerald-500 rounded-xl text-slate-950 shadow-lg shadow-amber-500/20">
+                    <i data-lucide="pickaxe" class="w-6 h-6 stroke-[2.5]"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg lg:text-xl tracking-tight bg-gradient-to-r from-amber-400 via-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                        MINING FINANCIAL DECISION SYSTEM (IGKM)
+                    </h1>
+                    <p class="text-xs text-slate-400 flex items-center gap-1 font-medium">
+                        <span class="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800/50 text-[10px] uppercase tracking-wider font-bold">Mata Uang Rupiah (IDR)</span>
+                        <span>• Model Evaluasi Kelayakan Investasi Pertambangan</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="applyPresetScenario('base')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition duration-150 flex items-center gap-1.5">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Skenario
+                </button>
+                
+                <button onclick="exportToExcel()" class="px-4 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 transition duration-150 flex items-center gap-2 border border-emerald-400/30">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Download Excel Rupiah (.XLSX)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+        <!-- SYSTEM OVERVIEW HERO CARD -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 p-6 shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute right-40 -top-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="space-y-2 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold">
+                        <i data-lucide="calculator" class="w-3.5 h-3.5"></i>
+                        Simulasi Financial Engineering Berbasis Mata Uang Rupiah (IDR)
+                    </div>
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
+                        Model Kelayakan & Arus Kas Tambang Batubara / Mineral (IDR)
+                    </h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Perhitungan komprehensif berdasarkan indikator riil pertambangan Indonesia: Stripping Ratio (SR), CAPEX (Rp Miliar), OPEX (Rp/Ton & Rp/BCM), Royalti PNBP ESDM, EBITDA, NPV (Rp Miliar), IRR, dan Payback Period.
+                    </p>
+                </div>
+
+                <!-- Scenario Quick Switcher -->
+                <div class="w-full md:w-auto bg-slate-950/70 p-3 rounded-xl border border-slate-800 space-y-2 min-w-[240px]">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block">Pilih Skenario Proyek:</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="applyPresetScenario('base')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-medium text-left border border-slate-700 transition">
+                            📊 Base Case (Rupiah)
+                        </button>
+                        <button onclick="applyPresetScenario('highPrice')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-amber-400 font-medium text-left border border-slate-700 transition">
+                            🚀 Harga Jual Tinggi
+                        </button>
+                        <button onclick="applyPresetScenario('highSR')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-rose-400 font-medium text-left border border-slate-700 transition">
+                            ⚠️ Risiko High SR
+                        </button>
+                        <button onclick="applyPresetScenario('expanded')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-emerald-400 font-medium text-left border border-slate-700 transition">
+                            🏭 Ekspansi Tambang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION TABS -->
+        <div class="flex items-center space-x-2 border-b border-slate-800 overflow-x-auto pb-1 text-sm font-semibold">
+            <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn active px-4 py-2.5 rounded-t-xl border-b-2 border-emerald-500 text-emerald-400 bg-slate-900/80 flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard Kelayakan (IDR)
+            </button>
+            <button onclick="switchTab('inputs')" id="tab-inputs" class="tab-btn px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50 flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="sliders" class="w-4 h-4"></i> Asumsi & Parameter (IDR)
+            </button>
+            <button onclick="switchTab('cashflow')" id="tab-cashflow" class="tab-btn px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50 flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="table" class="w-4 h-4"></i> Proyeksi Arus Kas (Pro Forma)
+            </button>
+            <button onclick="switchTab('formulas')" id="tab-formulas" class="tab-btn px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50 flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="book-open" class="w-4 h-4"></i> Rumus & Matrikulasi Keuangan
+            </button>
+            <button onclick="switchTab('sensitivity')" id="tab-sensitivity" class="tab-btn px-4 py-2.5 rounded-t-xl border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/50 flex items-center gap-2 whitespace-nowrap">
+                <i data-lucide="line-chart" class="w-4 h-4"></i> Matriks Sensitivitas
+            </button>
+        </div>
+
+        <!-- TAB 1: EXECUTIVE DASHBOARD & SUMMARY -->
+        <div id="content-dashboard" class="tab-content space-y-6">
+            
+            <!-- TOP METRIC CARDS (RUPIAH) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- NPV CARD -->
+                <div class="bg-slate-900 rounded-xl p-5 border border-slate-800 hover:border-emerald-500/50 transition duration-300 shadow-lg relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Net Present Value (NPV)</span>
+                        <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+                            <i data-lucide="banknote" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div id="kpi-npv" class="text-2xl font-extrabold text-white code-font">Rp 0 Miliar</div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span id="kpi-npv-status" class="px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">FEASIBLE / LAYAK</span>
+                        <span class="text-slate-400">@ Diskon <span id="kpi-wacc-label">10%</span></span>
+                    </div>
+                </div>
+
+                <!-- IRR CARD -->
+                <div class="bg-slate-900 rounded-xl p-5 border border-slate-800 hover:border-amber-500/50 transition duration-300 shadow-lg relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Internal Rate of Return (IRR)</span>
+                        <div class="p-2 rounded-lg bg-amber-500/10 text-amber-400">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div id="kpi-irr" class="text-2xl font-extrabold text-white code-font">0.00 %</div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span id="kpi-irr-spread" class="text-amber-400 font-semibold">+0.00% vs WACC</span>
+                        <span class="text-slate-400">Hurdle Rate Met</span>
+                    </div>
+                </div>
+
+                <!-- PAYBACK PERIOD CARD -->
+                <div class="bg-slate-900 rounded-xl p-5 border border-slate-800 hover:border-blue-500/50 transition duration-300 shadow-lg relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Payback Period</span>
+                        <div class="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+                            <i data-lucide="clock" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div id="kpi-payback" class="text-2xl font-extrabold text-white code-font">0.0 Tahun</div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Disc. Payback: <span id="kpi-disc-payback" class="text-slate-200 font-semibold">0.0 Thn</span></span>
+                        <span class="text-slate-400">Umur Tambang: <span id="kpi-mine-life" class="text-slate-200 font-semibold">10 Thn</span></span>
+                    </div>
+                </div>
+
+                <!-- CASH MARGIN / TONNE CARD -->
+                <div class="bg-slate-900 rounded-xl p-5 border border-slate-800 hover:border-teal-500/50 transition duration-300 shadow-lg relative overflow-hidden group">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Margin Kas / Ton</span>
+                        <div class="p-2 rounded-lg bg-teal-500/10 text-teal-400">
+                            <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <div id="kpi-margin" class="text-xl font-extrabold text-white code-font">Rp 0 / Ton</div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">EBITDA Margin: <span id="kpi-ebitda-margin" class="text-teal-400 font-semibold">0%</span></span>
+                        <span class="text-slate-400">Profitability Index: <span id="kpi-pi" class="text-slate-200 font-semibold">0.00</span></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CHARTS SECTION -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Cumulative Cash Flow Chart (2 cols) -->
+                <div class="lg:col-span-2 bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                                <i data-lucide="area-chart" class="w-4 h-4 text-emerald-400"></i> Proyeksi Arus Kas Kumulatif dalam Rupiah (Rp Miliar)
+                            </h3>
+                            <p class="text-xs text-slate-400">Visualisasi payback period dan akumulasi nilai bersih proyek per tahun</p>
+                        </div>
+                    </div>
+                    <div class="relative h-72 w-full">
+                        <canvas id="chartCashFlow"></canvas>
+                    </div>
+                </div>
+
+                <!-- OPEX Breakdown Doughnut Chart (1 col) -->
+                <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                                <i data-lucide="donut" class="w-4 h-4 text-amber-400"></i> Struktur Biaya Operasional (OPEX per Ton)
+                            </h3>
+                            <p class="text-xs text-slate-400">Proporsi komponen biaya operasional dalam Rupiah</p>
+                        </div>
+                    </div>
+                    <div class="relative h-72 w-full flex items-center justify-center">
+                        <canvas id="chartOpexBreakdown"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXECUTIVE SUMMARY TABLE -->
+            <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                        <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-400"></i> Ringkasan Parameter Utama & Evaluasi Keputusan Investasi (IDR)
+                    </h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div class="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                        <h4 class="font-bold text-amber-400 text-xs uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="pickaxe" class="w-3.5 h-3.5"></i> Parameter Tambang
+                        </h4>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Total Cadangan:</span>
+                                <span id="summary-reserves" class="font-semibold text-slate-200">0 MT</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Produksi Tahunan:</span>
+                                <span id="summary-prod" class="font-semibold text-slate-200">0 MT/thn</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Stripping Ratio (SR):</span>
+                                <span id="summary-sr" class="font-semibold text-amber-400">0.0 BCM/ton</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Harga Jual Batubara:</span>
+                                <span id="summary-price" class="font-semibold text-emerald-400">Rp 0 /ton</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400">Umur Tambang (LOM):</span>
+                                <span id="summary-lom" class="font-semibold text-slate-200">0 Tahun</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                        <h4 class="font-bold text-blue-400 text-xs uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="coins" class="w-3.5 h-3.5"></i> Biaya & Investasi (IDR)
+                        </h4>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Total CAPEX Inisial:</span>
+                                <span id="summary-capex" class="font-semibold text-slate-200">Rp 0 Miliar</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">OPEX Tunai (C1 Cost):</span>
+                                <span id="summary-opex-tonne" class="font-semibold text-slate-200">Rp 0 /ton</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Royalti PNBP / ESDM:</span>
+                                <span id="summary-royalty-rate" class="font-semibold text-slate-200">0%</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Total All-In Cost (AISC):</span>
+                                <span id="summary-aisc" class="font-semibold text-rose-400">Rp 0 /ton</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400">Break-Even Price:</span>
+                                <span id="summary-bep" class="font-semibold text-amber-400">Rp 0 /ton</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 bg-slate-950 p-4 rounded-xl border border-slate-800/80">
+                        <h4 class="font-bold text-emerald-400 text-xs uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="award" class="w-3.5 h-3.5"></i> Valuasi Financial (IDR)
+                        </h4>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Rata-rata Revenue Tahunan:</span>
+                                <span id="summary-rev-annual" class="font-semibold text-slate-200">Rp 0 Miliar</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Rata-rata EBITDA Tahunan:</span>
+                                <span id="summary-ebitda-annual" class="font-semibold text-slate-200">Rp 0 Miliar</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Total Net Cashflow (NCF):</span>
+                                <span id="summary-total-cf" class="font-semibold text-emerald-400">Rp 0 Miliar</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800/60">
+                                <span class="text-slate-400">Tingkat Diskonto (WACC):</span>
+                                <span id="summary-wacc" class="font-semibold text-slate-200">0%</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-slate-400">Rekomendasi Keputusan:</span>
+                                <span id="summary-recommendation" class="font-bold text-emerald-400 uppercase">LAYAK DILANJUTKAN</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 2: INPUTS & PARAMETERS (RUPIAH) -->
+        <div id="content-inputs" class="tab-content hidden space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- 1. OPERATIONAL INPUTS -->
+                <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-800 pb-3 text-amber-400 font-bold">
+                        <i data-lucide="hard-hat" class="w-5 h-5"></i>
+                        <h3>1. Asumsi Operasional Mining</h3>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Total Cadangan Batubara (Juta Ton / MT)</label>
+                            <input type="number" id="inp-reserves" step="0.5" value="20.0" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-amber-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Target Produksi Tahunan (Juta Ton / MT/thn)</label>
+                            <input type="number" id="inp-annual-prod" step="0.1" value="2.0" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-amber-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Stripping Ratio Rata-Rata (BCM / Ton)</label>
+                            <input type="number" id="inp-strip-ratio" step="0.1" value="5.5" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-amber-500 focus:outline-none">
+                        </div>
+                        
+                        <!-- IDR Price & USD Conversion Optional Input -->
+                        <div class="pt-2 border-t border-slate-800/80 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="block text-xs font-semibold text-amber-400">Harga Jual Batubara (Rp / Ton)</label>
+                                <span class="text-[10px] text-slate-400">FOB Vessel/Barge</span>
+                            </div>
+                            <input type="number" id="inp-coal-price-idr" step="10000" value="1200000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-amber-500/50 rounded-lg px-3 py-2 text-amber-300 font-bold font-mono text-sm focus:border-amber-400 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Asumsi Kurs Konversi USD ke IDR (Rp)</label>
+                            <input type="number" id="inp-fx-rate" step="100" value="15800" oninput="updatePriceFromUSD()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-300 font-mono text-xs focus:border-amber-500 focus:outline-none">
+                            <p class="text-[10px] text-slate-400 mt-1">Harga Setara USD: <span id="usd-equiv-display" class="font-mono text-emerald-400">$75.95 /ton</span></p>
+                        </div>
+
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400">
+                            <span>Estimasi Umur Tambang (LOM): </span>
+                            <span id="calc-lom-display" class="font-bold text-white font-mono">10 Tahun</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CAPITAL EXPENDITURE (CAPEX IN IDR MILIAR) -->
+                <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-800 pb-3 text-blue-400 font-bold">
+                        <i data-lucide="building-2" class="w-5 h-5"></i>
+                        <h3>2. CAPEX Inisial (Rp Miliar)</h3>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Infrastruktur, Haul Road & Port (Rp Miliar)</label>
+                            <input type="number" id="inp-capex-infra" step="1" value="240" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Alat Berat & Heavy Equipment Fleet (Rp Miliar)</label>
+                            <input type="number" id="inp-capex-fleet" step="1" value="180" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Pembebasan Lahan & Eksplorasi (Rp Miliar)</label>
+                            <input type="number" id="inp-capex-land" step="1" value="80" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Contingency & Perizinan (Rp Miliar)</label>
+                            <input type="number" id="inp-capex-other" step="1" value="50" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400 flex justify-between items-center">
+                            <span>Total Inisial CAPEX:</span>
+                            <span id="calc-total-capex" class="font-bold text-blue-400 font-mono text-sm">Rp 550,00 Miliar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. OPERATING EXPENDITURE (OPEX IN IDR) -->
+                <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-800 pb-3 text-emerald-400 font-bold">
+                        <i data-lucide="truck" class="w-5 h-5"></i>
+                        <h3>3. Rincian OPEX (Rupiah)</h3>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Pengupasan OB Removal (Rp / BCM)</label>
+                            <input type="number" id="inp-opex-ob" step="1000" value="45000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Penambangan Batubara / Coal Getting (Rp / Ton)</label>
+                            <input type="number" id="inp-opex-coal" step="1000" value="55000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Hauling & Barging ke Jetty (Rp / Ton)</label>
+                            <input type="number" id="inp-opex-hauling" step="1000" value="125000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Pengolahan & Port Crushing (Rp / Ton)</label>
+                            <input type="number" id="inp-opex-port" step="1000" value="38000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">G&A / Overhead Administrasi (Rp / Ton)</label>
+                            <input type="number" id="inp-opex-ga" step="1000" value="45000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-emerald-500 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. FINANCIAL & TAXATION PARAMETERS -->
+                <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-800 pb-3 text-purple-400 font-bold">
+                        <i data-lucide="percent" class="w-5 h-5"></i>
+                        <h3>4. Keuangan, Pajak & Royalti ESDM</h3>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Tarif Royalti PNBP ESDM (%)</label>
+                            <input type="number" id="inp-royalty-rate" step="0.5" value="10.0" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-amber-400 font-bold font-mono text-sm focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Tarif PPh Badan / Taxes (%)</label>
+                            <input type="number" id="inp-tax-rate" step="1" value="22.0" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Tingkat Diskonto WACC (%)</label>
+                            <input type="number" id="inp-wacc-rate" step="0.5" value="10.0" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-emerald-400 font-bold font-mono text-sm focus:border-purple-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Masa Amortisasi / Depresiasi CAPEX (Tahun)</label>
+                            <input type="number" id="inp-depr-years" step="1" value="8" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-purple-500 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. RECLAMATION & CLOSURE (IN IDR) -->
+                <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 space-y-4">
+                    <div class="flex items-center gap-2 border-b border-slate-800 pb-3 text-teal-400 font-bold">
+                        <i data-lucide="trees" class="w-5 h-5"></i>
+                        <h3>5. Reklamasi & Pascatambang</h3>
+                    </div>
+
+                    <div class="space-y-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Biaya Reklamasi Tahunan (Rp / Ton)</label>
+                            <input type="number" id="inp-reclamation" step="1000" value="12000" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-teal-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Dana Penutupan Tambang Akhir LOM (Rp Miliar)</label>
+                            <input type="number" id="inp-mine-closure" step="5" value="60" oninput="recalculateModel()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white font-mono text-sm focus:border-teal-500 focus:outline-none">
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs text-slate-400">
+                            <p class="text-[11px] leading-relaxed">Pencadangan Jamrek & Pascatambang sesuai PP RI No. 78/2010 dan Kepmen ESDM No. 1827 K/2018.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. CALCULATED COST SUMMARY CARD (IDR) -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-950 rounded-2xl p-5 border border-emerald-500/30 space-y-4 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 border-b border-slate-800 pb-3 text-emerald-400 font-bold">
+                            <i data-lucide="calculator" class="w-5 h-5"></i>
+                            <h3>Rekapitulasi Biaya Per Ton (IDR)</h3>
+                        </div>
+
+                        <div class="mt-4 space-y-2 text-xs">
+                            <div class="flex justify-between py-1 border-b border-slate-800">
+                                <span class="text-slate-400">Biaya OB Mining / Ton:</span>
+                                <span id="calc-ob-ton" class="font-mono font-semibold text-slate-200">Rp 247.500</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800">
+                                <span class="text-slate-400">Total Cash OPEX (C1 Cost):</span>
+                                <span id="calc-c1-cost" class="font-mono font-semibold text-slate-200">Rp 522.500 /ton</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800">
+                                <span class="text-slate-400">Royalti ESDM / Ton:</span>
+                                <span id="calc-royalty-ton" class="font-mono font-semibold text-amber-400">Rp 120.000 /ton</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-slate-800">
+                                <span class="text-slate-400">All-In Sustaining Cost (AISC):</span>
+                                <span id="calc-aisc-cost" class="font-mono font-bold text-rose-400 text-sm">Rp 670.000 /ton</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="switchTab('dashboard')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> Terapkan & Lihat Dashboard IDR
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TAB 3: PRO FORMA CASH FLOW TABLE (RUPIAH) -->
+        <div id="content-cashflow" class="tab-content hidden space-y-6">
+            
+            <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                            <i data-lucide="table" class="w-4 h-4 text-emerald-400"></i> Laporan Proyeksi Arus Kas & Laba Rugi (Pro Forma Cash Flow - IDR)
+                        </h3>
+                        <p class="text-xs text-slate-400">Semua nilai transaksi disajikan dalam satuan <strong>Rp Miliar</strong> kecuali dinyatakan lain</p>
+                    </div>
+
+                    <button onclick="exportToExcel()" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white flex items-center gap-1.5 transition">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Export Model ke Excel Rupiah
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-xs text-left code-font">
+                        <thead id="cashflow-thead" class="bg-slate-950 text-slate-300 uppercase font-bold border-b border-slate-800">
+                            <!-- Dynamic Table Head -->
+                        </thead>
+                        <tbody id="cashflow-tbody" class="divide-y divide-slate-800/60 bg-slate-900/60 text-slate-200">
+                            <!-- Dynamic Table Body -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 4: FORMULAS & DOCUMENTATION HANDBOOK -->
+        <div id="content-formulas" class="tab-content hidden space-y-6">
+            
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-6">
+                <div>
+                    <h3 class="font-extrabold text-xl text-white flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-6 h-6 text-amber-400"></i> Panduan Rumus & Formulasi Keuangan Tambang (Mata Uang Rupiah)
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Dokumentasi lengkap mengenai persamaan matematis financial engineering yang diterapkan dalam aplikasi ini.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Formula 1: Stripping Ratio -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-amber-400 text-sm">1. Stripping Ratio (SR) & Biaya OB</h4>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Teknis Tambang</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-emerald-400 text-xs font-mono">
+                            Stripping Ratio (SR) = Volume OB (BCM) / Tonase Batubara (Ton)
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-amber-300 text-xs font-mono">
+                            Biaya OB / Ton (Rp) = SR (BCM/Ton) × Biaya OB (Rp/BCM)
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Mencerminkan volume tanah penutup yang wajib dibongkar untuk memperoleh 1 ton batubara.
+                        </p>
+                    </div>
+
+                    <!-- Formula 2: EBITDA & Cash Cost -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-emerald-400 text-sm">2. EBITDA & Cash OPEX (C1 Cost)</h4>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Operasional Tambang</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-emerald-400 text-xs font-mono">
+                            C1 Cost (Rp/Ton) = Biaya_OB + Mining + Hauling + Port + G&A + Reklamasi
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-amber-400 text-xs font-mono">
+                            EBITDA (Rp Miliar) = Revenue - C1 Cost - Royalti PNBP
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            EBITDA mengukur arus kas operasional kotor sebelum penyusutan, beban bunga, dan pajak penghasilan.
+                        </p>
+                    </div>
+
+                    <!-- Formula 3: NPV -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-blue-400 text-sm">3. Net Present Value (NPV IDR)</h4>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Valuasi Proyek</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-blue-300 text-xs font-mono">
+                            NPV (Rp Miliar) = Σ [ NCF_t / (1 + r)^t ] - CAPEX_0
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Dimana <code class="text-amber-400">NCF_t</code> adalah Arus Kas Bersih (Rp Miliar), <code class="text-amber-400">r</code> adalah WACC, dan <code class="text-amber-400">CAPEX_0</code> adalah total modal awal. Jika NPV > 0, proyek dinyatakan <strong>LAYAK (FEASIBLE)</strong>.
+                        </p>
+                    </div>
+
+                    <!-- Formula 4: IRR -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-purple-400 text-sm">4. Internal Rate of Return (IRR)</h4>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Return On Investment</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-purple-300 text-xs font-mono">
+                            0 = Σ [ NCF_t / (1 + IRR)^t ] - CAPEX_0
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Tingkat diskonto yang membuat nilai NPV proyek tepat bernilai Rp 0. Proyek dapat diterima apabila <code class="text-emerald-400">IRR > WACC</code>.
+                        </p>
+                    </div>
+
+                    <!-- Formula 5: Break-Even Price -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-rose-400 text-sm">5. Break-Even Price (BEP Rp/Ton)</h4>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Manajemen Risiko</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-rose-300 text-xs font-mono">
+                            BEP (Rp/Ton) = C1 Cash Cost + Royalti PNBP ESDM
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Batas harga jual batubara terkritis dalam Rupiah di mana operasional tambang mencapai titik impas (tidak rugi dan tidak untung).
+                        </p>
+                    </div>
+
+                    <!-- Formula 6: Royalti ESDM PNBP -->
+                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-teal-400 text-sm">6. Royalti PNBP ESDM (PP No. 26/2022)</h4>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Regulasi RI</span>
+                        </div>
+                        <div class="p-3 bg-slate-900 rounded-lg text-teal-300 text-xs font-mono">
+                            Royalti (Rp/Ton) = Harga_Jual_Rp × Tarif_PNBP (%)
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Kewajiban pembayaran Hak Keuangan Negara berdasarkan Harga Batubara Acuan (HBA) dan tingkat kalori (GAR).
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TAB 5: SENSITIVITY ANALYSIS (IDR) -->
+        <div id="content-sensitivity" class="tab-content hidden space-y-6">
+            
+            <div class="bg-slate-900 rounded-2xl p-5 border border-slate-800 shadow-xl space-y-6">
+                <div>
+                    <h3 class="font-bold text-base text-slate-100 flex items-center gap-2">
+                        <i data-lucide="line-chart" class="w-4 h-4 text-emerald-400"></i> Matriks Sensitivitas Proyek Tambang (Nilai NPV dalam Rp Miliar)
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        Dampak variasi perubahan Harga Jual Batubara (Rp/Ton) vs Stripping Ratio terhadap estimasi NPV proyek
+                    </p>
+                </div>
+
+                <!-- SENSITIVITY MATRIX TABLE -->
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-xs text-center code-font">
+                        <thead class="bg-slate-950 text-slate-300 border-b border-slate-800">
+                            <tr>
+                                <th class="p-3 text-left bg-slate-900">Perubahan Harga \ SR</th>
+                                <th class="p-3 text-emerald-400">-15% SR</th>
+                                <th class="p-3 text-emerald-300">-10% SR</th>
+                                <th class="p-3 text-slate-200">Base SR</th>
+                                <th class="p-3 text-rose-300">+10% SR</th>
+                                <th class="p-3 text-rose-400">+15% SR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sensitivity-tbody" class="divide-y divide-slate-800 bg-slate-900/60">
+                            <!-- Dynamic Matrix populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
+                    <span class="font-bold text-slate-200">Keterangan Warna Matriks:</span>
+                    <div class="flex flex-wrap gap-4 pt-1">
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-emerald-900 border border-emerald-500 inline-block"></span> NPV > Rp 300 Miliar (Sangat Layak)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-teal-900 border border-teal-500 inline-block"></span> Rp 0 < NPV ≤ Rp 300 Miliar (Layak)</span>
+                        <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-rose-950 border border-rose-600 inline-block"></span> NPV ≤ Rp 0 (Tidak Layak / Berisiko)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto bg-slate-900 border-t border-slate-800 py-4 px-4 lg:px-8 text-center text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>
+                <span class="font-semibold text-slate-300">Mining Financial Decision System (IGKM) - Rupiah Edition</span> &copy; 2026.
+            </div>
+            <div class="flex items-center space-x-4 text-slate-400">
+                <span>Financial Engineering IDR</span>
+                <span>•</span>
+                <span>Kepmen ESDM Compliant</span>
+                <span>•</span>
+                <span>Dynamic Excel Engine</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT ENGINE & LOGIC -->
+    <script>
+        // Global State & Model Results
+        let currentModel = {};
+        let cashFlowChartInstance = null;
+        let opexChartInstance = null;
+
+        // Helper: Format Rupiah Currency
+        function formatIDR(value, isPerTon = false) {
+            if (isPerTon) {
+                return 'Rp ' + Math.round(value).toLocaleString('id-ID');
+            }
+            if (Math.abs(value) >= 1000) {
+                return 'Rp ' + (value / 1000).toFixed(2) + ' Triliun';
+            }
+            return 'Rp ' + value.toFixed(2) + ' Miliar';
+        }
+
+        // Initialize App on DOM Loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            recalculateModel();
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'border-emerald-500', 'text-emerald-400', 'bg-slate-900/80');
+                btn.classList.add('border-transparent', 'text-slate-400');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            const activeContent = document.getElementById(`content-${tabId}`);
+
+            if (activeBtn && activeContent) {
+                activeBtn.classList.add('active', 'border-emerald-500', 'text-emerald-400', 'bg-slate-900/80');
+                activeBtn.classList.remove('border-transparent', 'text-slate-400');
+                activeContent.classList.remove('hidden');
+            }
+        }
+
+        // Helper to sync USD equivalent display
+        function updatePriceFromUSD() {
+            const priceIDR = parseFloat(document.getElementById('inp-coal-price-idr').value) || 0;
+            const fxRate = parseFloat(document.getElementById('inp-fx-rate').value) || 15800;
+            const usdEquiv = priceIDR / fxRate;
+            document.getElementById('usd-equiv-display').textContent = `$${usdEquiv.toFixed(2)} /ton`;
+            recalculateModel();
+        }
+
+        // Preset Scenarios in IDR
+        function applyPresetScenario(type) {
+            if (type === 'base') {
+                document.getElementById('inp-reserves').value = 20.0;
+                document.getElementById('inp-annual-prod').value = 2.0;
+                document.getElementById('inp-strip-ratio').value = 5.5;
+                document.getElementById('inp-coal-price-idr').value = 1200000; // ~76 USD
+                document.getElementById('inp-fx-rate').value = 15800;
+                document.getElementById('inp-capex-infra').value = 240;
+                document.getElementById('inp-capex-fleet').value = 180;
+                document.getElementById('inp-capex-land').value = 80;
+                document.getElementById('inp-capex-other').value = 50;
+                document.getElementById('inp-opex-ob').value = 45000;
+                document.getElementById('inp-opex-coal').value = 55000;
+                document.getElementById('inp-opex-hauling').value = 125000;
+                document.getElementById('inp-opex-port').value = 38000;
+                document.getElementById('inp-opex-ga').value = 45000;
+                document.getElementById('inp-royalty-rate').value = 10.0;
+                document.getElementById('inp-wacc-rate').value = 10.0;
+            } else if (type === 'highPrice') {
+                document.getElementById('inp-coal-price-idr').value = 1650000; // ~104 USD
+                document.getElementById('inp-strip-ratio').value = 6.0;
+            } else if (type === 'highSR') {
+                document.getElementById('inp-strip-ratio').value = 8.5;
+                document.getElementById('inp-coal-price-idr').value = 1050000; // ~66 USD
+            } else if (type === 'expanded') {
+                document.getElementById('inp-reserves').value = 35.0;
+                document.getElementById('inp-annual-prod').value = 3.5;
+                document.getElementById('inp-capex-infra').value = 400;
+                document.getElementById('inp-capex-fleet').value = 300;
+            }
+            updatePriceFromUSD();
+        }
+
+        // Main Calculation Engine in IDR
+        function recalculateModel() {
+            // 1. Fetch Inputs
+            const reserves = parseFloat(document.getElementById('inp-reserves').value) || 0;
+            const annualProd = parseFloat(document.getElementById('inp-annual-prod').value) || 1;
+            const stripRatio = parseFloat(document.getElementById('inp-strip-ratio').value) || 0;
+            const coalPriceIDR = parseFloat(document.getElementById('inp-coal-price-idr').value) || 0;
+            const fxRate = parseFloat(document.getElementById('inp-fx-rate').value) || 15800;
+
+            const capexInfra = parseFloat(document.getElementById('inp-capex-infra').value) || 0;
+            const capexFleet = parseFloat(document.getElementById('inp-capex-fleet').value) || 0;
+            const capexLand = parseFloat(document.getElementById('inp-capex-land').value) || 0;
+            const capexOther = parseFloat(document.getElementById('inp-capex-other').value) || 0;
+
+            const opexOb = parseFloat(document.getElementById('inp-opex-ob').value) || 0;
+            const opexCoal = parseFloat(document.getElementById('inp-opex-coal').value) || 0;
+            const opexHauling = parseFloat(document.getElementById('inp-opex-hauling').value) || 0;
+            const opexPort = parseFloat(document.getElementById('inp-opex-port').value) || 0;
+            const opexGa = parseFloat(document.getElementById('inp-opex-ga').value) || 0;
+
+            const royaltyRate = (parseFloat(document.getElementById('inp-royalty-rate').value) || 0) / 100;
+            const taxRate = (parseFloat(document.getElementById('inp-tax-rate').value) || 0) / 100;
+            const wacc = (parseFloat(document.getElementById('inp-wacc-rate').value) || 0) / 100;
+            const deprYears = parseInt(document.getElementById('inp-depr-years').value) || 8;
+
+            const opexReclamation = parseFloat(document.getElementById('inp-reclamation').value) || 0;
+            const mineClosureMiliar = parseFloat(document.getElementById('inp-mine-closure').value) || 0;
+
+            // Update USD conversion tag
+            const usdEquiv = coalPriceIDR / fxRate;
+            document.getElementById('usd-equiv-display').textContent = `$${usdEquiv.toFixed(2)} /ton`;
+
+            // 2. Derive LOM & Total CAPEX (Rp Miliar)
+            const mineLife = Math.max(1, Math.round(reserves / annualProd));
+            const totalCapexMiliar = capexInfra + capexFleet + capexLand + capexOther;
+
+            document.getElementById('calc-lom-display').textContent = `${mineLife} Tahun`;
+            document.getElementById('calc-total-capex').textContent = formatIDR(totalCapexMiliar);
+
+            // 3. Per Tonne Cost Calculations (in IDR)
+            const obCostPerTonCoal = stripRatio * opexOb;
+            const cashOpexPerTon = obCostPerTonCoal + opexCoal + opexHauling + opexPort + opexGa + opexReclamation;
+            const royaltyPerTon = coalPriceIDR * royaltyRate;
+            
+            // Total capex per ton in Rp
+            const capexPerTonIDR = (totalCapexMiliar * 1000000000) / (reserves * 1000000);
+            const aiscPerTon = cashOpexPerTon + royaltyPerTon + capexPerTonIDR;
+            const bepPrice = cashOpexPerTon + royaltyPerTon;
+
+            document.getElementById('calc-ob-ton').textContent = formatIDR(obCostPerTonCoal, true);
+            document.getElementById('calc-c1-cost').textContent = `${formatIDR(cashOpexPerTon, true)} /ton`;
+            document.getElementById('calc-royalty-ton').textContent = `${formatIDR(royaltyPerTon, true)} /ton`;
+            document.getElementById('calc-aisc-cost').textContent = `${formatIDR(aiscPerTon, true)} /ton`;
+
+            // 4. Annual Financial Projections (in Rp Miliar)
+            // Prod (Million Ton) * Price (IDR/Ton) / 10^9 = Revenue in Rp Miliar
+            const annualRevenueMiliar = (annualProd * 1000000 * coalPriceIDR) / 1000000000;
+            const annualCashOpexMiliar = (annualProd * 1000000 * cashOpexPerTon) / 1000000000;
+            const annualRoyaltyMiliar = (annualProd * 1000000 * royaltyPerTon) / 1000000000;
+            const annualEbitdaMiliar = annualRevenueMiliar - annualCashOpexMiliar - annualRoyaltyMiliar;
+
+            const annualDepreciationMiliar = totalCapexMiliar / Math.min(mineLife, deprYears);
+            
+            let years = [];
+            let netCashFlows = [];
+            let discCashFlows = [];
+            let cumCashFlows = [];
+            let cumDiscCashFlows = [];
+
+            // Year 0 (CAPEX Outflow)
+            years.push(0);
+            netCashFlows.push(-totalCapexMiliar);
+            discCashFlows.push(-totalCapexMiliar);
+            cumCashFlows.push(-totalCapexMiliar);
+            cumDiscCashFlows.push(-totalCapexMiliar);
+
+            let cumNCF = -totalCapexMiliar;
+            let cumDCF = -totalCapexMiliar;
+            let totalRevenueSum = 0;
+            let totalEbitdaSum = 0;
+
+            let proFormaTable = [];
+
+            // Operational Years 1 to LOM
+            for (let t = 1; t <= mineLife; t++) {
+                years.push(t);
+
+                let rev = annualRevenueMiliar;
+                let c1Cost = annualCashOpexMiliar;
+                let roy = annualRoyaltyMiliar;
+                let ebitda = annualEbitdaMiliar;
+                let depr = t <= deprYears ? annualDepreciationMiliar : 0;
+                let ebit = ebitda - depr;
+                let tax = ebit > 0 ? ebit * taxRate : 0;
+                let eat = ebit - tax;
+
+                let extraCap = (t === mineLife) ? mineClosureMiliar : 0;
+
+                let ncf = eat + depr - extraCap; 
+                let dcf = ncf / Math.pow(1 + wacc, t);
+
+                cumNCF += ncf;
+                cumDCF += dcf;
+
+                netCashFlows.push(ncf);
+                discCashFlows.push(dcf);
+                cumCashFlows.push(cumNCF);
+                cumDiscCashFlows.push(cumDCF);
+
+                totalRevenueSum += rev;
+                totalEbitdaSum += ebitda;
+
+                proFormaTable.push({
+                    year: t,
+                    prod: annualProd,
+                    revenue: rev,
+                    c1Cost: c1Cost,
+                    royalty: roy,
+                    ebitda: ebitda,
+                    depr: depr,
+                    ebit: ebit,
+                    tax: tax,
+                    eat: eat,
+                    ncf: ncf,
+                    dcf: dcf,
+                    cumNCF: cumNCF,
+                    cumDCF: cumDCF
+                });
+            }
+
+            // 5. Valuation Metrics Calculation (NPV, IRR, Payback in IDR)
+            const npvMiliar = cumDCF; 
+            const irr = calculateIRR(netCashFlows);
+            const payback = calculatePayback(cumCashFlows);
+            const discPayback = calculatePayback(cumDiscCashFlows);
+            const profitabilityIndex = (npvMiliar + totalCapexMiliar) / totalCapexMiliar;
+            const marginPerTon = coalPriceIDR - cashOpexPerTon - royaltyPerTon;
+            const ebitdaMargin = (annualEbitdaMiliar / annualRevenueMiliar) * 100;
+
+            // Store in global object
+            currentModel = {
+                reserves, annualProd, stripRatio, coalPriceIDR, fxRate, mineLife, totalCapexMiliar,
+                cashOpexPerTon, royaltyPerTon, aiscPerTon, bepPrice,
+                annualRevenueMiliar, annualEbitdaMiliar, npvMiliar, irr, payback, discPayback,
+                profitabilityIndex, wacc, proFormaTable, netCashFlows, years,
+                cumCashFlows, cumDiscCashFlows, opexOb, opexCoal, opexHauling, opexPort, opexGa, opexReclamation
+            };
+
+            // 6. Update UI Dashboard Elements (IDR)
+            document.getElementById('kpi-npv').textContent = formatIDR(npvMiliar);
+            document.getElementById('kpi-irr').textContent = `${(irr * 100).toFixed(2)} %`;
+            document.getElementById('kpi-payback').textContent = `${payback.toFixed(1)} Tahun`;
+            document.getElementById('kpi-disc-payback').textContent = `${discPayback.toFixed(1)} Thn`;
+            document.getElementById('kpi-mine-life').textContent = `${mineLife} Thn`;
+            document.getElementById('kpi-margin').textContent = `${formatIDR(marginPerTon, true)} / Ton`;
+            document.getElementById('kpi-ebitda-margin').textContent = `${ebitdaMargin.toFixed(1)}%`;
+            document.getElementById('kpi-pi').textContent = profitabilityIndex.toFixed(2);
+            document.getElementById('kpi-wacc-label').textContent = `${(wacc * 100).toFixed(1)}%`;
+
+            const irrSpread = (irr - wacc) * 100;
+            document.getElementById('kpi-irr-spread').textContent = `${irrSpread >= 0 ? '+' : ''}${irrSpread.toFixed(2)}% vs WACC`;
+
+            const npvStatus = document.getElementById('kpi-npv-status');
+            const recommendation = document.getElementById('summary-recommendation');
+            if (npvMiliar > 0 && irr > wacc) {
+                npvStatus.textContent = 'FEASIBLE / LAYAK';
+                npvStatus.className = 'px-2 py-0.5 rounded font-bold bg-emerald-950 text-emerald-400 border border-emerald-800';
+                recommendation.textContent = 'LAYAK DILANJUTKAN';
+                recommendation.className = 'font-bold text-emerald-400 uppercase';
+            } else {
+                npvStatus.textContent = 'UNFEASIBLE / TIDAK LAYAK';
+                npvStatus.className = 'px-2 py-0.5 rounded font-bold bg-rose-950 text-rose-400 border border-rose-800';
+                recommendation.textContent = 'TIDAK LAYAK (BERISIKO)';
+                recommendation.className = 'font-bold text-rose-400 uppercase';
+            }
+
+            // Summary tab updates (IDR)
+            document.getElementById('summary-reserves').textContent = `${reserves.toFixed(1)} MT`;
+            document.getElementById('summary-prod').textContent = `${annualProd.toFixed(1)} MT/thn`;
+            document.getElementById('summary-sr').textContent = `${stripRatio.toFixed(1)} BCM/ton`;
+            document.getElementById('summary-price').textContent = formatIDR(coalPriceIDR, true);
+            document.getElementById('summary-lom').textContent = `${mineLife} Tahun`;
+
+            document.getElementById('summary-capex').textContent = formatIDR(totalCapexMiliar);
+            document.getElementById('summary-opex-tonne').textContent = `${formatIDR(cashOpexPerTon, true)} /ton`;
+            document.getElementById('summary-royalty-rate').textContent = `${(royaltyRate * 100).toFixed(1)}%`;
+            document.getElementById('summary-aisc').textContent = `${formatIDR(aiscPerTon, true)} /ton`;
+            document.getElementById('summary-bep').textContent = `${formatIDR(bepPrice, true)} /ton`;
+
+            document.getElementById('summary-rev-annual').textContent = formatIDR(annualRevenueMiliar);
+            document.getElementById('summary-ebitda-annual').textContent = formatIDR(annualEbitdaMiliar);
+            document.getElementById('summary-total-cf').textContent = formatIDR(cumNCF);
+            document.getElementById('summary-wacc').textContent = `${(wacc * 100).toFixed(1)}%`;
+
+            // 7. Update Tables and Charts
+            renderProFormaTable(proFormaTable, totalCapexMiliar);
+            renderSensitivityMatrix(coalPriceIDR, stripRatio);
+            renderCharts(years, cumCashFlows, cumDiscCashFlows);
+        }
+
+        // IRR Financial Function (Newton-Raphson approximation)
+        function calculateIRR(cashflows) {
+            let rate = 0.10;
+            const maxIter = 1000;
+            const precision = 1e-7;
+
+            for (let i = 0; i < maxIter; i++) {
+                let npv = 0;
+                let dNpv = 0;
+
+                for (let t = 0; t < cashflows.length; t++) {
+                    npv += cashflows[t] / Math.pow(1 + rate, t);
+                    dNpv -= (t * cashflows[t]) / Math.pow(1 + rate, t + 1);
+                }
+
+                if (Math.abs(npv) < precision) return rate;
+                if (Math.abs(dNpv) < 1e-10) break;
+
+                let newRate = rate - npv / dNpv;
+                if (Math.abs(newRate - rate) < precision) return newRate;
+                rate = newRate;
+            }
+            return rate;
+        }
+
+        // Payback Period Function
+        function calculatePayback(cumCashflows) {
+            for (let t = 1; t < cumCashflows.length; t++) {
+                if (cumCashflows[t] >= 0) {
+                    let prev = cumCashflows[t - 1];
+                    let curr = cumCashflows[t];
+                    let fraction = Math.abs(prev) / (curr - prev);
+                    return (t - 1) + fraction;
+                }
+            }
+            return cumCashflows.length - 1;
+        }
+
+        // Render Pro Forma Cash Flow Table (in IDR Miliar)
+        function renderProFormaTable(data, capexMiliar) {
+            const thead = document.getElementById('cashflow-thead');
+            const tbody = document.getElementById('cashflow-tbody');
+
+            let yearsHeaders = data.map(d => `<th class="p-3 text-right">Thn ${d.year}</th>`).join('');
+            thead.innerHTML = `
+                <tr>
+                    <th class="p-3 text-left sticky left-0 bg-slate-950 z-10 min-w-[220px]">Item Laporan Keuangan (Rp Miliar)</th>
+                    <th class="p-3 text-right bg-slate-950">Thn 0</th>
+                    ${yearsHeaders}
+                </tr>
+            `;
+
+            let rows = [
+                { label: 'Produksi Batubara (Juta Ton)', key: 'prod', format: v => v.toFixed(2), bg: 'bg-slate-950/40' },
+                { label: 'Pendapatan / Revenue (Rp M)', key: 'revenue', format: v => `Rp ${v.toFixed(2)}`, bg: '' },
+                { label: 'Biaya Operasional / C1 OPEX (Rp M)', key: 'c1Cost', format: v => `(Rp ${v.toFixed(2)})`, bg: '' },
+                { label: 'Royalti PNBP ESDM (Rp M)', key: 'royalty', format: v => `(Rp ${v.toFixed(2)})`, bg: '' },
+                { label: 'EBITDA (Rp Miliar)', key: 'ebitda', format: v => `Rp ${v.toFixed(2)}`, bg: 'font-bold text-amber-400 bg-amber-500/5' },
+                { label: 'Depresiasi CAPEX (Rp M)', key: 'depr', format: v => `(Rp ${v.toFixed(2)})`, bg: '' },
+                { label: 'Laba Sebelum Pajak / EBIT (Rp M)', key: 'ebit', format: v => `Rp ${v.toFixed(2)}`, bg: '' },
+                { label: 'Pajak Penghasilan / PPh (Rp M)', key: 'tax', format: v => `(Rp ${v.toFixed(2)})`, bg: '' },
+                { label: 'Laba Bersih / EAT (Rp M)', key: 'eat', format: v => `Rp ${v.toFixed(2)}`, bg: 'font-semibold text-slate-100' },
+                { label: 'Investasi Inisial CAPEX (Rp M)', special0: `(Rp ${capexMiliar.toFixed(2)})`, key: null, format: () => 'Rp 0.00', bg: 'text-rose-400' },
+                { label: 'Arus Kas Bersih / NCF (Rp M)', special0: `(Rp ${capexMiliar.toFixed(2)})`, key: 'ncf', format: v => `Rp ${v.toFixed(2)}`, bg: 'font-bold text-emerald-400 bg-emerald-500/10' },
+                { label: 'Discounted Cash Flow / DCF (Rp M)', special0: `(Rp ${capexMiliar.toFixed(2)})`, key: 'dcf', format: v => `Rp ${v.toFixed(2)}`, bg: '' },
+                { label: 'Kumulatif DCF (Rp Miliar)', special0: `(Rp ${capexMiliar.toFixed(2)})`, key: 'cumDCF', format: v => `Rp ${v.toFixed(2)}`, bg: 'font-extrabold text-blue-400 bg-blue-500/10' }
+            ];
+
+            tbody.innerHTML = rows.map(r => {
+                let initialCol = r.special0 ? `<td class="p-3 text-right font-semibold">${r.special0}</td>` : `<td class="p-3 text-right text-slate-500">-</td>`;
+                let dataCols = data.map(d => {
+                    let val = r.key ? r.format(d[r.key]) : r.format(0);
+                    return `<td class="p-3 text-right">${val}</td>`;
+                }).join('');
+
+                return `
+                    <tr class="${r.bg} hover:bg-slate-800/50 transition">
+                        <td class="p-3 text-left font-semibold sticky left-0 bg-slate-900 z-10 border-r border-slate-800">${r.label}</td>
+                        ${initialCol}
+                        ${dataCols}
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Render Sensitivity Matrix (IDR)
+        function renderSensitivityMatrix(basePriceIDR, baseSR) {
+            const tbody = document.getElementById('sensitivity-tbody');
+            const priceDeltas = [0.80, 0.90, 1.00, 1.10, 1.20]; 
+            const srDeltas = [0.85, 0.90, 1.00, 1.10, 1.15];
+
+            let html = '';
+
+            priceDeltas.forEach(pFactor => {
+                let price = basePriceIDR * pFactor;
+                let priceLabel = pFactor === 1.0 ? `Base (${formatIDR(price, true)})` : `${(pFactor > 1 ? '+' : '')}${((pFactor - 1) * 100).toFixed(0)}% (${formatIDR(price, true)})`;
+
+                let cols = srDeltas.map(sFactor => {
+                    let sr = baseSR * sFactor;
+                    let simNPVMiliar = simulateNPV(price, sr);
+
+                    let bgClass = 'bg-rose-950/60 text-rose-300 border-rose-800';
+                    if (simNPVMiliar > 300) {
+                        bgClass = 'bg-emerald-950/80 text-emerald-300 font-bold border-emerald-800';
+                    } else if (simNPVMiliar > 0) {
+                        bgClass = 'bg-teal-950/80 text-teal-300 font-semibold border-teal-800';
+                    }
+
+                    return `
+                        <td class="p-3 border border-slate-800 ${bgClass}">
+                            <div>${formatIDR(simNPVMiliar)}</div>
+                        </td>
+                    `;
+                }).join('');
+
+                html += `
+                    <tr>
+                        <td class="p-3 text-left font-bold text-slate-300 bg-slate-950 border border-slate-800">${priceLabel}</td>
+                        ${cols}
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        // Lightweight simulator helper for sensitivity matrix in IDR
+        function simulateNPV(simPriceIDR, simSR) {
+            const m = currentModel;
+            const obCost = simSR * parseFloat(document.getElementById('inp-opex-ob').value);
+            const cashOpex = obCost + parseFloat(document.getElementById('inp-opex-coal').value) + parseFloat(document.getElementById('inp-opex-hauling').value) + parseFloat(document.getElementById('inp-opex-port').value) + parseFloat(document.getElementById('inp-opex-ga').value) + parseFloat(document.getElementById('inp-reclamation').value);
+            const royaltyRate = parseFloat(document.getElementById('inp-royalty-rate').value) / 100;
+            const royalty = simPriceIDR * royaltyRate;
+            const taxRate = parseFloat(document.getElementById('inp-tax-rate').value) / 100;
+
+            const annRevMiliar = (m.annualProd * 1000000 * simPriceIDR) / 1000000000;
+            const annOpexMiliar = (m.annualProd * 1000000 * cashOpex) / 1000000000;
+            const annRoyMiliar = (m.annualProd * 1000000 * royalty) / 1000000000;
+            const annEbitdaMiliar = annRevMiliar - annOpexMiliar - annRoyMiliar;
+            const deprMiliar = m.totalCapexMiliar / 8;
+
+            let cumDCF = -m.totalCapexMiliar;
+            for (let t = 1; t <= m.mineLife; t++) {
+                let ebit = annEbitdaMiliar - deprMiliar;
+                let tax = ebit > 0 ? ebit * taxRate : 0;
+                let ncf = (ebit - tax) + deprMiliar;
+                cumDCF += ncf / Math.pow(1 + m.wacc, t);
+            }
+            return cumDCF;
+        }
+
+        // Chart Visualizations Render Function
+        function renderCharts(years, cumNCF, cumDCF) {
+            // Chart 1: Cash Flow Line Chart in Rp Miliar
+            const ctxCF = document.getElementById('chartCashFlow').getContext('2d');
+            if (cashFlowChartInstance) cashFlowChartInstance.destroy();
+
+            cashFlowChartInstance = new Chart(ctxCF, {
+                type: 'line',
+                data: {
+                    labels: years.map(y => y === 0 ? 'Thn 0 (CAPEX)' : `Thn ${y}`),
+                    datasets: [
+                        {
+                            label: 'Kumulatif DCF (Rp Miliar)',
+                            data: cumDCF,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 3
+                        },
+                        {
+                            label: 'Kumulatif Nominal NCF (Rp Miliar)',
+                            data: cumNCF,
+                            borderColor: '#f59e0b',
+                            borderDash: [5, 5],
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { family: 'Inter' } } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
+                        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
+                    }
+                }
+            });
+
+            // Chart 2: OPEX Breakdown Doughnut Chart
+            const ctxOpex = document.getElementById('chartOpexBreakdown').getContext('2d');
+            if (opexChartInstance) opexChartInstance.destroy();
+
+            const m = currentModel;
+            const obTotal = m.stripRatio * m.opexOb;
+
+            opexChartInstance = new Chart(ctxOpex, {
+                type: 'doughnut',
+                data: {
+                    labels: ['OB Stripping', 'Coal Mining', 'Hauling/Barging', 'Port Crushing', 'G&A / Admin'],
+                    datasets: [{
+                        data: [obTotal, m.opexCoal, m.opexHauling, m.opexPort, m.opexGa],
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#64748b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        // EXPORT TO EXCEL GENERATOR FUNCTION IN RUPIAH
+        function exportToExcel() {
+            const m = currentModel;
+            const wb = XLSX.utils.book_new();
+
+            // SHEET 1: DASHBOARD & EXECUTIVE SUMMARY
+            const summaryData = [
+                ["MINING FINANCIAL DECISION SYSTEM (IGKM) - EDISI RUPIAH (IDR)"],
+                ["Laporan Evaluasi & Kelayakan Investasi Pertambangan Batubara"],
+                [],
+                ["PARAMETER TINGKAT PROYEK", "NILAI", "SATUAN"],
+                ["Total Cadangan Batubara", m.reserves, "Juta Ton (MT)"],
+                ["Target Produksi Tahunan", m.annualProd, "Juta Ton / Tahun"],
+                ["Stripping Ratio (SR)", m.stripRatio, "BCM / Ton"],
+                ["Harga Jual Batubara (IDR)", m.coalPriceIDR, "Rp / Ton"],
+                ["Setara USD (Kurs Rp " + m.fxRate.toLocaleString('id-ID') + ")", (m.coalPriceIDR / m.fxRate).toFixed(2), "USD / Ton"],
+                ["Umur Tambang (Life of Mine)", m.mineLife, "Tahun"],
+                [],
+                ["STRUKTUR BIAYA & INVESTASI (IDR)", "NILAI", "SATUAN"],
+                ["Total Inisial CAPEX", m.totalCapexMiliar, "Rp Miliar"],
+                ["Cash OPEX (C1 Cost)", m.cashOpexPerTon, "Rp / Ton"],
+                ["Royalti PNBP ESDM", m.royaltyPerTon, "Rp / Ton"],
+                ["All-In Sustaining Cost (AISC)", m.aiscPerTon, "Rp / Ton"],
+                ["Break-Even Price (BEP)", m.bepPrice, "Rp / Ton"],
+                [],
+                ["INDIKATOR KELAYAKAN FINANCIAL (VALUASI)", "NILAI", "STATUS / KETERANGAN"],
+                ["Net Present Value (NPV)", m.npvMiliar.toFixed(2), m.npvMiliar > 0 ? "LAYAK (FEASIBLE) - Rp Miliar" : "TIDAK LAYAK"],
+                ["Internal Rate of Return (IRR)", (m.irr * 100).toFixed(2) + "%", m.irr > m.wacc ? "Memenuhi Hurdle Rate" : "Di Bawah Hurdle Rate"],
+                ["Payback Period", m.payback.toFixed(2), "Tahun"],
+                ["Discounted Payback Period", m.discPayback.toFixed(2), "Tahun"],
+                ["Profitability Index (PI)", m.profitabilityIndex.toFixed(2), "Rasio PV / CAPEX"],
+                ["Discount Rate (WACC)", (m.wacc * 100).toFixed(1) + "%", "Tingkat Diskonto Proyek"]
+            ];
+
+            const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, wsSummary, "Dashboard Kelayakan IDR");
+
+            // SHEET 2: PRO FORMA CASH FLOW STATEMENT (RUPIAH)
+            const headers = ["Item Laporan Keuangan (Rp Miliar)", "Tahun 0"];
+            for (let t = 1; t <= m.mineLife; t++) headers.push(`Tahun ${t}`);
+
+            const cfData = [
+                headers,
+                ["Produksi Batubara (MT)", "-", ...m.proFormaTable.map(d => d.prod)],
+                ["Pendapatan / Revenue (Rp M)", "-", ...m.proFormaTable.map(d => d.revenue)],
+                ["Cash OPEX / C1 Cost (Rp M)", "-", ...m.proFormaTable.map(d => -d.c1Cost)],
+                ["Royalti PNBP ESDM (Rp M)", "-", ...m.proFormaTable.map(d => -d.royalty)],
+                ["EBITDA (Rp M)", "-", ...m.proFormaTable.map(d => d.ebitda)],
+                ["Depresiasi CAPEX (Rp M)", "-", ...m.proFormaTable.map(d => -d.depr)],
+                ["Laba Sebelum Pajak / EBIT (Rp M)", "-", ...m.proFormaTable.map(d => d.ebit)],
+                ["Pajak Penghasilan / PPh (Rp M)", "-", ...m.proFormaTable.map(d => -d.tax)],
+                ["Laba Bersih / EAT (Rp M)", "-", ...m.proFormaTable.map(d => d.eat)],
+                ["Investasi Inisial CAPEX (Rp M)", -m.totalCapexMiliar, ...m.proFormaTable.map(() => 0)],
+                ["Arus Kas Bersih / NCF (Rp M)", -m.totalCapexMiliar, ...m.proFormaTable.map(d => d.ncf)],
+                ["Discounted Cash Flow / DCF (Rp M)", -m.totalCapexMiliar, ...m.proFormaTable.map(d => d.dcf)],
+                ["Kumulatif DCF (Rp M)", -m.totalCapexMiliar, ...m.proFormaTable.map(d => d.cumDCF)]
+            ];
+
+            const wsCF = XLSX.utils.aoa_to_sheet(cfData);
+            XLSX.utils.book_append_sheet(wb, wsCF, "Pro Forma Cash Flow IDR");
+
+            // Write File & Download
+            XLSX.writeFile(wb, "Mining_Financial_Decision_System_IDR.xlsx");
+        }
+    </script>
+</body>
+</html>

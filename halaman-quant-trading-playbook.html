@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quant Trading Playbook — 16 Modul + Metode LLM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1220; --panel:#101a2e; --panel-alt:#141f38; --border:#233252;
+  --text:#E7ECF5; --muted:#93A2BE; --blue:#4C8DFF; --green:#4CC38A;
+  --purple:#8B7CF6; --gold:#E3B341; --red:#F0665A;
+  --serif:"Newsreader","Georgia",serif; --sans:"Inter",-apple-system,sans-serif; --mono:"IBM Plex Mono","SFMono-Regular",monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;}
+::selection{background:rgba(76,141,255,0.35);}
+a{color:inherit;text-decoration:none;}
+
+.bg-decor{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.5;
+  background:
+    radial-gradient(ellipse 900px 500px at 85% -10%, rgba(76,141,255,0.12), transparent 60%),
+    radial-gradient(ellipse 700px 500px at -10% 40%, rgba(139,124,246,0.10), transparent 60%);
+}
+
+.layout{position:relative;z-index:1;display:grid;grid-template-columns:280px 1fr;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--border);
+  padding:28px 18px 40px;background:linear-gradient(180deg,var(--panel),var(--bg));}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:6px;padding:0 6px;}
+.brand-mark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:13px;color:#fff;flex:none;}
+.brand-name{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:0.2px;}
+.brand-sub{font-size:11px;color:var(--muted);padding:0 6px 20px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.nav-cluster-label{font-size:11px;color:var(--accent,var(--muted));font-weight:600;margin:20px 8px 8px;
+  padding-left:2px;border-left:2px solid var(--accent,var(--border));padding-left:8px;}
+.nav-link{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);padding:7px 8px;border-radius:8px;
+  transition:background .15s,color .15s;}
+.nav-link:hover{background:var(--panel-alt);color:var(--text);}
+.nav-link.active{background:var(--panel-alt);color:var(--text);}
+.nav-badge{font-family:var(--mono);font-size:10.5px;width:24px;height:20px;flex:none;border-radius:5px;
+  background:#1b2740;color:var(--muted);display:flex;align-items:center;justify-content:center;}
+.nav-link.active .nav-badge{background:var(--blue);color:#fff;}
+.dl-btn{display:flex;align-items:center;gap:8px;margin-top:22px;padding:11px 12px;border-radius:10px;
+  background:linear-gradient(135deg,var(--green),#2f9e6b);color:#06251a;font-weight:700;font-size:12.5px;
+  box-shadow:0 6px 18px rgba(76,195,138,0.25);}
+.dl-btn:hover{filter:brightness(1.06);}
+
+/* Main */
+.main{padding:0 0 100px;min-width:0;}
+.hero{padding:70px 56px 50px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero-eyebrow{font-family:var(--mono);font-size:12px;color:var(--gold);margin-bottom:18px;}
+.hero h1{font-family:var(--serif);font-size:clamp(34px,4.4vw,54px);line-height:1.08;font-weight:600;margin:0 0 22px;max-width:16ch;}
+.hero p.lead{font-size:16.5px;color:var(--muted);max-width:62ch;margin:0 0 30px;}
+.hero-stats{display:flex;gap:34px;flex-wrap:wrap;margin-top:10px;}
+.hstat b{display:block;font-family:var(--serif);font-size:26px;color:var(--text);}
+.hstat span{font-size:12px;color:var(--muted);}
+.hero-visual{position:absolute;right:40px;top:60px;width:280px;opacity:0.9;}
+
+.content{padding:0 56px;}
+.section-intro{padding:44px 0 10px;max-width:74ch;}
+.section-intro h3{font-family:var(--serif);font-size:24px;font-weight:600;margin:0 0 10px;}
+.section-intro p{color:var(--muted);font-size:14.5px;margin:0;}
+
+.module{padding:44px 0;border-bottom:1px solid var(--border);scroll-margin-top:24px;}
+.module-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:22px;}
+.module-num{font-family:var(--mono);font-weight:700;font-size:15px;color:var(--accent);
+  border:1px solid var(--accent);border-radius:8px;padding:6px 11px;flex:none;}
+.module-head h2{font-family:var(--serif);font-size:26px;font-weight:600;margin:0 0 4px;}
+.tagline{color:var(--muted);font-size:14px;margin:0;}
+.module-body{display:grid;grid-template-columns:1.5fr 1fr;gap:36px;align-items:start;}
+.module-theory p{font-size:14.8px;color:#D3DAEA;margin:0 0 14px;}
+.module-side{position:sticky;top:20px;display:flex;flex-direction:column;gap:14px;}
+.viz-card{background:var(--panel-alt);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.spark{width:100%;height:auto;display:block;}
+
+.fx{background:var(--panel-alt);border:1px solid var(--border);border-left:3px solid var(--accent,var(--blue));
+  border-radius:10px;padding:13px 15px;}
+.fx-name{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px;}
+.fx-formula{font-family:var(--mono);font-size:14.5px;color:var(--text);margin-bottom:7px;word-break:break-word;}
+.fx-desc{font-size:12.3px;color:var(--muted);line-height:1.5;}
+
+.llm-tip{margin-top:16px;background:rgba(139,124,246,0.08);border:1px solid rgba(139,124,246,0.35);
+  border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;}
+.llm-tag{font-family:var(--mono);font-size:10.5px;color:var(--purple);font-weight:700;letter-spacing:.04em;}
+.llm-tip p{margin:0;font-size:13.3px;color:#CBC8F5;}
+
+/* Case studies tabs */
+.case-wrap{padding:44px 0;}
+.case-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;border-bottom:1px solid var(--border);padding-bottom:14px;}
+.case-tab{font-family:var(--mono);font-size:12.5px;color:var(--muted);background:var(--panel-alt);
+  border:1px solid var(--border);padding:9px 14px;border-radius:9px;cursor:pointer;transition:.15s;}
+.case-tab:hover{color:var(--text);}
+.case-tab.active{color:#2a1c04;background:var(--gold);border-color:var(--gold);font-weight:600;}
+.case-panel{display:none;padding-top:28px;}
+.case-panel.active{display:block;}
+.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.metric{background:var(--panel-alt);border:1px solid var(--border);border-radius:9px;padding:10px 12px;
+  font-family:var(--mono);font-size:12.5px;color:var(--text);}
+.case-note{font-size:11.5px;color:var(--muted);font-style:italic;margin:4px 2px 0;}
+
+/* Kelly calculator */
+.calc{background:var(--panel-alt);border:1px solid var(--border);border-radius:16px;padding:26px 28px;margin:20px 0 10px;}
+.calc h3{font-family:var(--serif);font-size:20px;margin:0 0 6px;}
+.calc p.calc-sub{color:var(--muted);font-size:13.5px;margin:0 0 20px;}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+.calc-controls label{display:block;font-size:12.5px;color:var(--muted);margin:14px 0 6px;}
+.calc-controls input[type=range]{width:100%;accent-color:var(--blue);}
+.calc-val{font-family:var(--mono);color:var(--text);font-weight:600;}
+.calc-outputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start;}
+.out-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.out-box .lab{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.out-box .val{font-family:var(--mono);font-size:19px;color:var(--text);}
+.out-box.hi .val{color:var(--green);}
+#kellyChart{width:100%;height:140px;display:block;margin-top:6px;}
+
+/* Excel section */
+.excel-cta{margin:60px 0;padding:36px;border-radius:18px;background:linear-gradient(135deg,rgba(76,195,138,0.10),rgba(76,141,255,0.08));
+  border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.excel-cta h3{font-family:var(--serif);font-size:22px;margin:0 0 8px;}
+.excel-cta p{color:var(--muted);font-size:13.5px;max-width:60ch;margin:0;}
+.excel-cta ul{margin:12px 0 0;padding-left:18px;color:#C9D2E5;font-size:13px;}
+.big-dl{flex:none;display:inline-flex;align-items:center;gap:10px;background:var(--green);color:#06251a;
+  font-weight:700;padding:14px 22px;border-radius:12px;font-size:14.5px;box-shadow:0 10px 24px rgba(76,195,138,.25);}
+.big-dl:hover{filter:brightness(1.05);}
+
+.refs{padding:40px 0 20px;}
+.refs h3{font-family:var(--serif);font-size:22px;margin:0 0 16px;}
+.refs ol{padding-left:20px;color:var(--muted);font-size:13px;}
+.refs li{margin-bottom:8px;}
+
+.footer{padding:30px 56px 60px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);}
+
+/* Mobile nav */
+.mobile-topbar{display:none;}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .mobile-topbar{display:flex;position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);
+    padding:14px 18px;align-items:center;justify-content:space-between;}
+  .mobile-topbar select{background:var(--panel-alt);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:13px;}
+  .hero{padding:44px 22px 34px;}
+  .hero-visual{display:none;}
+  .content{padding:0 22px;}
+  .module-body{grid-template-columns:1fr;}
+  .module-side{position:static;}
+  .calc-grid{grid-template-columns:1fr;}
+  .excel-cta{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div class="bg-decor"></div>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="brand"><div class="brand-mark">Q</div><div class="brand-name">Quant Playbook</div></div>
+    <div class="brand-sub">16 modul · teori, rumus & studi kasus + metode LLM</div>
+    <div class="nav-cluster-label" style="--accent:#4C8DFF">Fondasi & Data</div><a href="#m01" class="nav-link" data-num="01"><span class="nav-badge">01</span>Pengantar Quant Trading</a><a href="#m02" class="nav-link" data-num="02"><span class="nav-badge">02</span>Data Preparation & Cleansing</a><a href="#m03" class="nav-link" data-num="03"><span class="nav-badge">03</span>Universe Selection</a><div class="nav-cluster-label" style="--accent:#4CC38A">Riset Faktor</div><a href="#m04" class="nav-link" data-num="04"><span class="nav-badge">04</span>Factor Zoo: Momentum, Trend & Volatility</a><a href="#m05" class="nav-link" data-num="05"><span class="nav-badge">05</span>Factor Zoo: Skewness, Carry & Value</a><a href="#m06" class="nav-link" data-num="06"><span class="nav-badge">06</span>Factor Testing: Binning, Backtest & Performance Metrics</a><a href="#m07" class="nav-link" data-num="07"><span class="nav-badge">07</span>Cross Validation, Stability & Overfitting</a><a href="#m08" class="nav-link" data-num="08"><span class="nav-badge">08</span>Factors/Strategy Selection & Combination</a><div class="nav-cluster-label" style="--accent:#8B7CF6">Konstruksi Portofolio & Eksekusi</div><a href="#m09" class="nav-link" data-num="09"><span class="nav-badge">09</span>Naive Markowitz Portfolio Optimization</a><a href="#m10" class="nav-link" data-num="10"><span class="nav-badge">10</span>Markowitz Portfolio Optimization dengan Regularisasi</a><a href="#m11" class="nav-link" data-num="11"><span class="nav-badge">11</span>Kelly Criterion, Leverage & Drawdown</a><a href="#m12" class="nav-link" data-num="12"><span class="nav-badge">12</span>Execution: TWAP/VWAP & Order Management</a><div class="nav-cluster-label" style="--accent:#E3B341">Studi Kasus Multi-Market</div><a href="#m13" class="nav-link" data-num="13"><span class="nav-badge">13</span>Case: Crypto Market</a><a href="#m14" class="nav-link" data-num="14"><span class="nav-badge">14</span>Case: Indonesian Stock Market (IDX)</a><a href="#m15" class="nav-link" data-num="15"><span class="nav-badge">15</span>Case: Commodities and FX (Komoditas & FC)</a><a href="#m16" class="nav-link" data-num="16"><span class="nav-badge">16</span>Case: Join All Market Strategy</a>
+    <a class="dl-btn" href="Quant_Trading_Toolkit.xlsx" download>⬇ Unduh Excel Toolkit</a>
+  </nav>
+
+  <main class="main">
+    <div class="mobile-topbar">
+      <div class="brand"><div class="brand-mark">Q</div><div class="brand-name" style="font-size:15px">Quant Playbook</div></div>
+      <select id="mobileNav"><option value="">Lompat ke modul…</option><option value="01">01 — Pengantar Quant Trading</option><option value="02">02 — Data Preparation & Cleansing</option><option value="03">03 — Universe Selection</option><option value="04">04 — Factor Zoo: Momentum, Trend & Volatility</option><option value="05">05 — Factor Zoo: Skewness, Carry & Value</option><option value="06">06 — Factor Testing: Binning, Backtest & Performance Metrics</option><option value="07">07 — Cross Validation, Stability & Overfitting</option><option value="08">08 — Factors/Strategy Selection & Combination</option><option value="09">09 — Naive Markowitz Portfolio Optimization</option><option value="10">10 — Markowitz Portfolio Optimization dengan Regularisasi</option><option value="11">11 — Kelly Criterion, Leverage & Drawdown</option><option value="12">12 — Execution: TWAP/VWAP & Order Management</option><option value="13">13 — Case: Crypto Market</option><option value="14">14 — Case: Indonesian Stock Market (IDX)</option><option value="15">15 — Case: Commodities and FX (Komoditas & FC)</option><option value="16">16 — Case: Join All Market Strategy</option></select>
+    </div>
+
+    <header class="hero">
+      <div class="hero-eyebrow">MATERI 16 MODUL · QUANTITATIVE TRADING × LLM</div>
+      <h1>Menyusun strategi trading dari data mentah sampai eksekusi.</h1>
+      <p class="lead">Kurikulum lengkap dari persiapan data, factor zoo, uji statistik anti-overfitting, optimasi portofolio Markowitz & Kelly, sampai eksekusi order — dilengkapi peran Large Language Model di tiap tahap riset, serta empat studi kasus lintas pasar: crypto, saham Indonesia, komoditas & FX.</p>
+      <div class="hero-stats">
+        <div class="hstat"><b>16</b><span>modul kurikulum</span></div>
+        <div class="hstat"><b>30+</b><span>rumus & formula kunci</span></div>
+        <div class="hstat"><b>4</b><span>studi kasus multi-market</span></div>
+        <div class="hstat"><b>7</b><span>sheet kalkulator Excel</span></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="section-intro">
+        <h3>Bagian I–III · Fondasi, Riset Faktor, dan Konstruksi Portofolio</h3>
+        <p>Dua belas modul pertama membangun pipeline riset secara berurutan: dari data bersih, faktor, pengujian statistik, sampai optimasi portofolio dan eksekusi.</p>
+      </div>
+
+      
+<section class="module" id="m01" data-cluster="A">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4C8DFF">01</span>
+    <div>
+      <h2>Pengantar Quant Trading</h2>
+      <p class="tagline">Dari intuisi ke sistem yang bisa diaudit</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Quantitative trading mengubah keputusan beli/jual menjadi aturan matematis yang bisa diuji ulang secara historis (backtest) sebelum dipakai dengan uang sungguhan. Inti dari cara kerjanya adalah pipeline: data → sinyal (faktor) → portofolio → eksekusi → evaluasi, lalu diulang.</p>
+<p>Dua sumber keunggulan (edge) dalam quant: alpha (kemampuan memprediksi arah/besaran return di atas risiko yang diambil) dan manajemen risiko (mengendalikan seberapa besar kerugian bisa terjadi). Strategi yang bagus jarang menang karena satu faktor ajaib — biasanya karena disiplin proses dan risk control yang konsisten.</p>
+<p>Large Language Model (LLM) masuk ke pipeline ini bukan sebagai 'peramal harga', tapi sebagai asisten riset: mempercepat eksplorasi ide faktor, membaca ribuan dokumen (laporan keuangan, berita, transkrip earnings call) menjadi fitur terstruktur, menulis dan mendebug kode backtest, serta menjadi 'devil's advocate' yang mengkritisi asumsi sebuah strategi.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat membaca laporan tahunan & call transcript lalu mengekstrak skor sentimen manajemen atau red flags akuntansi sebagai fitur tambahan — pekerjaan yang dulu butuh analis manual membaca ratusan halaman.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4C8DFF">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 64" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="g75665" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4C8DFF" stop-opacity="0.65"/><stop offset="100%" stop-color="#4C8DFF" stop-opacity="0"/></linearGradient></defs>
+<path d="M 6.0 58.0 L 30.4 53.2 L 54.7 47.1 L 79.1 44.7 L 103.5 38.7 L 127.8 33.8 L 152.2 30.2 L 176.5 22.9 L 200.9 19.3 L 225.3 14.5 L 249.6 9.6 L 274.0 6.0 L 274.0 64 L 6.0 64 Z" fill="url(#g75665)" opacity="0.28"/><path d="M 6.0 58.0 L 30.4 53.2 L 54.7 47.1 L 79.1 44.7 L 103.5 38.7 L 127.8 33.8 L 152.2 30.2 L 176.5 22.9 L 200.9 19.3 L 225.3 14.5 L 249.6 9.6 L 274.0 6.0" fill="none" stroke="#4C8DFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="274.0" cy="6.0" r="3.2" fill="#4C8DFF"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Pipeline dasar</div>
+  <div class="fx-formula">Data → Faktor → Portofolio → Eksekusi → Evaluasi → (ulangi)</div>
+  <div class="fx-desc">Setiap tahap punya risiko sendiri: bias data, overfitting faktor, konsentrasi portofolio, slippage eksekusi.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m02" data-cluster="A">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4C8DFF">02</span>
+    <div>
+      <h2>Data Preparation & Cleansing</h2>
+      <p class="tagline">Model sebaik data yang memberi makan</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Sebelum bicara model, bereskan dulu data: harga harus disesuaikan terhadap corporate action (stock split, dividen, rights issue) agar return harian tidak melompat palsu. Data yang tidak disesuaikan (unadjusted) membuat sinyal momentum atau volatilitas jadi bias.</p>
+<p>Survivorship bias adalah jebakan klasik: memakai hanya daftar saham yang 'masih hidup' hari ini untuk membangun universe historis membuat performa backtest terlihat lebih bagus dari kenyataan, karena saham yang delisting/bangkrut hilang dari sampel.</p>
+<p>Data harus point-in-time — artinya nilai fundamental (misalnya EPS kuartal ini) hanya boleh 'diketahui' oleh model pada tanggal publikasi resminya, bukan tanggal akhir periode laporan. Melanggar ini disebut look-ahead bias.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM efektif untuk mem-parsing format data fundamental yang tidak seragam antar sumber (mis. laporan keuangan IDX vs API luar negeri) dan menstandardisasi nama field secara semi-otomatis — tapi hasilnya tetap wajib divalidasi dengan aturan sanity-check numerik, bukan dipercaya mentah-mentah.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4C8DFF">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="6" y1="45.0" x2="274" y2="45.0" stroke="#2A3A57" stroke-width="1"/><rect x="12.2" y="17.0" width="13.6" height="28.0" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="34.2" y="45.0" width="13.6" height="10.8" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="56.2" y="23.3" width="13.6" height="21.7" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="78.2" y="28.8" width="13.6" height="16.2" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="100.2" y="45.0" width="13.6" height="28.0" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="122.2" y="8.0" width="13.6" height="37.0" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="144.2" y="36.9" width="13.6" height="8.1" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="166.2" y="45.0" width="13.6" height="19.9" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="188.2" y="15.2" width="13.6" height="29.8" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="210.2" y="45.0" width="13.6" height="5.4" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="232.2" y="20.6" width="13.6" height="24.4" rx="1.5" fill="#4C8DFF" opacity="0.85"/><rect x="254.2" y="32.4" width="13.6" height="12.6" rx="1.5" fill="#4C8DFF" opacity="0.85"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Winsorization (batasi outlier)</div>
+  <div class="fx-formula">x_clipped = min(max(x, P1), P99)</div>
+  <div class="fx-desc">Memotong nilai ekstrem di persentil ke-1 dan ke-99 supaya outlier data (misal salah input harga) tidak merusak estimasi statistik.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Return sesudah adjustment</div>
+  <div class="fx-formula">r_t = (P_t·Adj_t)/(P_{t-1}·Adj_{t-1}) - 1</div>
+  <div class="fx-desc">Adj_t = faktor kumulatif dividen & split hingga waktu t.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m03" data-cluster="A">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4C8DFF">03</span>
+    <div>
+      <h2>Universe Selection</h2>
+      <p class="tagline">Memilih arena sebelum memilih pemain</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Universe adalah kumpulan instrumen yang layak diperdagangkan strategi Anda. Kriteria umum: kapitalisasi pasar minimum, average daily value (ADV) minimum agar order bisa dieksekusi tanpa dampak harga berlebihan, serta filter kualitas (tidak sedang suspensi, tidak dalam pemantauan khusus).</p>
+<p>Universe yang terlalu sempit membatasi diversifikasi; terlalu lebar memasukkan saham ilikuid yang secara teori punya 'alpha' tinggi di backtest tapi mustahil dieksekusi di dunia nyata — ini salah satu penyebab utama backtest terlihat bagus tapi gagal saat live trading.</p>
+<p>Universe idealnya juga dinamis (di-refresh berkala), bukan statis, supaya strategi otomatis mengikuti perubahan likuiditas pasar dari waktu ke waktu (contoh: saham IPO baru masuk universe setelah beberapa bulan trading).</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat membantu menyusun daftar exclusion (mis. saham yang sedang dalam sengketa hukum atau kasus fraud) dengan meringkas berita terbaru per emiten secara batch, mempercepat proses due-diligence kualitatif untuk universe filtering.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4C8DFF">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 64" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="g19789" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4C8DFF" stop-opacity="0.65"/><stop offset="100%" stop-color="#4C8DFF" stop-opacity="0"/></linearGradient></defs>
+<path d="M 6.0 58.0 L 30.4 50.6 L 54.7 54.3 L 79.1 43.1 L 103.5 35.7 L 127.8 39.4 L 152.2 28.3 L 176.5 20.9 L 200.9 24.6 L 225.3 13.4 L 249.6 6.0 L 274.0 9.7 L 274.0 64 L 6.0 64 Z" fill="url(#g19789)" opacity="0.28"/><path d="M 6.0 58.0 L 30.4 50.6 L 54.7 54.3 L 79.1 43.1 L 103.5 35.7 L 127.8 39.4 L 152.2 28.3 L 176.5 20.9 L 200.9 24.6 L 225.3 13.4 L 249.6 6.0 L 274.0 9.7" fill="none" stroke="#4C8DFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="274.0" cy="9.7" r="3.2" fill="#4C8DFF"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Average Daily Value (ADV)</div>
+  <div class="fx-formula">ADV = mean(Harga_t × Volume_t), t dalam N hari terakhir</div>
+  <div class="fx-desc">Dipakai membatasi ukuran posisi maksimum: umumnya posisi ≤ 5-10% dari ADV agar dampak harga terkendali.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m04" data-cluster="B">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4CC38A">04</span>
+    <div>
+      <h2>Factor Zoo: Momentum, Trend & Volatility</h2>
+      <p class="tagline">Sinyal berbasis pergerakan harga</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Momentum 12-1 bulan adalah salah satu anomali paling terdokumentasi dalam literatur akademik (Jegadeesh & Titman, 1993): saham yang naik dalam 11 bulan terakhir (melewatkan bulan paling akhir untuk menghindari short-term reversal) cenderung terus outperform beberapa bulan ke depan.</p>
+<p>Trend-following memakai indikator seperti moving average crossover atau MACD untuk mendeteksi arah tren, umum dipakai di futures/komoditas dan menjadi basis strategi CTA (Commodity Trading Advisor) klasik.</p>
+<p>Realized volatility bukan cuma alat ukur risiko — volatilitas rendah historis (low-volatility anomaly) terbukti secara empiris menghasilkan risk-adjusted return yang kompetitif dibanding saham volatilitas tinggi, bertentangan dengan intuisi CAPM klasik.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat men-generate ratusan variasi formula faktor teknikal (kombinasi lag, window, transformasi non-linear) sebagai kandidat riset awal — namun tetap harus difilter lewat cross-validation ketat pada Modul 07 karena sebagian besar kombinasi hasil generative hanya cocok secara kebetulan (data mining).</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4CC38A">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 64" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="g44846" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4C8DFF" stop-opacity="0.65"/><stop offset="100%" stop-color="#4C8DFF" stop-opacity="0"/></linearGradient></defs>
+<path d="M 6.0 58.0 L 30.4 45.5 L 54.7 32.2 L 79.1 40.5 L 103.5 47.8 L 127.8 37.3 L 152.2 28.7 L 176.5 21.3 L 200.9 23.4 L 225.3 17.5 L 249.6 11.5 L 274.0 6.0 L 274.0 64 L 6.0 64 Z" fill="url(#g44846)" opacity="0.28"/><path d="M 6.0 58.0 L 30.4 45.5 L 54.7 32.2 L 79.1 40.5 L 103.5 47.8 L 127.8 37.3 L 152.2 28.7 L 176.5 21.3 L 200.9 23.4 L 225.3 17.5 L 249.6 11.5 L 274.0 6.0" fill="none" stroke="#4C8DFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="274.0" cy="6.0" r="3.2" fill="#4C8DFF"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Momentum 12-1</div>
+  <div class="fx-formula">Mom = P(t-1) / P(t-12) − 1</div>
+  <div class="fx-desc">Lihat perhitungan langsung di sheet 'Factor Zoo' pada file Excel.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Realized Volatility (annualized)</div>
+  <div class="fx-formula">σ_ann = std(r_harian) × √252</div>
+  <div class="fx-desc">252 = jumlah hari bursa efektif per tahun.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">MACD</div>
+  <div class="fx-formula">MACD = EMA₁₂(P) − EMA₂₆(P)</div>
+  <div class="fx-desc">Sinyal beli ketika MACD memotong ke atas garis sinyal (EMA9 dari MACD).</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m05" data-cluster="B">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4CC38A">05</span>
+    <div>
+      <h2>Factor Zoo: Skewness, Carry & Value</h2>
+      <p class="tagline">Sinyal berbasis distribusi & fundamental</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Skewness return mengukur asimetri distribusi hasil: strategi carry (menjual asuransi risiko ekor) cenderung skew negatif — untung kecil sering, rugi besar jarang. Strategi trend-following cenderung skew positif — rugi kecil sering, untung besar jarang.</p>
+<p>Carry adalah imbal hasil yang didapat semata-mata karena memegang posisi seiring waktu, tanpa pergerakan harga — contohnya roll yield di futures komoditas (contango vs backwardation) atau selisih suku bunga di pasangan mata uang (FX carry trade).</p>
+<p>Value factor klasik (Fama-French HML) membandingkan harga pasar terhadap fundamental — semakin rendah rasio harga terhadap laba/buku, semakin 'murah' saham tersebut secara relatif, dengan asumsi pasar akan mengoreksi mispricing dalam jangka menengah-panjang.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>Untuk value & carry, LLM berguna mengekstrak angka fundamental dari laporan keuangan tidak terstruktur (PDF/HTML) menjadi tabel bersih siap dihitung rasio — mengurangi waktu data engineering manual secara signifikan.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4CC38A">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 100" preserveAspectRatio="none" aria-hidden="true">
+<line x1="8" y1="90" x2="272" y2="90" stroke="#2A3A57" stroke-width="1"/>
+<path d="M 8.0 88.6 L 12.4 88.1 L 16.8 87.5 L 21.2 86.7 L 25.6 85.7 L 30.0 84.5 L 34.4 82.9 L 38.8 81.1 L 43.2 78.9 L 47.6 76.3 L 52.0 73.3 L 56.4 69.9 L 60.8 66.0 L 65.2 61.8 L 69.6 57.1 L 74.0 52.2 L 78.4 47.0 L 82.8 41.7 L 87.2 36.5 L 91.6 31.4 L 96.0 26.7 L 100.4 22.6 L 104.8 19.1 L 109.2 16.4 L 113.6 14.7 L 118.0 14.0 L 122.4 14.4 L 126.8 15.9 L 131.2 18.4 L 135.6 21.8 L 140.0 26.1 L 144.4 31.0 L 148.8 36.3 L 153.2 41.9 L 157.6 47.6 L 162.0 53.2 L 166.4 58.5 L 170.8 63.5 L 175.2 68.1 L 179.6 72.2 L 184.0 75.7 L 188.4 78.8 L 192.8 81.3 L 197.2 83.4 L 201.6 85.0 L 206.0 86.3 L 210.4 87.3 L 214.8 88.1 L 219.2 88.7 L 223.6 89.1 L 228.0 89.4 L 232.4 89.6 L 236.8 89.7 L 241.2 89.8 L 245.6 89.9 L 250.0 89.9 L 254.4 90.0 L 258.8 90.0 L 263.2 90.0 L 267.6 90.0 L 272.0 90.0 L 272.0 90 L 8.0 90 Z" fill="#E3B341" opacity="0.18"/>
+<path d="M 8.0 88.6 L 12.4 88.1 L 16.8 87.5 L 21.2 86.7 L 25.6 85.7 L 30.0 84.5 L 34.4 82.9 L 38.8 81.1 L 43.2 78.9 L 47.6 76.3 L 52.0 73.3 L 56.4 69.9 L 60.8 66.0 L 65.2 61.8 L 69.6 57.1 L 74.0 52.2 L 78.4 47.0 L 82.8 41.7 L 87.2 36.5 L 91.6 31.4 L 96.0 26.7 L 100.4 22.6 L 104.8 19.1 L 109.2 16.4 L 113.6 14.7 L 118.0 14.0 L 122.4 14.4 L 126.8 15.9 L 131.2 18.4 L 135.6 21.8 L 140.0 26.1 L 144.4 31.0 L 148.8 36.3 L 153.2 41.9 L 157.6 47.6 L 162.0 53.2 L 166.4 58.5 L 170.8 63.5 L 175.2 68.1 L 179.6 72.2 L 184.0 75.7 L 188.4 78.8 L 192.8 81.3 L 197.2 83.4 L 201.6 85.0 L 206.0 86.3 L 210.4 87.3 L 214.8 88.1 L 219.2 88.7 L 223.6 89.1 L 228.0 89.4 L 232.4 89.6 L 236.8 89.7 L 241.2 89.8 L 245.6 89.9 L 250.0 89.9 L 254.4 90.0 L 258.8 90.0 L 263.2 90.0 L 267.6 90.0 L 272.0 90.0" fill="none" stroke="#E3B341" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Skewness</div>
+  <div class="fx-formula">Skew = E[(r−μ)³] / σ³</div>
+  <div class="fx-desc">Skew < 0: risiko ekor kiri (crash risk) lebih besar dari yang terlihat pada volatilitas biasa.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Carry (Futures)</div>
+  <div class="fx-formula">Carry = (F/S − 1) × (365/T)</div>
+  <div class="fx-desc">F = harga futures, S = harga spot, T = hari ke jatuh tempo.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Value</div>
+  <div class="fx-formula">E/P = EPS/Harga  ·  B/M = BVPS/Harga</div>
+  <div class="fx-desc">Yield lebih tinggi → secara relatif lebih murah dibanding fundamentalnya.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m06" data-cluster="B">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4CC38A">06</span>
+    <div>
+      <h2>Factor Testing: Binning, Backtest & Performance Metrics</h2>
+      <p class="tagline">Membuktikan sinyal benar-benar bekerja</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Quantile binning mengurutkan seluruh universe berdasarkan skor faktor lalu membaginya menjadi kelompok (biasanya kuintil), kemudian membandingkan rata-rata forward return tiap kelompok. Faktor yang bagus menunjukkan pola monoton: kuintil teratas terus mengalahkan kuintil terbawah.</p>
+<p>Information Coefficient (IC) mengukur korelasi antara skor faktor pada waktu t dengan realized return periode berikutnya — metrik standar industri (Grinold & Kahn) untuk menilai kekuatan prediktif sebuah sinyal sebelum dipakai membentuk portofolio.</p>
+<p>Metrik performa portofolio (bukan hanya faktor mentah) yang wajib dilaporkan bersama: Sharpe ratio, Sortino ratio, Max Drawdown, Calmar ratio, dan turnover (biaya transaksi implisit dari rebalancing).</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat men-generate laporan naratif otomatis dari hasil backtest (menerjemahkan tabel angka menjadi ringkasan bahasa manusia untuk komite investasi) — mempercepat siklus review tanpa menggantikan uji statistik itu sendiri.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4CC38A">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="6" y1="45.0" x2="274" y2="45.0" stroke="#2A3A57" stroke-width="1"/><rect x="13.0" y="24.8" width="16.4" height="20.2" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="39.4" y="18.1" width="16.4" height="26.9" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="65.8" y="34.9" width="16.4" height="10.1" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="92.2" y="14.7" width="16.4" height="30.3" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="118.6" y="8.0" width="16.4" height="37.0" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="145.0" y="31.5" width="16.4" height="13.5" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="171.4" y="21.5" width="16.4" height="23.5" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="197.8" y="11.4" width="16.4" height="33.6" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="224.2" y="38.3" width="16.4" height="6.7" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="250.6" y="18.1" width="16.4" height="26.9" rx="1.5" fill="#4CC38A" opacity="0.85"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Information Coefficient</div>
+  <div class="fx-formula">IC = corr(Skor_i , ForwardReturn_i)</div>
+  <div class="fx-desc">IC > 0.05 pada horizon bulanan umumnya dianggap sinyal yang bermakna secara statistik.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Sharpe Ratio</div>
+  <div class="fx-formula">SR = (R_p − R_f) / σ_p</div>
+  <div class="fx-desc">Rasio return berlebih terhadap volatilitas total.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Sortino Ratio</div>
+  <div class="fx-formula">Sortino = (R_p − R_f) / σ_downside</div>
+  <div class="fx-desc">Hanya menghukum volatilitas sisi rugi — cocok utk strategi dengan distribusi tidak simetris.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Max Drawdown</div>
+  <div class="fx-formula">DD_t = V_t / max(V_0..V_t) − 1</div>
+  <div class="fx-desc">Penurunan terbesar dari puncak ekuitas historis; ukuran 'rasa sakit' psikologis & risiko likuidasi.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m07" data-cluster="B">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4CC38A">07</span>
+    <div>
+      <h2>Cross Validation, Stability & Overfitting</h2>
+      <p class="tagline">Menjaga strategi tidak 'menghafal' masa lalu</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Walk-forward validation membagi data menjadi jendela training dan testing yang bergerak maju mengikuti waktu (bukan random split), mencerminkan kondisi nyata di mana model hanya bisa memakai data masa lalu untuk memprediksi masa depan.</p>
+<p>Purged & embargoed K-Fold (Lopez de Prado) menghilangkan observasi yang tumpang tindih waktu antara fold training dan testing pada data finansial berseri waktu, karena label return berjendela (misal forward 20 hari) bisa 'bocor' informasi antar fold biasa.</p>
+<p>Deflated Sharpe Ratio (Bailey & Lopez de Prado, 2014) mengoreksi Sharpe ratio observasi terhadap jumlah percobaan/strategi yang sudah diuji sebelumnya — semakin banyak kombinasi faktor yang dicoba, semakin tinggi probabilitas menemukan Sharpe tinggi hanya karena kebetulan (multiple testing bias).</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>Justru di sinilah risiko LLM tertinggi: LLM sangat cepat menghasilkan ratusan varian strategi/faktor (rentan p-hacking otomatis). Setiap kandidat dari LLM wajib melewati walk-forward + koreksi multiple-testing di modul ini sebelum dipercaya — jangan pernah melewati langkah ini hanya karena idenya 'terdengar masuk akal'.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4CC38A">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="6" y1="45.0" x2="274" y2="45.0" stroke="#2A3A57" stroke-width="1"/><rect x="13.0" y="8.0" width="16.4" height="37.0" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="39.4" y="16.2" width="16.4" height="28.8" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="65.8" y="24.4" width="16.4" height="20.6" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="92.2" y="32.7" width="16.4" height="12.3" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="118.6" y="38.8" width="16.4" height="6.2" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="145.0" y="44.2" width="16.4" height="0.8" rx="1.5" fill="#4CC38A" opacity="0.85"/><rect x="171.4" y="45.0" width="16.4" height="4.1" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="197.8" y="45.0" width="16.4" height="9.0" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="224.2" y="45.0" width="16.4" height="12.3" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="250.6" y="45.0" width="16.4" height="15.6" rx="1.5" fill="#F0665A" opacity="0.85"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Probability of Backtest Overfitting (PBO)</div>
+  <div class="fx-formula">PBO = P( rank OOS strategi terbaik-IS berada di bawah median )</div>
+  <div class="fx-desc">Semakin tinggi PBO, semakin besar indikasi hasil backtest tidak akan bertahan out-of-sample.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Deflated Sharpe Ratio (konsep)</div>
+  <div class="fx-formula">DSR = Φ( (ŜR − SR₀) × √(N−1) / σ̂(ŜR) )</div>
+  <div class="fx-desc">SR₀ naik seiring jumlah trial N yang sudah dicoba — 'menghukum' data snooping.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m08" data-cluster="B">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#4CC38A">08</span>
+    <div>
+      <h2>Factors/Strategy Selection & Combination</h2>
+      <p class="tagline">Dari banyak sinyal lemah ke satu sinyal kuat</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Faktor-faktor individual jarang dipakai sendirian; kombinasi (multi-factor model) biasanya lebih stabil karena faktor berbeda cenderung 'menyala' di rezim pasar yang berbeda (momentum kuat saat tren jelas, value kuat saat rotasi sektor).</p>
+<p>Sebelum dikombinasikan, faktor perlu di-orthogonalisasi (dibersihkan dari korelasi antar faktor, misalnya lewat regresi residual atau PCA) supaya bobot gabungan tidak overexposed ke satu tema risiko yang sama yang menyamar sebagai beberapa faktor berbeda.</p>
+<p>Metode kombinasi umum: pembobotan berbasis IC historis tiap faktor, regresi LASSO/Ridge untuk seleksi otomatis, atau model machine learning (gradient boosting) yang mempelajari interaksi non-linear antar faktor.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM (dengan reasoning berbasis literatur) dapat menyarankan pengelompokan faktor ke dalam tema risiko (misal 'semua ini sebetulnya proxy risiko likuiditas') — membantu proses orthogonalisasi konseptual sebelum orthogonalisasi statistik dijalankan.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#4CC38A">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true"><circle cx="161.9" cy="43.9" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="239.8" cy="39.1" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="17.1" cy="65.1" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="168.2" cy="60.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="124.4" cy="94.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="149.9" cy="116.9" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="78.1" cy="29.3" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="48.9" cy="66.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="160.5" cy="112.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="222.5" cy="103.5" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="249.5" cy="54.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="244.4" cy="66.2" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="59.9" cy="30.6" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="245.7" cy="52.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="98.1" cy="107.6" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="25.9" cy="88.6" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="10.8" cy="66.8" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="85.6" cy="50.3" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="87.0" cy="70.5" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="23.9" cy="60.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="192.8" cy="68.5" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="202.1" cy="83.8" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="12.2" cy="115.0" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="242.9" cy="94.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="236.7" cy="47.1" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="96.5" cy="64.5" r="2.1" fill="#4C8DFF" opacity="0.35"/>
+<path d="M 10.0 110.0 L 10.1 107.5 L 10.5 105.0 L 11.0 102.5 L 11.9 100.0 L 12.9 97.5 L 14.2 95.0 L 15.7 92.5 L 17.4 90.0 L 19.4 87.5 L 21.6 85.0 L 24.0 82.5 L 26.7 80.0 L 29.6 77.5 L 32.7 75.0 L 36.1 72.5 L 39.7 70.0 L 43.5 67.5 L 47.5 65.0 L 51.8 62.5 L 56.3 60.0 L 61.1 57.5 L 66.1 55.0 L 71.3 52.5 L 76.7 50.0 L 82.4 47.5 L 88.3 45.0 L 94.4 42.5 L 100.8 40.0 L 107.4 37.5 L 114.3 35.0 L 121.3 32.5 L 128.6 30.0 L 136.1 27.5 L 143.9 25.0 L 151.9 22.5 L 160.1 20.0 L 168.6 17.5 L 177.3 15.0 L 186.2 12.5 L 195.3 10.0" fill="none" stroke="#4C8DFF" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Kombinasi berbobot IC</div>
+  <div class="fx-formula">Skor_gabungan = Σ (IC_k / Σ IC_j) × Skor_k</div>
+  <div class="fx-desc">Faktor dengan riwayat IC lebih tinggi & lebih stabil mendapat bobot lebih besar.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Ridge Regression (regularisasi kombinasi)</div>
+  <div class="fx-formula">min Σ(y − Xβ)² + λ‖β‖²</div>
+  <div class="fx-desc">λ mengecilkan bobot faktor yang tidak stabil/berkorelasi tinggi, mengurangi overfitting saat mengombinasikan banyak faktor.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m09" data-cluster="C">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#8B7CF6">09</span>
+    <div>
+      <h2>Naive Markowitz Portfolio Optimization</h2>
+      <p class="tagline">Fondasi mean-variance optimization</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Harry Markowitz (1952) memformalkan trade-off return-risiko: untuk tingkat risiko tertentu, ada satu portofolio dengan expected return tertinggi (efficient frontier). Tangency portfolio adalah titik di frontier dengan Sharpe ratio tertinggi.</p>
+<p>'Naive' di sini berarti memakai estimasi rata-rata return (μ) dan matriks kovarian (Σ) langsung dari data historis tanpa penyesuaian — pendekatan ini secara teori elegan tapi sangat sensitif terhadap noise estimasi, terutama pada μ yang notoriously sulit diestimasi akurat.</p>
+<p>Karena sensitivitas ini, portofolio naive Markowitz sering menghasilkan bobot ekstrem (short besar-besaran di satu aset, long besar-besaran di aset lain) yang tidak realistis dan tidak stabil dari periode ke periode — inilah yang memotivasi regularisasi di Modul 10.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat membantu menjelaskan intuisi geometris efficient frontier ke stakeholder non-teknis, atau men-generate kode Python (cvxpy/scipy) untuk solver optimasi — tapi hasil optimasi numerik tetap harus divalidasi manual, bukan dipercaya dari output LLM secara langsung.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#8B7CF6">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true"><circle cx="161.9" cy="43.9" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="239.8" cy="39.1" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="17.1" cy="65.1" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="168.2" cy="60.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="124.4" cy="94.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="149.9" cy="116.9" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="78.1" cy="29.3" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="48.9" cy="66.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="160.5" cy="112.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="222.5" cy="103.5" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="249.5" cy="54.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="244.4" cy="66.2" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="59.9" cy="30.6" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="245.7" cy="52.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="98.1" cy="107.6" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="25.9" cy="88.6" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="10.8" cy="66.8" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="85.6" cy="50.3" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="87.0" cy="70.5" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="23.9" cy="60.4" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="192.8" cy="68.5" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="202.1" cy="83.8" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="12.2" cy="115.0" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="242.9" cy="94.7" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="236.7" cy="47.1" r="2.1" fill="#4C8DFF" opacity="0.35"/><circle cx="96.5" cy="64.5" r="2.1" fill="#4C8DFF" opacity="0.35"/>
+<path d="M 10.0 110.0 L 10.1 107.5 L 10.5 105.0 L 11.0 102.5 L 11.9 100.0 L 12.9 97.5 L 14.2 95.0 L 15.7 92.5 L 17.4 90.0 L 19.4 87.5 L 21.6 85.0 L 24.0 82.5 L 26.7 80.0 L 29.6 77.5 L 32.7 75.0 L 36.1 72.5 L 39.7 70.0 L 43.5 67.5 L 47.5 65.0 L 51.8 62.5 L 56.3 60.0 L 61.1 57.5 L 66.1 55.0 L 71.3 52.5 L 76.7 50.0 L 82.4 47.5 L 88.3 45.0 L 94.4 42.5 L 100.8 40.0 L 107.4 37.5 L 114.3 35.0 L 121.3 32.5 L 128.6 30.0 L 136.1 27.5 L 143.9 25.0 L 151.9 22.5 L 160.1 20.0 L 168.6 17.5 L 177.3 15.0 L 186.2 12.5 L 195.3 10.0" fill="none" stroke="#4C8DFF" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Tangency portfolio (unconstrained)</div>
+  <div class="fx-formula">w* = Σ⁻¹μ / (𝟙ᵀΣ⁻¹μ)</div>
+  <div class="fx-desc">μ = vektor expected return, Σ = matriks kovarian, 𝟙 = vektor satu.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Variance portofolio</div>
+  <div class="fx-formula">σ_p² = wᵀΣw = Σᵢ Σⱼ wᵢwⱼσᵢⱼ</div>
+  <div class="fx-desc">Dihitung eksplisit tanpa perkalian matriks di sheet Excel pendamping (aman dari galat komputasi).</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Sharpe portofolio</div>
+  <div class="fx-formula">SR_p = (wᵀμ − R_f) / √(wᵀΣw)</div>
+  <div class="fx-desc">Dioptimalkan untuk mencari w* pada efficient frontier.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m10" data-cluster="C">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#8B7CF6">10</span>
+    <div>
+      <h2>Markowitz Portfolio Optimization dengan Regularisasi</h2>
+      <p class="tagline">Menjinakkan sensitivitas estimasi</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Shrinkage covariance (Ledoit & Wolf, 2004) menarik matriks kovarian sampel ke arah target yang lebih stabil (misalnya matriks diagonal atau single-index model), mengurangi noise estimasi terutama ketika jumlah observasi historis relatif sedikit dibanding jumlah aset.</p>
+<p>Selain shrinkage pada Σ, regularisasi juga bisa diterapkan pada bobot portofolio itu sendiri (L1/L2 penalty pada w) untuk membatasi konsentrasi posisi dan leverage berlebihan, mendekati semangat robust optimization.</p>
+<p>Robust optimization melangkah lebih jauh: alih-alih memakai satu estimasi titik μ dan Σ, ia mengoptimalkan untuk skenario terburuk dalam suatu 'uncertainty set' di sekitar estimasi — menghasilkan portofolio yang lebih konservatif namun lebih tahan terhadap kesalahan estimasi.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>Bandingkan hasil naive vs shrinkage langsung di sheet 'Markowitz & Frontier' pada file Excel pendamping — ubah slider λ dan lihat bagaimana Sharpe ratio maksimum & stabilitas bobot berubah secara real-time.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#8B7CF6">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 100" preserveAspectRatio="none" aria-hidden="true">
+<line x1="8" y1="90" x2="272" y2="90" stroke="#2A3A57" stroke-width="1"/>
+<path d="M 8.0 89.2 L 12.4 88.9 L 16.8 88.5 L 21.2 88.0 L 25.6 87.4 L 30.0 86.7 L 34.4 85.7 L 38.8 84.6 L 43.2 83.2 L 47.6 81.6 L 52.0 79.7 L 56.4 77.5 L 60.8 75.0 L 65.2 72.1 L 69.6 68.9 L 74.0 65.3 L 78.4 61.5 L 82.8 57.4 L 87.2 53.0 L 91.6 48.5 L 96.0 43.9 L 100.4 39.3 L 104.8 34.8 L 109.2 30.5 L 113.6 26.5 L 118.0 22.9 L 122.4 19.8 L 126.8 17.3 L 131.2 15.5 L 135.6 14.4 L 140.0 14.0 L 144.4 14.4 L 148.8 15.5 L 153.2 17.3 L 157.6 19.8 L 162.0 22.9 L 166.4 26.5 L 170.8 30.5 L 175.2 34.8 L 179.6 39.3 L 184.0 43.9 L 188.4 48.5 L 192.8 53.0 L 197.2 57.4 L 201.6 61.5 L 206.0 65.3 L 210.4 68.9 L 214.8 72.1 L 219.2 75.0 L 223.6 77.5 L 228.0 79.7 L 232.4 81.6 L 236.8 83.2 L 241.2 84.6 L 245.6 85.7 L 250.0 86.7 L 254.4 87.4 L 258.8 88.0 L 263.2 88.5 L 267.6 88.9 L 272.0 89.2 L 272.0 90 L 8.0 90 Z" fill="#4CC38A" opacity="0.18"/>
+<path d="M 8.0 89.2 L 12.4 88.9 L 16.8 88.5 L 21.2 88.0 L 25.6 87.4 L 30.0 86.7 L 34.4 85.7 L 38.8 84.6 L 43.2 83.2 L 47.6 81.6 L 52.0 79.7 L 56.4 77.5 L 60.8 75.0 L 65.2 72.1 L 69.6 68.9 L 74.0 65.3 L 78.4 61.5 L 82.8 57.4 L 87.2 53.0 L 91.6 48.5 L 96.0 43.9 L 100.4 39.3 L 104.8 34.8 L 109.2 30.5 L 113.6 26.5 L 118.0 22.9 L 122.4 19.8 L 126.8 17.3 L 131.2 15.5 L 135.6 14.4 L 140.0 14.0 L 144.4 14.4 L 148.8 15.5 L 153.2 17.3 L 157.6 19.8 L 162.0 22.9 L 166.4 26.5 L 170.8 30.5 L 175.2 34.8 L 179.6 39.3 L 184.0 43.9 L 188.4 48.5 L 192.8 53.0 L 197.2 57.4 L 201.6 61.5 L 206.0 65.3 L 210.4 68.9 L 214.8 72.1 L 219.2 75.0 L 223.6 77.5 L 228.0 79.7 L 232.4 81.6 L 236.8 83.2 L 241.2 84.6 L 245.6 85.7 L 250.0 86.7 L 254.4 87.4 L 258.8 88.0 L 263.2 88.5 L 267.6 88.9 L 272.0 89.2" fill="none" stroke="#4CC38A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Ledoit-Wolf Shrinkage</div>
+  <div class="fx-formula">Σ_shrunk = (1−λ)·Σ_sample + λ·F</div>
+  <div class="fx-desc">F = target shrinkage (mis. matriks diagonal varians); λ ∈ [0,1] dipilih meminimalkan expected estimation error.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Ridge-regularized weight</div>
+  <div class="fx-formula">min wᵀΣw − γ·wᵀμ + λ‖w‖²</div>
+  <div class="fx-desc">γ = risk-aversion, λ = intensitas regularisasi pada bobot itu sendiri.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m11" data-cluster="C">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#8B7CF6">11</span>
+    <div>
+      <h2>Kelly Criterion, Leverage & Drawdown</h2>
+      <p class="tagline">Berapa besar taruhan yang optimal?</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Kelly Criterion (1956) menjawab pertanyaan fundamental position sizing: berapa fraksi modal optimal untuk dipertaruhkan agar growth rate jangka panjang (log-utility) dimaksimalkan? Jawabannya bukan 'sebesar mungkin', melainkan proporsional terhadap edge dibagi risiko kuadrat.</p>
+<p>Full Kelly memaksimalkan growth rate teoretis tapi menghasilkan volatilitas ekuitas dan drawdown yang sangat tinggi dalam praktik nyata (estimasi μ dan σ selalu mengandung noise). Karena itu praktisi hampir selalu memakai fractional Kelly, paling umum half-Kelly.</p>
+<p>Hubungan antara leverage dan drawdown bersifat non-linear: menaikkan leverage secara linear meningkatkan potensi drawdown secara lebih dari linear, sehingga leverage optimal untuk growth rate belum tentu optimal untuk toleransi risiko psikologis atau margin call.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM cocok dipakai menyusun dokumentasi risk-limit internal (menerjemahkan angka Kelly/leverage menjadi kebijakan tertulis yang mudah dipahami trader & compliance) — keputusan angka leverage tetap harus melalui proses kuantitatif, bukan generative.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#8B7CF6">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="8" y1="8.0" x2="272" y2="8.0" stroke="#2A3A57" stroke-width="1"/>
+<path d="M 8.0 8.0 L 32.0 18.6 L 56.0 34.4 L 80.0 23.9 L 104.0 50.3 L 128.0 82.0 L 152.0 66.1 L 176.0 39.7 L 200.0 18.6 L 224.0 8.0 L 248.0 13.3 L 272.0 29.1 L 272.0 8.0 L 8.0 8.0 Z" fill="#F0665A" opacity="0.22"/><path d="M 8.0 8.0 L 32.0 18.6 L 56.0 34.4 L 80.0 23.9 L 104.0 50.3 L 128.0 82.0 L 152.0 66.1 L 176.0 39.7 L 200.0 18.6 L 224.0 8.0 L 248.0 13.3 L 272.0 29.1" fill="none" stroke="#F0665A" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">Kelly Continuous</div>
+  <div class="fx-formula">f* = μ / σ²</div>
+  <div class="fx-desc">μ = expected excess return tahunan, σ² = varian return tahunan.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Kelly Discrete (binary bet)</div>
+  <div class="fx-formula">f* = p − (1−p)/b</div>
+  <div class="fx-desc">p = win rate, b = rasio rata-rata untung/rata-rata rugi.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Growth rate pada leverage f</div>
+  <div class="fx-formula">g(f) = f·μ − ½f²σ²</div>
+  <div class="fx-desc">Growth rate maksimum tercapai tepat di f = f* (Kelly).</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Estimasi hubungan leverage-drawdown (heuristik edukasi)</div>
+  <div class="fx-formula">DD_est(f) ≈ f·σ·√(2·ln 2)</div>
+  <div class="fx-desc">Lihat kalkulator interaktif di bawah dan sheet 'Kelly & Drawdown' pada Excel.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+<section class="module" id="m12" data-cluster="C">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#8B7CF6">12</span>
+    <div>
+      <h2>Execution: TWAP/VWAP & Order Management</h2>
+      <p class="tagline">Alpha bisa hilang di meja eksekusi</p>
+    </div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Sebagus apa pun sinyal & portofolio, return riil bisa jauh lebih rendah dari backtest jika eksekusi buruk. Market impact (harga bergerak melawan Anda karena ukuran order sendiri) dan slippage adalah 'pajak tersembunyi' yang sering diabaikan riset faktor murni.</p>
+<p>TWAP (Time-Weighted Average Price) memecah order secara merata sepanjang periode waktu, cocok ketika tidak ada informasi kuat soal pola volume. VWAP (Volume-Weighted Average Price) mengikuti pola volume historis intraday, umumnya lebih baik meniru 'harga wajar' pasar pada saham likuid.</p>
+<p>Implementation shortfall mengukur total biaya eksekusi dari titik keputusan (harga saat sinyal muncul) hingga harga eksekusi rata-rata aktual — metrik inilah yang menghubungkan langsung kualitas riset (Modul 4-10) dengan hasil P&L nyata (Almgren-Chriss framework).</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat membaca dokumentasi API broker/exchange yang berbeda-beda formatnya dan men-generate kode order-management yang seragam — mempercepat integrasi multi-broker, meski tetap wajib code review manual karena kesalahan eksekusi berarti kerugian finansial langsung.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#8B7CF6">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 64" preserveAspectRatio="none" aria-hidden="true">
+<defs><linearGradient id="g75665" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4C8DFF" stop-opacity="0.65"/><stop offset="100%" stop-color="#4C8DFF" stop-opacity="0"/></linearGradient></defs>
+<path d="M 6.0 58.0 L 30.4 53.2 L 54.7 47.1 L 79.1 44.7 L 103.5 38.7 L 127.8 33.8 L 152.2 30.2 L 176.5 22.9 L 200.9 19.3 L 225.3 14.5 L 249.6 9.6 L 274.0 6.0 L 274.0 64 L 6.0 64 Z" fill="url(#g75665)" opacity="0.28"/><path d="M 6.0 58.0 L 30.4 53.2 L 54.7 47.1 L 79.1 44.7 L 103.5 38.7 L 127.8 33.8 L 152.2 30.2 L 176.5 22.9 L 200.9 19.3 L 225.3 14.5 L 249.6 9.6 L 274.0 6.0" fill="none" stroke="#4C8DFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="274.0" cy="6.0" r="3.2" fill="#4C8DFF"/></svg></div>
+      <div class="fx">
+  <div class="fx-name">VWAP</div>
+  <div class="fx-formula">VWAP = Σ(Pᵢ×Vᵢ) / ΣVᵢ</div>
+  <div class="fx-desc">Rata-rata harga tertimbang volume sepanjang periode eksekusi.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">TWAP</div>
+  <div class="fx-formula">TWAP = (1/n) Σ Pᵢ</div>
+  <div class="fx-desc">Rata-rata harga sederhana pada n interval waktu yang sama.</div>
+</div>
+<div class="fx">
+  <div class="fx-name">Implementation Shortfall</div>
+  <div class="fx-formula">IS = (P_eksekusi − P_keputusan) / P_keputusan</div>
+  <div class="fx-desc">Termasuk market impact, timing risk, dan opportunity cost jika order tidak terisi penuh.</div>
+</div>
+    </aside>
+  </div>
+</section>
+
+      <div class="section-intro" id="kelly-calc-anchor">
+        <h3>Kalkulator interaktif · Kelly Criterion</h3>
+        <p>Geser expected return & volatilitas untuk melihat bagaimana leverage optimal, growth rate, dan estimasi drawdown berubah secara langsung (lihat Modul 11).</p>
+      </div>
+      <div class="calc">
+        <h3>Berapa leverage optimal untuk strategi Anda?</h3>
+        <p class="calc-sub">f* = μ / σ² — geser slider untuk mensimulasikan strategi dengan profil return berbeda.</p>
+        <div class="calc-grid">
+          <div class="calc-controls">
+            <label>Expected excess return tahunan (μ): <span class="calc-val" id="kMuVal">12%</span></label>
+            <input type="range" id="kMu" min="1" max="40" value="12">
+            <label>Volatilitas tahunan (σ): <span class="calc-val" id="kSigVal">20%</span></label>
+            <input type="range" id="kSig" min="5" max="80" value="20">
+            <svg id="kellyChart" viewBox="0 0 560 140" preserveAspectRatio="none"></svg>
+          </div>
+          <div class="calc-outputs">
+            <div class="out-box hi"><div class="lab">Kelly optimal f*</div><div class="val" id="outFStar">3.00x</div></div>
+            <div class="out-box"><div class="lab">Half-Kelly (rekomendasi)</div><div class="val" id="outHalf">1.50x</div></div>
+            <div class="out-box"><div class="lab">Growth rate pada f*</div><div class="val" id="outGrowth">7.2%</div></div>
+            <div class="out-box"><div class="lab">Est. Max Drawdown pada f*</div><div class="val" id="outDD">-99.7%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-intro" id="cases">
+        <h3>Bagian IV · Studi Kasus Multi-Market (Modul 13–16)</h3>
+        <p>Empat studi kasus menerapkan seluruh kerangka di atas pada pasar nyata yang berbeda karakter likuiditas & risikonya.</p>
+      </div>
+      <div class="case-wrap" id="m13">
+        <div class="case-tabs"><button class="case-tab active" data-target="13">13 · Crypto Market</button><button class="case-tab" data-target="14">14 · Indonesian Stock Market (IDX)</button><button class="case-tab" data-target="15">15 · Commodities and FX (Komoditas & FC)</button><button class="case-tab" data-target="16">16 · Join All Market Strategy</button></div>
+        
+<div class="case-panel" data-case="13">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#E3B341">13</span>
+    <div><h2>Case: Crypto Market</h2><p class="tagline">Momentum & funding-rate carry, pasar 24/7</p></div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Setup: cross-sectional momentum (return relatif 30-90 hari) dikombinasikan dengan funding-rate carry pada 20 aset crypto teratas berdasarkan market cap & likuiditas, rebalance mingguan, dengan cap eksposur per aset untuk mengendalikan konsentrasi.</p>
+<p>Tantangan unik pasar crypto: volatilitas jauh lebih tinggi dari saham (annualized vol 50-90% umum terjadi), tidak ada jam tutup pasar sehingga risk management perlu berjalan 24/7, dan funding rate futures perpetual menjadi sumber carry yang tidak ada padanan persisnya di ekuitas tradisional.</p>
+<p>Pembahasan: strategi jenis ini historisnya sensitif terhadap rezim risk-on/risk-off makro global — saat likuiditas global mengetat, korelasi antar-aset crypto naik tajam mendekati 1, mengurangi manfaat diversifikasi cross-sectional yang menjadi basis strategi ini.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dipakai memantau sentimen media sosial & berita crypto secara real-time sebagai overlay filter risiko (mis. menahan/ mengurangi eksposur saat terdeteksi berita regulasi negatif) — sinyal berbasis teks ini idealnya diperlakukan sebagai filter risiko tambahan, bukan sinyal alpha utama.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#E3B341">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="6" y1="45.0" x2="274" y2="45.0" stroke="#2A3A57" stroke-width="1"/><rect x="13.0" y="23.9" width="16.4" height="21.1" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="39.4" y="45.0" width="16.4" height="7.9" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="65.8" y="15.9" width="16.4" height="29.1" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="92.2" y="31.8" width="16.4" height="13.2" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="118.6" y="45.0" width="16.4" height="23.8" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="145.0" y="8.0" width="16.4" height="37.0" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="171.4" y="39.7" width="16.4" height="5.3" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="197.8" y="45.0" width="16.4" height="15.9" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="224.2" y="21.2" width="16.4" height="23.8" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="250.6" y="37.1" width="16.4" height="7.9" rx="1.5" fill="#E3B341" opacity="0.85"/></svg></div>
+      <div class="metric-row"><div class="metric"><span>CAGR ilustratif ≈38%</span></div><div class="metric"><span>Volatilitas ≈55%</span></div><div class="metric"><span>Max DD ≈−32%</span></div><div class="metric"><span>Win rate ≈62%</span></div></div>
+      <p class="case-note">Angka pada studi kasus ini bersifat ilustratif untuk tujuan pembelajaran (bukan hasil live trading atau rekomendasi investasi).</p>
+    </aside>
+  </div>
+</div>
+
+<div class="case-panel" data-case="14">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#E3B341">14</span>
+    <div><h2>Case: Indonesian Stock Market (IDX)</h2><p class="tagline">Value + momentum di pasar dengan batasan likuiditas</p></div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Setup: kombinasi value (earning yield) dan momentum 12-1 bulan pada saham IDX dengan filter likuiditas ADV > Rp5 miliar/hari, rebalance bulanan, dengan pembatasan bobot maksimum per saham untuk menghindari konsentrasi di saham-saham mid/small cap yang tipis.</p>
+<p>Tantangan unik IDX: mekanisme auto-rejection atas/bawah (ARA/ARB) membatasi seberapa cepat posisi bisa dieksekusi saat harga bergerak ekstrem, jumlah saham benar-benar likuid jauh lebih sedikit dibanding indeks utama (IHSG terdiri >900 saham tapi mayoritas volumenya tipis), dan porsi kepemilikan asing/lokal memengaruhi pola likuiditas intraday.</p>
+<p>Pembahasan: strategi kombinasi value+momentum di pasar berkembang seperti IDX cenderung punya kapasitas (capacity) terbatas — semakin besar dana yang dikelola, semakin besar dampak harga akibat filter likuiditas yang ketat, sehingga backtest 'gross alpha' harus selalu dikurangi estimasi biaya transaksi yang realistis untuk ukuran dana tertentu.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM membantu meringkas keterbukaan informasi (laporan tahunan, keterbukaan informasi BEI, transkrip public expose) berbahasa Indonesia menjadi skor kualitas tata kelola/fundamental terstruktur — mengurangi hambatan bahasa & volume dokumen dibanding proses manual analis.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#E3B341">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="6" y1="45.0" x2="274" y2="45.0" stroke="#2A3A57" stroke-width="1"/><rect x="13.0" y="20.3" width="16.4" height="24.7" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="39.4" y="26.5" width="16.4" height="18.5" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="65.8" y="45.0" width="16.4" height="12.3" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="92.2" y="8.0" width="16.4" height="37.0" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="118.6" y="32.7" width="16.4" height="12.3" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="145.0" y="45.0" width="16.4" height="24.7" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="171.4" y="14.2" width="16.4" height="30.8" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="197.8" y="38.8" width="16.4" height="6.2" rx="1.5" fill="#E3B341" opacity="0.85"/><rect x="224.2" y="45.0" width="16.4" height="18.5" rx="1.5" fill="#F0665A" opacity="0.85"/><rect x="250.6" y="20.3" width="16.4" height="24.7" rx="1.5" fill="#E3B341" opacity="0.85"/></svg></div>
+      <div class="metric-row"><div class="metric"><span>CAGR ilustratif ≈16%</span></div><div class="metric"><span>Volatilitas ≈19%</span></div><div class="metric"><span>Max DD ≈−14%</span></div><div class="metric"><span>Win rate ≈58%</span></div></div>
+      <p class="case-note">Angka pada studi kasus ini bersifat ilustratif untuk tujuan pembelajaran (bukan hasil live trading atau rekomendasi investasi).</p>
+    </aside>
+  </div>
+</div>
+
+<div class="case-panel" data-case="15">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#E3B341">15</span>
+    <div><h2>Case: Commodities and FX (Komoditas & FC)</h2><p class="tagline">Carry term-structure & interest rate differential</p></div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Setup: strategi carry pada futures komoditas berbasis kemiringan term-structure (contango vs backwardation) dikombinasikan carry FX klasik (long mata uang suku bunga tinggi, short suku bunga rendah), dengan overlay filter tren untuk menghindari carry trade melawan tren kuat.</p>
+<p>Tantangan unik: komoditas dipengaruhi faktor supply-demand fisik (cuaca, geopolitik, kapasitas penyimpanan) yang sulit dimodelkan murni secara statistik; carry FX historisnya rentan terhadap 'crash risk' tiba-tiba saat rezim risk-off global (fenomena skewness negatif klasik carry trade).</p>
+<p>Pembahasan: menggabungkan filter tren dengan carry terbukti secara empiris mengurangi frekuensi & besaran crash dibanding carry murni, karena posisi carry otomatis dikurangi ketika tren pasar mulai berbalik melawan posisi carry tersebut — trade-off-nya adalah return rata-rata sedikit lebih rendah dibanding carry tanpa filter saat kondisi normal.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM dapat meringkas kalender kebijakan bank sentral & rilis data makro dari berbagai negara menjadi satu event-calendar terpadu, membantu manajer risiko mengantisipasi hari-hari dengan potensi volatilitas carry-trade tinggi.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#E3B341">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 90" preserveAspectRatio="none" aria-hidden="true">
+<line x1="8" y1="8.0" x2="272" y2="8.0" stroke="#2A3A57" stroke-width="1"/>
+<path d="M 8.0 8.0 L 37.3 16.2 L 66.7 32.7 L 96.0 24.4 L 125.3 49.1 L 154.7 82.0 L 184.0 57.3 L 213.3 32.7 L 242.7 16.2 L 272.0 8.0 L 272.0 8.0 L 8.0 8.0 Z" fill="#E3B341" opacity="0.22"/><path d="M 8.0 8.0 L 37.3 16.2 L 66.7 32.7 L 96.0 24.4 L 125.3 49.1 L 154.7 82.0 L 184.0 57.3 L 213.3 32.7 L 242.7 16.2 L 272.0 8.0" fill="none" stroke="#E3B341" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div class="metric-row"><div class="metric"><span>CAGR ilustratif ≈11%</span></div><div class="metric"><span>Volatilitas ≈13%</span></div><div class="metric"><span>Max DD ≈−9%</span></div><div class="metric"><span>Win rate ≈56%</span></div></div>
+      <p class="case-note">Angka pada studi kasus ini bersifat ilustratif untuk tujuan pembelajaran (bukan hasil live trading atau rekomendasi investasi).</p>
+    </aside>
+  </div>
+</div>
+
+<div class="case-panel" data-case="16">
+  <div class="module-head">
+    <span class="module-num" style="--accent:#E3B341">16</span>
+    <div><h2>Case: Join All Market Strategy</h2><p class="tagline">Menggabungkan tiga market jadi satu portofolio</p></div>
+  </div>
+  <div class="module-body">
+    <div class="module-theory">
+      <p>Setup: menggabungkan tiga strategi di atas (crypto, IDX, komoditas & FX) ke dalam satu portofolio memakai risk-parity / inverse-volatility weighting — strategi dengan volatilitas lebih rendah mendapat bobot modal lebih besar, bukan disamaratakan.</p>
+<p>Manfaat utama diversifikasi multi-market: ketiga strategi beroperasi di jam trading, siklus makro, dan basis risiko yang relatif berbeda, sehingga korelasi antar-strategi historisnya rendah — kombinasi ini secara teori menghasilkan Sharpe ratio gabungan lebih tinggi daripada rata-rata tertimbang Sharpe individual.</p>
+<p>Pembahasan: risiko utama pendekatan gabungan ini adalah korelasi antar-strategi yang biasanya rendah bisa naik tajam serentak saat krisis likuiditas global ('semua korelasi mendekati satu saat krisis') — sehingga risk-parity tetap harus dilengkapi limit drawdown portofolio keseluruhan (circuit breaker), bukan mengandalkan diversifikasi historis saja.</p>
+      <div class="llm-tip"><span class="llm-tag">Sudut pandang LLM</span><p>LLM berguna untuk menulis 'strategy memo' berkala yang merangkum kontribusi tiap sub-strategi terhadap return & risiko portofolio gabungan untuk laporan ke komite investasi — proses ini murni pelaporan, keputusan alokasi tetap berbasis angka kuantitatif dari sheet Excel.</p></div>
+    </div>
+    <aside class="module-side" style="--accent:#E3B341">
+      <div class="viz-card"><svg class="spark" viewBox="0 0 280 120" preserveAspectRatio="none" aria-hidden="true"><circle cx="161.9" cy="43.9" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="239.8" cy="39.1" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="17.1" cy="65.1" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="168.2" cy="60.7" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="124.4" cy="94.4" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="149.9" cy="116.9" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="78.1" cy="29.3" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="48.9" cy="66.4" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="160.5" cy="112.4" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="222.5" cy="103.5" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="249.5" cy="54.7" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="244.4" cy="66.2" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="59.9" cy="30.6" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="245.7" cy="52.7" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="98.1" cy="107.6" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="25.9" cy="88.6" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="10.8" cy="66.8" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="85.6" cy="50.3" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="87.0" cy="70.5" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="23.9" cy="60.4" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="192.8" cy="68.5" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="202.1" cy="83.8" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="12.2" cy="115.0" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="242.9" cy="94.7" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="236.7" cy="47.1" r="2.1" fill="#E3B341" opacity="0.35"/><circle cx="96.5" cy="64.5" r="2.1" fill="#E3B341" opacity="0.35"/>
+<path d="M 10.0 110.0 L 10.1 107.5 L 10.5 105.0 L 11.0 102.5 L 11.9 100.0 L 12.9 97.5 L 14.2 95.0 L 15.7 92.5 L 17.4 90.0 L 19.4 87.5 L 21.6 85.0 L 24.0 82.5 L 26.7 80.0 L 29.6 77.5 L 32.7 75.0 L 36.1 72.5 L 39.7 70.0 L 43.5 67.5 L 47.5 65.0 L 51.8 62.5 L 56.3 60.0 L 61.1 57.5 L 66.1 55.0 L 71.3 52.5 L 76.7 50.0 L 82.4 47.5 L 88.3 45.0 L 94.4 42.5 L 100.8 40.0 L 107.4 37.5 L 114.3 35.0 L 121.3 32.5 L 128.6 30.0 L 136.1 27.5 L 143.9 25.0 L 151.9 22.5 L 160.1 20.0 L 168.6 17.5 L 177.3 15.0 L 186.2 12.5 L 195.3 10.0" fill="none" stroke="#E3B341" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+      <div class="metric-row"><div class="metric"><span>Estimasi CAGR gabungan (aditif)</span></div><div class="metric"><span>lihat sheet 'Case Studies'</span></div><div class="metric"><span>Inverse-vol weighting</span></div><div class="metric"><span>korelasi antar-strategi rendah (asumsi)</span></div></div>
+      <p class="case-note">Angka pada studi kasus ini bersifat ilustratif untuk tujuan pembelajaran (bukan hasil live trading atau rekomendasi investasi).</p>
+    </aside>
+  </div>
+</div>
+      </div>
+
+      <div class="excel-cta">
+        <div>
+          <h3>Excel Toolkit — Quant Trading Toolkit.xlsx</h3>
+          <p>Tujuh sheet kalkulator kerja (bukan sekadar tabel statis) yang otomatis menghitung ulang saat Anda mengubah input biru:</p>
+          <ul>
+            <li>Factor Zoo — momentum, volatilitas, skewness, carry, value</li>
+            <li>Markowitz & Frontier — 25 portofolio acak, naive vs shrinkage regularization</li>
+            <li>Kelly & Drawdown — Kelly kontinu/diskret + kurva leverage-vs-growth</li>
+            <li>Backtest Metrics — Sharpe, Sortino, Max DD, Calmar, IC & quantile spread</li>
+            <li>Case Studies — data & kombinasi risk-parity 3 strategi lintas pasar</li>
+          </ul>
+        </div>
+        <a class="big-dl" href="Quant_Trading_Toolkit.xlsx" download>⬇ Unduh Excel Toolkit (.xlsx)</a>
+      </div>
+
+      <div class="refs">
+        <h3>Referensi utama</h3>
+        <ol>
+          <li>Markowitz, H. (1952). <i>Portfolio Selection.</i> The Journal of Finance.</li>
+          <li>Kelly, J. L. (1956). <i>A New Interpretation of Information Rate.</i> Bell System Technical Journal.</li>
+          <li>Ledoit, O., & Wolf, M. (2004). <i>Honey, I Shrunk the Sample Covariance Matrix.</i> Journal of Portfolio Management.</li>
+          <li>Grinold, R. C., & Kahn, R. N. (2000). <i>Active Portfolio Management</i> (2nd ed.). McGraw-Hill.</li>
+          <li>Fama, E. F., & French, K. R. (1992, 1993). <i>Cross-Section of Expected Stock Returns</i> / <i>Common Risk Factors.</i></li>
+          <li>Bailey, D. H., & López de Prado, M. (2014). <i>The Deflated Sharpe Ratio.</i> Journal of Portfolio Management.</li>
+          <li>López de Prado, M. (2018). <i>Advances in Financial Machine Learning.</i> Wiley.</li>
+          <li>Chan, E. P. <i>Quantitative Trading</i> & <i>Algorithmic Trading.</i> Wiley.</li>
+          <li>Narang, R. K. (2013). <i>Inside the Black Box.</i> Wiley.</li>
+          <li>Almgren, R., & Chriss, N. (2001). <i>Optimal Execution of Portfolio Transactions.</i> Journal of Risk.</li>
+          <li>Moskowitz, T., Ooi, Y. H., & Pedersen, L. H. (2012). <i>Time Series Momentum.</i> J. of Financial Economics.</li>
+          <li>Koijen, R., Moskowitz, T., Pedersen, L. H., & Vrugt, E. (2018). <i>Carry.</i> J. of Financial Economics.</li>
+          <li>Wu, S. et al. (2023). <i>BloombergGPT: A Large Language Model for Finance.</i> arXiv:2303.17564.</li>
+          <li>Lopez-Lira, A., & Tang, Y. (2023). <i>Can ChatGPT Forecast Stock Price Movements?</i> arXiv:2304.07619.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="footer">Dibuat sebagai materi pembelajaran quantitative trading. Seluruh data harga/return bersifat ilustratif kecuali disebut sumbernya secara eksplisit; bukan rekomendasi investasi.</div>
+  </main>
+</div>
+<script>
+// scrollspy
+const links = document.querySelectorAll(".nav-link");
+const secs = document.querySelectorAll(".module, .case-wrap");
+const map = {};
+links.forEach(l=>map[l.dataset.num]=l);
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const num = e.target.id ? e.target.id.replace("m","") : null;
+      links.forEach(l=>l.classList.remove("active"));
+      if(num && map[num]) map[num].classList.add("active");
+    }
+  });
+},{rootMargin:"-15% 0px -70% 0px"});
+document.querySelectorAll(".module").forEach(s=>obs.observe(s));
+
+// mobile select nav
+const mSel = document.getElementById("mobileNav");
+if(mSel){
+  mSel.addEventListener("change",()=>{ window.location.hash = "#m"+mSel.value; });
+}
+
+// case study tabs
+const tabs = document.querySelectorAll(".case-tab");
+const panels = document.querySelectorAll(".case-panel");
+tabs.forEach(t=>{
+  t.addEventListener("click",()=>{
+    tabs.forEach(x=>x.classList.remove("active"));
+    panels.forEach(p=>p.classList.remove("active"));
+    t.classList.add("active");
+    document.querySelector('.case-panel[data-case="'+t.dataset.target+'"]').classList.add("active");
+  });
+});
+
+// Kelly calculator
+const muEl = document.getElementById("kMu");
+const sigEl = document.getElementById("kSig");
+const muVal = document.getElementById("kMuVal");
+const sigVal = document.getElementById("kSigVal");
+const fStarEl = document.getElementById("outFStar");
+const halfEl = document.getElementById("outHalf");
+const growthEl = document.getElementById("outGrowth");
+const ddEl = document.getElementById("outDD");
+const chart = document.getElementById("kellyChart");
+
+function drawChart(mu, sig){
+  const w=560,h=140,n=41;
+  let pts=[];
+  let maxG=-1e9, maxF=0;
+  for(let i=0;i<n;i++){
+    const f = i*0.05;
+    const g = f*mu - 0.5*f*f*sig*sig;
+    pts.push([f,g]);
+    if(g>maxG){maxG=g; maxF=f;}
+  }
+  const xs = pts.map(p=>p[0]), ys = pts.map(p=>p[1]);
+  const xlo=Math.min(...xs), xhi=Math.max(...xs);
+  const ylo=Math.min(...ys), yhi=Math.max(...ys, 0.001);
+  const px = v => 14 + (v-xlo)/(xhi-xlo)*(w-28);
+  const py = v => h-14 - (v-ylo)/(yhi-ylo)*(h-28);
+  let d = "M " + pts.map(p=>px(p[0]).toFixed(1)+" "+py(p[1]).toFixed(1)).join(" L ");
+  const zeroY = py(0).toFixed(1);
+  const kellyX = px(mu/(sig*sig));
+  chart.innerHTML = `
+    <line x1="14" y1="${zeroY}" x2="${w-14}" y2="${zeroY}" stroke="#2A3A57" stroke-width="1"/>
+    <line x1="${kellyX.toFixed ? kellyX.toFixed(1): kellyX}" y1="14" x2="${kellyX}" y2="${h-14}" stroke="#E3B341" stroke-width="1.4" stroke-dasharray="4 3"/>
+    <path d="${d}" fill="none" stroke="#4CC38A" stroke-width="2.6" stroke-linecap="round"/>
+  `;
+}
+
+function update(){
+  const mu = parseFloat(muEl.value)/100;
+  const sig = parseFloat(sigEl.value)/100;
+  muVal.textContent = (mu*100).toFixed(0)+"%";
+  sigVal.textContent = (sig*100).toFixed(0)+"%";
+  const fStar = mu/(sig*sig);
+  const half = fStar/2;
+  const growth = fStar*mu - 0.5*fStar*fStar*sig*sig;
+  const dd = fStar*sig*Math.sqrt(2*Math.log(2));
+  fStarEl.textContent = fStar.toFixed(2)+"x";
+  halfEl.textContent = half.toFixed(2)+"x";
+  growthEl.textContent = (growth*100).toFixed(1)+"%";
+  ddEl.textContent = "-"+(dd*100).toFixed(1)+"%";
+  drawChart(mu, sig);
+}
+if(muEl){ muEl.addEventListener("input", update); sigEl.addEventListener("input", update); update(); }
+</script>
+</body>
+</html>

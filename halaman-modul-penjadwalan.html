@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul Master Penjadwalan &amp; Pengendalian Biaya Proyek Konstruksi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#081521;
+    --navy-900:#0d1f31;
+    --navy-850:#122840;
+    --panel:#0f2439;
+    --line:rgba(157,196,230,0.16);
+    --line-strong:rgba(157,196,230,0.32);
+    --paper:#eaf1f7;
+    --paper-dim:#a9bdd0;
+    --paper-mute:#7891a8;
+    --amber:#f2a93b;
+    --critical:#e2483a;
+    --teal:#48c9b0;
+    --blue-tag:#5b9bd9;
+    --radius-sheet: 2px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--navy-950);
+    color:var(--paper);
+    font-family:'IBM Plex Sans',sans-serif;
+    line-height:1.6;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:44px 44px;
+  }
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk',sans-serif;
+    margin:0;
+    font-weight:600;
+    color:var(--paper);
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  p{color:var(--paper-dim); max-width:66ch;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+  ::selection{background:var(--amber); color:var(--navy-950);}
+
+  /* ---------- NAV ---------- */
+  #nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(8,21,33,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line-strong);
+  }
+  #nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; letter-spacing:0.2px;}
+  .brand .sq{width:10px;height:10px;background:var(--amber);flex:none;}
+  .navlinks{display:flex; gap:22px; font-size:13.5px; color:var(--paper-dim);}
+  .navlinks a{text-decoration:none; padding:6px 2px; border-bottom:1px solid transparent; transition:border-color .15s, color .15s;}
+  .navlinks a:hover{color:var(--paper); border-color:var(--amber);}
+  .btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    background:var(--amber);
+    color:#241705;
+    border:none;
+    padding:10px 16px;
+    cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px;
+    text-decoration:none;
+    transition:transform .12s ease, background .15s;
+  }
+  .btn:hover{background:#ffbf5c; transform:translateY(-1px);}
+  .btn.ghost{background:transparent; color:var(--paper); border:1px solid var(--line-strong);}
+  .btn.ghost:hover{border-color:var(--amber); color:var(--amber); background:transparent;}
+  @media(max-width:860px){.navlinks{display:none;}}
+
+  /* ---------- HERO ---------- */
+  #hero{padding:96px 0 70px; border-bottom:1px solid var(--line);}
+  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:60px; align-items:center;}
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr;}}
+  .stamp{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--line-strong);
+    padding:6px 12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--teal);
+    margin-bottom:22px;
+  }
+  .stamp .dot{width:6px;height:6px;background:var(--teal); border-radius:50%;}
+  #hero h1{font-size:44px; line-height:1.12; letter-spacing:-0.5px;}
+  #hero h1 em{font-style:normal; color:var(--amber);}
+  #hero p.lead{font-size:16.5px; margin-top:20px; max-width:52ch;}
+  .hero-ctas{display:flex; gap:12px; margin-top:32px; flex-wrap:wrap;}
+  .hero-meta{display:flex; gap:28px; margin-top:40px; padding-top:24px; border-top:1px solid var(--line);}
+  .hero-meta div{font-family:'IBM Plex Mono',monospace;}
+  .hero-meta .num{font-size:22px; color:var(--paper); font-weight:600;}
+  .hero-meta .lbl{font-size:11px; color:var(--paper-mute); margin-top:2px;}
+
+  /* Hero diagram */
+  .diagram-card{border:1px solid var(--line-strong); background:var(--panel); padding:20px;}
+  .diagram-card .cap{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--paper-mute); display:flex; justify-content:space-between; margin-bottom:10px;}
+  .diagram-card .cap b{color:var(--critical); font-weight:600;}
+  svg text{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- CURRICULUM STRIP ---------- */
+  #peta{padding:60px 0; border-bottom:1px solid var(--line);}
+  .section-label{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--amber); margin-bottom:10px;}
+  #peta h2{font-size:26px; margin-bottom:28px; max-width:36ch;}
+  .curr-row{display:grid; grid-template-columns:repeat(7,1fr); gap:1px; background:var(--line-strong); border:1px solid var(--line-strong);}
+  .curr-cell{background:var(--navy-900); padding:16px 14px; min-height:112px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:background .15s;}
+  .curr-cell:hover{background:var(--panel);}
+  .curr-cell.active{background:var(--navy-850); box-shadow:inset 0 -3px 0 var(--amber);}
+  .curr-cell .n{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--paper-mute);}
+  .curr-cell .t{font-size:13px; font-weight:600; margin-top:8px; color:var(--paper);}
+  @media(max-width:900px){.curr-row{grid-template-columns:repeat(2,1fr);}}
+
+  /* ---------- MODULE SHEETS ---------- */
+  .module{padding:78px 0; border-bottom:1px solid var(--line);}
+  .module:nth-child(even){background:rgba(255,255,255,0.012);}
+  .sheet-head{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+    border:1px solid var(--line-strong); padding:18px 22px; margin-bottom:36px;
+  }
+  .sheet-head .l{display:flex; align-items:center; gap:16px;}
+  .sheet-num{
+    font-family:'IBM Plex Mono',monospace; font-size:26px; color:var(--amber);
+    border-right:1px solid var(--line-strong); padding-right:16px;
+  }
+  .sheet-head h2{font-size:24px;}
+  .sheet-head .tag{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--paper-mute); text-align:right;}
+
+  .mod-grid{display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start;}
+  @media(max-width:900px){.mod-grid{grid-template-columns:1fr;}}
+
+  .block-title{font-size:12px; font-family:'IBM Plex Mono',monospace; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .block-title::before{content:""; width:14px; height:1px; background:var(--teal);}
+  .theory p{font-size:14.5px;}
+  .theory ul{padding-left:18px; margin:10px 0; color:var(--paper-dim); font-size:14.5px;}
+  .theory li{margin-bottom:6px;}
+  .formula{
+    font-family:'IBM Plex Mono',monospace; font-size:13.5px; color:var(--amber);
+    background:var(--navy-900); border:1px solid var(--line); padding:12px 14px; margin:14px 0;
+    white-space:pre-line;
+  }
+  .pmbok{
+    border-left:2px solid var(--blue-tag); padding:10px 14px; margin:16px 0;
+    background:rgba(91,155,217,0.07); font-size:13.5px; color:var(--paper-dim);
+  }
+  .pmbok b{color:var(--blue-tag); font-family:'IBM Plex Mono',monospace; font-size:11.5px; display:block; margin-bottom:4px;}
+  .case{
+    border:1px solid var(--line); padding:16px 18px; margin-top:18px; background:var(--navy-900);
+  }
+  .case .lbl{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--critical); margin-bottom:6px;}
+  .case h4{font-size:15px; margin-bottom:6px;}
+  .case p{font-size:13.5px; margin:0;}
+
+  .interactive{border:1px solid var(--line-strong); background:var(--panel); padding:20px;}
+  .interactive .cap{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--paper-mute); margin-bottom:14px; display:flex; justify-content:space-between;}
+
+  /* Tables */
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th,td{border:1px solid var(--line); padding:7px 9px; text-align:left;}
+  th{background:var(--navy-900); font-family:'IBM Plex Mono',monospace; font-weight:500; color:var(--paper-dim); font-size:11.5px;}
+  td{color:var(--paper-dim);}
+  tr.crit td{color:var(--critical);}
+
+  /* CPM interactive */
+  .node{cursor:pointer;}
+  .node rect{transition:stroke .15s, fill .15s;}
+  .node:hover rect{stroke:var(--amber); stroke-width:2;}
+  .edge{stroke:var(--paper-mute); stroke-width:1.4; marker-end:url(#arrow);}
+  .edge.crit{stroke:var(--critical); stroke-width:2.4;}
+  #cpm-tip{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--paper-dim);
+    margin-top:12px; min-height:70px; border-top:1px solid var(--line); padding-top:12px;
+  }
+  #cpm-tip b{color:var(--amber);}
+  #cpm-tip .float-ok{color:var(--teal);}
+
+  /* Sliders */
+  .ctrl-row{display:flex; align-items:center; gap:12px; margin-bottom:14px; font-family:'IBM Plex Mono',monospace; font-size:12px;}
+  .ctrl-row label{width:120px; color:var(--paper-mute); flex:none;}
+  input[type=range]{flex:1; accent-color:var(--amber);}
+  .ctrl-val{width:46px; text-align:right; color:var(--amber);}
+  .kpi-row{display:flex; gap:14px; margin-top:16px; flex-wrap:wrap;}
+  .kpi{border:1px solid var(--line); padding:10px 14px; flex:1; min-width:110px;}
+  .kpi .v{font-family:'IBM Plex Mono',monospace; font-size:19px; color:var(--paper);}
+  .kpi .k{font-size:10.5px; color:var(--paper-mute); margin-top:2px;}
+  .kpi.warn .v{color:var(--critical);}
+  .kpi.good .v{color:var(--teal);}
+
+  /* Accordion */
+  .acc-item{border:1px solid var(--line); margin-bottom:8px;}
+  .acc-h{padding:12px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:500;}
+  .acc-h::after{content:"+"; font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:16px;}
+  .acc-item.open .acc-h::after{content:"–";}
+  .acc-b{max-height:0; overflow:hidden; transition:max-height .25s ease; font-size:13px; color:var(--paper-dim);}
+  .acc-item.open .acc-b{max-height:260px;}
+  .acc-b-in{padding:0 16px 14px;}
+
+  /* Steps for tracking */
+  .steps{display:flex; flex-direction:column; gap:0;}
+  .step{display:flex; gap:14px; padding:14px 0; border-top:1px solid var(--line);}
+  .step:first-child{border-top:none;}
+  .step .idx{font-family:'IBM Plex Mono',monospace; color:var(--amber); font-size:13px; flex:none; width:22px;}
+  .step h5{font-size:14px; margin:0 0 4px; color:var(--paper);}
+  .step p{font-size:13px; margin:0;}
+
+  /* Quiz */
+  #quiz{border:1px solid var(--line-strong); background:var(--panel); padding:24px;}
+  .qopt{display:block; width:100%; text-align:left; background:var(--navy-900); border:1px solid var(--line); color:var(--paper-dim); padding:11px 14px; margin-bottom:8px; cursor:pointer; font-size:13.5px; font-family:'IBM Plex Sans',sans-serif;}
+  .qopt:hover{border-color:var(--amber);}
+  .qopt.correct{border-color:var(--teal); color:var(--teal); background:rgba(72,201,176,0.08);}
+  .qopt.wrong{border-color:var(--critical); color:var(--critical); background:rgba(226,72,58,0.08);}
+  #quiz-progress{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--paper-mute); margin-bottom:14px;}
+  #quiz-explain{font-size:13px; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); color:var(--paper-dim); display:none;}
+  #quiz-explain b{color:var(--amber);}
+
+  /* Reference section */
+  #referensi{padding:78px 0;}
+  .ref-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  @media(max-width:900px){.ref-grid{grid-template-columns:1fr;}}
+  .ref-list{list-style:none; padding:0; margin:0;}
+  .ref-list li{padding:12px 0; border-top:1px solid var(--line); font-size:13.5px; color:var(--paper-dim);}
+  .ref-list li:first-child{border-top:none;}
+  .ref-list b{color:var(--paper); display:block; font-size:14px; margin-bottom:2px;}
+
+  footer{border-top:1px solid var(--line-strong); padding:36px 0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--paper-mute);}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+
+  @media print{
+    body{background:#fff; color:#111;}
+    #nav, .hero-ctas, #quiz, .interactive .cap button{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <div class="brand"><span class="sq"></span> MODUL PLANNING &amp; COST CONTROL</div>
+    <div class="navlinks">
+      <a href="#cpm">CPM</a>
+      <a href="#sdm">Resource</a>
+      <a href="#biaya">Cost Loading</a>
+      <a href="#baseline">Baseline</a>
+      <a href="#p6">P6/Excel</a>
+      <a href="#kurva-s">Kurva-S</a>
+      <a href="#tracking">Tracking</a>
+      <a href="#unduh">Template</a>
+      <a href="#referensi">Referensi</a>
+    </div>
+    <button class="btn" onclick="window.print()">↓ Unduh / Cetak PDF</button>
+  </div>
+</nav>
+
+<header id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="stamp"><span class="dot"></span> MODUL 03–09 · PLANNING &amp; SCHEDULING</div>
+      <h1>Menguasai Jalur Kritis, Biaya, dan <em>Kurva-S</em> Proyek Konstruksi dari Teori sampai Praktik P6</h1>
+      <p class="lead">Tujuh modul interaktif untuk planner, scheduler, dan cost control — mulai dari perhitungan CPM manual, resource dictionary, cost loading BOQ, baseline resmi, hingga otomasi Kurva-S dan tracking progres mingguan. Disusun mengacu pada PMBOK Guide dan studi kasus proyek besar dunia.</p>
+      <div class="hero-ctas">
+        <a href="#cpm" class="btn">Mulai dari Modul 03 →</a>
+        <button class="btn ghost" onclick="window.print()">Unduh Halaman Ini</button>
+      </div>
+      <div class="hero-meta">
+        <div><div class="num">07</div><div class="lbl">MODUL</div></div>
+        <div><div class="num">21</div><div class="lbl">STUDI KASUS &amp; LATIHAN</div></div>
+        <div><div class="num">PMBOK</div><div class="lbl">6th &amp; 7th ED. REF.</div></div>
+        <div><div class="num">5</div><div class="lbl">KUIS INTERAKTIF</div></div>
+      </div>
+    </div>
+
+    <div class="diagram-card">
+      <div class="cap"><span>JARINGAN AON — CONTOH JALUR KRITIS</span><span><b>merah = kritis</b></span></div>
+      <svg viewBox="0 0 360 260" width="100%">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" fill="#7891a8"/>
+          </marker>
+        </defs>
+        <line class="edge crit" x1="50" y1="40" x2="130" y2="40"/>
+        <line class="edge crit" x1="170" y1="40" x2="250" y2="70"/>
+        <line class="edge" x1="50" y1="40" x2="130" y2="130"/>
+        <line class="edge" x1="170" y1="130" x2="250" y2="130"/>
+        <line class="edge crit" x1="290" y1="90" x2="290" y2="150"/>
+        <line class="edge crit" x1="250" y1="180" x2="180" y2="210"/>
+        <line class="edge" x1="170" y1="150" x2="140" y2="210"/>
+        <line class="edge" x1="290" y1="170" x2="200" y2="215"/>
+
+        <g class="node" data-es="0" data-ef="4" data-ls="0" data-lf="4" data-tf="0" data-name="A · Mobilisasi">
+          <rect x="10" y="20" width="40" height="40" fill="#122840" stroke="#e2483a" stroke-width="2"/>
+          <text x="30" y="45" fill="#eaf1f7" font-size="11" text-anchor="middle">A</text>
+        </g>
+        <g class="node" data-es="4" data-ef="10" data-ls="4" data-lf="10" data-tf="0" data-name="B · Pondasi">
+          <rect x="130" y="20" width="40" height="40" fill="#122840" stroke="#e2483a" stroke-width="2"/>
+          <text x="150" y="45" fill="#eaf1f7" font-size="11" text-anchor="middle">B</text>
+        </g>
+        <g class="node" data-es="4" data-ef="9" data-ls="9" data-lf="14" data-tf="5" data-name="C · Site Prep Alt">
+          <rect x="110" y="110" width="40" height="40" fill="#122840" stroke="#48c9b0" stroke-width="1.5"/>
+          <text x="130" y="135" fill="#eaf1f7" font-size="11" text-anchor="middle">C</text>
+        </g>
+        <g class="node" data-es="10" data-ef="18" data-ls="10" data-lf="18" data-tf="0" data-name="D · Struktur">
+          <rect x="250" y="50" width="40" height="40" fill="#122840" stroke="#e2483a" stroke-width="2"/>
+          <text x="270" y="75" fill="#eaf1f7" font-size="11" text-anchor="middle">D</text>
+        </g>
+        <g class="node" data-es="9" data-ef="15" data-ls="14" data-lf="20" data-tf="5" data-name="E · MEP Rough-in">
+          <rect x="150" y="110" width="40" height="40" fill="#122840" stroke="#48c9b0" stroke-width="1.5"/>
+          <text x="170" y="135" fill="#eaf1f7" font-size="11" text-anchor="middle">E</text>
+        </g>
+        <g class="node" data-es="18" data-ef="26" data-ls="18" data-lf="26" data-tf="0" data-name="F · Finishing">
+          <rect x="270" y="130" width="40" height="40" fill="#122840" stroke="#e2483a" stroke-width="2"/>
+          <text x="290" y="155" fill="#eaf1f7" font-size="11" text-anchor="middle">F</text>
+        </g>
+        <g class="node" data-es="26" data-ef="32" data-ls="26" data-lf="32" data-tf="0" data-name="G · Serah Terima">
+          <rect x="160" y="195" width="40" height="40" fill="#122840" stroke="#e2483a" stroke-width="2"/>
+          <text x="180" y="220" fill="#eaf1f7" font-size="11" text-anchor="middle">G</text>
+        </g>
+        <g class="node" data-es="15" data-ef="21" data-ls="20" data-lf="26" data-tf="5" data-name="H · Testing">
+          <rect x="120" y="195" width="40" height="40" fill="#122840" stroke="#48c9b0" stroke-width="1.5"/>
+          <text x="140" y="220" fill="#eaf1f7" font-size="11" text-anchor="middle">H</text>
+        </g>
+      </svg>
+      <div id="cpm-tip">Arahkan kursor ke tiap aktivitas untuk melihat ES, EF, LS, LF, dan Total Float. Kotak <span style="color:#e2483a">merah</span> = jalur kritis (Total Float = 0), kotak <span style="color:#48c9b0">hijau</span> = punya float.</div>
+    </div>
+  </div>
+</header>
+
+<section id="peta">
+  <div class="wrap">
+    <div class="section-label">PETA MODUL</div>
+    <h2>Tujuh langkah dari perhitungan jaringan sampai laporan kurva-S mingguan</h2>
+    <div class="curr-row" id="curr-row">
+      <div class="curr-cell" data-target="cpm"><span class="n">03</span><span class="t">Critical Path Method</span></div>
+      <div class="curr-cell" data-target="sdm"><span class="n">04</span><span class="t">Resource &amp; Role Dictionary</span></div>
+      <div class="curr-cell" data-target="biaya"><span class="n">05</span><span class="t">Cost Loading &amp; BOQ Mapping</span></div>
+      <div class="curr-cell" data-target="baseline"><span class="n">06</span><span class="t">Baseline Schedule &amp; Approval</span></div>
+      <div class="curr-cell" data-target="p6"><span class="n">07</span><span class="t">Export/Import P6 &amp; Excel</span></div>
+      <div class="curr-cell" data-target="kurva-s"><span class="n">08</span><span class="t">Automasi Kurva-S</span></div>
+      <div class="curr-cell" data-target="tracking"><span class="n">09</span><span class="t">Tracking Progress &amp; Updating</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 03 : CPM -->
+<section class="module" id="cpm">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">03</div><h2>Critical Path Method (CPM)</h2></div>
+      <div class="tag">FORWARD PASS · BACKWARD PASS<br>TOTAL FLOAT · JALUR KRITIS</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>CPM adalah teknik penjadwalan berbasis jaringan (network diagram) yang menghitung durasi minimum proyek dengan menelusuri seluruh jalur aktivitas dari awal hingga akhir. Aktivitas dengan Total Float = 0 membentuk <b style="color:#eaf1f7">jalur kritis</b> — keterlambatan di jalur ini langsung menggeser tanggal selesai proyek.</p>
+        <p>Perhitungan dilakukan dua arah:</p>
+        <ul>
+          <li><b style="color:#eaf1f7">Forward Pass</b> — menghitung Early Start (ES) &amp; Early Finish (EF) dari awal ke akhir proyek.</li>
+          <li><b style="color:#eaf1f7">Backward Pass</b> — menghitung Late Start (LS) &amp; Late Finish (LF) dari akhir kembali ke awal.</li>
+        </ul>
+        <div class="formula">EF = ES + Durasi
+LS = LF − Durasi
+Total Float (TF) = LS − ES = LF − EF
+Free Float = ES(penerus) − EF(aktivitas)</div>
+        <div class="pmbok"><b>PMBOK GUIDE 6TH ED. — PROSES "DEVELOP SCHEDULE"</b>PMBOK menempatkan CPM sebagai salah satu teknik inti dalam Schedule Management Knowledge Area, dipakai bersama Precedence Diagramming Method (PDM) untuk menentukan jalur kritis dan cadangan jadwal (schedule reserve) sebelum jadwal dikunci menjadi baseline.</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Burj Khalifa, Dubai (Samsung C&amp;T, 2004–2010)</h4>
+          <p>Konstruksi menara tertinggi di dunia ini bergantung pada penjadwalan jaringan yang sangat ketat karena siklus pengecoran lantai harus berulang tiap 3–4 hari agar 828 meter bangunan selesai tepat waktu. Jalur kritis terletak pada rangkaian pengecoran core wall dan pemasangan curtain wall — setiap keterlambatan pada siklus ini langsung terlihat pada tanggal topping-out, sehingga tim menjadikan pengecoran struktur inti sebagai fokus pemantauan harian.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>PANDUAN CEPAT</span><span class="mono">AON NETWORK</span></div>
+        <p style="font-size:13px;">Diagram jaringan di bagian hero (atas) bisa di-hover untuk melihat ES/EF/LS/LF tiap aktivitas. Di bawah ini ada <b style="color:#eaf1f7">kalkulator CPM sungguhan</b> — masukkan aktivitas Anda sendiri dan sistem akan menghitung jalur kritisnya.</p>
+        <p style="font-size:13px;">Tulis predecessor dengan ID dipisah koma, misal <span class="mono" style="color:#f2a93b">A,C</span>. Kosongkan jika aktivitas tidak punya predecessor.</p>
+      </div>
+    </div>
+
+    <div class="interactive" style="margin-top:28px;">
+      <div class="cap"><span>KALKULATOR CPM — FORWARD &amp; BACKWARD PASS</span><span class="mono" id="cpm-calc-status">BELUM DIHITUNG</span></div>
+      <table id="cpm-input-table">
+        <thead><tr><th style="width:70px">ID</th><th>Nama Aktivitas</th><th style="width:90px">Durasi</th><th style="width:130px">Predecessor</th><th style="width:36px"></th></tr></thead>
+        <tbody id="cpm-input-body"></tbody>
+      </table>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn ghost" id="cpm-add-row" type="button" style="padding:8px 14px;">+ Tambah Aktivitas</button>
+        <button class="btn" id="cpm-calc-btn" type="button" style="padding:8px 16px;">Hitung Jalur Kritis →</button>
+        <button class="btn ghost" id="cpm-reset-btn" type="button" style="padding:8px 14px;">Reset Contoh</button>
+      </div>
+      <div id="cpm-error" style="display:none; margin-top:14px; font-size:12.5px; color:var(--critical); font-family:'IBM Plex Mono',monospace; border:1px solid var(--critical); padding:10px 12px;"></div>
+      <div id="cpm-results" style="display:none; margin-top:20px;">
+        <table id="cpm-result-table">
+          <thead><tr><th>ID</th><th>Nama</th><th>Durasi</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>TF</th><th>Kritis?</th></tr></thead>
+          <tbody id="cpm-result-body"></tbody>
+        </table>
+        <div class="kpi-row">
+          <div class="kpi"><div class="v" id="cpm-total-dur">—</div><div class="k">DURASI TOTAL PROYEK</div></div>
+          <div class="kpi warn"><div class="v" id="cpm-crit-path">—</div><div class="k">JALUR KRITIS</div></div>
+          <div class="kpi good"><div class="v" id="cpm-crit-count">—</div><div class="k">AKTIVITAS KRITIS</div></div>
+        </div>
+        <div id="cpm-diagram-wrap" style="margin-top:18px; overflow-x:auto;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 04 : Resource & Role Dictionary -->
+<section class="module" id="sdm">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">04</div><h2>Resource &amp; Role Dictionary</h2></div>
+      <div class="tag">TENAGA KERJA · ALAT BERAT<br>MATERIAL · NON-LABOR COST</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>Resource dictionary adalah daftar terstruktur seluruh sumber daya yang akan dibebankan ke aktivitas jadwal: tenaga kerja per keahlian, alat berat per unit, material per satuan, dan biaya non-labor (sewa, mobilisasi, overhead lapangan). Struktur ini biasanya mengikuti <b style="color:#eaf1f7">Resource Breakdown Structure (RBS)</b> yang hierarkis, dari kategori besar ke jenis sumber daya spesifik.</p>
+        <p>Setiap resource idealnya memiliki atribut: kode unik, satuan (OH/hari, unit/hari, m³), rate biaya, kalender ketersediaan, dan role/tanggung jawab jika berupa tenaga kerja — sehingga bisa dikaitkan dengan Responsibility Assignment Matrix (RACI) untuk kejelasan siapa mengerjakan apa.</p>
+        <div class="pmbok"><b>PMBOK GUIDE — RESOURCE MANAGEMENT KNOWLEDGE AREA</b>Proses "Estimate Activity Resources" dan "Acquire Resources" menekankan pentingnya RBS dan resource calendar sejak awal, karena akurasi durasi aktivitas dalam CPM sangat bergantung pada ketersediaan resource yang realistis, bukan asumsi kapasitas tak terbatas.</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Hoover Dam, Amerika Serikat (1931–1936)</h4>
+          <p>Proyek bendungan ini mempekerjakan ribuan pekerja lintas keahlian secara bersamaan — dari juru las, operator crane, hingga tukang cor beton — dalam kondisi gurun yang ekstrem. Pembagian tenaga kerja per shift dan per jenis pekerjaan yang terdokumentasi rapi menjadi salah satu alasan proyek ini selesai lebih cepat dari jadwal aslinya, sekaligus menjadi rujukan klasik manajemen tenaga kerja skala besar.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>CONTOH RESOURCE DICTIONARY</span><span class="mono">RBS SAMPLE</span></div>
+        <table>
+          <thead><tr><th>Kode</th><th>Sumber Daya</th><th>Kategori</th><th>Satuan</th><th>Rate</th></tr></thead>
+          <tbody>
+            <tr><td>L-01</td><td>Tukang Besi</td><td>Labor</td><td>OH/hari</td><td>Rp185.000</td></tr>
+            <tr><td>L-02</td><td>Mandor</td><td>Labor</td><td>OH/hari</td><td>Rp260.000</td></tr>
+            <tr><td>E-01</td><td>Tower Crane 40m</td><td>Equipment</td><td>unit/hari</td><td>Rp3.500.000</td></tr>
+            <tr><td>E-02</td><td>Concrete Pump</td><td>Equipment</td><td>unit/hari</td><td>Rp2.100.000</td></tr>
+            <tr><td>M-01</td><td>Beton Ready Mix K350</td><td>Material</td><td>m³</td><td>Rp980.000</td></tr>
+            <tr><td>N-01</td><td>Mobilisasi Alat</td><td>Non-Labor</td><td>lumpsum</td><td>Rp45.000.000</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px; margin-top:10px;">Struktur ini menjadi dasar Cost Loading pada Modul 05 — setiap aktivitas di jadwal akan ditautkan ke baris resource seperti ini.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 05 : Cost Loading & BOQ Mapping -->
+<section class="module" id="biaya">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">05</div><h2>Cost Loading &amp; BOQ Mapping</h2></div>
+      <div class="tag">BILL OF QUANTITY<br>PEMBOBOTAN AKTIVITAS</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>Cost loading adalah proses membebankan nilai biaya (dari BOQ/RAB) ke setiap aktivitas jadwal, sehingga jadwal tidak hanya menunjukkan waktu tetapi juga <b style="color:#eaf1f7">nilai pekerjaan</b> di setiap titik waktu. Ini adalah fondasi untuk menghasilkan Kurva-S dan menerapkan Earned Value Management (EVM).</p>
+        <p>Proses mapping BOQ ke aktivitas harus presisi: satu item BOQ bisa terbagi ke beberapa aktivitas (misal "Pekerjaan Beton Lantai 5" dibagi ke aktivitas per zona), dan sebaliknya beberapa item BOQ bisa menyusun satu aktivitas gabungan.</p>
+        <div class="formula">Bobot Aktivitas (%) = (Biaya Aktivitas ÷ Total Nilai Kontrak) × 100%
+Planned Value (PV) = Σ Bobot Aktivitas Terjadwal × Nilai Kontrak</div>
+        <div class="pmbok"><b>PMBOK GUIDE — COST MANAGEMENT: "DETERMINE BUDGET"</b>Proses ini menghasilkan cost baseline berbentuk kurva S (S-curve) sebagai fungsi waktu, yang menjadi acuan untuk mengukur Planned Value dalam Earned Value Management — persis seperti hasil cost loading BOQ ke jadwal.</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Terusan Panama Expansion (2007–2016)</h4>
+          <p>Proyek perluasan Terusan Panama sempat mengalami sengketa biaya besar antara kontraktor dan otoritas kanal karena perbedaan asumsi cost loading terhadap item pekerjaan tanah dan beton. Kasus ini sering dijadikan contoh betapa pentingnya mapping BOQ ke aktivitas yang disepakati bersama sejak awal, agar klaim biaya di kemudian hari punya dasar volume dan bobot yang jelas.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>PANDUAN CEPAT</span><span class="mono">COST LOADING</span></div>
+        <p style="font-size:13px;">Kalkulator bobot BOQ di bawah menghitung persentase tiap item terhadap total nilai kontrak secara otomatis — cocok untuk latihan menyusun cost loading sebelum dipindahkan ke jadwal P6/Excel Anda.</p>
+      </div>
+    </div>
+
+    <div class="interactive" style="margin-top:28px;">
+      <div class="cap"><span>KALKULATOR BOBOT BOQ</span><span class="mono" id="boq-total-check">TOTAL BOBOT: 0,0%</span></div>
+      <table id="boq-table">
+        <thead><tr><th>Item BOQ</th><th style="width:100px">Volume</th><th style="width:150px">Harga Satuan (Rp)</th><th style="width:150px">Aktivitas</th><th style="width:110px">Nilai (Rp)</th><th style="width:80px">Bobot</th><th style="width:36px"></th></tr></thead>
+        <tbody id="boq-body"></tbody>
+      </table>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn ghost" id="boq-add-row" type="button" style="padding:8px 14px;">+ Tambah Item BOQ</button>
+        <button class="btn" id="boq-calc-btn" type="button" style="padding:8px 16px;">Hitung Bobot →</button>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi"><div class="v" id="boq-total-value">—</div><div class="k">TOTAL NILAI KONTRAK</div></div>
+        <div class="kpi" id="boq-check-kpi"><div class="v" id="boq-check-val">—</div><div class="k">VALIDASI BOBOT (HARUS 100%)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 06 : Baseline -->
+<section class="module" id="baseline">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">06</div><h2>Baseline Schedule &amp; Approval</h2></div>
+      <div class="tag">TARGET RESMI<br>OWNER / KONSULTAN SIGN-OFF</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>Baseline schedule adalah versi jadwal yang <b style="color:#eaf1f7">dikunci secara resmi</b> setelah disetujui semua pihak — menjadi acuan tunggal untuk mengukur progres aktual di sepanjang proyek. Setelah baseline disetujui, perubahan jadwal harus melalui mekanisme change control, bukan diedit bebas.</p>
+        <p>Baseline yang baik memiliki tiga syarat: logika jaringan sudah final (predecessor/successor benar), resource sudah dialokasikan realistis, dan tanggal kunci (milestone kontraktual) sudah sesuai kontrak.</p>
+        <div class="pmbok"><b>PMBOK GUIDE — SCHEDULE BASELINE &amp; CONFIGURATION MANAGEMENT</b>PMBOK mendefinisikan baseline sebagai versi yang disetujui dari suatu output perencanaan, yang hanya dapat diubah melalui prosedur pengendalian perubahan formal — menjadi dasar perbandingan performa aktual vs rencana sepanjang siklus proyek.</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Proyek Infrastruktur Skala Nasional</h4>
+          <p>Pada proyek infrastruktur besar seperti pembangunan jalur transportasi massal perkotaan, baseline schedule biasanya harus melalui beberapa lapis persetujuan — konsultan pengawas, kemudian pemilik proyek — sebelum menjadi acuan pembayaran termin dan penilaian keterlambatan. Proses ini bisa memakan waktu berminggu-minggu karena setiap pihak memeriksa logika jaringan dan durasi secara independen.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>ALUR PERSETUJUAN BASELINE</span><span class="mono">APPROVAL WORKFLOW</span></div>
+        <div class="steps">
+          <div class="step"><div class="idx">01</div><div><h5>Susun Jadwal Detail</h5><p>Scheduler menyusun jaringan aktivitas lengkap dengan durasi &amp; resource terisi penuh.</p></div></div>
+          <div class="step"><div class="idx">02</div><div><h5>Internal Review</h5><p>Project Manager memeriksa logika jaringan, jalur kritis, dan kesesuaian dengan kontrak.</p></div></div>
+          <div class="step"><div class="idx">03</div><div><h5>Submit ke Konsultan</h5><p>Jadwal diajukan sebagai dokumen resmi untuk direview konsultan pengawas.</p></div></div>
+          <div class="step"><div class="idx">04</div><div><h5>Review &amp; Komentar</h5><p>Konsultan memberi catatan; scheduler merevisi bila ada logika yang perlu diperbaiki.</p></div></div>
+          <div class="step"><div class="idx">05</div><div><h5>Persetujuan Owner</h5><p>Owner menandatangani sebagai Target Baseline Resmi — mengunci acuan pelaporan.</p></div></div>
+          <div class="step"><div class="idx">06</div><div><h5>Kunci &amp; Distribusi</h5><p>Baseline disimpan sebagai referensi tetap; revisi selanjutnya wajib melalui change control.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 07 : P6 & Excel -->
+<section class="module" id="p6">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">07</div><h2>Export/Import P6 &amp; Excel</h2></div>
+      <div class="tag">UPDATE VOLUME &amp; BOBOT<br>SPREADSHEET WORKFLOW</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>Primavera P6 kuat dalam logika jaringan dan perhitungan CPM, tetapi update volume pekerjaan mingguan seringkali lebih cepat dilakukan lewat Excel — terutama saat tim lapangan menyerahkan data progres dalam format tabel. Teknik round-trip ini memanfaatkan export XER/XLS dari P6, diproses di Excel, lalu diimpor kembali.</p>
+        <ul>
+          <li><b style="color:#eaf1f7">Export</b>: P6 → file .xer atau spreadsheet berisi Activity ID, Budgeted Units, Actual, Remaining.</li>
+          <li><b style="color:#eaf1f7">Proses di Excel</b>: gunakan formula VLOOKUP/XLOOKUP untuk menautkan data lapangan ke Activity ID.</li>
+          <li><b style="color:#eaf1f7">Import kembali</b>: field % Complete dan Remaining Duration diperbarui massal, jauh lebih cepat dibanding entri manual satu per satu di P6.</li>
+        </ul>
+        <div class="pmbok"><b>PRAKTIK — TOOLS &amp; TECHNIQUES SCHEDULE CONTROL</b>PMBOK tidak mewajibkan software tertentu, tetapi menekankan bahwa "Project Management Information System (PMIS)" harus mendukung update data yang efisien — kombinasi P6 dan Excel adalah penerapan praktis dari prinsip ini di lapangan.</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Proyek EPC Multi-Kontraktor</h4>
+          <p>Pada proyek Engineering-Procurement-Construction (EPC) berskala besar dengan ratusan sub-kontraktor, tim planning pusat sering menerima laporan progres dalam format Excel dari puluhan kontraktor sekaligus. Standarisasi kolom Activity ID antara P6 dan template Excel lapangan menjadi kunci agar konsolidasi data mingguan bisa dilakukan dalam hitungan jam, bukan hari.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>CONTOH FORMAT ROUND-TRIP</span><span class="mono">P6 ⇄ EXCEL</span></div>
+        <table>
+          <thead><tr><th>Activity ID</th><th>Budgeted Units</th><th>Actual (P6)</th><th>Update Lapangan (Excel)</th><th>% Complete Baru</th></tr></thead>
+          <tbody>
+            <tr><td>STR-1005</td><td>320 m³</td><td>210 m³</td><td>+45 m³</td><td>79,7%</td></tr>
+            <tr><td>STR-1006</td><td>280 m³</td><td>140 m³</td><td>+60 m³</td><td>71,4%</td></tr>
+            <tr><td>MEP-2001</td><td>150 titik</td><td>90 titik</td><td>+25 titik</td><td>76,7%</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12px; margin-top:10px;">Kolom "% Complete Baru" dihitung otomatis di Excel lalu diimpor kembali ke field Physical % Complete di P6.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 08 : S-Curve -->
+<section class="module" id="kurva-s">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">08</div><h2>Automasi Kurva-S Rencana</h2></div>
+      <div class="tag">CUMULATIVE % COMPLETE<br>PLANNED vs ACTUAL</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>Kurva-S menggambarkan akumulasi persentase bobot pekerjaan (atau biaya) terhadap waktu. Bentuknya menyerupai huruf S karena kecepatan progres biasanya lambat di awal (mobilisasi), cepat di tengah (pekerjaan utama paralel), lalu melambat lagi di akhir (finishing &amp; testing).</p>
+        <p>Dengan data cost loading dari Modul 05, kurva rencana (Planned) bisa dihitung otomatis di Excel menggunakan SUMIF kumulatif per periode. Kurva aktual (Actual) diplot dari data tracking mingguan (Modul 09) untuk dibandingkan langsung.</p>
+        <div class="formula">S-Curve Rencana (kumulatif minggu-n) = Σ Bobot Aktivitas Terjadwal (minggu 1..n)
+SPI = Earned Value (EV) ÷ Planned Value (PV)
+SPI &lt; 1 → proyek terlambat dari rencana</div>
+        <div class="pmbok"><b>PMBOK GUIDE — EARNED VALUE MANAGEMENT (EVM)</b>Kurva-S adalah representasi visual dari tiga kurva EVM: Planned Value (PV), Earned Value (EV), dan Actual Cost (AC) — dasar untuk menghitung Schedule Performance Index (SPI) dan Cost Performance Index (CPI).</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Channel Tunnel (Terowongan Bawah Laut Inggris–Prancis)</h4>
+          <p>Proyek terowongan sepanjang lebih dari 50 km ini terkenal karena realisasi biaya jauh melampaui rencana awal, terlihat jelas ketika kurva aktual biaya (AC) berada jauh di atas kurva rencana (PV) sepanjang proyek — sering dipakai sebagai contoh klasik dalam literatur manajemen proyek tentang pentingnya memantau kurva-S sejak dini, bukan hanya di akhir proyek.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>SIMULASI KURVA-S LIVE</span><span class="mono">DRAG SLIDER</span></div>
+        <canvas id="scurve" width="480" height="240" style="width:100%; height:auto; display:block; background:var(--navy-900); border:1px solid var(--line);"></canvas>
+        <div class="ctrl-row" style="margin-top:16px;">
+          <label>Progres Aktual</label>
+          <input type="range" id="actualSlider" min="0" max="100" value="55">
+          <span class="ctrl-val" id="actualVal">55%</span>
+        </div>
+        <div class="ctrl-row">
+          <label>Minggu ke-</label>
+          <input type="range" id="weekSlider" min="1" max="20" value="12">
+          <span class="ctrl-val" id="weekVal">12</span>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi" id="kpiPlan"><div class="v">—</div><div class="k">RENCANA (KUMULATIF)</div></div>
+          <div class="kpi" id="kpiActual"><div class="v">—</div><div class="k">AKTUAL (KUMULATIF)</div></div>
+          <div class="kpi" id="kpiSpi"><div class="v">—</div><div class="k">SPI (SCHEDULE PERF.)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE 09 : Tracking -->
+<section class="module" id="tracking">
+  <div class="wrap">
+    <div class="sheet-head">
+      <div class="l"><div class="sheet-num">09</div><h2>Tracking Progress &amp; Updating</h2></div>
+      <div class="tag">ACTUAL START/FINISH<br>REMAINING DURATION</div>
+    </div>
+    <div class="mod-grid">
+      <div class="theory">
+        <div class="block-title">TEORI</div>
+        <p>Tracking progres adalah proses rutin (biasanya mingguan) untuk memperbarui status setiap aktivitas: kapan benar-benar mulai (Actual Start), kapan selesai (Actual Finish), berapa sisa durasi (Remaining Duration), dan berapa persen selesai (% Complete). Data ini diambil pada satu titik waktu yang disebut <b style="color:#eaf1f7">Data Date</b>.</p>
+        <p>Ada dua pendekatan menghitung % Complete: <b style="color:#eaf1f7">physical</b> (berdasarkan volume fisik aktual dibagi rencana) dan <b style="color:#eaf1f7">duration-based</b> (berdasarkan durasi berjalan dibagi total durasi). Metode physical lebih akurat untuk pekerjaan dengan volume terukur seperti pengecoran beton.</p>
+        <div class="pmbok"><b>PMBOK GUIDE — "CONTROL SCHEDULE" PROCESS</b>Proses ini mencakup performance review, variance analysis (SV, SPI), dan pembaruan jadwal berbasis data aktual — memastikan forecast completion date selalu realistis, bukan sekadar mengikuti tanggal rencana awal.</div>
+        <div class="case">
+          <div class="lbl">STUDI KASUS</div>
+          <h4>Petronas Twin Towers, Kuala Lumpur (1993–1998)</h4>
+          <p>Dua menara ini dibangun oleh dua kontraktor berbeda secara paralel dengan sistem tracking progres independen, lalu dibandingkan setiap minggu dalam rapat koordinasi. Data actual start/finish tiap lantai dipakai untuk memverifikasi bahwa kedua menara akan mencapai ketinggian dan topping-out yang seimbang, sebuah tantangan koordinasi jadwal yang jarang ditemui pada proyek gedung tunggal.</p>
+        </div>
+      </div>
+      <div class="interactive">
+        <div class="cap"><span>KALKULATOR SPI / CPI</span><span class="mono">VARIANCE CHECK</span></div>
+        <div class="ctrl-row"><label>Planned Value (PV)</label><input type="number" id="pvInput" value="1000" style="flex:1; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:6px 8px; font-family:'IBM Plex Mono',monospace;"></div>
+        <div class="ctrl-row"><label>Earned Value (EV)</label><input type="number" id="evInput" value="820" style="flex:1; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:6px 8px; font-family:'IBM Plex Mono',monospace;"></div>
+        <div class="ctrl-row"><label>Actual Cost (AC)</label><input type="number" id="acInput" value="900" style="flex:1; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:6px 8px; font-family:'IBM Plex Mono',monospace;"></div>
+        <div class="kpi-row">
+          <div class="kpi" id="kpiSpiTrack"><div class="v">—</div><div class="k">SPI = EV / PV</div></div>
+          <div class="kpi" id="kpiCpiTrack"><div class="v">—</div><div class="k">CPI = EV / AC</div></div>
+        </div>
+        <p id="track-verdict" style="font-size:12.5px; margin-top:12px;"></p>
+      </div>
+    </div>
+
+    <div class="interactive" style="margin-top:28px;">
+      <div class="cap"><span>KUIS CEPAT — UJI PEMAHAMAN</span><span class="mono">5 SOAL</span></div>
+      <div id="quiz">
+        <div id="quiz-progress">SOAL 1 / 5</div>
+        <div id="quiz-q" style="font-size:14.5px; margin-bottom:14px; color:var(--paper);"></div>
+        <div id="quiz-opts"></div>
+        <div id="quiz-explain"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="unduh" style="padding:70px 0; border-bottom:1px solid var(--line); background:rgba(242,169,59,0.04);">
+  <div class="wrap">
+    <div class="section-label">TEMPLATE UNDUHAN</div>
+    <h2 style="font-size:26px; margin-bottom:10px; max-width:40ch;">Praktikkan langsung di Excel dan Word</h2>
+    <p style="max-width:60ch; margin-bottom:30px;">Dua file pendamping modul ini tersedia sebagai unduhan terpisah di percakapan Claude — bukan di dalam halaman ini, karena keduanya adalah file .xlsx dan .docx yang dibuka di aplikasi masing-masing.</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+      <div class="case" style="margin-top:0;">
+        <div class="lbl" style="color:var(--teal)">FILE EXCEL (.XLSX)</div>
+        <h4>Template Kalkulator CPM, Resource Dictionary, Cost Loading, Kurva-S &amp; Tracking</h4>
+        <p>5 sheet siap pakai dengan rumus otomatis: Kalkulator CPM (forward/backward pass), Resource &amp; Role Dictionary, Cost Loading &amp; BOQ Mapping, Kurva-S Otomatis lengkap dengan grafik, dan Tracking Mingguan dengan status on-track/delayed otomatis.</p>
+      </div>
+      <div class="case" style="margin-top:0;">
+        <div class="lbl" style="color:var(--blue-tag)">FILE WORD (.DOCX)</div>
+        <h4>Template Dokumen Persetujuan Baseline &amp; Laporan Progres Mingguan</h4>
+        <p>Lembar pengesahan baseline dengan kolom tanda tangan Scheduler/Konsultan/Owner, ringkasan jalur kritis, tempat lampiran Kurva-S, log perubahan baseline, dan format laporan progres mingguan siap isi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="referensi">
+  <div class="wrap">
+    <div class="section-label">REFERENSI</div>
+    <h2 style="font-size:26px; margin-bottom:30px; max-width:40ch;">Sumber teori dan studi kasus yang digunakan dalam modul ini</h2>
+    <div class="ref-grid">
+      <div>
+        <div class="block-title">STANDAR &amp; LITERATUR</div>
+        <ul class="ref-list">
+          <li><b>A Guide to the Project Management Body of Knowledge (PMBOK® Guide), 6th Edition</b>Project Management Institute — Schedule Management &amp; Cost Management Knowledge Areas, proses Develop Schedule, Control Schedule, Determine Budget, Control Costs.</li>
+          <li><b>The Standard for Project Management &amp; PMBOK® Guide, 7th Edition</b>Project Management Institute — Planning Performance Domain dan prinsip pengukuran performa berbasis nilai (value-based delivery).</li>
+          <li><b>Construction Planning, Equipment, and Methods</b>Peurifoy, Schexnayder, et al. — rujukan teknik penjadwalan dan produktivitas alat berat pada proyek konstruksi.</li>
+          <li><b>Earned Value Project Management</b>Fleming &amp; Koppelman — rujukan konsep PV, EV, AC, SPI, CPI yang mendasari otomasi Kurva-S.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="block-title">STUDI KASUS PROYEK</div>
+        <ul class="ref-list">
+          <li><b>Burj Khalifa, Dubai (2004–2010)</b>Contoh penerapan CPM pada siklus konstruksi berulang skala tinggi.</li>
+          <li><b>Hoover Dam, Amerika Serikat (1931–1936)</b>Contoh klasik manajemen resource dictionary tenaga kerja skala besar.</li>
+          <li><b>Terusan Panama Expansion (2007–2016)</b>Contoh pentingnya kesepakatan cost loading &amp; BOQ mapping sejak awal kontrak.</li>
+          <li><b>Channel Tunnel, Inggris–Prancis</b>Contoh klasik divergensi kurva rencana vs aktual dalam literatur EVM.</li>
+          <li><b>Petronas Twin Towers, Kuala Lumpur (1993–1998)</b>Contoh koordinasi tracking progres dua kontraktor paralel.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>MODUL PLANNING &amp; COST CONTROL — DISUSUN UNTUK PEMBELAJARAN MANDIRI</span>
+    <span>SIMPAN HALAMAN INI (Ctrl/Cmd+S) ATAU CETAK KE PDF UNTUK VERSI OFFLINE</span>
+  </div>
+</footer>
+
+<script>
+// ---- CPM hover tooltip ----
+document.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('mouseenter', ()=>{
+    const d = n.dataset;
+    const tf = parseInt(d.tf);
+    document.getElementById('cpm-tip').innerHTML =
+      `<b>${d.name}</b><br>ES=${d.es} · EF=${d.ef} · LS=${d.ls} · LF=${d.lf} &nbsp; <span class="${tf===0?'':'float-ok'}">Total Float = ${d.tf} ${tf===0?'(JALUR KRITIS)':'(ada float)'}</span>`;
+  });
+});
+
+// ---- Curriculum strip active + scroll ----
+document.querySelectorAll('.curr-cell').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.getElementById(c.dataset.target).scrollIntoView({behavior:'smooth'});
+  });
+});
+const sections = ['cpm','sdm','biaya','baseline','p6','kurva-s','tracking'];
+const cells = document.querySelectorAll('.curr-cell');
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      cells.forEach(c=>c.classList.toggle('active', c.dataset.target===e.target.id));
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(id=>{ const el=document.getElementById(id); if(el) obs.observe(el); });
+
+// ---- S-Curve simulation ----
+const canvas = document.getElementById('scurve');
+const ctx = canvas.getContext('2d');
+const weeks = 20;
+// planned cumulative % follows an S shape
+function plannedCurve(){
+  const arr=[];
+  for(let w=0; w<=weeks; w++){
+    const x = w/weeks;
+    // logistic-ish S curve
+    const val = 100/(1+Math.exp(-9*(x-0.5)));
+    arr.push(val);
+  }
+  // normalize so it starts at 0 and ends at 100
+  const min = arr[0], max = arr[arr.length-1];
+  return arr.map(v => (v-min)/(max-min)*100);
+}
+const planned = plannedCurve();
+
+function drawCurve(){
+  const w = canvas.width, h = canvas.height;
+  const pad = 34;
+  ctx.clearRect(0,0,w,h);
+
+  // grid
+  ctx.strokeStyle = 'rgba(157,196,230,0.12)';
+  ctx.lineWidth = 1;
+  for(let i=0;i<=10;i++){
+    const y = pad + (h-2*pad)*(1-i/10);
+    ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-10,y); ctx.stroke();
+  }
+  ctx.fillStyle = '#7891a8';
+  ctx.font = '10px IBM Plex Mono';
+  for(let i=0;i<=10;i+=2){
+    const y = pad + (h-2*pad)*(1-i/10);
+    ctx.fillText(i*10+'%', 2, y+3);
+  }
+
+  const weekVal = parseInt(document.getElementById('weekSlider').value);
+  const actualPct = parseInt(document.getElementById('actualSlider').value);
+
+  // planned line (full)
+  ctx.strokeStyle = '#5b9bd9';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  planned.forEach((v,i)=>{
+    const x = pad + (w-pad-10)*(i/weeks);
+    const y = pad + (h-2*pad)*(1-v/100);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+
+  // actual line up to weekVal, ending at actualPct
+  const actualArr = [];
+  for(let i=0;i<=weekVal;i++){
+    const t = i/weekVal;
+    actualArr.push(t*actualPct*(0.55+0.45*t)); // slight S lag shape
+  }
+  actualArr[actualArr.length-1] = actualPct;
+
+  ctx.strokeStyle = '#f2a93b';
+  ctx.lineWidth = 2.4;
+  ctx.beginPath();
+  actualArr.forEach((v,i)=>{
+    const x = pad + (w-pad-10)*(i/weeks);
+    const y = pad + (h-2*pad)*(1-v/100);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  // dot at current point
+  const lastX = pad + (w-pad-10)*(weekVal/weeks);
+  const lastY = pad + (h-2*pad)*(1-actualPct/100);
+  ctx.fillStyle = '#f2a93b';
+  ctx.beginPath(); ctx.arc(lastX,lastY,4,0,7); ctx.fill();
+
+  // marker for planned value at that week
+  const plannedAtWeek = planned[weekVal];
+  const py = pad + (h-2*pad)*(1-plannedAtWeek/100);
+  ctx.fillStyle = '#5b9bd9';
+  ctx.beginPath(); ctx.arc(lastX,py,4,0,7); ctx.fill();
+
+  // legend
+  ctx.font='11px IBM Plex Mono';
+  ctx.fillStyle='#5b9bd9'; ctx.fillText('— Rencana (PV)', w-150, 16);
+  ctx.fillStyle='#f2a93b'; ctx.fillText('— Aktual (EV)', w-150, 30);
+
+  // KPIs
+  const spi = (actualPct/plannedAtWeek).toFixed(2);
+  document.getElementById('kpiPlan').querySelector('.v').textContent = plannedAtWeek.toFixed(1)+'%';
+  document.getElementById('kpiActual').querySelector('.v').textContent = actualPct+'%';
+  const spiEl = document.getElementById('kpiSpi');
+  spiEl.querySelector('.v').textContent = spi;
+  spiEl.className = 'kpi ' + (spi<1 ? 'warn' : 'good');
+
+  document.getElementById('actualVal').textContent = actualPct+'%';
+  document.getElementById('weekVal').textContent = weekVal;
+}
+document.getElementById('actualSlider').addEventListener('input', drawCurve);
+document.getElementById('weekSlider').addEventListener('input', drawCurve);
+drawCurve();
+
+// ---- Quiz ----
+const quizData = [
+  {
+    q: "Aktivitas dengan Total Float = 0 disebut apa dalam CPM?",
+    opts: ["Jalur bebas", "Jalur kritis", "Jalur cadangan", "Jalur sekunder"],
+    correct: 1,
+    explain: "Total Float = 0 berarti aktivitas tidak punya ruang keterlambatan sama sekali — itulah definisi jalur kritis."
+  },
+  {
+    q: "Dalam Resource Dictionary, kategori 'sewa tower crane per hari' termasuk jenis biaya apa?",
+    opts: ["Labor", "Material", "Equipment", "Non-Labor"],
+    correct: 2,
+    explain: "Alat berat seperti tower crane dan concrete pump masuk kategori Equipment, terpisah dari tenaga kerja (Labor) dan material fisik."
+  },
+  {
+    q: "Apa fungsi utama Cost Loading terhadap BOQ?",
+    opts: [
+      "Menentukan warna pada diagram jaringan",
+      "Membebankan nilai biaya ke setiap aktivitas jadwal",
+      "Mengganti Primavera P6 dengan Excel",
+      "Menghitung jumlah tenaga kerja harian"
+    ],
+    correct: 1,
+    explain: "Cost loading menautkan nilai BOQ ke aktivitas jadwal, sehingga jadwal punya dimensi biaya — fondasi untuk Kurva-S dan EVM."
+  },
+  {
+    q: "Setelah Baseline Schedule disetujui, perubahan jadwal harus melalui apa?",
+    opts: ["Edit bebas oleh scheduler", "Mekanisme change control resmi", "Tidak boleh diubah sama sekali", "Persetujuan lisan saja"],
+    correct: 1,
+    explain: "Baseline yang sudah disetujui hanya boleh diubah lewat prosedur pengendalian perubahan formal, sesuai prinsip configuration management PMBOK."
+  },
+  {
+    q: "Jika SPI (Schedule Performance Index) bernilai 0,85, apa artinya?",
+    opts: [
+      "Proyek 85% lebih cepat dari rencana",
+      "Proyek berjalan lebih lambat dari rencana",
+      "Proyek tepat sesuai rencana",
+      "Anggaran proyek over budget"
+    ],
+    correct: 1,
+    explain: "SPI < 1 menunjukkan Earned Value lebih kecil dari Planned Value pada titik waktu tersebut — proyek tertinggal dari jadwal rencana."
+  }
+];
+let qIdx = 0, qScore = 0;
+function renderQuiz(){
+  const item = quizData[qIdx];
+  document.getElementById('quiz-progress').textContent = `SOAL ${qIdx+1} / ${quizData.length}`;
+  document.getElementById('quiz-q').textContent = item.q;
+  const optsEl = document.getElementById('quiz-opts');
+  optsEl.innerHTML = '';
+  document.getElementById('quiz-explain').style.display='none';
+  item.opts.forEach((opt,i)=>{
+    const b = document.createElement('button');
+    b.className='qopt';
+    b.textContent = opt;
+    b.onclick = ()=> answerQuiz(i);
+    optsEl.appendChild(b);
+  });
+}
+function answerQuiz(i){
+  const item = quizData[qIdx];
+  const btns = document.querySelectorAll('.qopt');
+  btns.forEach((b,idx)=>{
+    b.style.pointerEvents='none';
+    if(idx===item.correct) b.classList.add('correct');
+    else if(idx===i) b.classList.add('wrong');
+  });
+  if(i===item.correct) qScore++;
+  const ex = document.getElementById('quiz-explain');
+  ex.innerHTML = `<b>${i===item.correct ? 'Benar.' : 'Kurang tepat.'}</b> ${item.explain}`;
+  ex.style.display='block';
+  setTimeout(()=>{
+    if(qIdx < quizData.length-1){ qIdx++; renderQuiz(); }
+    else {
+      document.getElementById('quiz-progress').textContent = 'SELESAI';
+      document.getElementById('quiz-q').textContent = `Skor kamu: ${qScore} / ${quizData.length}`;
+      document.getElementById('quiz-opts').innerHTML = '<button class="qopt" onclick="location.reload()">Ulangi Kuis</button>';
+      ex.style.display='none';
+    }
+  }, 2200);
+}
+renderQuiz();
+
+// ================= CPM CALCULATOR =================
+const cpmSample = [
+  {id:'A', name:'Mobilisasi', dur:4, pred:''},
+  {id:'B', name:'Pondasi', dur:6, pred:'A'},
+  {id:'C', name:'Site Prep Alt', dur:5, pred:'A'},
+  {id:'D', name:'Struktur', dur:8, pred:'B'},
+  {id:'E', name:'MEP Rough-in', dur:6, pred:'C'},
+  {id:'F', name:'Finishing', dur:8, pred:'D'},
+  {id:'H', name:'Testing', dur:6, pred:'E'},
+  {id:'G', name:'Serah Terima', dur:6, pred:'F,H'},
+];
+const cpmBody = document.getElementById('cpm-input-body');
+
+function cpmRowHTML(row){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" class="cpm-id" value="${row.id}" style="width:56px; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px; font-family:'IBM Plex Mono',monospace;"></td>
+    <td><input type="text" class="cpm-name" value="${row.name}" style="width:100%; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px;"></td>
+    <td><input type="number" class="cpm-dur" value="${row.dur}" min="0" style="width:70px; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px; font-family:'IBM Plex Mono',monospace;"></td>
+    <td><input type="text" class="cpm-pred" value="${row.pred}" placeholder="A,C" style="width:100px; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px; font-family:'IBM Plex Mono',monospace;"></td>
+    <td><button type="button" class="cpm-del" style="background:none; border:none; color:var(--critical); cursor:pointer; font-size:16px;">×</button></td>
+  `;
+  tr.querySelector('.cpm-del').onclick = ()=> tr.remove();
+  return tr;
+}
+function loadCpmSample(){
+  cpmBody.innerHTML = '';
+  cpmSample.forEach(r => cpmBody.appendChild(cpmRowHTML(r)));
+}
+loadCpmSample();
+document.getElementById('cpm-add-row').onclick = ()=> cpmBody.appendChild(cpmRowHTML({id:'', name:'', dur:0, pred:''}));
+document.getElementById('cpm-reset-btn').onclick = ()=>{ loadCpmSample(); document.getElementById('cpm-results').style.display='none'; document.getElementById('cpm-error').style.display='none'; document.getElementById('cpm-calc-status').textContent='BELUM DIHITUNG'; };
+
+function cpmError(msg){
+  const el = document.getElementById('cpm-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  document.getElementById('cpm-results').style.display = 'none';
+}
+
+document.getElementById('cpm-calc-btn').onclick = function(){
+  const errEl = document.getElementById('cpm-error');
+  errEl.style.display = 'none';
+  const rows = [...cpmBody.querySelectorAll('tr')].map(tr=>({
+    id: tr.querySelector('.cpm-id').value.trim(),
+    name: tr.querySelector('.cpm-name').value.trim() || '(tanpa nama)',
+    dur: parseFloat(tr.querySelector('.cpm-dur').value) || 0,
+    pred: tr.querySelector('.cpm-pred').value.trim()
+  })).filter(r=>r.id !== '');
+
+  if(rows.length === 0){ cpmError('Isi minimal satu aktivitas dengan ID.'); return; }
+  const ids = rows.map(r=>r.id);
+  const dupes = ids.filter((id,i)=>ids.indexOf(id)!==i);
+  if(dupes.length){ cpmError('ID aktivitas duplikat: ' + [...new Set(dupes)].join(', ')); return; }
+
+  const act = {};
+  rows.forEach(r=> act[r.id] = {...r, preds: r.pred ? r.pred.split(',').map(s=>s.trim()).filter(Boolean) : [], succ:[]});
+
+  for(const id in act){
+    for(const p of act[id].preds){
+      if(!act[p]){ cpmError(`Predecessor "${p}" pada aktivitas "${id}" tidak ditemukan.`); return; }
+      act[p].succ.push(id);
+    }
+  }
+
+  // topological sort (Kahn)
+  const indeg = {}; ids.forEach(id=> indeg[id] = act[id].preds.length);
+  const queue = ids.filter(id=> indeg[id]===0);
+  const order = [];
+  const indegCopy = {...indeg};
+  while(queue.length){
+    const n = queue.shift();
+    order.push(n);
+    act[n].succ.forEach(s=>{ indegCopy[s]--; if(indegCopy[s]===0) queue.push(s); });
+  }
+  if(order.length !== ids.length){ cpmError('Terdeteksi siklus (loop) pada predecessor — periksa kembali logika ketergantungan aktivitas.'); return; }
+
+  // forward pass
+  order.forEach(id=>{
+    const a = act[id];
+    a.ES = a.preds.length ? Math.max(...a.preds.map(p=>act[p].EF)) : 0;
+    a.EF = a.ES + a.dur;
+  });
+  const projectDur = Math.max(...ids.map(id=>act[id].EF));
+
+  // backward pass (reverse topo order)
+  [...order].reverse().forEach(id=>{
+    const a = act[id];
+    a.LF = a.succ.length ? Math.min(...a.succ.map(s=>act[s].LS)) : projectDur;
+    a.LS = a.LF - a.dur;
+    a.TF = a.LS - a.ES;
+  });
+
+  // render results
+  const rb = document.getElementById('cpm-result-body');
+  rb.innerHTML = '';
+  order.forEach(id=>{
+    const a = act[id];
+    const crit = a.TF === 0;
+    const tr = document.createElement('tr');
+    if(crit) tr.classList.add('crit');
+    tr.innerHTML = `<td>${a.id}</td><td style="text-align:left">${a.name}</td><td>${a.dur}</td><td>${a.ES}</td><td>${a.EF}</td><td>${a.LS}</td><td>${a.LF}</td><td>${a.TF}</td><td>${crit ? 'Ya' : 'Tidak'}</td>`;
+    rb.appendChild(tr);
+  });
+
+  document.getElementById('cpm-total-dur').textContent = projectDur + ' hari';
+  const critChain = order.filter(id=>act[id].TF===0).join(' → ');
+  document.getElementById('cpm-crit-path').textContent = critChain;
+  document.getElementById('cpm-crit-count').textContent = order.filter(id=>act[id].TF===0).length + ' aktivitas';
+  document.getElementById('cpm-calc-status').textContent = 'TERHITUNG · ' + order.length + ' AKTIVITAS';
+
+  // simple topo-order diagram
+  const dw = document.getElementById('cpm-diagram-wrap');
+  dw.innerHTML = '';
+  const strip = document.createElement('div');
+  strip.style.cssText = 'display:flex; align-items:center; gap:4px; min-width:max-content; padding:10px 2px;';
+  order.forEach((id,i)=>{
+    const a = act[id];
+    const crit = a.TF === 0;
+    const box = document.createElement('div');
+    box.style.cssText = `flex:none; width:96px; padding:8px; border:2px solid ${crit?'#e2483a':'#48c9b0'}; background:#122840; font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#eaf1f7;`;
+    box.innerHTML = `<div style="font-weight:600; margin-bottom:3px;">${a.id}</div><div style="color:#a9bdd0; font-size:9.5px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${a.name}</div><div>ES ${a.ES} · EF ${a.EF}</div><div>TF ${a.TF}</div>`;
+    strip.appendChild(box);
+    if(i < order.length-1){
+      const arrow = document.createElement('div');
+      arrow.textContent = '→';
+      arrow.style.cssText = `flex:none; color:${crit?'#e2483a':'#7891a8'}; font-size:16px;`;
+      strip.appendChild(arrow);
+    }
+  });
+  dw.appendChild(strip);
+
+  document.getElementById('cpm-results').style.display = 'block';
+};
+
+// ================= BOQ WEIGHT CALCULATOR =================
+const boqSample = [
+  {item:'Pekerjaan Tanah', vol:1200, harga:200000, akt:'A · Mobilisasi'},
+  {item:'Pondasi Tiang Pancang', vol:85, harga:10000000, akt:'B · Pondasi'},
+  {item:'Struktur Beton Lt.1-10', vol:3400, harga:950000, akt:'D · Struktur'},
+  {item:'Finishing Arsitektur', vol:1, harga:1100000000, akt:'F · Finishing'},
+  {item:'Testing & Commissioning', vol:1, harga:580000000, akt:'G · Serah Terima'},
+];
+const boqBody = document.getElementById('boq-body');
+function boqRowHTML(row){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" class="boq-item" value="${row.item}" style="width:100%; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px;"></td>
+    <td><input type="number" class="boq-vol" value="${row.vol}" style="width:80px; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px; font-family:'IBM Plex Mono',monospace;"></td>
+    <td><input type="number" class="boq-harga" value="${row.harga}" style="width:130px; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px; font-family:'IBM Plex Mono',monospace;"></td>
+    <td><input type="text" class="boq-akt" value="${row.akt}" style="width:130px; background:var(--navy-900); border:1px solid var(--line); color:var(--paper); padding:5px 6px;"></td>
+    <td class="boq-nilai mono" style="text-align:right;">—</td>
+    <td class="boq-bobot mono" style="text-align:right;">—</td>
+    <td><button type="button" class="boq-del" style="background:none; border:none; color:var(--critical); cursor:pointer; font-size:16px;">×</button></td>
+  `;
+  tr.querySelector('.boq-del').onclick = ()=> tr.remove();
+  return tr;
+}
+function loadBoqSample(){ boqBody.innerHTML=''; boqSample.forEach(r=>boqBody.appendChild(boqRowHTML(r))); }
+loadBoqSample();
+document.getElementById('boq-add-row').onclick = ()=> boqBody.appendChild(boqRowHTML({item:'', vol:0, harga:0, akt:''}));
+
+function fmtRp(n){ return new Intl.NumberFormat('id-ID').format(Math.round(n)); }
+
+document.getElementById('boq-calc-btn').onclick = function(){
+  const rows = [...boqBody.querySelectorAll('tr')];
+  const nilai = rows.map(tr=>{
+    const vol = parseFloat(tr.querySelector('.boq-vol').value) || 0;
+    const harga = parseFloat(tr.querySelector('.boq-harga').value) || 0;
+    return vol * harga;
+  });
+  const total = nilai.reduce((a,b)=>a+b, 0);
+  rows.forEach((tr,i)=>{
+    tr.querySelector('.boq-nilai').textContent = fmtRp(nilai[i]);
+    const pct = total > 0 ? (nilai[i]/total*100) : 0;
+    tr.querySelector('.boq-bobot').textContent = pct.toFixed(1) + '%';
+  });
+  document.getElementById('boq-total-value').textContent = 'Rp' + fmtRp(total);
+  document.getElementById('boq-total-check').textContent = 'TOTAL BOBOT: 100,0%';
+  document.getElementById('boq-check-val').textContent = '100,0%';
+  document.getElementById('boq-check-kpi').className = 'kpi good';
+};
+
+// ================= SPI / CPI TRACKING CALCULATOR =================
+function calcTrackingKpi(){
+  const pv = parseFloat(document.getElementById('pvInput').value) || 0;
+  const ev = parseFloat(document.getElementById('evInput').value) || 0;
+  const ac = parseFloat(document.getElementById('acInput').value) || 0;
+  const spi = pv > 0 ? (ev/pv) : 0;
+  const cpi = ac > 0 ? (ev/ac) : 0;
+  const spiEl = document.getElementById('kpiSpiTrack');
+  const cpiEl = document.getElementById('kpiCpiTrack');
+  spiEl.querySelector('.v').textContent = spi.toFixed(2);
+  cpiEl.querySelector('.v').textContent = cpi.toFixed(2);
+  spiEl.className = 'kpi ' + (spi < 1 ? 'warn' : 'good');
+  cpiEl.className = 'kpi ' + (cpi < 1 ? 'warn' : 'good');
+  let verdict = [];
+  verdict.push(spi < 1 ? 'Proyek tertinggal dari jadwal rencana (SPI < 1).' : 'Proyek sesuai atau lebih cepat dari jadwal rencana (SPI ≥ 1).');
+  verdict.push(cpi < 1 ? 'Biaya aktual melebihi nilai pekerjaan yang diperoleh (CPI < 1) — indikasi cost overrun.' : 'Biaya terkendali sesuai atau lebih hemat dari rencana (CPI ≥ 1).');
+  document.getElementById('track-verdict').textContent = verdict.join(' ');
+}
+['pvInput','evInput','acInput'].forEach(id=>document.getElementById(id).addEventListener('input', calcTrackingKpi));
+calcTrackingKpi();
+
+// pre-run calculators once on load so the page opens with populated demo results
+document.getElementById('cpm-calc-btn').click();
+document.getElementById('boq-calc-btn').click();
+</script>
+</body>
+</html>

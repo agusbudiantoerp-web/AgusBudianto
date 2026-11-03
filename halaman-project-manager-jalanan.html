@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Manager Jalanan — Belajar PMBOK 7, Primavera P6, MS Project &amp; FIDIC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-deep:#0A1B2E;
+  --navy-mid:#0F2338;
+  --navy-panel:#132A44;
+  --navy-line:#1E3A5A;
+  --paper:#F3EFE2;
+  --paper-dim:#E8E1CD;
+  --paper-line:#CBBF9E;
+  --rust:#E1592C;
+  --rust-dim:#B84422;
+  --amber:#E3A93B;
+  --green:#4C9A6A;
+  --ink:#1C2430;
+  --mist:#C6D3E0;
+  --mist-dim:#8AA0B6;
+  --white:#F7F8FA;
+  --grid:rgba(148,180,209,0.10);
+  --radius:2px;
+  --serif-display:'Oswald',sans-serif;
+  --sans:'IBM Plex Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--navy-deep);
+  color:var(--mist);
+  font-family:var(--sans);
+  line-height:1.6;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:32px 32px;
+}
+::selection{background:var(--rust);color:var(--white);}
+a{color:var(--amber);}
+h1,h2,h3,h4{font-family:var(--serif-display);font-weight:600;letter-spacing:.01em;color:var(--white);margin:0 0 .5em;}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--amber);
+  display:flex;align-items:center;gap:.6em;
+}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--rust);display:inline-block;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+p{color:var(--mist);}
+code, .mono{font-family:var(--mono);}
+
+/* ===== TOP NAV ===== */
+header.topnav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,27,46,0.92);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--navy-line);
+}
+.topnav-inner{max-width:1180px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.brand-mark{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--rust);
+  border:3px solid var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif-display);color:var(--white);font-weight:700;font-size:1rem;
+  box-shadow:0 0 0 2px var(--rust);
+  flex-shrink:0;
+}
+.brand-text{line-height:1.1;}
+.brand-text .t1{font-family:var(--serif-display);font-size:1.05rem;color:var(--white);letter-spacing:.02em;text-transform:uppercase;}
+.brand-text .t2{font-family:var(--mono);font-size:.66rem;color:var(--mist-dim);letter-spacing:.08em;}
+nav.mainmenu{display:flex;gap:4px;flex-wrap:wrap;}
+nav.mainmenu button{
+  background:none;border:1px solid transparent;color:var(--mist);
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;
+  padding:8px 12px;cursor:pointer;border-radius:var(--radius);
+  transition:all .15s;text-transform:uppercase;
+}
+nav.mainmenu button:hover{color:var(--white);border-color:var(--navy-line);}
+nav.mainmenu button.active{background:var(--rust);color:var(--white);border-color:var(--rust);}
+
+/* ===== SECTIONS ===== */
+.view{display:none;animation:fadein .35s ease;}
+.view.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== HERO ===== */
+.hero{padding:86px 0 60px;position:relative;overflow:hidden;}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center;}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;}}
+.hero h1{font-size:clamp(2.4rem,5vw,3.6rem);line-height:1.04;margin:14px 0 18px;}
+.hero h1 span{color:var(--rust);}
+.hero p.lead{font-size:1.05rem;max-width:52ch;color:var(--mist);}
+.hero-cta{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;}
+.btn{
+  font-family:var(--mono);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;
+  padding:13px 22px;border-radius:var(--radius);cursor:pointer;border:1px solid var(--rust);
+  display:inline-flex;align-items:center;gap:8px;text-decoration:none;
+}
+.btn-primary{background:var(--rust);color:var(--white);}
+.btn-primary:hover{background:var(--rust-dim);}
+.btn-ghost{background:none;color:var(--white);border-color:var(--navy-line);}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber);}
+.stat-row{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap;}
+.stat b{font-family:var(--serif-display);font-size:1.7rem;color:var(--white);display:block;}
+.stat span{font-family:var(--mono);font-size:.68rem;color:var(--mist-dim);letter-spacing:.06em;text-transform:uppercase;}
+
+.hero-diagram{background:var(--navy-panel);border:1px solid var(--navy-line);border-radius:6px;padding:18px;position:relative;}
+.hero-diagram .cap{font-family:var(--mono);font-size:.66rem;color:var(--mist-dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;}
+.hero-diagram .cap .dot{color:var(--rust);}
+
+/* ===== PANEL / CARD ===== */
+.panel{background:var(--navy-panel);border:1px solid var(--navy-line);border-radius:6px;padding:26px 28px;margin-bottom:22px;}
+.panel-paper{background:var(--paper);color:var(--ink);border:1px solid var(--paper-line);border-radius:2px;padding:26px 28px;margin-bottom:22px;}
+.panel-paper h3, .panel-paper h4{color:var(--ink);}
+.panel-paper p, .panel-paper li, .panel-paper td, .panel-paper th{color:#2b3138;}
+.section-head{margin:56px 0 26px;}
+.section-head .eyebrow{margin-bottom:8px;}
+.section-head h2{font-size:2rem;}
+.section-head p{max-width:70ch;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+@media(max-width:800px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+/* module cards on home */
+.modcard{
+  background:var(--navy-panel);border:1px solid var(--navy-line);border-radius:6px;
+  padding:24px;cursor:pointer;transition:transform .15s, border-color .15s;position:relative;overflow:hidden;
+}
+.modcard:hover{transform:translateY(-3px);border-color:var(--rust);}
+.modcard .num{font-family:var(--mono);color:var(--rust);font-size:.72rem;letter-spacing:.08em;}
+.modcard h3{margin-top:10px;font-size:1.25rem;}
+.modcard p{font-size:.9rem;color:var(--mist-dim);}
+.modcard .tag{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:.66rem;color:var(--amber);border:1px solid var(--amber);padding:3px 8px;border-radius:20px;}
+
+/* accordion lessons */
+details.lesson{
+  background:var(--navy-panel);border:1px solid var(--navy-line);border-radius:6px;
+  margin-bottom:12px;overflow:hidden;
+}
+details.lesson>summary{
+  list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;gap:14px;
+  font-family:var(--serif-display);color:var(--white);font-size:1.02rem;letter-spacing:.01em;
+}
+details.lesson>summary::-webkit-details-marker{display:none;}
+details.lesson>summary .lno{
+  font-family:var(--mono);color:var(--rust);font-size:.78rem;border:1px solid var(--rust);
+  border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+details.lesson>summary::after{content:"+";margin-left:auto;font-family:var(--mono);color:var(--mist-dim);font-size:1.2rem;}
+details.lesson[open]>summary::after{content:"–";color:var(--rust);}
+.lesson-body{padding:4px 26px 26px 66px;border-top:1px solid var(--navy-line);}
+.lesson-body p{font-size:.95rem;}
+.lesson-body h5{color:var(--amber);font-family:var(--mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;}
+.lesson-body ul, .lesson-body ol{padding-left:20px;font-size:.93rem;}
+.lesson-body li{margin-bottom:6px;color:var(--mist);}
+.lesson-body table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:.86rem;}
+.lesson-body th{font-family:var(--mono);text-transform:uppercase;font-size:.66rem;letter-spacing:.05em;color:var(--amber);text-align:left;padding:8px 10px;border-bottom:1px solid var(--navy-line);}
+.lesson-body td{padding:8px 10px;border-bottom:1px solid var(--grid);color:var(--mist);}
+
+/* callouts */
+.callout{border-left:3px solid var(--amber);background:rgba(227,169,59,0.07);padding:14px 18px;border-radius:0 4px 4px 0;margin:16px 0;font-size:.9rem;}
+.callout.case{border-left-color:var(--rust);background:rgba(225,89,44,0.08);}
+.callout b{color:var(--white);}
+
+/* quiz / case study toggle */
+.qa{background:var(--navy-mid);border:1px dashed var(--navy-line);border-radius:6px;padding:18px 20px;margin:16px 0;}
+.qa .q{font-weight:600;color:var(--white);margin-bottom:10px;}
+.qa button.reveal{
+  font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;
+  background:none;border:1px solid var(--amber);color:var(--amber);padding:7px 14px;border-radius:20px;cursor:pointer;
+}
+.qa button.reveal:hover{background:var(--amber);color:var(--navy-deep);}
+.qa .ans{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--navy-line);font-size:.9rem;}
+.qa .ans.show{display:block;}
+.qa .ans b{color:var(--green);}
+
+/* tables generic */
+table.data{width:100%;border-collapse:collapse;font-size:.86rem;margin:14px 0;}
+table.data th{background:var(--navy-mid);font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--amber);padding:9px 11px;text-align:left;}
+table.data td{padding:9px 11px;border-bottom:1px solid var(--navy-line);}
+table.data tr:hover td{background:rgba(255,255,255,0.02);}
+
+/* pill nav (sub tabs inside a module) */
+.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px;}
+.subtabs button{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.03em;text-transform:uppercase;
+  background:var(--navy-panel);border:1px solid var(--navy-line);color:var(--mist);
+  padding:9px 14px;border-radius:20px;cursor:pointer;
+}
+.subtabs button.active{background:var(--amber);border-color:var(--amber);color:var(--navy-deep);font-weight:600;}
+.subview{display:none;}
+.subview.active{display:block;}
+
+/* footer */
+footer{border-top:1px solid var(--navy-line);margin-top:80px;padding:42px 0 60px;}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;}
+footer .credit{font-family:var(--mono);font-size:.74rem;color:var(--mist-dim);line-height:1.8;}
+footer .credit b{color:var(--white);display:block;font-family:var(--serif-display);font-size:.95rem;letter-spacing:.02em;}
+
+/* calculator widget */
+.calc{background:var(--navy-mid);border:1px solid var(--navy-line);border-radius:6px;padding:22px;}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
+@media(max-width:700px){.calc-grid{grid-template-columns:repeat(2,1fr);}}
+.calc-field label{display:block;font-family:var(--mono);font-size:.66rem;color:var(--mist-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.calc-field input{width:100%;background:var(--navy-deep);border:1px solid var(--navy-line);color:var(--white);padding:9px 10px;border-radius:4px;font-family:var(--mono);font-size:.9rem;}
+.calc-field input:focus{outline:none;border-color:var(--amber);}
+.calc-out{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px;}
+@media(max-width:700px){.calc-out{grid-template-columns:repeat(2,1fr);}}
+.calc-out .o{background:var(--navy-panel);border:1px solid var(--navy-line);border-radius:6px;padding:12px 14px;}
+.calc-out .o span{display:block;font-family:var(--mono);font-size:.64rem;color:var(--mist-dim);text-transform:uppercase;letter-spacing:.05em;}
+.calc-out .o b{font-family:var(--serif-display);font-size:1.15rem;color:var(--white);}
+.calc-out .o.warn b{color:var(--rust);}
+.calc-out .o.good b{color:var(--green);}
+.calc-note{font-family:var(--mono);font-size:.72rem;color:var(--mist-dim);margin-top:14px;}
+
+/* download box */
+.dlbox{display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,var(--navy-panel),var(--navy-mid));border:1px solid var(--rust);border-radius:8px;padding:22px 26px;flex-wrap:wrap;}
+.dlbox b{color:var(--white);}
+
+/* svg diagram containers */
+.svgbox{background:var(--navy-mid);border:1px solid var(--navy-line);border-radius:6px;padding:14px;overflow-x:auto;}
+.svgbox svg{display:block;min-width:600px;width:100%;height:auto;}
+.svg-caption{font-family:var(--mono);font-size:.68rem;color:var(--mist-dim);text-align:center;margin-top:8px;letter-spacing:.03em;}
+
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:.7rem;color:var(--mist-dim);margin-top:10px;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+
+.progress-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.progress-tabs button{
+  background:var(--navy-panel);border:1px solid var(--navy-line);color:var(--mist-dim);
+  font-family:var(--mono);font-size:.68rem;padding:6px 10px;border-radius:4px;cursor:pointer;
+}
+.progress-tabs button.active{border-color:var(--rust);color:var(--white);}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px;}
+.toc a{
+  font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--mist-dim);border:1px solid var(--navy-line);padding:6px 12px;border-radius:20px;text-decoration:none;
+}
+.toc a:hover{color:var(--amber);border-color:var(--amber);}
+
+/* quiz 100 soal */
+.quiz-item{background:var(--navy-panel);border:1px solid var(--navy-line);border-radius:6px;padding:18px 20px;margin-bottom:12px;}
+.quiz-item .qhead{display:flex;gap:10px;align-items:baseline;margin-bottom:10px;}
+.quiz-item .qnum{font-family:var(--mono);color:var(--rust);font-size:.78rem;flex-shrink:0;}
+.quiz-item .qcat{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--amber);border:1px solid var(--amber);border-radius:20px;padding:2px 8px;flex-shrink:0;}
+.quiz-item .qtext{font-weight:600;color:var(--white);font-size:.95rem;}
+.quiz-opts{display:grid;gap:8px;margin-top:10px;}
+.quiz-opt{
+  text-align:left;background:var(--navy-mid);border:1px solid var(--navy-line);color:var(--mist);
+  padding:9px 14px;border-radius:4px;cursor:pointer;font-family:var(--sans);font-size:.88rem;
+}
+.quiz-opt:hover{border-color:var(--amber);}
+.quiz-opt.correct{border-color:var(--green);background:rgba(76,154,106,0.15);color:var(--white);}
+.quiz-opt.wrong{border-color:var(--rust);background:rgba(225,89,44,0.12);color:var(--white);}
+.quiz-opt[disabled]{cursor:default;}
+.quiz-explain{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--navy-line);font-size:.85rem;color:var(--mist);}
+.quiz-explain.show{display:block;}
+.quiz-explain b{color:var(--green);}
+.quiz-count{font-family:var(--mono);font-size:.78rem;color:var(--mist-dim);margin-bottom:16px;}
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <div class="brand" onclick="showView('home')">
+      <div class="brand-mark">PMJ</div>
+      <div class="brand-text">
+        <div class="t1">Project Manager Jalanan</div>
+        <div class="t2">Praktik lapangan · bukan cuma teori</div>
+      </div>
+    </div>
+    <nav class="mainmenu" id="mainmenu">
+      <button data-view="home" class="active" onclick="showView('home')">Beranda</button>
+      <button data-view="pmbok" onclick="showView('pmbok')">PMBOK 7</button>
+      <button data-view="primavera" onclick="showView('primavera')">Primavera P6</button>
+      <button data-view="msproject" onclick="showView('msproject')">MS Project</button>
+      <button data-view="fidic" onclick="showView('fidic')">FIDIC</button>
+      <button data-view="studycase" onclick="showView('studycase')">Bank Soal</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ HOME VIEW ============ -->
+<section id="view-home" class="view active">
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Platform belajar manajemen proyek terapan</div>
+        <h1>Belajar jadi <span>Project Manager</span> dari nol sampai turun langsung ke lapangan.</h1>
+        <p class="lead">Disusun dari pengalaman menangani proyek gedung, platform rig lepas pantai, bendungan, jembatan, dan jalan tol — bukan cuma teori dari buku. Kuasai PMBOK 7, Primavera P6, Microsoft Project, dan kontrak FIDIC lewat studi kasus nyata beserta jawabannya.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#" onclick="showView('primavera');return false;">Mulai dari Primavera P6 →</a>
+          <a class="btn btn-ghost" href="#" onclick="showView('pmbok');return false;">Pelajari PMBOK 7</a>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b>16</b><span>Modul Primavera P6</span></div>
+          <div class="stat"><b>8</b><span>Domain Kinerja PMBOK 7</span></div>
+          <div class="stat"><b>8</b><span>Varian Buku FIDIC</span></div>
+          <div class="stat"><b>20+</b><span>Studi Kasus &amp; Jawaban</span></div>
+        </div>
+      </div>
+      <div class="hero-diagram">
+        <div class="cap"><span>NETWORK DIAGRAM — <span class="dot">CRITICAL PATH</span> HIGHLIGHTED</span><span>AON METHOD</span></div>
+        <div class="svgbox" style="border:none;padding:6px;">
+          <svg viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8AA0B6"/></marker>
+              <marker id="arrowc" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E1592C"/></marker>
+            </defs>
+            <line x1="70" y1="60" x2="150" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#arrowc)"/>
+            <line x1="70" y1="60" x2="150" y2="150" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#arrow)"/>
+            <line x1="70" y1="60" x2="150" y2="230" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#arrow)"/>
+            <line x1="220" y1="60" x2="300" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#arrowc)"/>
+            <line x1="220" y1="150" x2="300" y2="60" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#arrow)"/>
+            <line x1="220" y1="230" x2="300" y2="150" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#arrow)"/>
+            <line x1="370" y1="60" x2="450" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#arrowc)"/>
+            <line x1="370" y1="150" x2="450" y2="60" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#arrow)"/>
+            <line x1="450" y1="60" x2="520" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#arrowc)"/>
+            <g font-family="IBM Plex Mono, monospace">
+              <rect x="10" y="40" width="60" height="40" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+              <text x="40" y="64" text-anchor="middle" fill="#F7F8FA" font-size="11">START</text>
+              <rect x="150" y="40" width="70" height="40" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+              <text x="185" y="58" text-anchor="middle" fill="#F7F8FA" font-size="10">A · 5d</text>
+              <text x="185" y="70" text-anchor="middle" fill="#E1592C" font-size="8">TF=0</text>
+              <rect x="150" y="130" width="70" height="40" rx="3" fill="#132A44" stroke="#3E6690" stroke-width="1.2"/>
+              <text x="185" y="148" text-anchor="middle" fill="#F7F8FA" font-size="10">B · 4d</text>
+              <text x="185" y="160" text-anchor="middle" fill="#8AA0B6" font-size="8">TF=3</text>
+              <rect x="150" y="210" width="70" height="40" rx="3" fill="#132A44" stroke="#3E6690" stroke-width="1.2"/>
+              <text x="185" y="228" text-anchor="middle" fill="#F7F8FA" font-size="10">C · 6d</text>
+              <text x="185" y="240" text-anchor="middle" fill="#8AA0B6" font-size="8">TF=5</text>
+              <rect x="300" y="40" width="70" height="40" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+              <text x="335" y="58" text-anchor="middle" fill="#F7F8FA" font-size="10">D · 7d</text>
+              <text x="335" y="70" text-anchor="middle" fill="#E1592C" font-size="8">TF=0</text>
+              <rect x="300" y="130" width="70" height="40" rx="3" fill="#132A44" stroke="#3E6690" stroke-width="1.2"/>
+              <text x="335" y="148" text-anchor="middle" fill="#F7F8FA" font-size="10">E · 3d</text>
+              <text x="335" y="160" text-anchor="middle" fill="#8AA0B6" font-size="8">TF=5</text>
+              <rect x="450" y="40" width="70" height="40" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+              <text x="485" y="58" text-anchor="middle" fill="#F7F8FA" font-size="10">F · 4d</text>
+              <text x="485" y="70" text-anchor="middle" fill="#E1592C" font-size="8">TF=0</text>
+            </g>
+          </svg>
+        </div>
+        <div class="legend">
+          <span><i style="background:#E1592C"></i> Jalur kritis (Total Float = 0)</span>
+          <span><i style="background:#3E6690"></i> Aktivitas non-kritis (punya float)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">Pilih jalur belajarmu</div>
+    <h2>Empat modul, satu jalan menuju kompetensi.</h2>
+    <p>Setiap modul disusun bertahap: dari nol tanpa pengalaman sama sekali, sampai mampu menjalankan proyek riil di lapangan — lengkap dengan studi kasus dan cara penyelesaiannya.</p>
+  </div>
+  <div class="grid-2" style="margin-bottom:18px;">
+    <div class="modcard" onclick="showView('pmbok')">
+      <div class="num">MODUL 01</div>
+      <h3>PMBOK 7 — Fondasi Manajemen Proyek</h3>
+      <p>12 prinsip, 8 domain kinerja, tailoring, model &amp; artifact. Studi kasus proyek bendungan dengan analisis stakeholder dan risiko.</p>
+      <span class="tag">Nol → Menengah</span>
+    </div>
+    <div class="modcard" onclick="showView('primavera')">
+      <div class="num">MODUL 02</div>
+      <h3>Primavera P6 — Dari Nol Sampai Mahir</h3>
+      <p>EPS/OBS/WBS, penjadwalan CPM, resource loading, baseline, tracking, S-curve, forecasting EVM, hingga Monte Carlo risk analysis.</p>
+      <span class="tag">Nol → Mahir</span>
+    </div>
+    <div class="modcard" onclick="showView('msproject')">
+      <div class="num">MODUL 03</div>
+      <h3>Microsoft Project — Praktis &amp; Cepat</h3>
+      <p>Ribbon &amp; menu MSP, task &amp; predecessor, resource cost, baseline, tracking Gantt, dan laporan proyek.</p>
+      <span class="tag">Nol → Mahir</span>
+    </div>
+    <div class="modcard" onclick="showView('fidic')">
+      <div class="num">MODUL 04</div>
+      <h3>FIDIC — Kontrak Konstruksi Internasional</h3>
+      <p>Red, Yellow, Silver, Green, Pink, Gold, White, dan Emerald Book. Studi kasus klaim Extension of Time (EOT) dan penyelesaiannya.</p>
+      <span class="tag">Konsep → Klaim</span>
+    </div>
+  </div>
+  <div class="modcard" onclick="showView('studycase')" style="margin-bottom:60px;">
+    <div class="num">BANK SOAL</div>
+    <h3>Kumpulan Studi Kasus &amp; Latihan Lintas Modul</h3>
+    <p>Soal-soal terapan dari proyek gedung, rig lepas pantai, bendungan, jembatan, dan jalan tol — lengkap dengan pembahasan jawaban, tinggal klik untuk membuka kunci jawaban.</p>
+  </div>
+</section>
+
+<!-- ============ PMBOK 7 VIEW ============ -->
+<section id="view-pmbok" class="view">
+  <div class="section-head">
+    <div class="eyebrow">Modul 01</div>
+    <h2>PMBOK 7 — dari nol sampai mahir</h2>
+    <p>PMBOK 7 (2021) mengubah pendekatan dari "berbasis proses" menjadi "berbasis prinsip dan kinerja". Modul ini membawa kamu dari pemahaman dasar sampai bisa menerapkan 12 prinsip dan 8 domain kinerja pada proyek riil.</p>
+  </div>
+
+  <div class="toc">
+    <a href="#pmbok-l1">Apa itu PMBOK 7</a><a href="#pmbok-l2">12 Prinsip</a><a href="#pmbok-l3">8 Domain Kinerja</a>
+    <a href="#pmbok-l4">Tailoring</a><a href="#pmbok-l5">Model, Metode, Artifact</a><a href="#pmbok-l6">Studi Kasus Bendungan</a>
+  </div>
+
+  <details class="lesson" id="pmbok-l1">
+    <summary><span class="lno">1</span> Apa itu PMBOK 7 dan bedanya dengan PMBOK 6</summary>
+    <div class="lesson-body">
+      <p>PMBOK (Project Management Body of Knowledge) Edisi ke-7 diterbitkan PMI tahun 2021. Kalau PMBOK 6 berbasis <b>5 Process Group</b> dan <b>10 Knowledge Area</b> yang preskriptif (harus diikuti langkah demi langkah), PMBOK 7 justru mundur selangkah dan bertanya: <i>"apa yang membuat proyek benar-benar berhasil?"</i> Jawabannya bukan sekadar mengikuti proses, tapi menerapkan prinsip yang tepat sesuai konteks proyek.</p>
+      <h5>Perbedaan Kunci</h5>
+      <table>
+        <tr><th>Aspek</th><th>PMBOK 6</th><th>PMBOK 7</th></tr>
+        <tr><td>Pendekatan</td><td>Process-based (preskriptif)</td><td>Principle-based (adaptif)</td></tr>
+        <tr><td>Struktur</td><td>5 Process Group, 10 Knowledge Area, 49 proses</td><td>12 Prinsip, 8 Domain Kinerja</td></tr>
+        <tr><td>Metodologi</td><td>Condong ke waterfall/predictive</td><td>Netral: predictive, agile, hybrid</td></tr>
+        <tr><td>Fokus</td><td>Deliverable &amp; dokumen</td><td>Value delivery &amp; outcome</td></tr>
+      </table>
+      <div class="callout">Praktik di lapangan: gunakan PMBOK 6 sebagai "kotak perkakas" proses yang rinci (misal: cara membuat WBS, cara hitung EVM), dan PMBOK 7 sebagai "kompas" untuk menilai apakah pendekatanmu sudah tepat untuk konteks proyek — apakah butuh predictive penuh (bendungan, jalan tol) atau hybrid (sebagian desain masih berjalan saat konstruksi mulai, umum di proyek rig).</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="pmbok-l2">
+    <summary><span class="lno">2</span> 12 Prinsip Manajemen Proyek</summary>
+    <div class="lesson-body">
+      <p>Prinsip adalah pedoman perilaku, bukan langkah kerja. Berikut ke-12 prinsip beserta penerapannya di proyek konstruksi/tambang:</p>
+      <table>
+        <tr><th>#</th><th>Prinsip</th><th>Contoh penerapan lapangan</th></tr>
+        <tr><td>1</td><td>Stewardship (jadi pengelola yang bertanggung jawab)</td><td>PM menjaga integritas anggaran hauling batubara, tidak menutupi cost overrun ke owner</td></tr>
+        <tr><td>2</td><td>Team (bangun lingkungan tim kolaboratif)</td><td>Rapat koordinasi mingguan antara tim survey, operator alat berat, dan HSE</td></tr>
+        <tr><td>3</td><td>Stakeholders (libatkan pemangku kepentingan)</td><td>Sosialisasi ke masyarakat sekitar sebelum blasting di tambang terbuka</td></tr>
+        <tr><td>4</td><td>Value (fokus pada nilai)</td><td>Prioritaskan jalur hauling yang menekan biaya bahan bakar, bukan sekadar jarak terpendek</td></tr>
+        <tr><td>5</td><td>Systems Thinking (berpikir sistem)</td><td>Perubahan match factor alat muat-angkut memengaruhi seluruh siklus produksi</td></tr>
+        <tr><td>6</td><td>Leadership (tunjukkan kepemimpinan)</td><td>PM mengambil keputusan cepat saat cuaca ekstrem menghentikan aktivitas dermaga</td></tr>
+        <tr><td>7</td><td>Tailoring (sesuaikan pendekatan)</td><td>Proyek jembatan pakai predictive penuh; proyek platform rig pakai hybrid karena desain berjalan paralel</td></tr>
+        <tr><td>8</td><td>Quality (bangun kualitas ke dalam proses)</td><td>ITP (Inspection Test Plan) dicek di setiap tahap pengecoran beton bendungan</td></tr>
+        <tr><td>9</td><td>Complexity (navigasi kompleksitas)</td><td>Koordinasi multi-kontraktor di proyek toll road dengan banyak sub-paket</td></tr>
+        <tr><td>10</td><td>Risk (optimalkan respons risiko)</td><td>Mitigasi risiko keterlambatan pengadaan girder jembatan dengan dual-source supplier</td></tr>
+        <tr><td>11</td><td>Adaptability &amp; Resilience</td><td>Re-sequencing pekerjaan saat akses jalan tambang terputus banjir</td></tr>
+        <tr><td>12</td><td>Change (fasilitasi perubahan menuju target)</td><td>Change management saat owner minta redesain alignment jalan tol</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details class="lesson" id="pmbok-l3">
+    <summary><span class="lno">3</span> 8 Domain Kinerja Proyek</summary>
+    <div class="lesson-body">
+      <p>Domain kinerja adalah kelompok aktivitas yang saling berkaitan, bekerja bersamaan (bukan berurutan) sepanjang siklus hidup proyek.</p>
+      <ol>
+        <li><b>Stakeholder</b> — identifikasi, analisis, dan pengelolaan hubungan pemangku kepentingan (owner, konsultan, sub-kontraktor, masyarakat sekitar).</li>
+        <li><b>Team</b> — budaya tim, kepemimpinan, dan pengembangan kompetensi kru proyek.</li>
+        <li><b>Development Approach &amp; Life Cycle</b> — pemilihan pendekatan predictive, iterative, atau hybrid, serta fase-fase proyek.</li>
+        <li><b>Planning</b> — estimasi, penjadwalan, budgeting, resource planning.</li>
+        <li><b>Project Work</b> — mengelola proses kerja, procurement, dan menjaga tim tetap fokus pada tujuan.</li>
+        <li><b>Delivery</b> — memastikan deliverable memenuhi scope dan quality yang disepakati, termasuk pengelolaan value.</li>
+        <li><b>Measurement</b> — pengukuran kinerja (S-curve, EVM, KPI) untuk menilai kesehatan proyek.</li>
+        <li><b>Uncertainty</b> — pengelolaan risiko, ambiguitas, dan volatilitas (cuaca, harga material, regulasi).</li>
+      </ol>
+      <div class="callout">Domain-domain ini <b>tidak berurutan</b> — semuanya berjalan bersamaan sepanjang proyek. Contoh: saat konstruksi jembatan berjalan (Delivery), tim tetap memantau S-curve (Measurement) sekaligus menangani klaim cuaca ekstrem (Uncertainty) dan rapat mingguan dengan owner (Stakeholder).</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="pmbok-l4">
+    <summary><span class="lno">4</span> Tailoring — Menyesuaikan Pendekatan</summary>
+    <div class="lesson-body">
+      <p>Tailoring berarti memilih dan menyesuaikan proses, alat, dan gaya kepemimpinan sesuai karakteristik proyek. Pertanyaan tailoring yang wajib dijawab PM di awal proyek:</p>
+      <ul>
+        <li>Seberapa jelas scope sejak awal? (Bendungan &amp; jalan tol: scope biasanya sudah jelas → predictive. Proyek rig dengan desain berjalan paralel: sebagian hybrid.)</li>
+        <li>Seberapa besar keterlibatan owner dalam proses (governance ketat vs longgar)?</li>
+        <li>Seberapa tinggi kompleksitas teknis dan risiko (geoteknik, cuaca, akses lokasi)?</li>
+        <li>Apakah ada regulasi/kontrak (mis. FIDIC) yang mengunci cara pelaporan dan format dokumen?</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="lesson" id="pmbok-l5">
+    <summary><span class="lno">5</span> Model, Metode, dan Artifact</summary>
+    <div class="lesson-body">
+      <p>PMBOK 7 menyediakan "kotak perkakas" berupa model (kerangka konseptual), metode (cara mengerjakan sesuatu), dan artifact (dokumen/output).</p>
+      <table>
+        <tr><th>Kategori</th><th>Contoh</th></tr>
+        <tr><td>Model</td><td>Situational leadership, Tuckman ladder (forming-storming-norming-performing), Communication model</td></tr>
+        <tr><td>Metode</td><td>Critical Path Method, Earned Value Analysis, Monte Carlo simulation, Kanban</td></tr>
+        <tr><td>Artifact</td><td>Charter proyek, WBS, jadwal (schedule), risk register, laporan S-curve</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details class="lesson" id="pmbok-l6">
+    <summary><span class="lno">6</span> Studi Kasus: Proyek Bendungan Irigasi</summary>
+    <div class="lesson-body">
+      <div class="callout case"><b>Kasus:</b> Proyek pembangunan bendungan irigasi senilai Rp 850 miliar, durasi 30 bulan. Tiga bulan sebelum tanggal target penuangan beton utama (main concreting), muncul penolakan dari kelompok tani di hilir yang khawatir bendungan mengubah pola aliran air untuk sawah mereka. Sementara itu, tim desain masih menunggu hasil uji geoteknik tambahan di titik pondasi spillway, dan kontraktor mengalami kelangkaan supplai semen tipe khusus (sulfate resistant cement).</div>
+      <div class="qa">
+        <div class="q">Pertanyaan: Domain kinerja mana saja yang aktif dalam situasi ini, dan bagaimana urutan tindakan PM yang tepat?</div>
+        <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+        <div class="ans">
+          <p><b>Domain yang aktif secara simultan:</b></p>
+          <ul>
+            <li><b>Stakeholder</b> — konflik dengan kelompok tani harus ditangani lewat dialog dan studi dampak, bukan diabaikan karena bisa memicu penghentian proyek oleh pemda.</li>
+            <li><b>Uncertainty</b> — dua risiko nyata: hasil geoteknik pondasi spillway (risiko teknis) dan kelangkaan semen (risiko rantai pasok).</li>
+            <li><b>Planning</b> — jadwal main concreting kemungkinan perlu direvisi menunggu hasil geoteknik.</li>
+            <li><b>Delivery</b> — kualitas beton tidak boleh dikompromikan hanya demi mengejar tanggal, terutama untuk struktur penahan air.</li>
+          </ul>
+          <p><b>Urutan tindakan yang disarankan:</b></p>
+          <ol>
+            <li>Bentuk tim tanggap cepat: libatkan community relations officer untuk membuka dialog resmi dengan kelompok tani sebelum eskalasi (prinsip <i>Stakeholder</i> &amp; <i>Team</i>).</li>
+            <li>Percepat hasil uji geoteknik lewat lab paralel, dan siapkan skenario desain alternatif pondasi jika hasil tidak sesuai asumsi awal (prinsip <i>Risk</i>).</li>
+            <li>Cari sumber semen alternatif yang tetap memenuhi spesifikasi (dual-sourcing) agar main concreting tidak molor akibat rantai pasok, bukan akibat teknis.</li>
+            <li>Update jadwal dengan skenario "hasil geoteknik OK" dan "hasil geoteknik revisi", lalu komunikasikan potensi dampak ke owner sebagai early warning — bukan kejutan di akhir bulan (prinsip <i>Adaptability</i> &amp; <i>Change</i>).</li>
+            <li>Dokumentasikan seluruh proses sebagai dasar potensi klaim perpanjangan waktu (EOT) jika keterlambatan tetap terjadi akibat faktor di luar kendali kontraktor.</li>
+          </ol>
+          <p>Kuncinya: PM tidak menangani ini sebagai satu masalah linear, tapi sebagai <b>beberapa domain kinerja yang berjalan bersamaan</b> — persis filosofi PMBOK 7.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ============ PRIMAVERA VIEW ============ -->
+<section id="view-primavera" class="view">
+  <div class="section-head">
+    <div class="eyebrow">Modul 02 — Paling detail</div>
+    <h2>Primavera P6 — dari nol sampai mahir</h2>
+    <p>Primavera P6 adalah standar industri untuk proyek besar dan kompleks (EPC, tambang, infrastruktur) karena mampu menangani ribuan aktivitas dan multi-proyek dalam satu database (Enterprise). Modul ini mengikuti alur kerja nyata seorang Planner/Scheduler di lapangan, dari instalasi sampai forecasting dan risk analysis.</p>
+  </div>
+
+  <div class="toc">
+    <a href="#p6-l1">1. Pengenalan</a><a href="#p6-l2">2. Menu Utama</a><a href="#p6-l3">3. EPS</a><a href="#p6-l4">4. OBS</a>
+    <a href="#p6-l5">5. WBS</a><a href="#p6-l6">6. Aktivitas</a><a href="#p6-l7">7. Relationship</a><a href="#p6-l8">8. Constraint</a>
+    <a href="#p6-l9">9. Resource &amp; Cost</a><a href="#p6-l10">10. CPM &amp; Float</a><a href="#p6-l11">11. Baseline</a>
+    <a href="#p6-l12">12. Update Progress</a><a href="#p6-l13">13. Varian</a><a href="#p6-l14">14. S-Curve</a>
+    <a href="#p6-l15">15. Forecast EVM</a><a href="#p6-l16">16. Monte Carlo</a>
+  </div>
+
+  <details class="lesson" id="p6-l1" open>
+    <summary><span class="lno">1</span> Pengenalan Primavera P6 &amp; Antarmuka</summary>
+    <div class="lesson-body">
+      <p>Primavera P6 (Oracle) adalah perangkat lunak Enterprise Project Portfolio Management. Beda mendasar dengan MS Project: P6 dirancang untuk <b>multi-proyek dalam satu database terpusat</b>, dengan kontrol akses berlapis (security profile), cocok untuk perusahaan EPC/kontraktor besar yang menjalankan puluhan proyek sekaligus.</p>
+      <h5>Dua Modul Utama</h5>
+      <table>
+        <tr><th>Modul</th><th>Fungsi</th></tr>
+        <tr><td>P6 Professional (Client)</td><td>Aplikasi desktop untuk planner/scheduler menyusun jadwal detail</td></tr>
+        <tr><td>P6 EPPM (Web)</td><td>Portal untuk manajemen portofolio, dashboard, dan approval tingkat manajemen</td></tr>
+      </table>
+      <h5>Struktur Data Dasar (harus dipahami sebelum apa pun)</h5>
+      <p>P6 mengorganisasi data dalam hierarki: <b>EPS → Project → WBS → Activity</b>, sejajar dengan <b>OBS</b> (siapa bertanggung jawab) dan <b>Resource</b> (siapa/apa yang mengerjakan). Memahami hierarki ini adalah 80% dari kemahiran P6 — sisanya hanya soal terbiasa dengan menu.</p>
+      <div class="callout">Tips pemula: jangan buru-buru input aktivitas sebelum EPS, OBS, dan WBS matang. Kesalahan paling umum planner baru adalah langsung membuat activity list tanpa struktur — hasilnya jadwal "flat" yang susah dianalisis dan dilaporkan per area/paket kerja.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l2">
+    <summary><span class="lno">2</span> Menu-Menu Utama Primavera P6</summary>
+    <div class="lesson-body">
+      <p>Navigasi utama P6 ada di menu <b>Enterprise</b> dan workspace <b>Project</b>. Berikut peta menu yang paling sering dipakai:</p>
+      <table>
+        <tr><th>Menu</th><th>Isi &amp; kegunaan</th></tr>
+        <tr><td>Enterprise &gt; Enterprise Project Structure</td><td>Mengatur EPS — hierarki portofolio proyek perusahaan</td></tr>
+        <tr><td>Enterprise &gt; OBS</td><td>Mengatur struktur organisasi/tanggung jawab</td></tr>
+        <tr><td>Enterprise &gt; Resources</td><td>Database tenaga kerja, alat, material, biaya satuan</td></tr>
+        <tr><td>Enterprise &gt; Calendars</td><td>Kalender kerja (hari libur, shift, jam kerja proyek)</td></tr>
+        <tr><td>Project &gt; WBS</td><td>Struktur rincian pekerjaan per proyek</td></tr>
+        <tr><td>Project &gt; Activities</td><td>Jantung P6 — daftar aktivitas, durasi, relasi, resource, progress</td></tr>
+        <tr><td>Project &gt; Assign Baselines</td><td>Menetapkan baseline pembanding (target)</td></tr>
+        <tr><td>Tools &gt; Schedule (F9)</td><td>Menjalankan perhitungan CPM (forward &amp; backward pass)</td></tr>
+        <tr><td>Tools &gt; Level Resources</td><td>Resource leveling agar alokasi tidak overallocated</td></tr>
+        <tr><td>Reports / Print Preview</td><td>Membuat laporan Gantt chart, S-curve, histogram resource</td></tr>
+        <tr><td>View &gt; Columns / Bars / Group &amp; Sort</td><td>Kustomisasi tampilan tabel dan bar Gantt</td></tr>
+      </table>
+      <div class="svgbox">
+        <svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="700" height="30" fill="#0F2338"/>
+          <text x="14" y="20" fill="#E3A93B" font-family="IBM Plex Mono" font-size="12">File   Edit   View   Project   Enterprise   Tools   Admin   Help</text>
+          <rect x="0" y="30" width="700" height="160" fill="#132A44" stroke="#1E3A5A"/>
+          <text x="14" y="52" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="10">PROJECTS</text>
+          <rect x="10" y="60" width="170" height="120" fill="#0F2338" stroke="#1E3A5A"/>
+          <text x="20" y="78" fill="#F7F8FA" font-family="IBM Plex Mono" font-size="10">▾ EPS: PT IGKM</text>
+          <text x="34" y="94" fill="#C6D3E0" font-family="IBM Plex Mono" font-size="10">▾ Coal Hauling 2026</text>
+          <text x="48" y="110" fill="#E1592C" font-family="IBM Plex Mono" font-size="10">● IGKM-CH-2026</text>
+          <text x="34" y="126" fill="#C6D3E0" font-family="IBM Plex Mono" font-size="10">▸ Toll Road Project</text>
+          <text x="34" y="142" fill="#C6D3E0" font-family="IBM Plex Mono" font-size="10">▸ Dam Irrigation</text>
+          <rect x="190" y="60" width="500" height="120" fill="#0F2338" stroke="#1E3A5A"/>
+          <text x="200" y="78" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="9">ACTIVITY ID   ACTIVITY NAME        START      FINISH     TOTAL FLOAT</text>
+          <text x="200" y="96" fill="#F7F8FA" font-family="IBM Plex Mono" font-size="9">A1000         Mobilisasi Alat      01-Mar-26  05-Mar-26  0</text>
+          <rect x="330" y="88" width="60" height="10" fill="#E1592C"/>
+          <text x="200" y="112" fill="#F7F8FA" font-family="IBM Plex Mono" font-size="9">A1010         Land Clearing        06-Mar-26  15-Mar-26  0</text>
+          <rect x="390" y="104" width="90" height="10" fill="#E1592C"/>
+          <text x="200" y="128" fill="#F7F8FA" font-family="IBM Plex Mono" font-size="9">A1020         Survey Topografi     06-Mar-26  10-Mar-26  5</text>
+          <rect x="390" y="120" width="50" height="10" fill="#3E6690"/>
+          <text x="200" y="144" fill="#F7F8FA" font-family="IBM Plex Mono" font-size="9">A1030         Pek. Tanah Dasar     16-Mar-26  30-Mar-26  0</text>
+          <rect x="480" y="136" width="140" height="10" fill="#E1592C"/>
+        </svg>
+      </div>
+      <div class="svg-caption">Ilustrasi tampilan Activities window: panel EPS/Project di kiri, tabel aktivitas + Gantt bar (merah = kritis) di kanan.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l3">
+    <summary><span class="lno">3</span> Membuat EPS (Enterprise Project Structure)</summary>
+    <div class="lesson-body">
+      <p>EPS adalah level tertinggi — hierarki yang menampung <b>seluruh proyek perusahaan</b>, biasanya disusun berdasarkan divisi, wilayah, atau jenis kontrak. EPS dibuat sekali di awal implementasi P6, jarang diubah.</p>
+      <h5>Langkah membuat EPS</h5>
+      <ol>
+        <li>Buka <b>Enterprise &gt; Enterprise Project Structure</b>.</li>
+        <li>Klik <b>Add</b>, tentukan EPS ID dan EPS Name (contoh: <span class="mono">IGKM</span> — PT Indo Global Karya Mulia).</li>
+        <li>Buat node anak sesuai struktur bisnis, misalnya per lini kontrak: <span class="mono">IGKM-CH</span> (Coal Hauling), <span class="mono">IGKM-INFRA</span> (Infrastruktur).</li>
+        <li>Atur responsible manager tiap node lewat kolom Responsible Manager (merujuk ke OBS).</li>
+      </ol>
+      <h5>Contoh Struktur EPS Perusahaan Kontraktor Tambang</h5>
+      <div class="svgbox">
+        <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="IBM Plex Mono, monospace" font-size="10" fill="#F7F8FA">
+            <rect x="270" y="10" width="140" height="34" rx="3" fill="#132A44" stroke="#E3A93B" stroke-width="1.4"/>
+            <text x="340" y="31" text-anchor="middle">PT IGKM (EPS)</text>
+            <line x1="340" y1="44" x2="340" y2="60" stroke="#3E6690"/>
+            <line x1="120" y1="60" x2="560" y2="60" stroke="#3E6690"/>
+            <line x1="120" y1="60" x2="120" y2="76" stroke="#3E6690"/>
+            <line x1="340" y1="60" x2="340" y2="76" stroke="#3E6690"/>
+            <line x1="560" y1="60" x2="560" y2="76" stroke="#3E6690"/>
+            <rect x="40" y="76" width="160" height="34" rx="3" fill="#0F2338" stroke="#3E6690"/>
+            <text x="120" y="97" text-anchor="middle">Coal Hauling (CH)</text>
+            <rect x="260" y="76" width="160" height="34" rx="3" fill="#0F2338" stroke="#3E6690"/>
+            <text x="340" y="97" text-anchor="middle">Infrastruktur</text>
+            <rect x="480" y="76" width="160" height="34" rx="3" fill="#0F2338" stroke="#3E6690"/>
+            <text x="560" y="97" text-anchor="middle">Tyre Subcon (GMI)</text>
+            <line x1="340" y1="110" x2="340" y2="126" stroke="#3E6690"/>
+            <line x1="220" y1="126" x2="460" y2="126" stroke="#3E6690"/>
+            <line x1="220" y1="126" x2="220" y2="142" stroke="#3E6690"/>
+            <line x1="460" y1="126" x2="460" y2="142" stroke="#3E6690"/>
+            <rect x="140" y="142" width="160" height="34" rx="3" fill="#0F2338" stroke="#E1592C"/>
+            <text x="220" y="163" text-anchor="middle" fill="#E1592C">Toll Road Project</text>
+            <rect x="380" y="142" width="160" height="34" rx="3" fill="#0F2338" stroke="#E1592C"/>
+            <text x="460" y="163" text-anchor="middle" fill="#E1592C">Dam Irrigation Project</text>
+          </g>
+        </svg>
+      </div>
+      <div class="svg-caption">EPS → dipecah per lini bisnis → tiap proyek riil ditempatkan di node paling bawah.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l4">
+    <summary><span class="lno">4</span> Membuat OBS (Organizational Breakdown Structure)</summary>
+    <div class="lesson-body">
+      <p>OBS merepresentasikan <b>struktur tanggung jawab manajerial</b> — siapa yang bertanggung jawab atas node EPS/WBS tertentu. OBS <i>bukan</i> struktur organisasi HR biasa, tapi khusus untuk kepemilikan proyek (project ownership).</p>
+      <ol>
+        <li>Buka <b>Enterprise &gt; OBS</b>.</li>
+        <li>Buat hierarki dari level tertinggi (Direktur Operasional) ke bawah (Project Manager → Site Manager → Superintendent).</li>
+        <li>Setiap elemen OBS dihubungkan (assign) ke node EPS, WBS, atau bahkan level aktivitas untuk menentukan siapa yang punya otoritas approval progress/perubahan.</li>
+      </ol>
+      <table>
+        <tr><th>Level OBS</th><th>Contoh Jabatan</th><th>Wewenang</th></tr>
+        <tr><td>1</td><td>Direktur Operasional</td><td>Approval budget &amp; kontrak</td></tr>
+        <tr><td>2</td><td>Project Manager</td><td>Approval baseline &amp; perubahan jadwal major</td></tr>
+        <tr><td>3</td><td>Site Manager / Planner</td><td>Update progress harian &amp; mingguan</td></tr>
+        <tr><td>4</td><td>Superintendent / Foreman</td><td>Input aktual di lapangan (melalui laporan ke planner)</td></tr>
+      </table>
+      <div class="callout">OBS menentukan <b>security profile</b> — siapa boleh mengedit apa. Planner biasanya hanya bisa update progress, sedangkan perubahan baseline butuh approval Project Manager.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l5">
+    <summary><span class="lno">5</span> Membuat WBS (Work Breakdown Structure)</summary>
+    <div class="lesson-body">
+      <p>WBS memecah proyek menjadi paket-paket kerja yang bisa diukur dan dijadwalkan. Prinsip <b>100% Rule</b>: total seluruh level WBS di bawahnya harus mencakup 100% scope level di atasnya, tidak kurang tidak lebih.</p>
+      <h5>Contoh WBS Proyek Bendungan Irigasi</h5>
+      <div class="svgbox">
+        <svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
+          <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#F7F8FA">
+            <rect x="260" y="6" width="160" height="32" rx="3" fill="#E1592C"/>
+            <text x="340" y="26" text-anchor="middle" fill="#fff">1.0 Bendungan Irigasi</text>
+            <line x1="340" y1="38" x2="340" y2="54" stroke="#3E6690"/>
+            <line x1="70" y1="54" x2="610" y2="54" stroke="#3E6690"/>
+            <line x1="70" y1="54" x2="70" y2="70" stroke="#3E6690"/>
+            <line x1="220" y1="54" x2="220" y2="70" stroke="#3E6690"/>
+            <line x1="370" y1="54" x2="370" y2="70" stroke="#3E6690"/>
+            <line x1="520" y1="54" x2="520" y2="70" stroke="#3E6690"/>
+            <line x1="610" y1="54" x2="610" y2="70" stroke="#3E6690"/>
+            <rect x="10" y="70" width="120" height="30" rx="3" fill="#132A44" stroke="#E3A93B"/>
+            <text x="70" y="90" text-anchor="middle">1.1 Persiapan</text>
+            <rect x="160" y="70" width="120" height="30" rx="3" fill="#132A44" stroke="#E3A93B"/>
+            <text x="220" y="90" text-anchor="middle">1.2 Pekerjaan Tanah</text>
+            <rect x="310" y="70" width="120" height="30" rx="3" fill="#132A44" stroke="#E3A93B"/>
+            <text x="370" y="90" text-anchor="middle">1.3 Struktur Beton</text>
+            <rect x="460" y="70" width="120" height="30" rx="3" fill="#132A44" stroke="#E3A93B"/>
+            <text x="520" y="90" text-anchor="middle">1.4 Spillway</text>
+            <rect x="580" y="70" width="90" height="30" rx="3" fill="#132A44" stroke="#E3A93B"/>
+            <text x="625" y="90" text-anchor="middle">1.5 Commiss.</text>
+            <line x1="370" y1="100" x2="370" y2="116" stroke="#3E6690"/>
+            <line x1="280" y1="116" x2="460" y2="116" stroke="#3E6690"/>
+            <line x1="280" y1="116" x2="280" y2="132" stroke="#3E6690"/>
+            <line x1="370" y1="116" x2="370" y2="132" stroke="#3E6690"/>
+            <line x1="460" y1="116" x2="460" y2="132" stroke="#3E6690"/>
+            <rect x="210" y="132" width="140" height="28" rx="3" fill="#0F2338" stroke="#8AA0B6"/>
+            <text x="280" y="151" text-anchor="middle" font-size="9">1.3.1 Fondasi</text>
+            <rect x="300" y="132" width="140" height="0" fill="none"/>
+            <rect x="300" y="164" width="140" height="0" fill="none"/>
+            <rect x="300" y="132" width="140" height="28" rx="3" fill="#0F2338" stroke="#8AA0B6" transform="translate(0,0)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="svg-caption">WBS berorientasi <b>deliverable</b> (hasil kerja), bukan aktivitas — level terbawah WBS baru dipecah menjadi Activity.</div>
+      <h5>WBS vs Activity — jangan tertukar</h5>
+      <table>
+        <tr><th>WBS</th><th>Activity</th></tr>
+        <tr><td>Paket pekerjaan / deliverable</td><td>Langkah kerja yang punya durasi &amp; tanggal</td></tr>
+        <tr><td>"Struktur Beton Spillway"</td><td>"Bekisting kolom spillway", "Pengecoran K350", "Curing 7 hari"</td></tr>
+        <tr><td>Dipakai untuk kode biaya &amp; laporan ringkas</td><td>Dipakai untuk penjadwalan &amp; CPM</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l6">
+    <summary><span class="lno">6</span> Mendefinisikan Aktivitas &amp; Urutan Kerja</summary>
+    <div class="lesson-body">
+      <p>Setiap aktivitas di P6 punya elemen wajib: <b>Activity ID, Activity Name, Activity Type, Original Duration, Calendar, WBS assignment</b>.</p>
+      <h5>Activity Type di P6</h5>
+      <table>
+        <tr><th>Tipe</th><th>Kegunaan</th></tr>
+        <tr><td>Task Dependent</td><td>Durasi mengikuti kalender aktivitas, tipe paling umum untuk pekerjaan fisik</td></tr>
+        <tr><td>Resource Dependent</td><td>Durasi mengikuti kalender resource yang di-assign (progress berbasis jam kerja SDM)</td></tr>
+        <tr><td>Level of Effort (LOE)</td><td>Durasi mengikuti aktivitas lain, cocok untuk supervisi/HSE monitoring sepanjang proyek</td></tr>
+        <tr><td>Start Milestone / Finish Milestone</td><td>Durasi nol, penanda pencapaian (mis. "Financial Close", "PHO")</td></tr>
+        <tr><td>WBS Summary</td><td>Ringkasan otomatis dari aktivitas di bawah suatu WBS</td></tr>
+      </table>
+      <h5>Menentukan Urutan Kerja (Sequencing)</h5>
+      <p>Urutan logis ditentukan dari metode konstruksi riil, bukan sekadar tebakan. Contoh untuk pekerjaan struktur beton: <span class="mono">Bekisting → Pembesian → Pengecoran → Curing → Bongkar Bekisting</span>. Kesalahan sequencing (misal curing dilewati) akan membuat jadwal P6 terlihat rapi tapi tidak realistis secara teknis.</p>
+      <div class="callout">Aturan praktis: tulis dulu metode kerja (method statement) di kertas/Excel bersama tim teknik sebelum diinput ke P6. P6 hanya sebagai alat hitung — logika konstruksi harus benar dulu.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l7">
+    <summary><span class="lno">7</span> Relationship (Predecessor–Successor) &amp; Lag/Lead</summary>
+    <div class="lesson-body">
+      <p>Empat tipe hubungan logis antar-aktivitas di P6:</p>
+      <table>
+        <tr><th>Tipe</th><th>Arti</th><th>Contoh</th></tr>
+        <tr><td>Finish-to-Start (FS)</td><td>B mulai setelah A selesai (paling umum, ~80% kasus)</td><td>Bekisting selesai → Pembesian mulai</td></tr>
+        <tr><td>Start-to-Start (SS)</td><td>B mulai setelah A mulai</td><td>Pemasangan pipa dan galian bisa mulai bersamaan dengan lag</td></tr>
+        <tr><td>Finish-to-Finish (FF)</td><td>B selesai setelah A selesai</td><td>Testing selesai bersamaan dengan commissioning selesai</td></tr>
+        <tr><td>Start-to-Finish (SF)</td><td>B selesai setelah A mulai (jarang dipakai)</td><td>Shift malam selesai setelah shift pagi mulai</td></tr>
+      </table>
+      <p><b>Lag</b> = jeda waktu tambahan setelah relasi terpenuhi (mis. FS +3 hari untuk curing beton). <b>Lead</b> = percepatan/tumpang tindih (FS −2 hari, digambarkan sebagai lag negatif).</p>
+      <div class="callout">Best practice industri: hindari <b>constraint keras</b> untuk memaksa tanggal — gunakan relationship &amp; lag yang mencerminkan logika kerja nyata. Jadwal yang terlalu banyak "Start On" constraint akan kehilangan validitas CPM-nya.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l8">
+    <summary><span class="lno">8</span> Constraints (Batasan Tanggal)</summary>
+    <div class="lesson-body">
+      <table>
+        <tr><th>Constraint</th><th>Fungsi</th></tr>
+        <tr><td>Start On / Finish On</td><td>Mengunci tanggal pasti (mis. tanggal serah terima lahan dari owner)</td></tr>
+        <tr><td>Start On or After</td><td>Aktivitas tidak boleh mulai sebelum tanggal tertentu (mis. musim kemarau untuk pengecoran)</td></tr>
+        <tr><td>Finish On or Before</td><td>Deadline keras (mis. sebelum musim hujan untuk pekerjaan tanah)</td></tr>
+        <tr><td>Mandatory Start/Finish</td><td>Mengabaikan logika relationship — pakai sangat hati-hati, hanya untuk kondisi kontraktual mutlak</td></tr>
+        <tr><td>As Late As Possible (ALAP)</td><td>Menunda aktivitas non-kritis semaksimal mungkin selama float masih ada</td></tr>
+      </table>
+      <div class="callout">Constraint berlebihan adalah tanda bahaya (red flag) saat review jadwal — auditor jadwal (schedule reviewer) biasanya langsung memeriksa jumlah "Hard Constraint" sebagai indikator kualitas jadwal.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l9">
+    <summary><span class="lno">9</span> Resource &amp; Cost Loading: Material, Labor, Alat, Staff Salary</summary>
+    <div class="lesson-body">
+      <p>P6 membedakan resource jadi tiga kategori, tiap kategori punya cara loading biaya berbeda:</p>
+      <table>
+        <tr><th>Kategori</th><th>Contoh</th><th>Cara loading biaya</th></tr>
+        <tr><td>Labor</td><td>Operator, tukang, mandor</td><td>Price/Unit (Rp/jam atau Rp/hari) × jumlah unit waktu</td></tr>
+        <tr><td>Nonlabor (Equipment)</td><td>Excavator, dump truck, crane</td><td>Price/Unit (Rp/jam sewa atau Rp/hari) × durasi pemakaian</td></tr>
+        <tr><td>Material</td><td>Semen, besi, aspal, pipa culvert</td><td>Price/Unit (Rp/m³, Rp/ton, Rp/unit) × kuantitas material (Expense atau Material resource)</td></tr>
+        <tr><td>Expense (non-resource cost)</td><td>Gaji staff tetap, sewa kantor lapangan, perizinan</td><td>Dicatat sebagai <i>Activity Expense</i>, dialokasikan langsung ke aktivitas tanpa unit/quantity</td></tr>
+      </table>
+      <h5>Langkah Loading Resource ke Aktivitas</h5>
+      <ol>
+        <li>Buat master data di <b>Enterprise &gt; Resources</b>: kode, nama, tipe (Labor/Nonlabor/Material), unit ukur, Price/Unit (bisa berjenjang per tanggal — Price/Unit effective dates).</li>
+        <li>Buka aktivitas terkait → tab <b>Resources</b> → Assign → pilih resource, isi <i>Budgeted Units</i> (jam/hari) atau <i>Budgeted Quantity</i> untuk material.</li>
+        <li>Untuk gaji staff tetap (site manager, planner, admin) yang tidak terikat ke satu aktivitas, gunakan resource tipe Labor dengan durasi mengikuti keseluruhan proyek (LOE activity "Overhead Site Management"), atau catat sebagai Expense bulanan.</li>
+        <li>P6 otomatis menghitung <b>Budgeted Cost</b> = Budgeted Units × Price/Unit, lalu tersebar (spread) mengikuti kurva distribusi aktivitas (default linear).</li>
+      </ol>
+      <h5>Contoh Resource Loading — Paket Pekerjaan Pemasangan Culvert</h5>
+      <table>
+        <tr><th>Resource</th><th>Tipe</th><th>Qty/Unit</th><th>Price/Unit</th><th>Budgeted Cost</th></tr>
+        <tr><td>Operator Excavator</td><td>Labor</td><td>32 jam</td><td>Rp 45.000/jam</td><td>Rp 1.440.000</td></tr>
+        <tr><td>Tukang Pipa (4 orang)</td><td>Labor</td><td>128 jam</td><td>Rp 35.000/jam</td><td>Rp 4.480.000</td></tr>
+        <tr><td>Excavator PC200</td><td>Nonlabor</td><td>4 hari</td><td>Rp 3.500.000/hari</td><td>Rp 14.000.000</td></tr>
+        <tr><td>Pipa Culvert D1000</td><td>Material</td><td>24 unit</td><td>Rp 2.100.000/unit</td><td>Rp 50.400.000</td></tr>
+        <tr><td>Site Supervisor (Expense LOE)</td><td>Expense</td><td>4 hari</td><td>Rp 750.000/hari</td><td>Rp 3.000.000</td></tr>
+        <tr><td colspan="4" style="text-align:right;font-weight:600;color:#F7F8FA;">TOTAL BUDGETED COST</td><td style="font-weight:700;color:#E3A93B;">Rp 73.320.000</td></tr>
+      </table>
+      <div class="callout">Total seluruh Budgeted Cost dari semua aktivitas otomatis menjadi <b>Project Budget at Completion (BAC)</b> — angka ini menjadi acuan utama seluruh perhitungan forecast (EVM) di lesson 15.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l10">
+    <summary><span class="lno">10</span> Critical Path Method (CPM) &amp; Analisis Float</summary>
+    <div class="lesson-body">
+      <p>P6 menghitung jadwal lewat dua tahap saat kamu menekan <b>F9 (Schedule)</b>:</p>
+      <ol>
+        <li><b>Forward Pass</b> — menghitung Early Start (ES) &amp; Early Finish (EF) dari awal proyek ke akhir.</li>
+        <li><b>Backward Pass</b> — menghitung Late Start (LS) &amp; Late Finish (LF) dari akhir proyek mundur ke awal.</li>
+      </ol>
+      <p><b>Total Float (TF)</b> = LS − ES (atau LF − EF). Aktivitas dengan TF = 0 berada di <b>jalur kritis</b> — telat 1 hari saja, seluruh proyek mundur 1 hari. <b>Free Float (FF)</b> = seberapa jauh aktivitas bisa mundur tanpa memengaruhi ES aktivitas penerus (successor) terdekat.</p>
+
+      <h5>Contoh Kerja: Paket Pekerjaan Drainase Jalan Tol (7 aktivitas)</h5>
+      <div class="svgbox">
+        <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8AA0B6"/></marker>
+            <marker id="a2c" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#E1592C"/></marker>
+          </defs>
+          <line x1="90" y1="60" x2="150" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#a2c)"/>
+          <line x1="90" y1="60" x2="150" y2="160" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#a2)"/>
+          <line x1="230" y1="60" x2="290" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#a2c)"/>
+          <line x1="230" y1="160" x2="290" y2="60" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#a2)"/>
+          <line x1="370" y1="60" x2="430" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#a2c)"/>
+          <line x1="510" y1="60" x2="570" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#a2c)"/>
+          <line x1="650" y1="60" x2="710" y2="60" stroke="#E1592C" stroke-width="2" marker-end="url(#a2c)"/>
+          <g font-family="IBM Plex Mono, monospace" font-size="8.6">
+            <!-- A -->
+            <rect x="10" y="34" width="80" height="52" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+            <text x="50" y="48" text-anchor="middle" fill="#F7F8FA" font-size="9">A · Mobilisasi</text>
+            <text x="18" y="62" fill="#8AA0B6">ES0 EF3</text><text x="18" y="74" fill="#8AA0B6">LS0 LF3</text>
+            <text x="50" y="84" text-anchor="middle" fill="#E1592C">TF=0</text>
+            <!-- B -->
+            <rect x="150" y="34" width="80" height="52" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+            <text x="190" y="48" text-anchor="middle" fill="#F7F8FA" font-size="9">B · Clearing</text>
+            <text x="158" y="62" fill="#8AA0B6">ES3 EF8</text><text x="158" y="74" fill="#8AA0B6">LS3 LF8</text>
+            <text x="190" y="84" text-anchor="middle" fill="#E1592C">TF=0</text>
+            <!-- D -->
+            <rect x="150" y="134" width="80" height="52" rx="3" fill="#132A44" stroke="#3E6690" stroke-width="1.2"/>
+            <text x="190" y="148" text-anchor="middle" fill="#F7F8FA" font-size="9">D · Pengadaan</text>
+            <text x="158" y="162" fill="#8AA0B6">ES3 EF11</text><text x="158" y="174" fill="#8AA0B6">LS6 LF14</text>
+            <text x="190" y="184" text-anchor="middle" fill="#8AA0B6">TF=3</text>
+            <!-- C -->
+            <rect x="290" y="34" width="80" height="52" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+            <text x="330" y="48" text-anchor="middle" fill="#F7F8FA" font-size="9">C · Galian</text>
+            <text x="298" y="62" fill="#8AA0B6">ES8 EF14</text><text x="298" y="74" fill="#8AA0B6">LS8 LF14</text>
+            <text x="330" y="84" text-anchor="middle" fill="#E1592C">TF=0</text>
+            <!-- E -->
+            <rect x="430" y="34" width="80" height="52" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+            <text x="470" y="48" text-anchor="middle" fill="#F7F8FA" font-size="9">E · Psg Culvert</text>
+            <text x="438" y="62" fill="#8AA0B6">ES14 EF18</text><text x="438" y="74" fill="#8AA0B6">LS14 LF18</text>
+            <text x="470" y="84" text-anchor="middle" fill="#E1592C">TF=0</text>
+            <!-- F -->
+            <rect x="570" y="34" width="80" height="52" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+            <text x="610" y="48" text-anchor="middle" fill="#F7F8FA" font-size="9">F · Timbunan</text>
+            <text x="578" y="62" fill="#8AA0B6">ES18 EF25</text><text x="578" y="74" fill="#8AA0B6">LS18 LF25</text>
+            <text x="610" y="84" text-anchor="middle" fill="#E1592C">TF=0</text>
+            <!-- G -->
+            <rect x="710" y="34" width="46" height="52" rx="3" fill="#132A44" stroke="#E1592C" stroke-width="1.6"/>
+            <text x="733" y="48" text-anchor="middle" fill="#F7F8FA" font-size="8.4">G · Finish</text>
+            <text x="715" y="62" fill="#8AA0B6" font-size="7.6">ES25 EF28</text><text x="715" y="74" fill="#8AA0B6" font-size="7.6">LS25 LF28</text>
+            <text x="733" y="84" text-anchor="middle" fill="#E1592C">TF=0</text>
+          </g>
+          <line x1="230" y1="160" x2="430" y2="60" stroke="#8AA0B6" stroke-width="1.4" marker-end="url(#a2)"/>
+        </svg>
+      </div>
+      <table>
+        <tr><th>ID</th><th>Aktivitas</th><th>Durasi</th><th>ES</th><th>EF</th><th>LS</th><th>LF</th><th>Total Float</th><th>Status</th></tr>
+        <tr><td>A</td><td>Mobilisasi</td><td>3</td><td>0</td><td>3</td><td>0</td><td>3</td><td>0</td><td>Kritis</td></tr>
+        <tr><td>B</td><td>Land Clearing</td><td>5</td><td>3</td><td>8</td><td>3</td><td>8</td><td>0</td><td>Kritis</td></tr>
+        <tr><td>C</td><td>Galian Tanah</td><td>6</td><td>8</td><td>14</td><td>8</td><td>14</td><td>0</td><td>Kritis</td></tr>
+        <tr><td>D</td><td>Pengadaan Pipa Culvert</td><td>8</td><td>3</td><td>11</td><td>6</td><td>14</td><td><b style="color:#8AA0B6">3</b></td><td>Punya Float</td></tr>
+        <tr><td>E</td><td>Pemasangan Culvert</td><td>4</td><td>14</td><td>18</td><td>14</td><td>18</td><td>0</td><td>Kritis</td></tr>
+        <tr><td>F</td><td>Timbunan &amp; Pemadatan</td><td>7</td><td>18</td><td>25</td><td>18</td><td>25</td><td>0</td><td>Kritis</td></tr>
+        <tr><td>G</td><td>Finishing</td><td>3</td><td>25</td><td>28</td><td>25</td><td>28</td><td>0</td><td>Kritis</td></tr>
+      </table>
+      <div class="callout">Jalur kritis: <b>A → B → C → E → F → G = 28 hari</b>. Aktivitas D (pengadaan pipa culvert) punya Total Float 3 hari — boleh telat maksimal 3 hari sebelum ikut menunda proyek, karena aktivitas E menunggu yang paling lambat selesai antara C (hari ke-14) dan D (hari ke-11).</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l11">
+    <summary><span class="lno">11</span> Membuat Baseline Proyek</summary>
+    <div class="lesson-body">
+      <p>Baseline adalah "foto" jadwal &amp; biaya yang disepakati sebagai acuan (target) sebelum eksekusi dimulai — dasar dari seluruh analisis varian dan EVM.</p>
+      <ol>
+        <li>Pastikan jadwal sudah final, di-review, dan disetujui (approved) oleh owner/PM.</li>
+        <li>Buka <b>Project &gt; Maintain Baselines</b> → klik <b>Add</b> → pilih "Save a copy of the current project as a new baseline".</li>
+        <li>Beri nama jelas, misal <span class="mono">Baseline 0 — Contract Schedule Rev.0</span>.</li>
+        <li>Di <b>Project &gt; Assign Baselines</b>, tetapkan baseline ini sebagai <i>Project Baseline</i> (pembanding utama).</li>
+        <li>Tampilkan bar baseline di Gantt Chart lewat <b>View &gt; Bars</b> → centang "Baseline" agar terlihat perbandingan rencana vs realisasi.</li>
+      </ol>
+      <div class="callout">Jangan overwrite baseline awal saat ada perubahan scope besar — buat baseline baru (Baseline 1, Baseline 2, dst.) dan simpan seluruh riwayatnya. Ini penting sebagai bukti audit jejak perubahan (revision trail), terutama untuk keperluan klaim kontrak FIDIC.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l12">
+    <summary><span class="lno">12</span> Update Progress &amp; Memonitor-Mengontrol Proyek</summary>
+    <div class="lesson-body">
+      <p>Update dilakukan periodik (biasanya mingguan) dengan <b>Status Date</b> (data date) sebagai titik potong "hari ini" secara sistem.</p>
+      <h5>Tiga Cara Mengukur % Complete</h5>
+      <table>
+        <tr><th>Metode</th><th>Cara hitung</th><th>Cocok untuk</th></tr>
+        <tr><td>Physical % Complete</td><td>Dinilai manual oleh engineer berdasar progress fisik nyata di lapangan</td><td>Pekerjaan sipil/struktur (paling umum &amp; direkomendasikan untuk klaim)</td></tr>
+        <tr><td>Duration % Complete</td><td>(Original Duration − Remaining Duration) ÷ Original Duration</td><td>Aktivitas administratif/linear sederhana</td></tr>
+        <tr><td>Unit % Complete</td><td>Actual Units ÷ (Actual + Remaining Units)</td><td>Aktivitas berbasis volume/produktivitas (mis. m³ galian, m² aspal)</td></tr>
+      </table>
+      <h5>Langkah Update Mingguan</h5>
+      <ol>
+        <li>Set <b>Status Date</b> baru (mis. tiap Sabtu) di Project &gt; Status Date.</li>
+        <li>Kumpulkan data aktual dari lapangan: Actual Start, Actual Finish (jika sudah selesai), Remaining Duration, aktual volume pekerjaan.</li>
+        <li>Input di tab <b>Status</b> pada masing-masing aktivitas.</li>
+        <li>Jalankan <b>F9 Schedule</b> agar P6 menghitung ulang jadwal sisa (recalculate forward/backward pass untuk Remaining Work).</li>
+        <li>Bandingkan hasil dengan baseline — cek aktivitas mana yang mulai tergeser ke jalur kritis baru.</li>
+      </ol>
+      <div class="callout">Kontrol proyek bukan cuma "input data" — inti dari monitoring adalah <b>early warning</b>: begitu terlihat float aktivitas menipis atau menjadi negatif, PM harus segera bertindak (crashing, fast-tracking, atau re-sequencing), bukan menunggu laporan bulanan.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l13">
+    <summary><span class="lno">13</span> Analisa Varian: Update vs Baseline</summary>
+    <div class="lesson-body">
+      <p>Setelah update, P6 otomatis menghitung selisih (variance) antara jadwal terkini dan baseline:</p>
+      <table>
+        <tr><th>Variance</th><th>Rumus</th><th>Arti jika negatif</th></tr>
+        <tr><td>Start Variance</td><td>Baseline Start − Actual/Planned Start</td><td>Aktivitas mulai lebih lambat dari rencana</td></tr>
+        <tr><td>Finish Variance</td><td>Baseline Finish − Actual/Planned Finish</td><td>Aktivitas akan/sudah selesai lebih lambat dari rencana</td></tr>
+        <tr><td>Schedule % Variance</td><td>(BL Duration − Current Duration) ÷ BL Duration</td><td>Durasi membengkak dari rencana</td></tr>
+        <tr><td>Cost Variance (CV)</td><td>Earned Value − Actual Cost</td><td>Biaya aktual melampaui nilai pekerjaan yang sudah dihasilkan (boros)</td></tr>
+      </table>
+      <p>Layout laporan yang umum dipakai untuk rapat mingguan: kolom Activity ID, BL Start/Finish, Actual/Forecast Start/Finish, Variance (hari), dan keterangan alasan keterlambatan (root cause) untuk aktivitas kritis.</p>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l14">
+    <summary><span class="lno">14</span> Laporan Proyek dengan S-Curve</summary>
+    <div class="lesson-body">
+      <p>S-Curve adalah grafik kumulatif progress (bobot % atau biaya kumulatif) terhadap waktu — bentuknya menyerupai huruf "S" karena progress biasanya lambat di awal (mobilisasi), cepat di tengah (puncak produktivitas), dan melambat lagi di akhir (finishing &amp; commissioning).</p>
+      <div class="svgbox">
+        <svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
+          <line x1="50" y1="20" x2="50" y2="260" stroke="#3E6690"/>
+          <line x1="50" y1="260" x2="610" y2="260" stroke="#3E6690"/>
+          <text x="10" y="24" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="9">100%</text>
+          <text x="10" y="144" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="9">50%</text>
+          <text x="18" y="264" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="9">0%</text>
+          <text x="560" y="278" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="9">WAKTU</text>
+          <!-- planned curve -->
+          <path d="M50,260 C160,255 220,190 320,140 C420,90 480,35 610,25" fill="none" stroke="#E3A93B" stroke-width="2.4"/>
+          <!-- actual curve to status date then flat/behind -->
+          <path d="M50,260 C160,257 220,210 320,175 C400,150 440,130 470,120" fill="none" stroke="#4C9A6A" stroke-width="2.4"/>
+          <circle cx="470" cy="120" r="4" fill="#4C9A6A"/>
+          <line x1="470" y1="120" x2="470" y2="260" stroke="#E1592C" stroke-dasharray="4,3" stroke-width="1.2"/>
+          <text x="450" y="278" fill="#E1592C" font-family="IBM Plex Mono" font-size="9">STATUS DATE</text>
+          <!-- gap annotation -->
+          <line x1="475" y1="120" x2="475" y2="97" stroke="#E1592C" stroke-width="1.4"/>
+          <text x="482" y="112" fill="#E1592C" font-family="IBM Plex Mono" font-size="9">SV gap</text>
+        </svg>
+      </div>
+      <div class="legend">
+        <span><i style="background:#E3A93B"></i> Planned Progress (Baseline Cumulative %)</span>
+        <span><i style="background:#4C9A6A"></i> Actual Progress (Realisasi Kumulatif %)</span>
+        <span><i style="background:#E1592C"></i> Status Date &amp; Schedule Variance Gap</span>
+      </div>
+      <h5>Sumber Data S-Curve di P6</h5>
+      <ul>
+        <li>S-Curve berbasis <b>bobot fisik (physical % complete × bobot WBS)</b> — paling umum untuk laporan owner.</li>
+        <li>S-Curve berbasis <b>biaya kumulatif</b> (Budgeted Cost vs Actual Cost) — untuk kontrol keuangan proyek.</li>
+        <li>Bisa juga dibuat <b>histogram manpower/resource</b> (bar chart, bukan kumulatif) untuk melihat puncak kebutuhan tenaga kerja per periode.</li>
+      </ul>
+      <p>Langkah di P6: gunakan menu <b>Reports &gt; Resource/Cost Report</b> atau export tabel time-distributed data (spread sheet view) lalu plot manual di Excel jika format laporan owner spesifik.</p>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l15" open>
+    <summary><span class="lno">15</span> Forecast Penyelesaian Proyek — Earned Value Management (EVM)</summary>
+    <div class="lesson-body">
+      <p>EVM menyatukan data <b>jadwal</b> dan <b>biaya</b> menjadi satu bahasa yang bisa dibandingkan langsung, sehingga PM bisa memprediksi tanggal &amp; biaya penyelesaian akhir berdasarkan tren produktivitas aktual — bukan sekadar asumsi.</p>
+      <h5>Tiga Angka Dasar</h5>
+      <table>
+        <tr><th>Istilah</th><th>Definisi</th></tr>
+        <tr><td>PV (Planned Value)</td><td>Nilai pekerjaan yang <i>direncanakan</i> selesai sampai status date (dari baseline)</td></tr>
+        <tr><td>EV (Earned Value)</td><td>Nilai pekerjaan yang <i>benar-benar</i> selesai sampai status date (% complete aktual × BAC)</td></tr>
+        <tr><td>AC (Actual Cost)</td><td>Biaya yang <i>benar-benar</i> dikeluarkan sampai status date</td></tr>
+      </table>
+      <h5>Rumus Kunci</h5>
+      <table>
+        <tr><th>Indikator</th><th>Rumus</th><th>Interpretasi</th></tr>
+        <tr><td>Schedule Variance (SV)</td><td>EV − PV</td><td>Negatif = terlambat dari rencana</td></tr>
+        <tr><td>Cost Variance (CV)</td><td>EV − AC</td><td>Negatif = boros dari anggaran</td></tr>
+        <tr><td>SPI (Schedule Performance Index)</td><td>EV ÷ PV</td><td>&lt;1 = lebih lambat dari rencana</td></tr>
+        <tr><td>CPI (Cost Performance Index)</td><td>EV ÷ AC</td><td>&lt;1 = boros, &gt;1 = hemat</td></tr>
+        <tr><td>EAC (Estimate at Completion)</td><td>BAC ÷ CPI</td><td>Prediksi total biaya akhir proyek berdasar tren efisiensi saat ini</td></tr>
+        <tr><td>ETC (Estimate to Complete)</td><td>EAC − AC</td><td>Perkiraan biaya yang masih dibutuhkan untuk selesai</td></tr>
+        <tr><td>VAC (Variance at Completion)</td><td>BAC − EAC</td><td>Negatif = proyek diperkirakan over-budget</td></tr>
+        <tr><td>TCPI (To-Complete Performance Index)</td><td>(BAC − EV) ÷ (BAC − AC)</td><td>Efisiensi yang wajib dicapai sisa proyek agar tetap sesuai BAC</td></tr>
+      </table>
+
+      <h5>Kalkulator EVM Interaktif — Coba Angkamu Sendiri</h5>
+      <div class="calc">
+        <div class="calc-grid">
+          <div class="calc-field"><label>BAC — Budget at Completion (Rp)</label><input type="number" id="ev_bac" value="10000000000"></div>
+          <div class="calc-field"><label>PV — Planned Value (Rp)</label><input type="number" id="ev_pv" value="6000000000"></div>
+          <div class="calc-field"><label>EV — Earned Value (Rp)</label><input type="number" id="ev_ev" value="5100000000"></div>
+          <div class="calc-field"><label>AC — Actual Cost (Rp)</label><input type="number" id="ev_ac" value="5600000000"></div>
+        </div>
+        <button class="btn btn-primary" style="border-radius:20px;" onclick="calcEVM()">Hitung Forecast</button>
+        <div class="calc-out" id="ev_out"></div>
+        <div class="calc-note" id="ev_note"></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">Studi Kasus: Proyek jalan tol dengan BAC Rp 10 miliar. Pada bulan ke-6 (status date), PV = Rp 6 M, EV = Rp 5,1 M, AC = Rp 5,6 M. Berapa perkiraan biaya akhir proyek dan apa rekomendasi PM?</div>
+        <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+        <div class="ans">
+          <p>SPI = 5,1/6 = <b>0,85</b> → proyek 15% lebih lambat dari rencana secara nilai pekerjaan.<br>
+          CPI = 5,1/5,6 = <b>0,91</b> → setiap Rp 1 dikeluarkan hanya menghasilkan Rp 0,91 nilai pekerjaan (boros 9%).<br>
+          EAC = BAC/CPI = 10 M / 0,91 = <b>≈ Rp 10,99 miliar</b> → proyek diperkirakan over-budget hampir Rp 1 miliar jika tren efisiensi saat ini tidak diperbaiki.<br>
+          TCPI = (10−5,1)/(10−5,6) = 4,9/4,4 = <b>1,11</b> → sisa pekerjaan harus dikerjakan 11% lebih efisien dari performa rata-rata saat ini agar tetap sesuai BAC awal — target yang cukup berat.</p>
+          <p><b>Rekomendasi:</b> Karena TCPI (1,11) jauh di atas CPI aktual (0,91), realistisnya proyek <b>tidak</b> akan kembali ke BAC awal tanpa intervensi signifikan (mis. renegosiasi metode kerja yang lebih efisien, subtitusi material, atau percepatan dengan crashing di aktivitas non-kritis yang murah). PM sebaiknya melaporkan EAC revisi ke owner sebagai early warning, bukan menunggu proyek benar-benar over-budget.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6-l16">
+    <summary><span class="lno">16</span> Risk Analysis — Monte Carlo Simulation</summary>
+    <div class="lesson-body">
+      <p>CPM klasik mengasumsikan durasi aktivitas <b>pasti (deterministik)</b>. Di dunia nyata, durasi punya ketidakpastian (cuaca, produktivitas, supply). Monte Carlo mensimulasikan ribuan kemungkinan skenario jadwal untuk menghasilkan <b>probabilitas</b> tanggal penyelesaian, bukan satu tanggal pasti.</p>
+      <h5>Langkah Analisis</h5>
+      <ol>
+        <li>Untuk tiap aktivitas (terutama di jalur kritis &amp; near-critical), tentukan <b>estimasi tiga titik</b>: Optimistic (O), Most Likely (M), Pessimistic (P) — biasanya dari data historis atau expert judgment tim lapangan.</li>
+        <li>Gunakan distribusi (umumnya Triangular atau PERT/Beta) untuk memodelkan tiap aktivitas: <span class="mono">PERT Mean = (O + 4M + P) / 6</span>.</li>
+        <li>Jalankan simulasi (di P6 lewat modul <b>Schedule Risk Analysis</b>/plugin seperti Primavera Risk Analysis, atau tools eksternal seperti @RISK / Full Monte) — software menghitung ulang CPM ribuan kali (mis. 5.000–10.000 iterasi) dengan durasi acak sesuai distribusi tiap aktivitas.</li>
+        <li>Hasilnya berupa <b>histogram probabilitas tanggal selesai</b> dan <b>Criticality Index</b> (persentase seberapa sering suatu aktivitas muncul di jalur kritis selama simulasi).</li>
+      </ol>
+      <h5>Contoh Data Tiga Titik — Paket Pekerjaan Spillway Bendungan</h5>
+      <table>
+        <tr><th>Aktivitas</th><th>Optimistic</th><th>Most Likely</th><th>Pessimistic</th><th>PERT Mean</th></tr>
+        <tr><td>Galian Batuan Spillway</td><td>18 hari</td><td>24 hari</td><td>40 hari</td><td>(18+4×24+40)/6 = <b>25,7 hari</b></td></tr>
+        <tr><td>Pengecoran Struktur Spillway</td><td>30 hari</td><td>35 hari</td><td>50 hari</td><td>(30+4×35+50)/6 = <b>36,7 hari</b></td></tr>
+      </table>
+      <h5>Membaca Hasil Simulasi (P50, P80, P90)</h5>
+      <div class="svgbox">
+        <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+          <line x1="40" y1="20" x2="40" y2="170" stroke="#3E6690"/>
+          <line x1="40" y1="170" x2="610" y2="170" stroke="#3E6690"/>
+          <g fill="#3E6690">
+            <rect x="55" y="150" width="18" height="20"/><rect x="80" y="130" width="18" height="40"/><rect x="105" y="100" width="18" height="70"/>
+            <rect x="130" y="70" width="18" height="100" fill="#E3A93B"/><rect x="155" y="55" width="18" height="115" fill="#E3A93B"/>
+            <rect x="180" y="45" width="18" height="125" fill="#4C9A6A"/><rect x="205" y="50" width="18" height="120" fill="#E1592C"/>
+            <rect x="230" y="65" width="18" height="105" fill="#E1592C"/><rect x="255" y="90" width="18" height="80" fill="#E1592C"/>
+            <rect x="280" y="115" width="18" height="55"/><rect x="305" y="140" width="18" height="30"/><rect x="330" y="155" width="18" height="15"/>
+          </g>
+          <line x1="188" y1="30" x2="188" y2="170" stroke="#4C9A6A" stroke-dasharray="3,3"/>
+          <text x="150" y="24" fill="#4C9A6A" font-family="IBM Plex Mono" font-size="9">P50 = 218 hari</text>
+          <line x1="245" y1="30" x2="245" y2="170" stroke="#E1592C" stroke-dasharray="3,3"/>
+          <text x="255" y="42" fill="#E1592C" font-family="IBM Plex Mono" font-size="9">P80 = 231 hari</text>
+          <text x="400" y="100" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="10">Distribusi hasil</text>
+          <text x="400" y="114" fill="#8AA0B6" font-family="IBM Plex Mono" font-size="10">10.000 iterasi</text>
+        </svg>
+      </div>
+      <div class="callout">Istilah kunci: <b>P50</b> = tanggal di mana 50% simulasi selesai pada/lebih cepat dari tanggal itu (angka "coin-flip", berisiko tinggi untuk komitmen kontrak). <b>P80/P90</b> = tanggal dengan tingkat keyakinan 80%/90% — inilah yang lebih tepat dipakai sebagai <b>tanggal komitmen kontraktual ke owner</b>, karena mengandung buffer risiko yang wajar. Selisih antara P50 dan P80 sering disebut <b>schedule contingency</b>.</div>
+      <div class="qa">
+        <div class="q">Studi Kasus: Simulasi Monte Carlo 10.000 iterasi pada proyek bendungan menghasilkan P50 = 218 hari dan P80 = 231 hari, sementara jadwal CPM deterministik (single-point estimate) menunjukkan 210 hari. Owner meminta komitmen tanggal serah terima. Tanggal berapa yang sebaiknya dikomit kontraktor?</div>
+        <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+        <div class="ans">
+          <p>Jangan pakai 210 hari (CPM deterministik) — angka ini mengasumsikan semua aktivitas berjalan tepat sesuai Most Likely tanpa mempertimbangkan variabilitas, sehingga secara statistik probabilitas tercapainya sangat rendah (di bawah P50). Jangan juga langsung pakai P50 (218 hari) untuk komitmen kontraktual karena artinya masih ada <b>50% kemungkinan proyek terlambat</b>.</p>
+          <p><b>Rekomendasi:</b> Komit ke owner pada <b>P80 = 231 hari</b> sebagai tanggal kontraktual, dengan selisih 231−218 = 13 hari sebagai <i>schedule contingency</i> yang dijaga PM secara internal (tidak diumumkan sebagai "slack bebas" ke tim, agar tidak memicu efek Parkinson's Law/menunda pekerjaan). Jadwal kerja harian tetap mengacu ke jadwal CPM P50/most-likely agar tim tetap terpacu, sementara buffer P80 menjadi bantalan risiko manajemen.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <div class="section-head" style="margin-top:70px;">
+    <div class="eyebrow">Praktik Langsung — Klik &amp; Ikuti</div>
+    <h2>Tutorial Step-by-Step: Memulai Primavera P6 Professional</h2>
+    <p>Setelah paham konsepnya, saatnya praktik langsung di aplikasi. Tutorial ini memakai studi kasus nyata: <b>PT Indo Global Traktor</b> membangun <b>Control Room Building Stasiun Pengumpul Minyak</b> — diadaptasi dari modul pelatihan Primavera P6 Professional, Jurusan Teknik Sipil, Fakultas Teknik, Universitas Sultan Ageng Tirtayasa.</p>
+  </div>
+
+  <div class="toc">
+    <a href="#p6t-1">17. Login &amp; User Preference</a><a href="#p6t-2">18. Bangun EPS</a><a href="#p6t-3">19. Bangun OBS</a>
+    <a href="#p6t-4">20. Folder Project</a><a href="#p6t-5">21. WBS &amp; Kalender</a><a href="#p6t-6">22. Daftar Aktivitas</a>
+    <a href="#p6t-7">23. Relationship</a><a href="#p6t-8">24. Resource &amp; Role</a><a href="#p6t-9">25. Assign Resource</a>
+    <a href="#p6t-10">26. Baseline</a><a href="#p6t-11">27. S-Curve</a>
+  </div>
+
+  <details class="lesson" id="p6t-1">
+    <summary><span class="lno">17</span> Login Primavera &amp; Mengatur User Preference</summary>
+    <div class="lesson-body">
+      <p>Buka <span class="mono">Start Menu → Oracle – Primavera P6 → Primavera P6 Professional</span>. Pada layar login, isi <b>Login Name: admin</b>, <b>Password: admin</b> (default instalasi latihan), abaikan Language &amp; Database, lalu klik <b>OK</b>.</p>
+      <div class="callout">Ganti password setelah login pertama lewat <span class="mono">Edit &gt; User Preferences &gt; Password &gt; Change Password</span> — jangan biarkan password default aktif di lingkungan kerja nyata.</div>
+      <h5>Setting Wajib di User Preferences (Edit &gt; User Preferences)</h5>
+      <table>
+        <tr><th>Tab</th><th>Fungsi</th></tr>
+        <tr><td>Time Units</td><td>Format satuan waktu &amp; durasi (hari/jam), serta apakah label satuan ditampilkan</td></tr>
+        <tr><td>Dates</td><td>Format tanggal (Day-Month-Year / Month-Day-Year) dan format jam (12/24 jam)</td></tr>
+        <tr><td>Currency</td><td>Simbol mata uang, jumlah digit desimal untuk nilai biaya</td></tr>
+        <tr><td>Calculations</td><td>Aturan perhitungan saat resource ditambah/dihapus dari aktivitas (Preserve Units/Duration vs Recalculate)</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-2">
+    <summary><span class="lno">18</span> Membangun EPS (Enterprise Project Structure)</summary>
+    <div class="lesson-body">
+      <p>Buka <span class="mono">Enterprise &gt; Enterprise Project Structure</span>. Hapus struktur EPS bawaan jika ada, lalu klik <b>Add</b> untuk membangun hierarki dari level 1 (perusahaan) ke bawah, gunakan tombol panah (navigator) untuk mengatur level anak.</p>
+      <h5>Contoh Struktur EPS — PT Indo Global Traktor</h5>
+      <table>
+        <tr><th>Level 1</th><th>Level 2</th><th>Level 3</th><th>Level 4</th><th>Level 5</th></tr>
+        <tr><td rowspan="9">My Company</td><td rowspan="4">Jakarta</td><td rowspan="2">JKT-INFRA</td><td>INFRA 1</td><td>Project</td></tr>
+        <tr><td>INFRA 2</td><td>Project</td></tr>
+        <tr><td>JKT-OG</td><td colspan="2">Project (Oil &amp; Gas)</td></tr>
+        <tr><td rowspan="1">JKT-BUD</td><td>BUD 1 / BUD 2</td><td>Project</td></tr>
+        <tr><td rowspan="3">Surabaya</td><td>SBY-OG</td><td colspan="2"></td></tr>
+        <tr><td>SBY-INFRA</td><td colspan="2"></td></tr>
+        <tr><td>SBY-BUD</td><td colspan="2"></td></tr>
+        <tr><td>Balikpapan</td><td colspan="3"></td></tr>
+        <tr><td>Makassar / Medan</td><td colspan="3"></td></tr>
+      </table>
+      <div class="callout">Praktik: EPS ID pakai kode singkat tanpa spasi (mis. <span class="mono">JKT-OG</span>), EPS Name boleh deskriptif (mis. "Oil and Gas Project") — EPS ID inilah yang dipakai sistem untuk penomoran otomatis Project ID di langkah berikutnya.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-3">
+    <summary><span class="lno">19</span> Membangun OBS (Organizational Breakdown Structure)</summary>
+    <div class="lesson-body">
+      <p>Buka <span class="mono">Enterprise &gt; OBS</span> → klik <b>Add</b> di pojok kanan untuk membangun hierarki penanggung jawab, dari Direktur Utama ke GM wilayah, lalu ke Project Manager tiap proyek.</p>
+      <h5>Contoh Hierarki OBS — PT Indo Global Traktor</h5>
+      <table>
+        <tr><th>Posisi</th><th>Nama</th><th>Menaungi</th></tr>
+        <tr><td>Direktur Utama</td><td>Mr Eric Ng</td><td>Seluruh perusahaan</td></tr>
+        <tr><td>GM Jakarta</td><td>Mr Tommy</td><td>Seluruh proyek Jakarta</td></tr>
+        <tr><td>↳ Project Manager JKT-OG</td><td>Ir. Fatimah</td><td>Proyek Control Room Building Stasiun Minyak</td></tr>
+        <tr><td>↳ Project Manager JKT-INFRA</td><td>Ir. Yusril / Ir. Boyke</td><td>Proyek INFRA 1 &amp; INFRA 2</td></tr>
+        <tr><td>↳ Project Manager JKT-BUD</td><td>Ir. Hendry / Ir. Rahmat</td><td>Proyek BUD 1 &amp; BUD 2</td></tr>
+        <tr><td>GM Surabaya</td><td>Ir. Agus Budianto</td><td>Seluruh proyek Surabaya</td></tr>
+        <tr><td>GM Medan / Balikpapan / Makassar</td><td>Ir. Lam Rico / Ir. M Barli / Ir. Asori</td><td>Proyek wilayah masing-masing</td></tr>
+      </table>
+      <p>Setelah OBS terbentuk, <b>assign</b> ke tiap node EPS/Project: pilih project → klik kotak <b>Responsible Manager</b> → pilih nama sesuai struktur organisasi di atas.</p>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-4">
+    <summary><span class="lno">20</span> Membuat Folder Project di Bawah EPS</summary>
+    <div class="lesson-body">
+      <ol>
+        <li>Buka <span class="mono">Enterprise &gt; Project</span>.</li>
+        <li>Pilih node EPS tujuan (mis. Jakarta &gt; JKT-OG) → klik kanan → <b>Add</b>.</li>
+        <li>Pada wizard "Create a New Project": isi <b>Project ID</b> (mis. <span class="mono">JKT-OG-01</span>) dan <b>Project Name</b> (mis. "Proyek Control Room Building Stasiun Pengumpul Minyak").</li>
+        <li>Klik <b>Next</b>/<b>Finish</b> — project baru langsung muncul di pohon EPS dan siap dibuka.</li>
+      </ol>
+      <div class="callout">Project ID sebaiknya konsisten dengan kode EPS induknya (JKT-OG-01, JKT-OG-02, dst.) agar mudah ditelusuri saat portofolio proyek sudah puluhan jumlahnya.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-5">
+    <summary><span class="lno">21</span> Membuat WBS &amp; Mengatur Kalender</summary>
+    <div class="lesson-body">
+      <h5>WBS — Proyek Control Room Building</h5>
+      <p>Buka project → tab <b>WBS</b> → sorot node teratas (nama proyek) → <b>Add</b> untuk level 2, gunakan navigator untuk menambah level 3 dst. Struktur WBS proyek ini:</p>
+      <table>
+        <tr><th>Level 2</th><th>Level 3</th></tr>
+        <tr><td rowspan="1">Pekerjaan Tanah</td><td>Penyiapan Lokasi</td></tr>
+        <tr><td rowspan="4">Pekerjaan Sipil</td><td>Pekerjaan Persiapan</td></tr>
+        <tr><td>Pekerjaan Pondasi</td></tr>
+        <tr><td>Pekerjaan Struktur Kolom &amp; Balok</td></tr>
+        <tr><td>Pekerjaan Atap</td></tr>
+        <tr><td rowspan="4">Pekerjaan Mechanical &amp; Electrical</td><td>Pekerjaan HVAC</td></tr>
+        <tr><td>Pekerjaan Instalasi Plumbing &amp; Fire Fighting</td></tr>
+        <tr><td>Pekerjaan Instalasi Kabel</td></tr>
+        <tr><td>Pekerjaan Instalasi Penerangan</td></tr>
+        <tr><td rowspan="3">Pekerjaan Arsitek</td><td>Pekerjaan Loteng/Plafond</td></tr>
+        <tr><td>Pekerjaan Pengecatan</td></tr>
+        <tr><td>Pekerjaan Pengadaan Furniture</td></tr>
+      </table>
+      <div class="callout">Tampilan tabel WBS bisa diganti ke mode ringkas lewat segitiga kecil di layout bar → <b>Layout &gt; Open &gt; Classic WBS Layout &gt; Apply</b>.</div>
+      <h5>Tiga Jenis Kalender di P6</h5>
+      <table>
+        <tr><th>Jenis</th><th>Berlaku untuk</th><th>Langkah</th></tr>
+        <tr><td>Global Calendar</td><td>Seluruh proyek dalam database</td><td><span class="mono">Enterprise &gt; Calendars &gt; Global</span> → pilih/atur pola (mis. "7-Day Workweek")</td></tr>
+        <tr><td>Resource Calendar</td><td>Resource tertentu (mis. jadwal kerja 5 hari/minggu)</td><td>Tab Resource pada dialog Calendars → Add → salin dari Global Calendar → Modify → set jam kerja 0 untuk Sabtu-Minggu (hari libur)</td></tr>
+        <tr><td>Project Calendar</td><td>Satu proyek spesifik, termasuk tanggal merah nasional</td><td>Tab Project pada dialog Calendars → Modify → klik tanggal libur (mis. 17 Agustus, 25 Desember) → tandai <b>Nonwork</b></td></tr>
+      </table>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-6">
+    <summary><span class="lno">22</span> Menyusun Daftar Aktivitas Lengkap</summary>
+    <div class="lesson-body">
+      <p>Buka tab <b>Activities</b>. Untuk tiap baris, klik <b>Add</b>, isi Activity ID, Activity Name, Activity Type, dan Original Duration sesuai daftar berikut (aktivitas start/finish pakai Activity Type <i>Start/Finish Milestone</i> dengan durasi 0; sisanya <i>Task Dependent</i> atau <i>Resource Dependent</i>):</p>
+      <table>
+        <tr><th>Activity ID</th><th>Nama</th><th>Tipe</th><th>Durasi</th></tr>
+        <tr><td>CRB1000</td><td>Start</td><td>Start Milestone</td><td>0</td></tr>
+        <tr><td>PL1000</td><td>Penyiapan Lahan/Lokasi</td><td>Task Dependent</td><td>7</td></tr>
+        <tr><td>PL1010</td><td>Akses Jalan Masuk</td><td>Task Dependent</td><td>15</td></tr>
+        <tr><td>CV1000</td><td>Pemasangan Bowplank &amp; Galian Pondasi</td><td>Task Dependent</td><td>25</td></tr>
+        <tr><td>CV1020</td><td>Pekerjaan Pondasi Setempat</td><td>Resource Dependent</td><td>30</td></tr>
+        <tr><td>CV1030</td><td>Pekerjaan Pondasi Menerus/Sloof</td><td>Resource Dependent</td><td>20</td></tr>
+        <tr><td>CV1040</td><td>Pekerjaan Struktur Kolom &amp; Balok</td><td>Resource Dependent</td><td>15</td></tr>
+        <tr><td>CV1050</td><td>Pekerjaan Dinding Bata &amp; Plesteran</td><td>Task Dependent</td><td>15</td></tr>
+        <tr><td>CV1060</td><td>Pekerjaan Rangka &amp; Atap</td><td>Task Dependent</td><td>20</td></tr>
+        <tr><td>ME1060</td><td>Instalasi AC Split</td><td>Task Dependent</td><td>10</td></tr>
+        <tr><td>ME1020</td><td>Instalasi Fire Fighting</td><td>Task Dependent</td><td>15</td></tr>
+        <tr><td>ME1040</td><td>Pemasangan Lampu &amp; Aksesoris</td><td>Task Dependent</td><td>15</td></tr>
+        <tr><td>ME1000</td><td>Instalasi Kabel</td><td>Task Dependent</td><td>13</td></tr>
+        <tr><td>ME1010</td><td>Instalasi Pipa Air Bersih &amp; Kotor</td><td>Task Dependent</td><td>15</td></tr>
+        <tr><td>ME1030</td><td>Instalasi Titik Lampu &amp; Stop Kontak</td><td>Task Dependent</td><td>7</td></tr>
+        <tr><td>ME1050</td><td>Instalasi HVAC</td><td>Task Dependent</td><td>20</td></tr>
+        <tr><td>ARE1000</td><td>Pemasangan Rangka Plafond</td><td>Task Dependent</td><td>10</td></tr>
+        <tr><td>ARE1010</td><td>Pemasangan Plafond Gypsum</td><td>Task Dependent</td><td>15</td></tr>
+        <tr><td>ARE1020</td><td>Pekerjaan Pengecatan</td><td>Task Dependent</td><td>25</td></tr>
+        <tr><td>ARE1030</td><td>Pengadaan Furniture</td><td>Task Dependent</td><td>35</td></tr>
+        <tr><td>ARE1040</td><td>Selesai/Finish</td><td>Finish Milestone</td><td>0</td></tr>
+      </table>
+      <div class="callout">Total durasi keseluruhan proyek pada contoh ini ≈ 245 hari. Pastikan tiap aktivitas ditempatkan di dalam WBS yang benar sebelum melanjutkan ke langkah relationship.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-7">
+    <summary><span class="lno">23</span> Menghubungkan Aktivitas (Predecessor/Successor)</summary>
+    <div class="lesson-body">
+      <p>Ada dua cara menghubungkan aktivitas di tab detail bawah: <b>Predecessor</b> (menghubungkan ke aktivitas sebelumnya) atau <b>Successor</b> (menghubungkan ke aktivitas berikutnya). Langkah dengan Predecessor:</p>
+      <ol>
+        <li>Sorot aktivitas (mis. PL1000).</li>
+        <li>Buka tab <b>Relationships &gt; Predecessors</b> di panel detail.</li>
+        <li>Klik <b>Assign</b>, cari aktivitas pendahulunya (mis. CRB1000), klik tombol pilih.</li>
+        <li>Relasi default adalah <b>Finish-to-Start (FS)</b>, ubah tipe/lag di kolom yang sama bila perlu.</li>
+      </ol>
+      <p>Contoh alur logika proyek ini: CRB1000 → PL1000 → PL1010 → CV1030 → CV1040 → CV1050 → CV1060 → (ME1060, ME1020, ME1040) → ... → ARE1000 → ARE1010 → ARE1020 → ARE1030 → ARE1040 (Finish). Ulangi Assign Predecessor untuk seluruh 20 aktivitas sesuai urutan logis pekerjaan sipil → ME → arsitek.</p>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-8">
+    <summary><span class="lno">24</span> Membuat Resource &amp; Role</summary>
+    <div class="lesson-body">
+      <h5>Langkah 0 — Buat Mata Uang Rupiah</h5>
+      <p><span class="mono">Admin &gt; Currencies &gt; Add</span> → Currency ID: <span class="mono">IDR</span>, Currency Name: Rupiah → Close.</p>
+      <h5>Master Data Resource — Enterprise &gt; Resources &gt; Add</h5>
+      <table>
+        <tr><th>Resource ID</th><th>Nama</th><th>Tipe</th><th>Price/Unit</th><th>Max Unit/Time</th></tr>
+        <tr><td>CE</td><td>Civil Engineer</td><td>Labor</td><td>Rp 350.000/hari</td><td>5, kalender 5 hari/minggu</td></tr>
+        <tr><td>ME</td><td>Mechanical Engineer</td><td>Labor</td><td>Rp 350.000/hari</td><td>5, kalender 5 hari/minggu</td></tr>
+        <tr><td>ELE</td><td>Electrical Engineer</td><td>Labor</td><td>Rp 350.000/hari</td><td>5, kalender 5 hari/minggu</td></tr>
+        <tr><td>ARE</td><td>Arsitek Engineer</td><td>Labor</td><td>Rp 350.000/hari</td><td>5, kalender 5 hari/minggu</td></tr>
+        <tr><td>Staff</td><td>Staff</td><td>Labor</td><td>Rp 250.000/hari</td><td>3, kalender 5 hari/minggu</td></tr>
+        <tr><td>Helper</td><td>Pekerja/Helper</td><td>Labor</td><td>Rp 170.000/hari</td><td>20, kalender 5 hari/minggu</td></tr>
+        <tr><td>Material</td><td>Material</td><td>Material</td><td>Rp 150.000/unit</td><td>8, kalender 5 hari/minggu</td></tr>
+      </table>
+      <div class="callout">P6 mengkategorikan resource jadi 3 tipe: <b>Labor</b> (orang), <b>Nonlabor</b> (alat/mesin), dan <b>Material</b> (bahan) — pilih tipe yang benar karena memengaruhi cara P6 menghitung leveling &amp; biaya.</div>
+      <h5>Master Data Role — Enterprise &gt; Roles &gt; Add</h5>
+      <table>
+        <tr><th>Role ID</th><th>Nama</th><th>Tanggung Jawab</th><th>Resource Terkait</th></tr>
+        <tr><td>CV</td><td>Civil Engineer</td><td>Engineer, desain &amp; pengawasan sipil</td><td>CE</td></tr>
+        <tr><td>ME</td><td>Mechanical Engineer</td><td>Engineer, desain &amp; pengawasan mekanikal</td><td>ME</td></tr>
+        <tr><td>ELE</td><td>Electrical Engineer</td><td>Engineer, desain &amp; pengawasan elektrikal</td><td>ELE</td></tr>
+        <tr><td>ARE</td><td>Architect Engineer</td><td>Engineer, desain &amp; pengawasan arsitektur</td><td>ARE</td></tr>
+      </table>
+      <p>Assign role ke resource: <span class="mono">Enterprise &gt; Resources</span> → sorot resource → tab <b>Roles</b> → <b>Assign</b> → pilih role yang sesuai.</p>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-9">
+    <summary><span class="lno">25</span> Assign Resource ke Aktivitas (Budgeted Units)</summary>
+    <div class="lesson-body">
+      <p>Untuk tiap aktivitas: sorot aktivitas → tab detail <b>Resources</b> → <b>Add Resources</b> → pilih resource → klik <b>Assign</b> → isi kolom <b>Budgeted Unit</b>.</p>
+      <h5>Contoh Assignment (unit dalam jam)</h5>
+      <table>
+        <tr><th>Aktivitas</th><th>Resource</th><th>Budgeted Unit</th></tr>
+        <tr><td>PL1000 — Penyiapan Lahan/Lokasi</td><td>Civil Engineer / Helper</td><td>20 / 60</td></tr>
+        <tr><td>CV1000 — Bowplank &amp; Galian Pondasi</td><td>Civil Engineer / Helper</td><td>20 / 50</td></tr>
+        <tr><td>CV1030 — Pondasi Menerus/Sloof</td><td>Civil Engineer / Helper / Material</td><td>20 / 100 / 300</td></tr>
+        <tr><td>CV1040 — Struktur Kolom &amp; Balok</td><td>Civil Engineer / Helper / Material</td><td>20 / 100 / 250</td></tr>
+        <tr><td>ME1050 — Instalasi HVAC</td><td>Mechanical Engineer / Helper</td><td>20 / 100</td></tr>
+        <tr><td>ARE1000 — Rangka Plafond</td><td>Architect Engineer / Helper</td><td>20 / 45</td></tr>
+      </table>
+      <div class="callout">Total Budgeted Cost seluruh assignment inilah yang otomatis menjadi <b>BAC (Budget at Completion)</b> proyek — dasar seluruh perhitungan EVM di lesson 15. Ubah tampilan interval waktu resource lewat klik kanan panel <b>Display &gt; Timescale &gt; Date Interval</b>.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-10">
+    <summary><span class="lno">26</span> Membuat &amp; Menampilkan Baseline</summary>
+    <div class="lesson-body">
+      <ol>
+        <li>Buka <span class="mono">Project &gt; Maintain Baselines</span> → <b>Add</b> → pilih "Save a copy of the current project as a new baseline" → OK.</li>
+        <li>Buka <span class="mono">Project &gt; Assign Baselines</span> → pada <b>Project Baseline / Primary</b>, pilih baseline yang baru dibuat → OK.</li>
+        <li>Untuk menampilkan bar baseline di Gantt Chart: klik kanan area Gantt → <b>Bars</b> → centang <b>Primary Baseline</b> → atur warna/ukuran bar di tab Bar Style → atur <b>Row = 2</b> agar baseline bar tampil di bawah current bar (row 1) untuk perbandingan visual.</li>
+      </ol>
+      <div class="callout">Setelah baseline aktif, setiap Gantt bar akan menampilkan dua baris: bar biru/hijau (jadwal berjalan saat ini) dan bar hitam tipis di bawahnya (baseline) — perbedaan posisi kedua bar inilah yang menunjukkan variance secara visual.</div>
+    </div>
+  </details>
+
+  <details class="lesson" id="p6t-11">
+    <summary><span class="lno">27</span> Menampilkan S-Curve (Activity Usage Profile)</summary>
+    <div class="lesson-body">
+      <ol>
+        <li>Buka tab <b>Activities</b>, lalu klik ikon <b>Activity Usage Profile</b> pada toolbar bawah — akan muncul panel histogram/kurva di bagian bawah layar.</li>
+        <li>Klik kanan di panel tersebut → <b>Activity Usage Profile Options</b>.</li>
+        <li>Di tab <b>Data</b>: pilih tampilan <b>Cost</b> atau <b>Units</b>, centang filter resource (Labor/Nonlabor/Material) yang ingin ditampilkan.</li>
+        <li>Di bagian <b>Show Bars/Curves</b>: centang kolom <b>Cumulative</b> pada baris Baseline, Budgeted, dan Actual — inilah yang mengubah histogram batang menjadi kurva S kumulatif.</li>
+        <li>Klik <b>OK</b> — kurva S (planned vs actual vs baseline) langsung tergambar otomatis dari data yang sudah diinput di lesson-lesson sebelumnya.</li>
+      </ol>
+      <div class="callout">Ini adalah cara P6 menghasilkan S-Curve <b>tanpa perlu export manual ke Excel</b> — selama resource loading (lesson 25) dan baseline (lesson 26) sudah benar, S-Curve otomatis ter-update setiap kali status date dan progress di-update.</div>
+    </div>
+  </details>
+
+  <div class="callout" style="margin-top:20px;">Tutorial praktik ini diadaptasi dari <i>Modul Pelatihan Project Management Menggunakan Tool Primavera P6 Professional</i> — Agus Budianto Ulil Absyor, Jurusan Teknik Sipil, Fakultas Teknik, Universitas Sultan Ageng Tirtayasa.</div>
+</section>
+
+<!-- ============ MS PROJECT VIEW ============ -->
+<section id="view-msproject" class="view">
+  <div class="section-head">
+    <div class="eyebrow">Modul 03</div>
+    <h2>Microsoft Project — dari nol sampai mahir</h2>
+    <p>MS Project lebih ringan dan cocok untuk proyek single-project skala kecil-menengah, atau sebagai alat kerja PM di level paket pekerjaan sebelum dikonsolidasikan ke P6 di level perusahaan.</p>
+  </div>
+
+  <details class="lesson" open>
+    <summary><span class="lno">1</span> Antarmuka &amp; Ribbon Menu MS Project</summary>
+    <div class="lesson-body">
+      <table>
+        <tr><th>Tab Ribbon</th><th>Fungsi Utama</th></tr>
+        <tr><td>Task</td><td>Input task, indent/outdent (buat WBS visual), link task (predecessor), set milestone</td></tr>
+        <tr><td>Resource</td><td>Resource Sheet (daftar SDM/alat/material), assign resource ke task</td></tr>
+        <tr><td>Report</td><td>Dashboard bawaan: Burndown, Cost Overview, Resource Overview, laporan kustom</td></tr>
+        <tr><td>Project</td><td>Project Information, Set Baseline, Change Working Time (kalender)</td></tr>
+        <tr><td>View</td><td>Ganti tampilan: Gantt Chart, Network Diagram, Resource Usage, Tracking Gantt</td></tr>
+      </table>
+    </div>
+  </details>
+  <details class="lesson">
+    <summary><span class="lno">2</span> Membuat WBS &amp; Task List</summary>
+    <div class="lesson-body">
+      <p>Ketik daftar pekerjaan di kolom Task Name, lalu gunakan tombol <b>Indent</b> untuk membuat sub-level (setara WBS). MS Project otomatis membuat nomor <span class="mono">Outline Number</span> (1, 1.1, 1.1.1, dst.) yang setara struktur WBS P6, hanya lebih sederhana tanpa EPS/OBS terpisah.</p>
+      <div class="callout">Task summary (baris induk) otomatis menjumlahkan durasi &amp; biaya dari sub-task-nya — mirip WBS Summary Activity di P6.</div>
+    </div>
+  </details>
+  <details class="lesson">
+    <summary><span class="lno">3</span> Predecessor, Duration &amp; Constraint</summary>
+    <div class="lesson-body">
+      <p>Isi kolom <b>Predecessors</b> dengan nomor task + tipe relasi (mis. <span class="mono">3FS+2 days</span> = mulai setelah task 3 selesai, lag 2 hari). MS Project mendukung tipe relasi yang sama seperti P6 (FS/SS/FF/SF) dan constraint (As Soon As Possible, Must Start On, dll).</p>
+    </div>
+  </details>
+  <details class="lesson">
+    <summary><span class="lno">4</span> Resource &amp; Cost Assignment</summary>
+    <div class="lesson-body">
+      <p>Buka <b>Resource Sheet</b>, isi nama resource, tipe (Work = tenaga kerja/alat per jam, Material = satuan material, Cost = biaya lump-sum seperti gaji staff atau perizinan), dan Standard Rate. Assign ke task lewat <b>Task &gt; Assign Resources</b>. Total biaya proyek otomatis muncul di kolom Cost pada task ringkasan teratas.</p>
+    </div>
+  </details>
+  <details class="lesson">
+    <summary><span class="lno">5</span> Baseline, Tracking Gantt &amp; Critical Path</summary>
+    <div class="lesson-body">
+      <p>Simpan baseline lewat <b>Project &gt; Set Baseline</b>. Update progress lewat kolom <span class="mono">% Complete</span> atau <b>Task &gt; Mark on Track</b>. Aktifkan tampilan <b>Format &gt; Critical Tasks</b> untuk highlight otomatis jalur kritis (task dengan Total Slack = 0, setara Total Float di P6). Gunakan view <b>Tracking Gantt</b> untuk membandingkan bar baseline vs aktual secara visual.</p>
+    </div>
+  </details>
+  <details class="lesson">
+    <summary><span class="lno">6</span> Laporan &amp; Earned Value di MS Project</summary>
+    <div class="lesson-body">
+      <p>MS Project punya tabel bawaan <b>View &gt; Tables &gt; Earned Value</b> yang otomatis menampilkan PV (disebut BCWS), EV (BCWP), AC (ACWP), SV, CV, CPI, SPI — istilah lama EVM yang identik dengan yang dipakai di P6 &amp; PMBOK.</p>
+      <div class="callout">Istilah lama (BCWS/BCWP/ACWP) dari PMBOK edisi awal masih dipakai default di MS Project: BCWS=PV, BCWP=EV, ACWP=AC. Jangan bingung, ini rumus dan makna yang sama persis dengan lesson EVM di modul Primavera.</div>
+    </div>
+  </details>
+
+  <div class="qa">
+    <div class="q">Studi Kasus: Proyek pembangunan gedung kantor 4 lantai dijadwalkan di MS Project dengan 60 task. Setelah update minggu ke-8, kolom Total Slack pada task "Pengecoran Lantai 3" berubah dari 4 hari menjadi -2 hari. Apa artinya dan apa yang harus dilakukan PM?</div>
+    <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+    <div class="ans">
+      <p><b>Arti:</b> Total Slack negatif berarti task tersebut sudah <b>melewati</b> tanggal Late Finish yang diizinkan — task ini kini menjadi bagian jalur kritis baru dan sudah "memakan" waktu dari milestone akhir proyek sebesar 2 hari (proyek berpotensi mundur 2 hari jika tidak ada tindakan).</p>
+      <p><b>Tindakan PM:</b> (1) Cek root cause keterlambatan (cuaca, supply beton, tenaga kerja). (2) Evaluasi opsi <i>crashing</i> (tambah shift/tenaga kerja di task kritis lain yang murah dipercepat) atau <i>fast-tracking</i> (tumpang-tindihkan task berikutnya jika logika kerja memungkinkan, mis. mulai pembesian lantai 4 di area yang sudah selesai dicor tanpa menunggu seluruh lantai 3 selesai). (3) Update forecast finish date dan informasikan ke owner sebagai early warning sebelum menjadi keterlambatan permanen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIDIC VIEW ============ -->
+<section id="view-fidic" class="view">
+  <div class="section-head">
+    <div class="eyebrow">Modul 04</div>
+    <h2>FIDIC — Kontrak Konstruksi Internasional</h2>
+    <p>FIDIC (Fédération Internationale Des Ingénieurs-Conseils) menerbitkan seri kontrak standar yang dikenal sebagai <b>"Rainbow Suite"</b> karena tiap jenis kontrak diberi warna sampul berbeda. Memahami buku mana yang dipakai menentukan siapa menanggung risiko desain, bagaimana mekanisme klaim, dan cara penyelesaian sengketa.</p>
+    <div class="callout">Catatan penting: dalam keluarga resmi FIDIC <b>tidak ada "Black Book"</b>. Kemungkinan yang dimaksud adalah <b>Emerald Book</b> (Underground Works, 2019) — buku terbaru FIDIC yang disusun bersama ITA (International Tunnelling Association) untuk pekerjaan bawah tanah/terowongan. Materi di bawah mencakup seluruh varian resmi termasuk Emerald Book agar tidak ada kesalahpahaman istilah di lapangan.</div>
+  </div>
+
+  <table class="data" style="margin-bottom:26px;">
+    <tr><th>Buku</th><th>Nama Resmi</th><th>Siapa Desain</th><th>Cocok untuk</th></tr>
+    <tr><td style="color:#E1592C;font-weight:600;">Red Book</td><td>Conditions of Contract for Construction</td><td>Employer (Owner)</td><td>Proyek konvensional: gedung, jalan, jembatan — kontraktor membangun sesuai desain milik owner</td></tr>
+    <tr><td style="color:#E3A93B;font-weight:600;">Yellow Book</td><td>Plant &amp; Design-Build</td><td>Kontraktor</td><td>Proyek dengan elemen plant/mekanikal-elektrikal, desain diserahkan ke kontraktor (design &amp; build)</td></tr>
+    <tr><td style="color:#C6D3E0;font-weight:600;">Silver Book</td><td>EPC/Turnkey Projects</td><td>Kontraktor (penuh)</td><td>Proyek EPC besar (kilang, pembangkit) — risiko maksimal di kontraktor, harga &amp; waktu lebih pasti bagi owner</td></tr>
+    <tr><td style="color:#4C9A6A;font-weight:600;">Green Book</td><td>Short Form of Contract</td><td>Bervariasi</td><td>Proyek kecil, nilai rendah, durasi pendek, dokumen kontrak ringkas</td></tr>
+    <tr><td style="color:#E88AA5;font-weight:600;">Pink Book</td><td>MDB Harmonised Construction Contract</td><td>Employer</td><td>Proyek didanai lembaga multilateral (World Bank, ADB) — Red Book yang disesuaikan aturan procurement bank dunia</td></tr>
+    <tr><td style="color:#D9B34C;font-weight:600;">Gold Book</td><td>Design, Build &amp; Operate (DBO)</td><td>Kontraktor</td><td>Proyek dengan masa operasi panjang (mis. 20 tahun) setelah konstruksi, seperti infrastruktur air/toll</td></tr>
+    <tr><td style="color:#F7F8FA;font-weight:600;">White Book</td><td>Client/Consultant Model Services Agreement</td><td>—</td><td>Perjanjian jasa konsultansi (bukan kontrak konstruksi fisik)</td></tr>
+    <tr><td style="color:#2FBE9A;font-weight:600;">Emerald Book</td><td>Underground Works (FIDIC-ITA, 2019)</td><td>Bersama, dengan alokasi risiko geoteknik khusus</td><td>Terowongan, pekerjaan bawah tanah — sering yang dimaksud saat orang menyebut "Black Book"</td></tr>
+  </table>
+
+  <details class="lesson" open>
+    <summary><span class="lno">1</span> Klausul Kunci yang Wajib Dikuasai PM (Red Book 2017)</summary>
+    <div class="lesson-body">
+      <table>
+        <tr><th>Klausul</th><th>Perihal</th></tr>
+        <tr><td>Clause 4</td><td>Kewajiban Kontraktor (termasuk program kerja/jadwal yang harus diserahkan &amp; disetujui Engineer)</td></tr>
+        <tr><td>Clause 8</td><td>Commencement, Delays &amp; Suspension — dasar hukum untuk klaim <b>Extension of Time (EOT)</b></td></tr>
+        <tr><td>Clause 13</td><td>Variations &amp; Adjustments — perubahan lingkup pekerjaan oleh Engineer/Owner</td></tr>
+        <tr><td>Clause 14</td><td>Contract Price &amp; Payment — mekanisme pembayaran termin/progress</td></tr>
+        <tr><td>Clause 17</td><td>Care of the Works &amp; Indemnities — alokasi risiko kerusakan pekerjaan</td></tr>
+        <tr><td>Clause 20</td><td>Claims, Disputes &amp; Arbitration — prosedur pengajuan klaim (termasuk batas waktu notifikasi klaim, umumnya <b>28 hari</b> sejak kejadian) &amp; jalur DAAB (Dispute Avoidance/Adjudication Board)</td></tr>
+      </table>
+      <div class="callout">Batas waktu 28 hari di Clause 20 adalah salah satu jebakan paling umum di lapangan — banyak klaim EOT/biaya yang sah secara teknis tapi <b>ditolak</b> karena kontraktor terlambat mengajukan notifikasi formal. PM wajib punya sistem pencatatan kejadian (site diary, weather record, correspondence log) sejak hari pertama proyek.</div>
+    </div>
+  </details>
+
+  <details class="lesson">
+    <summary><span class="lno">2</span> Studi Kasus: Klaim Extension of Time (EOT) — Proyek Jembatan</summary>
+    <div class="lesson-body">
+      <div class="callout case"><b>Kasus:</b> Kontrak menggunakan FIDIC Red Book 2017. Proyek jembatan direncanakan 18 bulan. Pada bulan ke-9, terjadi curah hujan ekstrem selama 21 hari berturut-turut (jauh di atas data curah hujan rata-rata 10 tahun terakhir di lokasi tersebut) yang menyebabkan akses jalan kerja terendam dan menghentikan pekerjaan pemasangan girder. Kontraktor mengajukan notifikasi klaim pada hari ke-15 sejak kejadian dimulai, dan mengajukan klaim penuh (dokumen lengkap) pada hari ke-40.</div>
+      <div class="qa">
+        <div class="q">Pertanyaan: Apakah klaim EOT kontraktor sah menurut prosedur FIDIC Clause 20? Berdasarkan apa dasar klaim ini, dan berapa lama EOT yang wajar diajukan?</div>
+        <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+        <div class="ans">
+          <p><b>Keabsahan prosedural:</b> Notifikasi awal (hari ke-15) <b>sah</b> karena masih dalam batas 28 hari sejak kejadian sesuai Clause 20 (2017 edition membagi jadi Notice of Claim dan Fully Detailed Claim dengan jangka waktu terpisah — notice awal wajib maksimal 28 hari, lalu dokumen lengkap menyusul dalam waktu wajar berikutnya sesuai ketentuan kontrak spesifik proyek). Karena notifikasi awal tepat waktu, klaim tidak otomatis gugur meski dokumen lengkap baru diajukan hari ke-40.</p>
+          <p><b>Dasar klaim:</b> Curah hujan ekstrem yang melampaui data historis 10 tahun memenuhi kriteria <b>"Exceptionally Adverse Climatic Conditions"</b> (Clause 8.5) — kondisi ini termasuk <i>Employer's Risk</i> secara kontraktual (di luar kendali wajar kontraktor), sehingga berhak atas EOT. Namun kontraktor harus membuktikan dengan data BMKG/stasiun cuaca resmi bahwa curah hujan tersebut memang di luar pola historis, bukan sekadar musim hujan biasa yang seharusnya sudah diantisipasi dalam program kerja awal.</p>
+          <p><b>Durasi EOT yang wajar:</b> EOT dihitung berdasarkan <b>dampak nyata terhadap jalur kritis</b>, bukan otomatis 21 hari penuh. Jika analisis jadwal (delay analysis, umumnya metode Time Impact Analysis) menunjukkan pekerjaan girder ada di jalur kritis dan float yang tersedia saat itu 0 hari, maka EOT yang wajar = 21 hari (durasi gangguan) dikurangi hari-hari yang bisa dikompensasi lewat re-sequencing pekerjaan lain yang tidak terdampak banjir. Klaim biaya tambahan (cost) untuk kondisi ini <b>terpisah</b> dari EOT — cuaca ekstrem umumnya hanya memberi hak EOT, bukan otomatis kompensasi biaya, kecuali kontrak spesifik menyatakan lain.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <details class="lesson">
+    <summary><span class="lno">3</span> Perbandingan Alokasi Risiko: Red vs Silver Book</summary>
+    <div class="lesson-body">
+      <table>
+        <tr><th>Aspek</th><th>Red Book</th><th>Silver Book</th></tr>
+        <tr><td>Tanggung jawab desain</td><td>Owner (via konsultan)</td><td>Kontraktor (penuh)</td></tr>
+        <tr><td>Risiko kondisi bawah tanah tak terduga</td><td>Owner (via klaim unforeseeable physical conditions)</td><td>Kontraktor (risiko lebih tinggi, harga kontrak biasanya lebih mahal untuk kompensasi risiko ini)</td></tr>
+        <tr><td>Peran "Engineer"</td><td>Ada, sebagai penengah/administrator kontrak</td><td>Umumnya tidak ada peran Engineer independen — komunikasi langsung Employer-Contractor</td></tr>
+        <tr><td>Kepastian harga bagi Owner</td><td>Sedang (masih ada variation order)</td><td>Tinggi (lump-sum, minim variation)</td></tr>
+      </table>
+      <div class="callout">Praktik lapangan: proyek dengan kondisi geoteknik tidak pasti (misal fondasi bendungan di area sesar aktif) sebaiknya <b>hindari Silver Book</b> murni — risiko yang dibebankan penuh ke kontraktor sering berujung sengketa jika kondisi aktual jauh dari asumsi tender.</div>
+    </div>
+  </details>
+</section>
+
+<!-- ============ STUDY CASE BANK ============ -->
+<section id="view-studycase" class="view">
+  <div class="section-head">
+    <div class="eyebrow">Bank Soal</div>
+    <h2>Kumpulan Studi Kasus Lintas Proyek</h2>
+    <p>Latihan soal dari berbagai jenis proyek — klik "Lihat Jawaban" untuk membuka kunci jawaban dan cara penyelesaiannya.</p>
+  </div>
+
+  <div class="panel">
+    <h3>🏢 Proyek Gedung</h3>
+    <div class="qa">
+      <div class="q">Soal: Gedung perkantoran 12 lantai, BAC Rp 45 miliar, durasi 20 bulan. Di bulan ke-10, laporan menunjukkan CPI = 1,08 dan SPI = 0,79. Apa arti kombinasi angka ini dan risiko apa yang harus diwaspadai PM?</div>
+      <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+      <div class="ans">
+        <p>CPI &gt; 1 berarti proyek <b>hemat biaya</b> (efisien secara cost), tapi SPI &lt; 1 berarti proyek <b>terlambat</b> secara jadwal. Kombinasi ini klasik terjadi saat kontraktor "menghemat" dengan cara memperlambat mobilisasi sumber daya (kurang shift, kurang alat) — hemat biaya jangka pendek tapi jadwal molor.</p>
+        <p><b>Risiko:</b> Untuk mengejar SPI, biasanya perlu percepatan (tambah shift/lembur/alat tambahan) yang otomatis akan menaikkan AC dan menurunkan CPI. PM harus menghitung ulang <i>trade-off</i>: berapa biaya percepatan yang wajar dibanding denda keterlambatan (LAD/liquidated damages) dalam kontrak. Jangan mengejar SPI tanpa hitungan, karena CPI yang tadinya baik bisa berbalik jadi buruk.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🛢️ Proyek Platform Rig Lepas Pantai</h3>
+    <div class="qa">
+      <div class="q">Soal: Fabrikasi jaket platform rig di yard, dengan sebagian desain topside masih berjalan paralel (belum 100% freeze) saat fabrikasi jaket sudah dimulai. Pendekatan pengembangan proyek (development approach) apa yang paling tepat menurut PMBOK 7, dan bagaimana P6 mengakomodasi kondisi ini?</div>
+      <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+      <div class="ans">
+        <p><b>Pendekatan:</b> <i>Hybrid</i> — bagian fabrikasi jaket (sudah desain freeze) dijadwalkan secara predictive/CPM penuh, sementara topside yang desainnya masih berjalan dikelola dengan pendekatan lebih iteratif (rolling wave planning): jadwal detail hanya dibuat untuk 2-3 bulan ke depan, sisanya masih berupa milestone level tinggi sampai desain freeze.</p>
+        <p><b>Di P6:</b> gunakan WBS terpisah untuk "Jacket Fabrication" (fully detailed activities dengan baseline solid) dan "Topside Engineering &amp; Fabrication" (activities level tinggi/placeholder yang di-breakdown ulang setiap kali ada IFC — Issued for Construction drawing baru dari tim desain). Gunakan Activity Codes untuk menandai status desain tiap paket (mis. "Design Status: Freeze/On-going") agar mudah difilter saat rapat koordinasi.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🌊 Proyek Bendungan</h3>
+    <div class="qa">
+      <div class="q">Soal: Aktivitas "Grouting Curtain Fondasi" punya Total Float 12 hari di jadwal awal. Setelah 2 minggu berjalan, hasil investigasi lapangan menunjukkan kondisi batuan lebih retak dari data geoteknik awal, sehingga volume grouting bertambah 40%. Bagaimana dampaknya harus dianalisis dan dilaporkan?</div>
+      <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+      <div class="ans">
+        <p><b>Langkah analisis:</b> (1) Hitung ulang durasi aktivitas berdasarkan volume baru ÷ produktivitas aktual tim grouting (bukan produktivitas asumsi awal). (2) Update Remaining Duration di P6, jalankan F9, lihat apakah durasi tambahan menghabiskan seluruh 12 hari float atau bahkan membuat Total Float negatif (masuk jalur kritis baru). (3) Jika masuk jalur kritis, ini berpotensi menjadi dasar klaim EOT karena kondisi geoteknik aktual berbeda dari data tender (sering disebut <i>"unforeseeable physical conditions"</i> di FIDIC Clause 4.12).</p>
+        <p><b>Pelaporan:</b> Dokumentasikan dengan data uji lapangan (core log, water pressure test) sebagai bukti kondisi berbeda dari data tender, hitung dampak jadwal via delay analysis, dan laporkan sebagai <i>Early Warning Notice</i> ke Engineer/Owner sebelum float benar-benar habis — bukan setelah keterlambatan terjadi.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🌉 Proyek Jembatan</h3>
+    <div class="qa">
+      <div class="q">Soal: Pemasangan girder jembatan bentang 40m membutuhkan crane khusus yang hanya tersedia 1 unit di region tersebut dan harus dipesan 3 bulan sebelumnya (long-lead item). Bagaimana ini seharusnya direpresentasikan di WBS dan jadwal P6?</div>
+      <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+      <div class="ans">
+        <p>Buat aktivitas terpisah <b>"Procurement/Mobilisasi Crane Girder"</b> (bukan digabung dalam durasi "Pemasangan Girder") dengan durasi 3 bulan, predecessor dari awal proyek (bahkan bisa dimulai sebelum WBS pekerjaan sipil selesai, sepanjang tidak melanggar syarat teknis). Hubungkan dengan Finish-to-Start ke aktivitas "Pemasangan Girder" utama.</p>
+        <p>Karena crane ini <b>resource tunggal langka</b> (bukan sekadar durasi kerja), tandai sebagai <i>near-critical</i> meski secara CPM murni floatnya besar — dalam praktik, kelangkaan resource unik seperti ini sering diberi constraint "Start On or Before" sebagai pengingat manual bahwa keterlambatan pemesanan tidak bisa dikompensasi dengan menambah tenaga kerja (unlike pekerjaan sipil biasa).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🛣️ Proyek Jalan Tol</h3>
+    <div class="qa">
+      <div class="q">Soal: Proyek jalan tol sepanjang 15 km dibagi 5 seksi kerja paralel oleh 5 sub-kontraktor berbeda. Seksi 3 mengalami keterlambatan pembebasan lahan (bukan kesalahan kontraktor) selama 45 hari. Bagaimana dampaknya ke seksi lain dan proyek keseluruhan dianalisis di P6?</div>
+      <button class="reveal" onclick="toggleAns(this)">Lihat Jawaban</button>
+      <div class="ans">
+        <p>Karena 5 seksi dikerjakan paralel oleh kontraktor berbeda, dampak keterlambatan Seksi 3 <b>tidak otomatis</b> menunda seksi lain — cek dulu apakah ada aktivitas yang saling bergantung antar seksi (mis. aspal hotmix dari satu AMP/batching plant yang sama, atau serah terima bertahap yang mensyaratkan seluruh 15 km selesai bersamaan untuk commissioning).</p>
+        <p><b>Analisis di P6:</b> Gunakan filter Activity Code "Seksi" untuk mengisolasi jalur kritis tiap seksi secara terpisah (P6 mendukung multiple critical path analysis). Jika milestone akhir proyek ("Commercial Operation Date") menunggu penyelesaian SEMUA seksi, maka jalur kritis keseluruhan proyek akan otomatis mengikuti seksi paling lambat (Seksi 3). Karena penyebabnya adalah pembebasan lahan (tanggung jawab Owner dalam kontrak jalan tol pada umumnya), ini menjadi dasar klaim EOT murni tanpa kompensasi biaya ke kontraktor Seksi 3, sementara 4 kontraktor lain berpotensi mengklaim <i>prolongation cost</i> jika mereka jadi menganggur menunggu commissioning bersama.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">Kuis Sertifikasi</div>
+    <h2>100 Soal PMBOK 7 — Pilihan Ganda</h2>
+    <p>Klik salah satu pilihan untuk melihat apakah jawabanmu benar, lengkap dengan pembahasan singkat. Gunakan filter kategori untuk fokus latihan pada topik tertentu.</p>
+  </div>
+  <div class="subtabs" id="pmbokQuizFilter"></div>
+  <div id="pmbokQuizMount"></div>
+</section>
+
+<div class="dlbox" style="margin:50px 0;">
+  <div style="font-size:1.6rem;">📥</div>
+  <div style="flex:1;min-width:220px;">
+    <b>Platform ini bisa disimpan &amp; dipakai offline.</b>
+    <div style="font-size:.85rem;color:var(--mist-dim);margin-top:4px;">Simpan halaman ini (Ctrl/Cmd+S → Webpage, Complete atau Single File) untuk dibuka kembali tanpa internet, atau bagikan file .html-nya ke tim.</div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<footer>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark">PMJ</div>
+      <div class="brand-text">
+        <div class="t1">Project Manager Jalanan</div>
+        <div class="t2">PMBOK 7 · Primavera P6 · Microsoft Project · FIDIC</div>
+      </div>
+    </div>
+    <div class="credit">
+      <b>Created by Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.</b>
+      Mining Engineer &amp; Entrepreneur — Samarinda, Kalimantan Timur<br>
+      Disusun dari pengalaman lapangan proyek gedung, platform rig, bendungan, jembatan, dan jalan tol.
+    </div>
+  </div>
+</footer>
+
+<script>
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  document.querySelectorAll('#mainmenu button').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector('#mainmenu button[data-view="'+name+'"]');
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function toggleAns(btn){
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('show');
+  btn.textContent = ans.classList.contains('show') ? 'Sembunyikan Jawaban' : 'Lihat Jawaban';
+}
+
+function fmtRp(n){
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+
+function calcEVM(){
+  const bac = parseFloat(document.getElementById('ev_bac').value) || 0;
+  const pv = parseFloat(document.getElementById('ev_pv').value) || 0;
+  const ev = parseFloat(document.getElementById('ev_ev').value) || 0;
+  const ac = parseFloat(document.getElementById('ev_ac').value) || 0;
+
+  const sv = ev - pv;
+  const cv = ev - ac;
+  const spi = pv !== 0 ? ev/pv : 0;
+  const cpi = ac !== 0 ? ev/ac : 0;
+  const eac = cpi !== 0 ? bac/cpi : 0;
+  const etc = eac - ac;
+  const vac = bac - eac;
+  const tcpi = (bac-ac) !== 0 ? (bac-ev)/(bac-ac) : 0;
+
+  const out = document.getElementById('ev_out');
+  out.innerHTML = `
+    <div class="o ${sv<0?'warn':'good'}"><span>Schedule Variance</span><b>${fmtRp(sv)}</b></div>
+    <div class="o ${cv<0?'warn':'good'}"><span>Cost Variance</span><b>${fmtRp(cv)}</b></div>
+    <div class="o ${spi<1?'warn':'good'}"><span>SPI</span><b>${spi.toFixed(2)}</b></div>
+    <div class="o ${cpi<1?'warn':'good'}"><span>CPI</span><b>${cpi.toFixed(2)}</b></div>
+    <div class="o ${eac>bac?'warn':'good'}"><span>EAC</span><b>${fmtRp(eac)}</b></div>
+    <div class="o"><span>ETC</span><b>${fmtRp(etc)}</b></div>
+    <div class="o ${vac<0?'warn':'good'}"><span>VAC</span><b>${fmtRp(vac)}</b></div>
+    <div class="o ${tcpi>1.1?'warn':'good'}"><span>TCPI</span><b>${tcpi.toFixed(2)}</b></div>
+  `;
+  const note = document.getElementById('ev_note');
+  let msg = [];
+  msg.push(spi<1 ? 'Proyek TERLAMBAT dari jadwal rencana (SPI<1).' : 'Proyek sesuai/lebih cepat dari jadwal (SPI≥1).');
+  msg.push(cpi<1 ? 'Proyek BOROS dari anggaran (CPI<1).' : 'Proyek efisien/hemat biaya (CPI≥1).');
+  msg.push(vac<0 ? `Proyek diperkirakan OVER BUDGET sebesar ${fmtRp(Math.abs(vac))}.` : `Proyek diperkirakan berada dalam budget, sisa ${fmtRp(vac)}.`);
+  if(tcpi > cpi*1.15 && cpi>0){ msg.push('TCPI jauh di atas CPI aktual — target efisiensi sisa pekerjaan berat dicapai tanpa intervensi.'); }
+  note.textContent = '» ' + msg.join(' ');
+}
+window.addEventListener('DOMContentLoaded', calcEVM);
+</script>
+<script>
+
+// ============ 100 SOAL PMBOK 7 ============
+const PMBOK_QUIZ = [
+{c:"Dasar",q:"PMBOK 7 diterbitkan oleh organisasi apa?",o:["IPMA","PMI","APM","ISO"],a:1,e:"PMBOK diterbitkan oleh Project Management Institute (PMI)."},
+{c:"Dasar",q:"PMBOK Edisi ke-7 diterbitkan pada tahun berapa?",o:["2017","2019","2021","2023"],a:2,e:"PMBOK 7 terbit tahun 2021."},
+{c:"Dasar",q:"Pendekatan utama PMBOK 7 dibanding PMBOK 6 adalah?",o:["Process-based","Principle-based","Tool-based","Cost-based"],a:1,e:"PMBOK 7 berbasis prinsip (principle-based), bukan lagi proses preskriptif."},
+{c:"Dasar",q:"PMBOK 6 berbasis berapa Process Group?",o:["3","5","7","9"],a:1,e:"PMBOK 6 memiliki 5 Process Group: Initiating, Planning, Executing, Monitoring & Controlling, Closing."},
+{c:"Dasar",q:"PMBOK 6 berbasis berapa Knowledge Area?",o:["8","9","10","12"],a:2,e:"PMBOK 6 memiliki 10 Knowledge Area."},
+{c:"Dasar",q:"PMBOK 7 terdiri dari berapa prinsip manajemen proyek?",o:["8","10","12","14"],a:2,e:"PMBOK 7 memiliki 12 prinsip."},
+{c:"Dasar",q:"PMBOK 7 terdiri dari berapa domain kinerja proyek?",o:["6","7","8","9"],a:2,e:"PMBOK 7 memiliki 8 domain kinerja (performance domains)."},
+{c:"Dasar",q:"PMBOK 7 dirancang netral terhadap metodologi apa saja?",o:["Hanya waterfall","Hanya agile","Predictive, agile, dan hybrid","Hanya hybrid"],a:2,e:"PMBOK 7 tidak memihak satu metodologi — cocok untuk predictive, agile, maupun hybrid."},
+{c:"Dasar",q:"Istilah 'Value Delivery System' dalam PMBOK 7 mengacu pada?",o:["Sistem penyampaian nilai organisasi","Software akuntansi proyek","Struktur gaji tim","Rantai pasok material"],a:0,e:"Value Delivery System menggambarkan bagaimana proyek, program, dan portofolio bekerja sama menghasilkan nilai bagi organisasi."},
+{c:"Dasar",q:"Standar inti pendamping PMBOK 7 (ANSI) disebut?",o:["The Standard for Project Management","ISO 21500","PRINCE2","ITIL"],a:0,e:"PMBOK 7 terdiri dari dua bagian: 'The Standard for Project Management' dan 'A Guide to the PMBOK'."},
+
+{c:"12 Prinsip",q:"Prinsip yang menekankan menjadi pengelola yang bertanggung jawab disebut?",o:["Stewardship","Team","Value","Quality"],a:0,e:"Stewardship = menjadi pengelola yang bertanggung jawab secara finansial, sosial, dan lingkungan."},
+{c:"12 Prinsip",q:"Prinsip 'Team' pada PMBOK 7 menekankan pada?",o:["Hierarki komando ketat","Lingkungan tim yang kolaboratif","Outsourcing penuh","Kompetisi antar anggota tim"],a:1,e:"Prinsip Team mendorong lingkungan tim yang kolaboratif dan saling menghormati."},
+{c:"12 Prinsip",q:"Prinsip yang mendorong pelibatan pemangku kepentingan secara proaktif disebut?",o:["Stakeholders","Leadership","Change","Risk"],a:0,e:"Prinsip Stakeholders mendorong keterlibatan proaktif pemangku kepentingan sepanjang proyek."},
+{c:"12 Prinsip",q:"Prinsip yang berfokus pada hasil/manfaat, bukan sekadar output, disebut?",o:["Quality","Value","Complexity","Systems Thinking"],a:1,e:"Prinsip Value berfokus pada nilai/manfaat akhir yang dihasilkan proyek."},
+{c:"12 Prinsip",q:"Prinsip yang memandang proyek sebagai bagian dari sistem yang saling terkait disebut?",o:["Systems Thinking","Tailoring","Risk","Adaptability and Resilience"],a:0,e:"Systems Thinking mendorong PM melihat proyek sebagai bagian dari sistem yang lebih besar dan saling terkait."},
+{c:"12 Prinsip",q:"Prinsip yang menekankan perilaku kepemimpinan situasional disebut?",o:["Leadership","Team","Stewardship","Change"],a:0,e:"Prinsip Leadership menekankan kepemimpinan yang menunjukkan perilaku sesuai situasi (situational leadership)."},
+{c:"12 Prinsip",q:"Prinsip yang mendorong penyesuaian pendekatan sesuai konteks proyek disebut?",o:["Tailoring","Quality","Complexity","Value"],a:0,e:"Tailoring = menyesuaikan pendekatan, proses, dan gaya kerja sesuai konteks proyek."},
+{c:"12 Prinsip",q:"Prinsip yang menekankan pembangunan kualitas ke dalam proses dan hasil disebut?",o:["Quality","Risk","Delivery","Value"],a:0,e:"Prinsip Quality menekankan kualitas dibangun ke dalam proses, bukan diperiksa di akhir."},
+{c:"12 Prinsip",q:"Prinsip yang membahas cara menavigasi proyek dengan banyak variabel yang saling terkait disebut?",o:["Complexity","Uncertainty","Systems Thinking","Adaptability and Resilience"],a:0,e:"Prinsip Complexity fokus pada bagaimana menavigasi kompleksitas sepanjang siklus proyek."},
+{c:"12 Prinsip",q:"Prinsip yang berfokus pada optimalisasi respons terhadap ketidakpastian disebut?",o:["Risk","Quality","Team","Value"],a:0,e:"Prinsip Risk mendorong optimalisasi respons risiko, bukan sekadar menghindarinya."},
+{c:"12 Prinsip",q:"Prinsip yang menekankan kemampuan proyek beradaptasi dan pulih dari gangguan disebut?",o:["Adaptability and Resilience","Change","Tailoring","Leadership"],a:0,e:"Adaptability and Resilience = kemampuan proyek beradaptasi dan bangkit kembali dari gangguan."},
+{c:"12 Prinsip",q:"Prinsip yang mendukung proyek mencapai keadaan masa depan yang diinginkan disebut?",o:["Change","Value","Quality","Stewardship"],a:0,e:"Prinsip Change memfasilitasi perubahan menuju kondisi masa depan yang dituju."},
+{c:"12 Prinsip",q:"Manakah di bawah ini yang BUKAN termasuk salah satu dari 12 prinsip PMBOK 7?",o:["Stewardship","Tailoring","Cost Control","Systems Thinking"],a:2,e:"Cost Control bukan salah satu dari 12 prinsip PMBOK 7 — ia adalah aktivitas teknis dalam domain Measurement/Planning."},
+{c:"12 Prinsip",q:"Prinsip Stewardship mencakup tanggung jawab terhadap aspek apa saja?",o:["Hanya finansial","Finansial, sosial, dan lingkungan","Hanya jadwal","Hanya kualitas produk"],a:1,e:"Stewardship mencakup tanggung jawab finansial, sosial, teknis, dan lingkungan."},
+{c:"12 Prinsip",q:"Prinsip Team menyoroti pentingnya budaya seperti apa dalam tim proyek?",o:["Budaya kompetitif individual","Budaya akuntabel dan saling menghormati","Budaya senioritas ketat","Budaya kerja tanpa evaluasi"],a:1,e:"PMBOK 7 mendorong budaya tim yang akuntabel, kolaboratif, dan saling menghormati."},
+{c:"12 Prinsip",q:"Contoh penerapan prinsip Value pada proyek adalah?",o:["Mengejar deadline tanpa memperhatikan manfaat","Memprioritaskan hasil yang bermanfaat bagi bisnis","Menambah dokumentasi sebanyak mungkin","Menghindari komunikasi dengan owner"],a:1,e:"Prinsip Value berarti memprioritaskan hasil yang benar-benar bermanfaat, bukan sekadar menyelesaikan output."},
+{c:"12 Prinsip",q:"Systems Thinking mendorong PM untuk melihat proyek dari sudut pandang apa?",o:["Sudut pandang silo per divisi","Keterkaitan antarbagian sebagai satu sistem","Hanya sudut pandang biaya","Hanya sudut pandang jadwal"],a:1,e:"Systems Thinking melihat proyek sebagai sistem yang saling terkait, bukan bagian-bagian terpisah (silo)."},
+{c:"12 Prinsip",q:"Prinsip Leadership pada PMBOK 7 TIDAK identik dengan?",o:["Perilaku kepemimpinan situasional","Posisi otoritas formal semata","Kemampuan memotivasi tim","Pengambilan keputusan yang tepat waktu"],a:1,e:"Leadership dalam PMBOK 7 adalah soal perilaku, bukan sekadar posisi/jabatan formal."},
+{c:"12 Prinsip",q:"Tailoring pada dasarnya berarti menyesuaikan proses berdasarkan?",o:["Preferensi pribadi PM semata","Karakteristik dan konteks proyek","Template perusahaan tanpa perubahan","Anggaran yang tersedia saja"],a:1,e:"Tailoring menyesuaikan proses berdasarkan karakteristik, konteks, dan kebutuhan spesifik proyek."},
+{c:"12 Prinsip",q:"Prinsip Change berkaitan erat dengan manajemen apa?",o:["Manajemen perubahan (change management)","Manajemen gudang","Manajemen kas kecil","Manajemen absensi"],a:0,e:"Prinsip Change berkaitan erat dengan pengelolaan perubahan organisasi menuju kondisi yang dituju."},
+
+{c:"8 Domain",q:"Domain yang berfokus pada identifikasi & pengelolaan hubungan pemangku kepentingan disebut?",o:["Stakeholder","Team","Planning","Delivery"],a:0,e:"Domain Stakeholder mencakup identifikasi, analisis, dan pengelolaan hubungan pemangku kepentingan."},
+{c:"8 Domain",q:"Domain yang mengatur budaya, kepemimpinan, dan pengembangan tim disebut?",o:["Team","Uncertainty","Measurement","Delivery"],a:0,e:"Domain Team fokus pada budaya, kepemimpinan, dan pengembangan kompetensi tim."},
+{c:"8 Domain",q:"Domain yang menentukan pendekatan predictive/agile/hybrid disebut?",o:["Development Approach and Life Cycle","Planning","Project Work","Delivery"],a:0,e:"Domain ini menentukan pendekatan pengembangan dan fase-fase siklus hidup proyek."},
+{c:"8 Domain",q:"Domain yang mencakup estimasi, penjadwalan, dan budgeting disebut?",o:["Planning","Team","Measurement","Uncertainty"],a:0,e:"Domain Planning mencakup estimasi, penjadwalan, dan penganggaran proyek."},
+{c:"8 Domain",q:"Domain yang mengelola proses kerja & procurement disebut?",o:["Project Work","Delivery","Stakeholder","Team"],a:0,e:"Domain Project Work mengelola proses kerja termasuk procurement dan menjaga fokus tim."},
+{c:"8 Domain",q:"Domain yang memastikan deliverable sesuai scope & kualitas yang disepakati disebut?",o:["Delivery","Planning","Measurement","Team"],a:0,e:"Domain Delivery memastikan deliverable memenuhi scope dan kualitas yang disepakati."},
+{c:"8 Domain",q:"Domain yang berkaitan dengan pengukuran kinerja proyek (KPI, EVM) disebut?",o:["Measurement","Uncertainty","Planning","Delivery"],a:0,e:"Domain Measurement mencakup pengukuran kinerja seperti S-curve dan EVM."},
+{c:"8 Domain",q:"Domain yang mengelola risiko, ambiguitas, dan volatilitas disebut?",o:["Uncertainty","Risk Management Only","Team","Stakeholder"],a:0,e:"Domain Uncertainty mengelola risiko, ambiguitas, dan volatilitas sepanjang proyek."},
+{c:"8 Domain",q:"Apakah 8 domain kinerja PMBOK 7 berjalan secara berurutan (sekuensial)?",o:["Ya, selalu berurutan","Tidak, berjalan bersamaan","Hanya 4 domain yang berurutan","Tergantung ukuran proyek"],a:1,e:"Domain kinerja saling terkait dan berjalan bersamaan sepanjang proyek, tidak sekuensial."},
+{c:"8 Domain",q:"Domain Delivery berkaitan erat dengan konsep apa?",o:["Value dan deliverable quality","Struktur organisasi semata","Gaji tim","Perizinan usaha"],a:0,e:"Domain Delivery erat kaitannya dengan penyampaian value dan kualitas deliverable."},
+{c:"8 Domain",q:"Manakah contoh output utama dari domain Measurement?",o:["S-curve dan laporan EVM","Daftar hadir rapat","Struktur organisasi","Kontrak FIDIC"],a:0,e:"S-curve dan laporan EVM adalah output khas domain Measurement."},
+{c:"8 Domain",q:"Contoh aktivitas domain Uncertainty pada proyek konstruksi adalah?",o:["Mitigasi risiko cuaca ekstrem","Menghitung gaji staff","Membuat WBS","Menyusun laporan akhir"],a:0,e:"Mitigasi risiko cuaca ekstrem adalah aktivitas khas domain Uncertainty."},
+{c:"8 Domain",q:"Domain Planning TIDAK secara langsung mencakup?",o:["Estimasi biaya","Penjadwalan","Eksekusi fisik pekerjaan lapangan","Budgeting"],a:2,e:"Eksekusi fisik lapangan termasuk domain Project Work/Delivery, bukan Planning."},
+{c:"8 Domain",q:"Domain Team mendorong PM berperan sebagai?",o:["Pembina/fasilitator tim","Pengawas tunggal tanpa delegasi","Penentu gaji semata","Auditor eksternal"],a:0,e:"PM berperan sebagai pembina dan fasilitator tim, bukan sekadar pengawas."},
+{c:"8 Domain",q:"Manakah yang BUKAN termasuk salah satu dari 8 domain kinerja PMBOK 7?",o:["Stakeholder","Procurement Domain","Delivery","Uncertainty"],a:1,e:"Tidak ada domain bernama 'Procurement Domain' — procurement merupakan bagian dari domain Project Work."},
+{c:"8 Domain",q:"Domain apa yang menentukan siklus hidup dan fase-fase proyek?",o:["Development Approach and Life Cycle","Team","Measurement","Stakeholder"],a:0,e:"Domain ini menentukan pendekatan pengembangan dan struktur fase siklus hidup proyek."},
+{c:"8 Domain",q:"Domain Stakeholder mencakup identifikasi siapa saja?",o:["Hanya pihak internal perusahaan","Internal dan eksternal termasuk masyarakat sekitar","Hanya owner","Hanya kontraktor utama"],a:1,e:"Stakeholder mencakup pihak internal maupun eksternal, termasuk masyarakat terdampak."},
+{c:"8 Domain",q:"Contoh artifact yang dihasilkan domain Planning adalah?",o:["Jadwal, anggaran, dan WBS","Laporan cuaca harian","Slip gaji karyawan","Sertifikat kelulusan pelatihan"],a:0,e:"Jadwal, anggaran, dan WBS adalah artifact khas domain Planning."},
+{c:"8 Domain",q:"Tujuan utama domain Delivery adalah?",o:["Menghasilkan value sesuai scope & kualitas yang disepakati","Menyusun struktur organisasi","Menentukan gaji tim","Menyusun kontrak kerja"],a:0,e:"Domain Delivery bertujuan menghasilkan value sesuai scope dan kualitas yang disepakati."},
+{c:"8 Domain",q:"Interaksi antar-domain kinerja PMBOK 7 pada dasarnya bersifat?",o:["Linear dan berurutan ketat","Saling terkait dan dinamis","Terpisah satu sama lain","Hanya berlaku untuk proyek besar"],a:1,e:"Domain kinerja saling terkait dan bekerja secara dinamis sepanjang proyek."},
+
+{c:"Tailoring",q:"Pendekatan yang cocok untuk proyek dengan scope jelas sejak awal disebut?",o:["Predictive","Agile murni","Scrum saja","Kanban saja"],a:0,e:"Predictive (waterfall) cocok untuk proyek dengan scope yang sudah jelas sejak awal."},
+{c:"Tailoring",q:"Pendekatan yang cocok untuk proyek dengan requirement yang berubah-ubah/belum jelas disebut?",o:["Predictive","Adaptive/Agile","Linear","Sequential"],a:1,e:"Pendekatan adaptive/agile cocok untuk proyek dengan requirement yang masih berubah."},
+{c:"Tailoring",q:"Pendekatan yang menggabungkan unsur predictive dan adaptive disebut?",o:["Hybrid","Waterfall murni","Scrum murni","Kanban murni"],a:0,e:"Pendekatan hybrid menggabungkan elemen predictive dan adaptive sesuai kebutuhan proyek."},
+{c:"Tailoring",q:"Tujuan utama tailoring adalah?",o:["Menyesuaikan proses agar sesuai konteks proyek","Menambah birokrasi proyek","Menyeragamkan seluruh proses tanpa kecuali","Menghilangkan governance sepenuhnya"],a:0,e:"Tailoring bertujuan menyesuaikan proses agar pas dengan konteks dan karakteristik proyek."},
+{c:"Tailoring",q:"Proyek bendungan dengan scope yang sudah jelas sejak awal biasanya menggunakan pendekatan?",o:["Predictive","Agile murni","Scrumban","Extreme Programming"],a:0,e:"Proyek konstruksi besar dengan scope jelas umumnya menggunakan pendekatan predictive."},
+{c:"Tailoring",q:"Proyek software dengan requirement yang berubah cepat biasanya menggunakan pendekatan?",o:["Predictive murni","Agile","Waterfall","Tidak perlu pendekatan khusus"],a:1,e:"Proyek dengan requirement dinamis lebih cocok memakai pendekatan agile."},
+{c:"Tailoring",q:"Faktor yang PALING mempengaruhi keputusan tailoring adalah?",o:["Warna logo perusahaan","Karakteristik proyek dan tingkat ketidakpastian","Jumlah rapat mingguan","Nama proyek"],a:1,e:"Karakteristik proyek dan tingkat ketidakpastian adalah faktor utama dalam tailoring."},
+{c:"Tailoring",q:"Rolling wave planning adalah teknik perencanaan bertahap yang sering dipakai pada pendekatan?",o:["Hybrid/Adaptive","Predictive murni","Waterfall murni","Tidak dipakai di manapun"],a:0,e:"Rolling wave planning umum dipakai pada pendekatan hybrid/adaptive di mana detail direncanakan bertahap."},
+{c:"Tailoring",q:"Predictive life cycle biasa disebut juga dengan istilah?",o:["Waterfall","Sprint","Kanban board","Scrum of scrums"],a:0,e:"Predictive life cycle sering disebut juga waterfall."},
+{c:"Tailoring",q:"Tailoring TIDAK berarti?",o:["Menyesuaikan proses dengan konteks","Mengabaikan governance perusahaan sepenuhnya","Memilih tingkat detail dokumentasi yang sesuai","Menyesuaikan gaya kepemimpinan"],a:1,e:"Tailoring bukan berarti mengabaikan tata kelola (governance) yang berlaku di organisasi."},
+
+{c:"Model/Metode/Artifact",q:"Model, metode, dan artifact pada PMBOK 7 merupakan bagian dari?",o:["Sumber daya pendukung tailoring dan penerapan prinsip","Bagian wajib yang harus diikuti secara kaku","Hanya berlaku untuk proyek IT","Pengganti seluruh 12 prinsip"],a:0,e:"Model, metode, dan artifact adalah 'kotak perkakas' pendukung penerapan prinsip dan tailoring."},
+{c:"Model/Metode/Artifact",q:"Critical Path Method termasuk kategori apa?",o:["Model","Metode","Artifact","Prinsip"],a:1,e:"Critical Path Method adalah sebuah metode (cara mengerjakan sesuatu)."},
+{c:"Model/Metode/Artifact",q:"Risk register termasuk kategori apa?",o:["Model","Metode","Artifact","Domain"],a:2,e:"Risk register adalah dokumen/output, sehingga termasuk kategori artifact."},
+{c:"Model/Metode/Artifact",q:"Tuckman ladder (forming-storming-norming-performing) termasuk kategori apa?",o:["Model","Metode","Artifact","Prinsip"],a:0,e:"Tuckman ladder adalah kerangka konseptual tentang tahap perkembangan tim, sehingga termasuk model."},
+{c:"Model/Metode/Artifact",q:"Kanban termasuk kategori apa?",o:["Model","Metode","Artifact","Domain"],a:1,e:"Kanban adalah metode/cara kerja visual untuk mengelola alur kerja."},
+{c:"Model/Metode/Artifact",q:"Project charter termasuk kategori apa?",o:["Model","Metode","Artifact","Prinsip"],a:2,e:"Project charter adalah dokumen resmi, sehingga termasuk kategori artifact."},
+{c:"Model/Metode/Artifact",q:"Situational leadership termasuk kategori apa?",o:["Model","Metode","Artifact","Domain"],a:0,e:"Situational leadership adalah kerangka konseptual kepemimpinan, termasuk kategori model."},
+{c:"Model/Metode/Artifact",q:"Monte Carlo simulation termasuk kategori apa?",o:["Model","Metode","Artifact","Prinsip"],a:1,e:"Monte Carlo simulation adalah metode analisis risiko kuantitatif."},
+{c:"Model/Metode/Artifact",q:"WBS (Work Breakdown Structure) termasuk kategori apa?",o:["Model","Metode","Artifact","Domain"],a:2,e:"WBS adalah dokumen/output perencanaan, termasuk kategori artifact."},
+{c:"Model/Metode/Artifact",q:"Communication model termasuk kategori apa?",o:["Model","Metode","Artifact","Prinsip"],a:0,e:"Communication model adalah kerangka konseptual tentang proses komunikasi, termasuk model."},
+
+{c:"EVM",q:"PV pada Earned Value Management singkatan dari?",o:["Planned Value","Project Volume","Physical Value","Prior Value"],a:0,e:"PV = Planned Value, nilai pekerjaan yang direncanakan selesai hingga status date."},
+{c:"EVM",q:"EV pada Earned Value Management singkatan dari?",o:["Earned Value","Estimated Value","Expected Value","Extra Value"],a:0,e:"EV = Earned Value, nilai pekerjaan yang benar-benar selesai hingga status date."},
+{c:"EVM",q:"AC pada Earned Value Management singkatan dari?",o:["Actual Cost","Approved Cost","Adjusted Cost","Allocated Cost"],a:0,e:"AC = Actual Cost, biaya yang benar-benar dikeluarkan hingga status date."},
+{c:"EVM",q:"Rumus SPI (Schedule Performance Index) adalah?",o:["EV / PV","EV / AC","PV / AC","AC / EV"],a:0,e:"SPI = EV ÷ PV, mengukur efisiensi jadwal."},
+{c:"EVM",q:"Rumus CPI (Cost Performance Index) adalah?",o:["EV / AC","EV / PV","PV / EV","AC / PV"],a:0,e:"CPI = EV ÷ AC, mengukur efisiensi biaya."},
+{c:"EVM",q:"Rumus Cost Variance (CV) adalah?",o:["EV − AC","PV − EV","AC − PV","BAC − EAC"],a:0,e:"CV = EV − AC. Negatif berarti proyek boros dari anggaran."},
+{c:"EVM",q:"Rumus Schedule Variance (SV) adalah?",o:["EV − PV","PV − AC","EV − AC","AC − EV"],a:0,e:"SV = EV − PV. Negatif berarti proyek terlambat dari rencana."},
+{c:"EVM",q:"Rumus EAC (Estimate at Completion) yang paling umum adalah?",o:["BAC / CPI","BAC × CPI","BAC − CPI","BAC + CPI"],a:0,e:"EAC = BAC ÷ CPI, memprediksi total biaya akhir proyek berdasarkan tren efisiensi biaya saat ini."},
+{c:"EVM",q:"Rumus ETC (Estimate to Complete) adalah?",o:["EAC − AC","BAC − EV","EAC + AC","BAC / EAC"],a:0,e:"ETC = EAC − AC, perkiraan biaya yang masih dibutuhkan untuk menyelesaikan sisa proyek."},
+{c:"EVM",q:"Rumus VAC (Variance at Completion) adalah?",o:["BAC − EAC","EAC − BAC","BAC / EAC","BAC × EAC"],a:0,e:"VAC = BAC − EAC. Negatif berarti proyek diperkirakan over-budget."},
+{c:"EVM",q:"Jika CPI kurang dari 1, artinya proyek?",o:["Hemat biaya","Boros / over budget","Lebih cepat dari jadwal","Tepat waktu"],a:1,e:"CPI < 1 berarti setiap Rp yang dikeluarkan menghasilkan nilai pekerjaan lebih kecil dari yang dianggarkan (boros)."},
+{c:"EVM",q:"Jika SPI lebih besar dari 1, artinya proyek?",o:["Lebih lambat dari jadwal","Lebih cepat dari jadwal","Over budget","Tidak ada progres"],a:1,e:"SPI > 1 berarti nilai pekerjaan yang selesai melebihi rencana — proyek lebih cepat dari jadwal."},
+{c:"EVM",q:"TCPI (To-Complete Performance Index) mengukur apa?",o:["Efisiensi historis proyek","Efisiensi yang harus dicapai sisa proyek agar sesuai BAC","Jumlah tenaga kerja tersisa","Total durasi proyek"],a:1,e:"TCPI mengukur efisiensi yang wajib dicapai pada sisa pekerjaan agar tetap sesuai BAC awal."},
+{c:"EVM",q:"BAC singkatan dari?",o:["Budget at Completion","Basic Actual Cost","Baseline Approved Cost","Budgeted Activity Cost"],a:0,e:"BAC = Budget at Completion, total anggaran proyek yang disetujui."},
+{c:"EVM",q:"Istilah lama BCWS pada MS Project setara dengan istilah EVM modern apa?",o:["PV (Planned Value)","EV (Earned Value)","AC (Actual Cost)","EAC"],a:0,e:"BCWS (Budgeted Cost of Work Scheduled) adalah istilah lama yang setara dengan PV."},
+
+{c:"Risk & Uncertainty",q:"Monte Carlo simulation digunakan untuk menganalisis apa?",o:["Probabilitas hasil jadwal/biaya proyek","Struktur organisasi proyek","Kualitas material konstruksi","Gaji karyawan proyek"],a:0,e:"Monte Carlo simulation menghasilkan distribusi probabilitas hasil jadwal/biaya lewat ribuan iterasi."},
+{c:"Risk & Uncertainty",q:"Estimasi tiga titik (three-point estimate) terdiri dari?",o:["Optimistic, Most Likely, Pessimistic","Minimum, Rata-rata, Maksimum saja","Low, Medium, High Cost","Start, Middle, End"],a:0,e:"Estimasi tiga titik terdiri dari Optimistic (O), Most Likely (M), dan Pessimistic (P)."},
+{c:"Risk & Uncertainty",q:"Rumus PERT mean (estimasi tiga titik) adalah?",o:["(O + 4M + P) / 6","(O + M + P) / 3","(O + P) / 2","(4O + M + P) / 6"],a:0,e:"PERT mean = (Optimistic + 4×Most Likely + Pessimistic) ÷ 6."},
+{c:"Risk & Uncertainty",q:"P80 dalam hasil simulasi risiko jadwal berarti?",o:["80% kemungkinan proyek selesai pada/sebelum tanggal tersebut","Proyek pasti selesai 80 hari lebih cepat","80% anggaran sudah terpakai","80% aktivitas sudah kritis"],a:0,e:"P80 adalah tanggal dengan tingkat keyakinan 80% proyek selesai pada atau sebelum tanggal itu."},
+{c:"Risk & Uncertainty",q:"Risk register adalah dokumen yang mencatat?",o:["Daftar risiko teridentifikasi & respons mitigasinya","Daftar gaji tim proyek","Daftar supplier material","Daftar hari libur proyek"],a:0,e:"Risk register mencatat risiko yang teridentifikasi beserta analisis dan respons mitigasinya."},
+{c:"Risk & Uncertainty",q:"Respons risiko 'Avoid' berarti?",o:["Menghindari/menghilangkan penyebab risiko","Menerima risiko tanpa tindakan","Memindahkan risiko ke pihak lain","Mengurangi dampak risiko"],a:0,e:"Avoid berarti mengeliminasi penyebab risiko atau mengubah rencana agar risiko tidak terjadi."},
+{c:"Risk & Uncertainty",q:"Respons risiko 'Transfer' berarti?",o:["Memindahkan dampak risiko ke pihak lain (mis. asuransi)","Menghindari risiko sepenuhnya","Menerima risiko tanpa tindakan","Mengurangi probabilitas risiko"],a:0,e:"Transfer memindahkan dampak finansial risiko ke pihak ketiga, misalnya lewat asuransi atau subkontrak."},
+{c:"Risk & Uncertainty",q:"Respons risiko 'Mitigate' berarti?",o:["Mengurangi probabilitas atau dampak risiko","Menghilangkan risiko sepenuhnya","Menerima risiko begitu saja","Menjual risiko ke asuransi"],a:0,e:"Mitigate berarti mengambil tindakan untuk mengurangi probabilitas dan/atau dampak risiko."},
+{c:"Risk & Uncertainty",q:"Respons risiko 'Accept' berarti?",o:["Menerima risiko tanpa tindakan khusus (atau dengan contingency)","Menghindari risiko sepenuhnya","Memindahkan risiko ke asuransi","Menghilangkan penyebab risiko"],a:0,e:"Accept berarti menerima risiko, kadang disertai contingency plan, tanpa tindakan pencegahan aktif."},
+{c:"Risk & Uncertainty",q:"Criticality Index dalam analisis risiko jadwal menunjukkan?",o:["Seberapa sering aktivitas muncul di jalur kritis selama simulasi","Jumlah total aktivitas proyek","Total biaya aktivitas","Jumlah hari libur proyek"],a:0,e:"Criticality Index menunjukkan persentase seberapa sering suatu aktivitas menjadi kritis selama ribuan iterasi simulasi."},
+
+{c:"Umum",q:"Definisi proyek menurut PMI adalah?",o:["Usaha sementara untuk menciptakan produk/layanan/hasil yang unik","Aktivitas rutin operasional harian","Kumpulan tugas tanpa batas waktu","Pekerjaan yang selalu berulang identik"],a:0,e:"Proyek adalah usaha sementara (punya awal & akhir) untuk menciptakan produk, layanan, atau hasil yang unik."},
+{c:"Umum",q:"Program dalam manajemen proyek adalah?",o:["Kumpulan proyek terkait yang dikelola bersama untuk manfaat lebih besar","Satu proyek tunggal berskala kecil","Dokumen anggaran tahunan","Software manajemen proyek"],a:0,e:"Program adalah kumpulan proyek terkait yang dikelola bersama untuk mendapat manfaat yang tidak didapat jika dikelola terpisah."},
+{c:"Umum",q:"Portfolio dalam manajemen proyek adalah?",o:["Kumpulan proyek/program/operasional yang dikelola untuk tujuan strategis","Satu dokumen laporan keuangan","Daftar risiko proyek","Struktur organisasi proyek"],a:0,e:"Portfolio adalah kumpulan proyek, program, dan pekerjaan lain yang dikelola bersama untuk mencapai tujuan strategis organisasi."},
+{c:"Umum",q:"PMO singkatan dari?",o:["Project Management Office","Primary Management Operation","Project Monitoring Organization","Program Management Objective"],a:0,e:"PMO = Project Management Office, unit organisasi yang menstandardisasi tata kelola proyek."},
+{c:"Umum",q:"Sponsor proyek berperan sebagai?",o:["Pemberi otorisasi & dukungan sumber daya/dana proyek","Pelaksana teknis harian proyek","Auditor eksternal proyek","Kontraktor pelaksana"],a:0,e:"Sponsor memberi otorisasi formal, dukungan dana, dan sumber daya bagi proyek."},
+];
+
+function renderQuizFilters(){
+  const cats = ["Semua", ...Array.from(new Set(PMBOK_QUIZ.map(q=>q.c)))];
+  const wrap = document.getElementById('pmbokQuizFilter');
+  wrap.innerHTML = cats.map((c,i)=>`<button class="${i===0?'active':''}" data-cat="${c}" onclick="filterQuiz('${c}', this)">${c}</button>`).join('');
+}
+
+function filterQuiz(cat, btn){
+  document.querySelectorAll('#pmbokQuizFilter button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderQuizList(cat);
+}
+
+function renderQuizList(cat){
+  const mount = document.getElementById('pmbokQuizMount');
+  const list = (cat && cat !== 'Semua') ? PMBOK_QUIZ.filter(q=>q.c===cat) : PMBOK_QUIZ;
+  mount.innerHTML = `<div class="quiz-count">Menampilkan ${list.length} dari 100 soal</div>` + list.map((item)=>{
+    const idx = PMBOK_QUIZ.indexOf(item);
+    const opts = item.o.map((opt,oi)=>`<button class="quiz-opt" onclick="answerQuiz(${idx},${oi},this)">${String.fromCharCode(65+oi)}. ${opt}</button>`).join('');
+    return `<div class="quiz-item" id="quiz-${idx}">
+      <div class="qhead"><span class="qnum">#${idx+1}</span><span class="qcat">${item.c}</span></div>
+      <div class="qtext">${item.q}</div>
+      <div class="quiz-opts">${opts}</div>
+      <div class="quiz-explain" id="quiz-exp-${idx}"><b>Pembahasan:</b> ${item.e}</div>
+    </div>`;
+  }).join('');
+}
+
+function answerQuiz(idx, chosen, btn){
+  const item = PMBOK_QUIZ[idx];
+  const container = document.getElementById('quiz-'+idx);
+  const opts = container.querySelectorAll('.quiz-opt');
+  opts.forEach((b,i)=>{
+    b.disabled = true;
+    if(i === item.a) b.classList.add('correct');
+    else if(i === chosen) b.classList.add('wrong');
+  });
+  document.getElementById('quiz-exp-'+idx).classList.add('show');
+}
+
+window.addEventListener('DOMContentLoaded', function(){
+  renderQuizFilters();
+  renderQuizList('Semua');
+});
+
+</script>
+</body>
+</html>

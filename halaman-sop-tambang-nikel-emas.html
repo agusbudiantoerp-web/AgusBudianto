@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Induk SOP Tambang Nikel & Emas — PT Tambang Nusantara Jaya</title>
+<style>
+  :root{
+    --bg:#12151a;
+    --bg-panel:#1a1f27;
+    --bg-panel-2:#20262f;
+    --line:#2c333d;
+    --ore:#c9852f;
+    --ore-light:#e2a755;
+    --safety:#4f8a6d;
+    --danger:#b8453f;
+    --text:#eae6dc;
+    --text-dim:#9aa2ad;
+    --mono: 'Consolas','Menlo',monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3,h4{
+    font-family: Arial, Helvetica, sans-serif;
+    letter-spacing:0.5px;
+    margin:0;
+  }
+  .display{
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  a{color:var(--ore-light);}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:110px 0 90px;
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(201,133,47,0.16), transparent 55%),
+      linear-gradient(180deg, #0e1014 0%, #12151a 100%);
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(115deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 46px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12.5px; letter-spacing:2px;
+    color:var(--ore-light); text-transform:uppercase;
+    border:1px solid rgba(201,133,47,0.4); padding:6px 14px; border-radius:2px;
+    background:rgba(201,133,47,0.06);
+  }
+  .eyebrow::before{content:"●"; color:var(--ore); font-size:9px;}
+  .hero h1{
+    font-size:52px; line-height:1.08; margin-top:22px; max-width:820px;
+    color:#fff;
+  }
+  .hero h1 span{color:var(--ore-light);}
+  .hero p.lead{
+    max-width:640px; margin-top:20px; color:var(--text-dim); font-size:17px;
+  }
+  .hero-actions{margin-top:36px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:14px 24px; border-radius:3px; font-weight:700; font-size:14.5px;
+    text-decoration:none; cursor:pointer; border:1px solid transparent;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--ore); color:#181205;}
+  .btn-primary:hover{background:var(--ore-light);}
+  .btn-ghost{background:transparent; border-color:var(--line); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--ore); color:var(--ore-light);}
+
+  .stat-strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    margin-top:56px; background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+  }
+  .stat{background:var(--bg-panel); padding:22px 20px;}
+  .stat .num{font-family:var(--mono); font-size:30px; font-weight:700; color:var(--ore-light);}
+  .stat .label{font-size:12.5px; color:var(--text-dim); margin-top:4px; text-transform:uppercase; letter-spacing:0.5px;}
+
+  /* ---------- NAV ---------- */
+  .catnav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,21,26,0.95); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .catnav-inner{
+    display:flex; gap:4px; overflow-x:auto; padding:12px 28px; max-width:1180px; margin:0 auto;
+    scrollbar-width:thin;
+  }
+  .catnav-inner a{
+    flex:none; font-size:12.5px; font-family:var(--mono); text-decoration:none;
+    color:var(--text-dim); padding:8px 12px; border-radius:2px; white-space:nowrap;
+    border:1px solid transparent;
+  }
+  .catnav-inner a:hover{color:var(--text); border-color:var(--line);}
+  .catnav-inner a.active{color:var(--ore-light); border-color:rgba(201,133,47,0.4); background:rgba(201,133,47,0.08);}
+
+  section{padding:64px 0; border-bottom:1px solid var(--line);}
+  .section-head{display:flex; align-items:baseline; gap:14px; margin-bottom:8px;}
+  .section-num{font-family:var(--mono); color:var(--ore); font-size:15px;}
+  .section-title{font-size:26px; font-weight:800; color:#fff;}
+  .section-desc{color:var(--text-dim); max-width:760px; margin-top:10px; font-size:15px;}
+
+  /* ---------- CATEGORY GRID ---------- */
+  .cat-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px;}
+  @media (max-width:820px){.cat-grid{grid-template-columns:1fr;}}
+  .cat-card{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:5px; overflow:hidden;
+  }
+  .cat-card-head{
+    padding:18px 20px; display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer; gap:12px;
+  }
+  .cat-card-head:hover{background:var(--bg-panel-2);}
+  .cat-card-head .tag{
+    font-family:var(--mono); font-size:11.5px; color:var(--ore-light); letter-spacing:1px;
+  }
+  .cat-card-head h4{font-size:16px; margin-top:4px; color:var(--text);}
+  .chev{color:var(--text-dim); transition:transform .2s ease; flex:none;}
+  .cat-card.open .chev{transform:rotate(180deg);}
+  .cat-body{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+  .cat-card.open .cat-body{max-height:600px;}
+  .cat-body-inner{padding:0 20px 20px; border-top:1px solid var(--line);}
+  .doc-list{list-style:none; margin:14px 0 0; padding:0;}
+  .doc-list li{
+    display:flex; gap:10px; padding:7px 0; font-size:14px; color:var(--text-dim);
+    border-bottom:1px dashed rgba(255,255,255,0.06);
+  }
+  .doc-list li:last-child{border-bottom:none;}
+  .doc-list li::before{content:"›"; color:var(--ore); font-weight:700;}
+
+  /* ---------- CHECKLIST DEMO ---------- */
+  .demo-panel{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:6px;
+    margin-top:32px; padding:0; overflow:hidden;
+  }
+  .demo-toolbar{
+    display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;
+    padding:18px 22px; border-bottom:1px solid var(--line); background:var(--bg-panel-2);
+  }
+  .demo-toolbar .title{font-family:var(--mono); font-size:13px; color:var(--text-dim);}
+  .progress-wrap{display:flex; align-items:center; gap:10px; min-width:220px;}
+  .progress-bar{flex:1; height:8px; background:#0e1014; border-radius:4px; overflow:hidden; border:1px solid var(--line);}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg,var(--ore),var(--safety)); transition:width .25s ease;}
+  .progress-pct{font-family:var(--mono); font-size:13px; color:var(--ore-light); min-width:38px; text-align:right;}
+  .reset-btn{font-family:var(--mono); font-size:12px; color:var(--text-dim); background:none; border:1px solid var(--line); padding:6px 12px; border-radius:3px; cursor:pointer;}
+  .reset-btn:hover{color:var(--text); border-color:var(--ore);}
+  .check-list{padding:8px 10px;}
+  .check-item{
+    display:flex; align-items:flex-start; gap:12px; padding:12px 12px; border-radius:4px;
+  }
+  .check-item:hover{background:var(--bg-panel-2);}
+  .check-item input{margin-top:3px; width:17px; height:17px; accent-color:var(--ore);}
+  .check-item label{font-size:14.5px; color:var(--text); cursor:pointer;}
+  .check-item.done label{color:var(--text-dim); text-decoration:line-through;}
+
+  /* ---------- RISK MATRIX ---------- */
+  .matrix-wrap{display:flex; gap:36px; flex-wrap:wrap; margin-top:30px; align-items:flex-start;}
+  table.matrix{border-collapse:collapse; font-family:var(--mono); font-size:13px;}
+  table.matrix th, table.matrix td{
+    border:1px solid var(--line); width:76px; height:52px; text-align:center; vertical-align:middle;
+  }
+  table.matrix th{background:var(--bg-panel-2); color:var(--text-dim); font-weight:600; font-size:11px;}
+  table.matrix td{font-weight:700; color:#12151a; cursor:default;}
+  table.matrix td:hover{outline:2px solid #fff; outline-offset:-2px;}
+  .risk-legend{display:flex; flex-direction:column; gap:10px; font-size:13.5px; color:var(--text-dim); min-width:220px;}
+  .risk-legend .row{display:flex; align-items:center; gap:10px;}
+  .swatch{width:16px; height:16px; border-radius:2px; flex:none;}
+
+  /* ---------- FORM PREVIEW ---------- */
+  .doc-preview{
+    background:var(--bg-panel); border:1px solid var(--line); border-radius:6px; padding:24px; margin-top:28px;
+  }
+  .doc-preview .dp-head{
+    display:flex; justify-content:space-between; border-bottom:2px solid var(--ore); padding-bottom:10px; margin-bottom:16px;
+  }
+  .doc-preview .dp-head .co{font-weight:800; color:#fff; font-size:14px;}
+  .doc-preview .dp-head .meta{font-family:var(--mono); font-size:11.5px; color:var(--text-dim); text-align:right;}
+  table.form-tbl{width:100%; border-collapse:collapse; font-size:13px;}
+  table.form-tbl th, table.form-tbl td{border:1px solid var(--line); padding:9px 10px; text-align:left;}
+  table.form-tbl th{background:var(--bg-panel-2); color:var(--ore-light); font-size:11.5px; text-transform:uppercase; letter-spacing:0.5px;}
+  table.form-tbl td{color:var(--text-dim);}
+
+  /* ---------- DOWNLOAD CTA ---------- */
+  .cta{
+    background:linear-gradient(135deg, #1a1f27 0%, #14171d 100%);
+    border:1px solid var(--line); border-radius:8px; padding:44px 40px;
+    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+    margin-top:20px;
+  }
+  .cta h3{font-size:22px; color:#fff;}
+  .cta p{color:var(--text-dim); margin-top:8px; max-width:520px; font-size:14.5px;}
+
+  footer{padding:36px 0; text-align:center; color:var(--text-dim); font-size:13px; font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Dokumen Terkendali · KTT / PJO</span>
+    <h1 class="display">Buku Induk SOP Tambang <span>Nikel & Emas</span></h1>
+    <p class="lead">Kompilasi kebijakan, SOP, instruksi kerja, checklist, form, matrix risiko, dan register — disusun berdasarkan kaidah teknik pertambangan yang baik (good mining practice) dan pengalaman lapangan lebih dari 30 tahun sebagai KTT/PJO.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#download">↓ Unduh Dokumen Word (.docx)</a>
+      <a class="btn btn-ghost" href="#kategori">Jelajahi 13 Kategori</a>
+    </div>
+    <div class="stat-strip">
+      <div class="stat"><div class="num">13</div><div class="label">Kategori Utama</div></div>
+      <div class="stat"><div class="num">180+</div><div class="label">SOP / IK / Form / Register</div></div>
+      <div class="stat"><div class="num">51</div><div class="label">Halaman Dokumen Word</div></div>
+      <div class="stat"><div class="num">5×5</div><div class="label">Matrix Penilaian Risiko</div></div>
+    </div>
+  </div>
+</div>
+
+<nav class="catnav">
+  <div class="catnav-inner" id="catnav"></div>
+</nav>
+
+<section id="kategori">
+  <div class="wrap">
+    <div class="section-head"><span class="section-num">01</span><span class="section-title">13 Kategori Dokumen</span></div>
+    <p class="section-desc">Klik tiap kartu untuk melihat daftar dokumen turunan pada masing-masing kategori. Seluruh isi lengkap (tujuan, ruang lingkup, prosedur, APD, dan rekaman) tersedia pada file Word yang dapat diunduh.</p>
+    <div class="cat-grid" id="catgrid"></div>
+  </div>
+</section>
+
+<section id="checklist">
+  <div class="wrap">
+    <div class="section-head"><span class="section-num">02</span><span class="section-title">Contoh Interaktif — Checklist P2H Excavator</span></div>
+    <p class="section-desc">Coba centang setiap item pemeriksaan sebelum pengoperasian (P2H) seperti yang dilakukan operator di lapangan setiap awal shift.</p>
+    <div class="demo-panel">
+      <div class="demo-toolbar">
+        <span class="title">TNJ-CHK-ALT-01 &nbsp;·&nbsp; Checklist P2H Excavator</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+          <span class="progress-pct" id="ppct">0%</span>
+          <button class="reset-btn" id="presetbtn">Reset</button>
+        </div>
+      </div>
+      <div class="check-list" id="checklist-items"></div>
+    </div>
+  </div>
+</section>
+
+<section id="matrix">
+  <div class="wrap">
+    <div class="section-head"><span class="section-num">03</span><span class="section-title">Matrix Penilaian Risiko (5×5)</span></div>
+    <p class="section-desc">Arahkan kursor ke setiap sel untuk melihat kombinasi kemungkinan × keparahan dan tingkat pengendalian yang diperlukan.</p>
+    <div class="matrix-wrap">
+      <table class="matrix" id="riskmatrix"></table>
+      <div class="risk-legend">
+        <div class="row"><div class="swatch" style="background:#9bc169"></div> Rendah (1–4) — dapat diterima, pantau berkala</div>
+        <div class="row"><div class="swatch" style="background:#f2c14e"></div> Sedang (5–14) — perlu pengendalian tambahan</div>
+        <div class="row"><div class="swatch" style="background:#c0504d"></div> Tinggi (15–25) — stop, wajib persetujuan KTT/PJO</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="form">
+  <div class="wrap">
+    <div class="section-head"><span class="section-num">04</span><span class="section-title">Contoh Format Form — Produksi Harian</span></div>
+    <p class="section-desc">Semua form (Produksi, Fuel Usage, Maintenance, Incident Report) dalam dokumen Word menggunakan format kop terkendali seperti contoh berikut.</p>
+    <div class="doc-preview">
+      <div class="dp-head">
+        <span class="co">PT TAMBANG NUSANTARA JAYA — FORM PRODUKSI HARIAN</span>
+        <span class="meta">TNJ-FRM-PRD-01 &nbsp;|&nbsp; Rev. 00</span>
+      </div>
+      <table class="form-tbl">
+        <thead><tr><th>Shift</th><th>Nama Unit</th><th>Operator</th><th>Jenis Material</th><th>Ritase</th><th>Volume</th></tr></thead>
+        <tbody>
+          <tr><td>I</td><td>EX-05</td><td>—</td><td>Ore</td><td>—</td><td>— m³</td></tr>
+          <tr><td>I</td><td>DT-12</td><td>—</td><td>Overburden</td><td>—</td><td>— bcm</td></tr>
+          <tr><td>II</td><td>EX-05</td><td>—</td><td>Waste</td><td>—</td><td>— bcm</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="cta">
+      <div>
+        <h3>Dokumen Word Lengkap Siap Pakai</h3>
+        <p>Berisi seluruh 13 kategori secara lengkap: kebijakan, 13+ SOP rinci, instruksi kerja alat berat, checklist, form, matrix risiko, dan register — total 51 halaman, format terkendali, siap dicetak atau diedit sesuai kondisi site Anda.</p>
+      </div>
+      <a class="btn btn-primary" href="#" onclick="alert('File Word (SOP_Tambang_Nikel_Emas.docx) telah dibagikan bersama halaman ini pada chat Claude — silakan unduh dari sana.'); return false;">↓ Unduh SOP_Tambang_Nikel_Emas.docx</a>
+    </div>
+  </div>
+</section>
+
+<footer>PT TAMBANG NUSANTARA JAYA &nbsp;·&nbsp; DOKUMEN TERKENDALI &nbsp;·&nbsp; DILARANG DIGANDAKAN TANPA IZIN KTT/PJO</footer>
+
+<script>
+const categories = [
+ {tag:"01", title:"Kebijakan Operasional, K3 & Lingkungan Tambang", docs:["Kebijakan Operasional Tambang","Kebijakan K3","Kebijakan Lingkungan","Struktur Tanggung Jawab K3 & Lingkungan"]},
+ {tag:"02", title:"SOP Produksi, Overburden, Ore Getting & Disposal", docs:["SOP Pembongkaran Overburden (SOP-PRD-001)","SOP Penggalian & Pemuatan Bijih (SOP-PRD-002)","SOP Disposal / Waste Dump (SOP-PRD-003)"]},
+ {tag:"03", title:"SOP Hauling, Traffic Management & Refueling", docs:["SOP Pengangkutan Material (SOP-HAU-001)","SOP Traffic Management (SOP-HAU-002)","SOP Pengisian Bahan Bakar (SOP-HAU-003)"]},
+ {tag:"04", title:"SOP Stockpile, Blending, Sampling & Ore Loading", docs:["SOP Penataan Stockpile/ROM (SOP-STK-001)","SOP Sampling & Blending (SOP-STK-002)"]},
+ {tag:"05", title:"SOP Workshop, Maintenance & Breakdown Unit", docs:["SOP Perawatan Berkala / PM (SOP-WKS-001)","SOP Penanganan Breakdown (SOP-WKS-002)"]},
+ {tag:"06", title:"SOP Safety Induction, Toolbox Meeting & Incident Reporting", docs:["SOP Safety Induction (SOP-HSE-001)","SOP Toolbox Meeting / P5M (SOP-HSE-002)","SOP Pelaporan & Investigasi Insiden (SOP-HSE-003)"]},
+ {tag:"07", title:"SOP Monitoring Lereng, Longsor & Drainase Tambang", docs:["SOP Monitoring Kestabilan Lereng (SOP-GEO-001)","SOP Pengelolaan Drainase Tambang (SOP-GEO-002)"]},
+ {tag:"08", title:"Instruksi Kerja Excavator, Dump Truck, Bulldozer, Crane", docs:["IK Excavator (IK-ALT-001)","IK Dump Truck (IK-ALT-002)","IK Bulldozer (IK-ALT-003)","IK Mobile Crane (IK-ALT-004)"]},
+ {tag:"09", title:"Checklist Unit, Jalan Hauling, Stockpile & Workshop", docs:["Checklist P2H Excavator/Dozer","Checklist Jalan Hauling","Checklist Area Stockpile","Checklist Workshop"]},
+ {tag:"10", title:"Form Produksi, Fuel Usage, Maintenance & Incident Report", docs:["Form Produksi Harian (TNJ-FRM-PRD-01)","Form Fuel Usage (TNJ-FRM-HAU-02)","Form Maintenance (TNJ-FRM-WKS-02)","Form Laporan Insiden (TNJ-FRM-HSE-03)"]},
+ {tag:"11", title:"Matrix Risiko Produksi, Hauling, Workshop & Emergency Response", docs:["Matrix Penilaian Risiko 5×5","Register Risiko Produksi","Register Risiko Hauling","Register Risiko Workshop","Register Risiko Emergency Response"]},
+ {tag:"12", title:"Register Produksi, Near Miss, APD, Fuel & Kontraktor", docs:["Register Produksi Bulanan","Register Near Miss & Insiden","Register Distribusi APD","Register Pemakaian Fuel","Register Kontraktor"]},
+ {tag:"13", title:"Lampiran — Daftar Induk 180+ Dokumen", docs:["Indeks dokumen turunan per kategori (Produksi, Geoteknik, Hauling, Workshop, K3, Lingkungan, Tanggap Darurat, dll.)"]},
+];
+
+const catnav = document.getElementById('catnav');
+const catgrid = document.getElementById('catgrid');
+categories.forEach((c,i)=>{
+  const id = 'cat-'+(i+1);
+  const navA = document.createElement('a');
+  navA.href = '#'+id;
+  navA.textContent = c.tag+' · '+c.title.split(',')[0];
+  catnav.appendChild(navA);
+
+  const card = document.createElement('div');
+  card.className = 'cat-card';
+  card.id = id;
+  card.innerHTML = `
+    <div class="cat-card-head">
+      <div>
+        <div class="tag">KATEGORI ${c.tag}</div>
+        <h4>${c.title}</h4>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="cat-body"><div class="cat-body-inner">
+      <ul class="doc-list">${c.docs.map(d=>`<li>${d}</li>`).join('')}</ul>
+    </div></div>
+  `;
+  card.querySelector('.cat-card-head').addEventListener('click', ()=> card.classList.toggle('open'));
+  catgrid.appendChild(card);
+});
+categories[0]; // noop
+document.querySelector('.cat-card').classList.add('open');
+
+// active nav highlight
+const navLinks = [...catnav.querySelectorAll('a')];
+window.addEventListener('scroll', ()=>{
+  let current = navLinks[0];
+  document.querySelectorAll('.cat-card').forEach(sec=>{
+    if (sec.getBoundingClientRect().top < 140) current = catnav.querySelector(`a[href="#${sec.id}"]`);
+  });
+  navLinks.forEach(a=>a.classList.remove('active'));
+  if(current) current.classList.add('active');
+});
+
+// checklist demo
+const items = [
+ "Kondisi oli mesin, hidrolik, dan air radiator sesuai level",
+ "Tidak ada kebocoran oli/bahan bakar/hidrolik",
+ "Kondisi track/undercarriage dalam keadaan baik",
+ "Fungsi rem (parking brake & service brake) normal",
+ "Fungsi klakson dan alarm mundur berfungsi",
+ "Lampu utama, lampu rotary, dan sein berfungsi",
+ "APAR tersedia dan dalam kondisi baik",
+ "Sabuk pengaman berfungsi baik",
+];
+const clist = document.getElementById('checklist-items');
+items.forEach((t,i)=>{
+  const row = document.createElement('div');
+  row.className='check-item';
+  row.innerHTML = `<input type="checkbox" id="ci${i}"><label for="ci${i}">${t}</label>`;
+  clist.appendChild(row);
+});
+function updateProgress(){
+  const boxes = clist.querySelectorAll('input');
+  const done = [...boxes].filter(b=>b.checked).length;
+  const pct = Math.round(done/boxes.length*100);
+  document.getElementById('pfill').style.width = pct+'%';
+  document.getElementById('ppct').textContent = pct+'%';
+  boxes.forEach(b=> b.closest('.check-item').classList.toggle('done', b.checked));
+}
+clist.addEventListener('change', updateProgress);
+document.getElementById('presetbtn').addEventListener('click', ()=>{
+  clist.querySelectorAll('input').forEach(b=>b.checked=false);
+  updateProgress();
+});
+updateProgress();
+
+// risk matrix
+const sevLabels = ["Malapetaka(5)","Kritis(4)","Sedang(3)","Ringan(2)","Minor(1)"];
+const probLabels = ["Jarang(1)","Kecil(2)","Mungkin(3)","Sering(4)","H.Pasti(5)"];
+const sevVal = [5,4,3,2,1];
+function riskColor(v){ if(v>=15) return '#c0504d'; if(v>=5) return '#f2c14e'; return '#9bc169'; }
+const mtable = document.getElementById('riskmatrix');
+let html = '<tr><th>Kemungkinan\\Keparahan</th>' + sevLabels.map(s=>`<th>${s}</th>`).join('') + '</tr>';
+probLabels.forEach((p,pi)=>{
+  html += `<tr><th>${p}</th>`;
+  sevVal.forEach(s=>{
+    const v = (pi+1)*s;
+    html += `<td style="background:${riskColor(v)}" title="Kemungkinan ${p} × Keparahan level ${s} = Nilai Risiko ${v}">${v}</td>`;
+  });
+  html += '</tr>';
+});
+mtable.innerHTML = html;
+</script>
+
+</body>
+</html>

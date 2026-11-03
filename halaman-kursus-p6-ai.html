@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Program Primavera P6 + AI untuk Planning Engineer — Materi, Tutorial & Studi Kasus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Spectral:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1A2A;
+  --slate:#3A5068;
+  --line:#C9D3DE;
+  --paper:#EDF1F5;
+  --white:#FBFCFD;
+  --crit:#B5342A;      /* critical path */
+  --steel:#1F5F8B;     /* normal bar */
+  --float:#D9A02B;     /* milestone / float */
+  --ok:#1C7357;        /* baseline */
+  --shadow:0 1px 0 var(--line);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Spectral,Georgia,serif;
+  font-size:17px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.disp{font-family:Archivo,"Helvetica Neue",Arial,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.82em;letter-spacing:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+a{color:var(--steel)}
+
+/* ---------- timeline grid backdrop ---------- */
+.grid-bg{
+  background-image:repeating-linear-gradient(to right,rgba(11,26,42,.055) 0 1px,transparent 1px 72px);
+}
+
+/* ---------- header ---------- */
+header{background:var(--ink);color:#DCE6F0;position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand{display:flex;align-items:center;gap:12px;font-family:Archivo;font-weight:700;font-size:15px;color:#fff}
+.brand .mark{width:30px;height:30px;border:2px solid var(--float);position:relative;flex:none}
+.brand .mark::after{content:"";position:absolute;left:3px;top:6px;width:16px;height:4px;background:var(--crit)}
+.brand .mark::before{content:"";position:absolute;left:8px;top:15px;width:16px;height:4px;background:#8FB6D8}
+.topnav{display:flex;gap:22px;font-family:Archivo;font-size:13.5px;font-weight:500}
+.topnav a{color:#9FB6CC;text-decoration:none;padding:4px 0;border-bottom:2px solid transparent}
+.topnav a:hover,.topnav a:focus-visible{color:#fff;border-bottom-color:var(--float)}
+
+.hero{padding:54px 0 10px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:52px;align-items:start}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--float)}
+h1{font-size:clamp(34px,4.6vw,56px);font-weight:800;color:#fff;margin:14px 0 0}
+h1 .rule{display:block;width:96px;height:6px;background:var(--crit);margin-top:22px}
+.lede{font-size:18.5px;color:#B9CADB;max-width:52ch;margin:24px 0 0}
+.sig{margin-top:26px;font-size:15px;color:#8FA6BC;border-left:2px solid var(--steel);padding-left:14px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 8px}
+.btn{
+  font-family:Archivo;font-weight:700;font-size:14.5px;border:0;cursor:pointer;
+  padding:13px 20px;background:var(--float);color:#25190A;text-decoration:none;display:inline-block;
+}
+.btn:hover{background:#EFB43F}
+.btn.ghost{background:transparent;color:#DCE6F0;border:1.5px solid rgba(255,255,255,.35)}
+.btn.ghost:hover{border-color:var(--float);color:#fff}
+.btn:focus-visible,.acc-head:focus-visible,.dl:focus-visible{outline:3px solid var(--float);outline-offset:2px}
+
+/* ---------- hero gantt ---------- */
+.gantt{background:#0F2236;border:1px solid rgba(255,255,255,.14);padding:18px 18px 12px}
+.gantt-head{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:#7E9AB4;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:8px}
+.grow{display:grid;grid-template-columns:26px 1fr 122px;gap:8px;align-items:center;padding:5px 0;font-size:13px;color:#C6D6E6;font-family:Archivo;font-weight:500}
+.grow .id{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:#7E9AB4}
+.track{position:relative;height:13px;background:rgba(255,255,255,.055)}
+.bar{position:absolute;top:0;height:13px;background:var(--steel)}
+.bar.c{background:var(--crit)}
+.bar.a{background:var(--ok)}
+.gantt-foot{font-family:"IBM Plex Mono",monospace;font-size:11px;color:#7E9AB4;padding-top:10px;border-top:1px solid rgba(255,255,255,.14);margin-top:8px;display:flex;gap:16px;flex-wrap:wrap}
+.key{display:inline-flex;align-items:center;gap:6px}
+.key i{width:14px;height:8px;display:inline-block}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.14);margin-top:44px}
+.stat{padding:20px 20px 24px;border-right:1px solid rgba(255,255,255,.14)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-family:Archivo;font-weight:800;font-size:27px;color:#fff}
+.stat span{font-size:13.5px;color:#8FA6BC}
+
+/* ---------- sections ---------- */
+section{padding:74px 0}
+.sec-title{font-size:clamp(25px,3vw,36px);font-weight:800;max-width:24ch}
+.sec-intro{max-width:64ch;color:var(--slate);margin-top:16px}
+
+/* how to use */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:38px;border-top:2px solid var(--ink)}
+.step{padding:20px 22px 24px;border-right:1px solid var(--line)}
+.step:last-child{border-right:0}
+.step .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--crit)}
+.step h4{font-size:17px;margin:8px 0 8px}
+.step p{margin:0;font-size:15px;color:var(--slate)}
+
+/* ---------- modules ---------- */
+.mod{background:var(--white);border:1px solid var(--line);border-left:5px solid var(--steel);margin-bottom:12px}
+.mod[data-track="ai"]{border-left-color:var(--float)}
+.mod[data-track="control"]{border-left-color:var(--crit)}
+.mod[data-track="career"]{border-left-color:var(--ok)}
+.acc-head{
+  width:100%;background:none;border:0;text-align:left;cursor:pointer;display:grid;
+  grid-template-columns:76px minmax(0,1fr) 160px 34px;gap:16px;align-items:center;padding:20px 22px;font:inherit;
+}
+.acc-head:hover{background:#F3F6F9}
+.wbs{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--crit);font-weight:500}
+.acc-head h3{font-size:20px;font-weight:700}
+.acc-head p{margin:5px 0 0;font-size:15px;color:var(--slate)}
+.meta{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--slate);text-align:right;line-height:1.7}
+.chev{width:22px;height:22px;justify-self:end;position:relative}
+.chev::before,.chev::after{content:"";position:absolute;background:var(--ink);transition:transform .18s ease}
+.chev::before{left:0;top:10px;width:22px;height:2px}
+.chev::after{left:10px;top:0;width:2px;height:22px}
+.mod.open .chev::after{transform:scaleY(0)}
+.panel{display:none;padding:0 22px 30px;border-top:1px dashed var(--line)}
+.mod.open .panel{display:block}
+.pgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:40px;padding-top:26px}
+.block{margin-bottom:30px}
+.block > h4{font-size:15px;font-weight:700;color:var(--ink);padding-bottom:7px;border-bottom:2px solid var(--ink);margin-bottom:14px}
+.block ul{margin:0;padding-left:20px}
+.block li{margin-bottom:7px}
+.syl{border-left:2px solid var(--line);padding-left:16px;margin-bottom:16px}
+.syl b{font-family:Archivo;font-size:15.5px}
+.syl p{margin:4px 0 0;font-size:15.5px;color:var(--slate)}
+ol.lab{counter-reset:s;list-style:none;padding:0;margin:0}
+ol.lab li{counter-increment:s;padding:0 0 14px 44px;position:relative}
+ol.lab li::before{
+  content:counter(s,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:#fff;background:var(--ink);
+  width:28px;height:22px;display:grid;place-items:center;
+}
+ol.lab .note{display:block;font-size:14.5px;color:var(--slate);font-style:italic}
+.case{background:#F0F4F8;border:1px solid var(--line);padding:18px 20px}
+.case h5{font-family:Archivo;font-size:16px;margin:0 0 8px}
+.case .tbl{width:100%;border-collapse:collapse;margin:12px 0;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+.case .tbl th,.case .tbl td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+.case .tbl th{color:var(--slate);font-weight:500;border-bottom:1.5px solid var(--slate)}
+.case .tbl td.num{text-align:right}
+.prompt{background:#0F2236;color:#CFE0EF;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.65;padding:14px 16px;margin-bottom:10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--line);padding:3px 8px;color:var(--slate);background:#fff}
+.dl{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-left:3px solid var(--float);padding:12px 14px;margin-bottom:8px;cursor:pointer;font:inherit;font-size:15px}
+.dl:hover{background:#FFF8EA}
+.dl small{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--slate)}
+.side h4{font-size:15px;border-bottom:2px solid var(--ink);padding-bottom:7px;margin-bottom:14px}
+.kv{font-size:15px;margin-bottom:10px;color:var(--slate)}
+.kv b{color:var(--ink);font-family:Archivo;font-size:14px;display:block}
+
+/* filter */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:32px 0 20px;align-items:center}
+.filters button{font-family:Archivo;font-size:13.5px;font-weight:500;background:#fff;border:1px solid var(--line);padding:8px 14px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.bulk{margin-left:auto;display:flex;gap:8px}
+.bulk button{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* support band */
+.band{background:var(--ink);color:#C6D6E6}
+.band h2{color:#fff}
+.band .sec-intro{color:#9FB6CC}
+.band-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:36px;border-top:1px solid rgba(255,255,255,.16)}
+.band-grid div{padding:22px 24px 26px;border-right:1px solid rgba(255,255,255,.16)}
+.band-grid div:last-child{border-right:0}
+.band-grid h4{color:#fff;font-size:17px;margin-bottom:8px}
+.band-grid p{margin:0;font-size:15px;color:#9FB6CC}
+
+footer{background:#06111C;color:#7E9AB4;padding:34px 0;font-size:14px}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media (max-width:920px){
+  .hero-grid,.pgrid{grid-template-columns:1fr;gap:28px}
+  .steps,.stats,.band-grid{grid-template-columns:1fr 1fr}
+  .stat,.step,.band-grid div{border-bottom:1px solid var(--line)}
+  .topnav{display:none}
+  .acc-head{grid-template-columns:56px minmax(0,1fr) 26px}
+  .meta{display:none}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .steps,.stats,.band-grid{grid-template-columns:1fr}
+  .wrap{padding:0 18px}
+  .bulk{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  header,.filters,.dl,.topbar,footer{display:none}
+  .panel{display:block!important}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand"><span class="mark" aria-hidden="true"></span> Planning Intelligence Lab</div>
+      <nav class="topnav" aria-label="Navigasi utama">
+        <a href="#cara">Cara pakai</a>
+        <a href="#kurikulum">Kurikulum</a>
+        <a href="#dukungan">Dukungan</a>
+        <a href="#unduh">Unduh semua</a>
+      </nav>
+    </div>
+
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Kurikulum terbuka · 10 modul · 148 jam belajar terstruktur</div>
+          <h1>Dari jadwal proyek ke keputusan cerdas, dengan Primavera P6 dan AI.
+            <span class="rule" aria-hidden="true"></span>
+          </h1>
+          <p class="lede">Setiap bab di halaman ini berisi silabus rinci, tutorial langkah demi langkah yang bisa Anda kerjakan di depan layar, satu studi kasus dengan angka nyata, dan berkas materi yang langsung bisa diunduh.</p>
+          <p class="sig">Disusun oleh Prof. tim Planning Intelligence Lab — PMP, praktisi project control EPC &amp; migas, peneliti penerapan AI pada penjadwalan proyek.</p>
+          <div class="cta-row">
+            <button class="btn" id="dl-all">Unduh seluruh materi (.md)</button>
+            <button class="btn ghost" id="expand-all">Buka semua bab</button>
+            <a class="btn ghost" href="#kurikulum">Lihat kurikulum</a>
+          </div>
+        </div>
+
+        <div class="gantt" aria-label="Peta alur 10 modul dalam bentuk bar chart">
+          <div class="gantt-head"><span>PETA BELAJAR — 20 MINGGU</span><span>DATA DATE: W-00</span></div>
+          <div id="gantt-rows"></div>
+          <div class="gantt-foot">
+            <span class="key"><i style="background:var(--crit)"></i> jalur kritis</span>
+            <span class="key"><i style="background:var(--steel)"></i> modul inti</span>
+            <span class="key"><i style="background:var(--ok)"></i> modul pendamping</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b>10</b><span>modul dengan silabus rinci</span></div>
+        <div class="stat"><b>96</b><span>langkah praktik terpandu</span></div>
+        <div class="stat"><b>10</b><span>studi kasus berangka</span></div>
+        <div class="stat"><b>20</b><span>berkas proyek P6 untuk latihan</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="cara" class="grid-bg">
+  <div class="wrap">
+    <h2 class="sec-title">Cara memakai halaman ini</h2>
+    <p class="sec-intro">Materi ini dirancang untuk dikerjakan, bukan dibaca sekali lalu ditutup. Ikuti empat langkah berikut pada setiap bab agar hasil belajar terlihat dalam bentuk jadwal dan laporan yang benar-benar Anda buat.</p>
+    <div class="steps">
+      <div class="step"><div class="n">Langkah 1</div><h4>Baca silabus</h4><p>Pahami cakupan bab dan prasyaratnya. Jika prasyarat belum dikuasai, kerjakan bab sebelumnya lebih dulu.</p></div>
+      <div class="step"><div class="n">Langkah 2</div><h4>Kerjakan tutorial</h4><p>Buka Primavera P6 di sebelah layar ini dan ikuti langkah praktik satu per satu sampai selesai.</p></div>
+      <div class="step"><div class="n">Langkah 3</div><h4>Selesaikan studi kasus</h4><p>Hitung sendiri angkanya lebih dulu, baru bandingkan dengan pembahasan yang disediakan.</p></div>
+      <div class="step"><div class="n">Langkah 4</div><h4>Kumpulkan keluaran</h4><p>Simpan setiap keluaran bab sebagai portofolio. Sepuluh bab menghasilkan satu portofolio project control yang utuh.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="kurikulum" style="padding-top:20px">
+  <div class="wrap">
+    <h2 class="sec-title">Kurikulum dan materi per bab</h2>
+    <p class="sec-intro">Klik judul bab untuk membuka silabus, tutorial, studi kasus, dan daftar unduhan. Setiap berkas unduhan berformat teks terbuka sehingga bisa dibuka di Word, Notion, Obsidian, atau editor apa pun.</p>
+
+    <div class="filters" role="group" aria-label="Saring modul berdasarkan jalur">
+      <button data-filter="all" aria-pressed="true">Semua bab</button>
+      <button data-filter="core" aria-pressed="false">Penjadwalan</button>
+      <button data-filter="control" aria-pressed="false">Pengendalian &amp; klaim</button>
+      <button data-filter="ai" aria-pressed="false">AI &amp; data</button>
+      <button data-filter="career" aria-pressed="false">Karier</button>
+      <div class="bulk">
+        <button id="dl-csv">Unduh kurikulum (.csv)</button>
+        <button id="print">Cetak / simpan PDF</button>
+      </div>
+    </div>
+
+    <div id="modules"></div>
+  </div>
+</section>
+
+<section id="dukungan" class="band">
+  <div class="wrap">
+    <h2 class="sec-title">Dukungan seumur hidup</h2>
+    <p class="sec-intro">Materi bisa diunduh kapan saja, tetapi yang membuat seseorang naik level adalah umpan balik. Tiga bentuk dukungan berikut berjalan terus setelah kelas selesai.</p>
+    <div class="band-grid">
+      <div><h4>Mentoring jadwal Anda</h4><p>Kirim berkas XER Anda, dapatkan tinjauan logika, kalender, constraint, dan float dalam format catatan tertulis.</p></div>
+      <div><h4>Akses LMS dan rekaman</h4><p>Seluruh rekaman sesi, berkas latihan, dan pembaruan templat tetap tersedia setiap kali kurikulum direvisi.</p></div>
+      <div><h4>Pendampingan karier</h4><p>Tinjauan CV berbasis ATS, simulasi wawancara teknis, dan diskusi penawaran kerja untuk pasar Pakistan dan Teluk.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="unduh" class="grid-bg" style="padding-top:60px">
+  <div class="wrap" style="text-align:center">
+    <h2 class="sec-title" style="margin:0 auto">Ambil seluruh paket materi</h2>
+    <p class="sec-intro" style="margin:16px auto 28px">Satu berkas berisi sepuluh bab lengkap: silabus, tutorial, studi kasus beserta pembahasan, daftar keluaran, dan kumpulan prompt AI yang siap dipakai.</p>
+    <div class="cta-row" style="justify-content:center">
+      <button class="btn" id="dl-all-2">Unduh seluruh materi (.md)</button>
+      <button class="btn ghost" style="border-color:var(--line);color:var(--ink)" id="dl-prompts">Unduh kumpulan prompt AI (.txt)</button>
+      <button class="btn ghost" style="border-color:var(--line);color:var(--ink)" id="dl-check">Unduh lembar checklist (.md)</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span>Planning Intelligence Lab — Primavera P6, Project Control, dan AI untuk Planning Engineer.</span>
+    <span class="mono">Kurikulum v1.0 · revisi berkala</span>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   DATA KURIKULUM
+   ========================================================= */
+const M = [
+{
+  code:"1.0", track:"core", bar:[0,10], crit:true,
+  title:"Primavera P6 dari nol sampai siap pakai",
+  sub:"Instalasi, arsitektur data, kalender, dan alur kerja proyek nyata",
+  jam:"14 jam", minggu:"Minggu 1–2", level:"Dasar",
+  prasyarat:"Tidak ada. Cukup komputer Windows dengan RAM 8 GB dan hak akses administrator.",
+  ringkasan:"Banyak planner gagal bukan karena tidak bisa membuat activity, melainkan karena salah menyiapkan basis data, kalender, dan preferensi di awal. Bab ini membereskan fondasi itu sekali untuk selamanya.",
+  outcomes:[
+    "Memasang P6 Professional dengan basis data lokal dan memahami kapan harus memakai basis data server.",
+    "Menjelaskan hubungan EPS, OBS, project, WBS, activity, resource pool, dan calendar dalam satu diagram.",
+    "Menyusun konvensi penamaan project ID dan activity ID yang konsisten untuk satu perusahaan.",
+    "Mengatur Admin Preferences dan User Preferences sehingga durasi, satuan, dan format tanggal seragam antar pengguna.",
+    "Melakukan impor dan ekspor XER tanpa merusak data pada basis data tujuan."
+  ],
+  syllabus:[
+    {t:"Instalasi dan basis data", d:"Pilihan P6 Professional standalone dengan SQLite, Oracle XE, dan SQL Server. Struktur folder instalasi, Database Configuration, membuat pengguna admin, serta praktik pencadangan basis data mingguan."},
+    {t:"Arsitektur data P6", d:"EPS sebagai struktur portofolio, OBS sebagai struktur tanggung jawab, project sebagai wadah, WBS sebagai dekomposisi lingkup, activity sebagai unit kerja. Ditutup dengan peta relasi antar tabel agar mudah saat masuk ke analitik data."},
+    {t:"Kalender", d:"Global, project, dan resource calendar. Pola 6 hari kerja, shift 24 jam untuk turnaround, hari libur nasional dan libur perusahaan, serta pengaruh kalender terhadap perhitungan float."},
+    {t:"Preferensi dan default", d:"Admin Preferences untuk jam per hari dan mata uang. User Preferences untuk format tanggal dan satuan durasi. Tab Defaults pada project untuk activity type, duration type, dan percent complete type."},
+    {t:"Layout dan pelaporan awal", d:"Menyusun layout kolom, group and sort, filter, serta menyimpan layout agar bisa dipakai ulang oleh seluruh tim."},
+    {t:"Pertukaran data", d:"Ekspor XER, XLSX, dan XML. Aturan penting saat impor ke basis data orang lain: penanganan duplikasi kalender, resource, dan activity code."}
+  ],
+  lab:{
+    title:"Praktik: menyiapkan basis data dan proyek pertama",
+    steps:[
+      {d:"Pasang P6 Professional, pilih opsi basis data mandiri, lalu buat pengguna admin baru dan catat kredensialnya.", n:"Jangan memakai pengguna bawaan untuk pekerjaan harian."},
+      {d:"Buka Admin, Admin Preferences, tab Time Periods. Setel 8 jam per hari, 48 jam per minggu, 208 jam per bulan.", n:"Angka ini harus disepakati satu proyek, karena memengaruhi konversi durasi dan resource unit."},
+      {d:"Buka Edit, User Preferences. Setel format tanggal DD-MMM-YY, satuan durasi hari, dan tampilkan unit resource dalam jam."},
+      {d:"Buat struktur EPS tiga tingkat: perusahaan, lini bisnis, lalu wilayah proyek."},
+      {d:"Buat OBS dengan peran Project Manager, Planning Manager, Construction Manager, dan Discipline Lead."},
+      {d:"Buat proyek baru dengan ID mengikuti pola KODEKLIEN-TAHUN-NOMOR, misalnya ADC-26-014.", n:"Konvensi ID yang stabil menyelamatkan Anda saat menggabungkan puluhan XER."},
+      {d:"Buat kalender proyek 6 hari kerja, 08.00 sampai 17.00, lalu masukkan libur nasional satu tahun ke depan."},
+      {d:"Isi tab Dates dengan planned start dan must finish by, lalu tab Defaults dengan activity type Task Dependent, duration type Fixed Duration and Units, dan percent complete type Physical."},
+      {d:"Susun WBS empat tingkat: proyek, fase, disiplin, area. Beri kode WBS yang mencerminkan urutan penyelesaian."},
+      {d:"Buat 15 activity percobaan, lalu simpan layout dengan kolom Activity ID, Name, Original Duration, Start, Finish, Total Float."},
+      {d:"Ekspor proyek ke XER, hapus proyek dari basis data, lalu impor kembali dan bandingkan hasilnya.", n:"Latihan ini membangun keberanian untuk menangani pertukaran data dengan kontraktor lain."},
+      {d:"Cadangkan basis data dan simpan di folder terpisah dengan penamaan berisi tanggal."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: gudang logistik 2.000 m² di Karawang",
+    konteks:"Kontraktor menerima pekerjaan gudang dengan durasi kontrak 210 hari kalender, enam hari kerja per minggu, dan denda keterlambatan 0,1 persen per hari dari nilai kontrak sebesar 42 miliar rupiah. Tim belum punya standar penamaan maupun kalender.",
+    tabel:{head:["Elemen","Keputusan yang diminta"],rows:[
+      ["Project ID","Susun pola untuk tiga proyek sejenis di tahun yang sama"],
+      ["Kalender","Tentukan pola kerja dan dampaknya pada tanggal selesai"],
+      ["WBS","Rancang empat tingkat untuk pekerjaan sipil, struktur baja, dan MEP"],
+      ["Defaults","Pilih percent complete type dan jelaskan alasannya"]
+    ]},
+    tugas:[
+      "Hitung selisih tanggal selesai antara kalender 5 hari dan 6 hari kerja untuk rangkaian aktivitas sepanjang 150 hari kerja.",
+      "Tentukan percent complete type yang tepat untuk pekerjaan pemasangan rangka baja dan jelaskan mengapa duration percent menyesatkan pada pekerjaan tersebut.",
+      "Rancang kode WBS yang tetap terbaca ketika tiga proyek sejenis digabungkan dalam satu EPS."
+    ],
+    bahas:[
+      "Dengan 150 hari kerja, kalender 5 hari membutuhkan sekitar 210 hari kalender sedangkan kalender 6 hari membutuhkan sekitar 175 hari kalender. Selisih 35 hari kalender inilah ruang aman terhadap denda, dan ini keputusan kalender, bukan keputusan durasi.",
+      "Physical percent complete dipilih karena kemajuan rangka baja diukur dari tonase terpasang, bukan dari waktu yang sudah berlalu. Duration percent complete akan melaporkan kemajuan meskipun tidak ada baja yang terpasang.",
+      "Kode WBS memakai awalan proyek, misalnya WHK1-CIV-FND, sehingga ketika tiga proyek digabung, pengelompokan berdasarkan disiplin tetap dapat dilakukan tanpa tabrakan nama."
+    ]
+  },
+  keluaran:["Berkas XER proyek awal dengan WBS lengkap","Dokumen konvensi penamaan satu halaman","Kalender proyek siap pakai"],
+  prompts:[
+    "Anda adalah planning engineer senior. Saya sedang menyiapkan proyek gudang 2.000 m2 dengan durasi kontrak 210 hari kalender dan kerja 6 hari per minggu. Buatkan struktur WBS empat tingkat sampai level area, sertakan kode WBS, dan jelaskan alasan pemisahan tiap tingkat. Sajikan dalam tabel dengan kolom kode, nama, tingkat, dan penanggung jawab."
+  ]
+},
+
+{
+  code:"2.0", track:"core", bar:[8,14], crit:true,
+  title:"Planning dan scheduling yang tahan diaudit",
+  sub:"WBS, logika, CPM, resource loading, kurva S, dan histogram",
+  jam:"22 jam", minggu:"Minggu 2–5", level:"Menengah",
+  prasyarat:"Modul 1 selesai dan basis data P6 sudah tertata.",
+  ringkasan:"Jadwal yang baik bukan yang paling rapi tampilannya, melainkan yang logikanya bisa dipertahankan ketika diperiksa klien, konsultan, atau ahli klaim. Bab ini melatih cara berpikir tersebut.",
+  outcomes:[
+    "Menyusun WBS berbasis deliverable dan menurunkannya menjadi daftar aktivitas yang dapat diukur.",
+    "Memilih hubungan FS, SS, FF, SF beserta lag dengan alasan teknis, bukan sekadar agar tanggal terlihat bagus.",
+    "Menghitung forward pass, backward pass, total float, dan free float secara manual sebelum mempercayai hasil P6.",
+    "Memuat sumber daya dan biaya lalu menghasilkan kurva S serta histogram tenaga kerja.",
+    "Memeriksa kualitas jadwal memakai 14 butir pemeriksaan DCMA dan menjelaskan setiap temuan."
+  ],
+  syllabus:[
+    {t:"Dari lingkup ke aktivitas", d:"Membaca dokumen kontrak dan gambar, menyusun WBS berbasis deliverable, menetapkan aturan tingkat kedalaman, serta menentukan durasi aktivitas dari produktivitas dan kuantitas, bukan dari perasaan."},
+    {t:"Logika jaringan", d:"Empat jenis hubungan, penggunaan lag positif dan negatif, bahaya open end, dangling activity, serta redundant logic. Latihan membaca jaringan tanpa melihat tanggal."},
+    {t:"Constraint dan kalender", d:"Jenis constraint dan dampaknya pada float. Kapan Finish On or Before dapat dibenarkan, dan mengapa Mandatory Finish hampir selalu merusak analisis jalur kritis."},
+    {t:"CPM secara manual", d:"Forward pass, backward pass, total float, free float, jalur kritis dan near critical path dengan ambang float tertentu. Perbedaan longest path dan total float negatif."},
+    {t:"Resource dan cost loading", d:"Membuat resource pool, menetapkan unit per jam, curve distribusi, dan budgeted cost. Perbedaan resource dependent dan task dependent."},
+    {t:"Leveling dan optimasi", d:"Resource leveling, prioritas leveling, crashing dan fast tracking beserta konsekuensi biaya dan risikonya."},
+    {t:"Kurva S dan histogram", d:"Menyusun kurva S rencana dari cost atau man hour, menampilkan histogram tenaga kerja, serta mengekspor datanya untuk laporan."},
+    {t:"Baseline dan pemeriksaan mutu", d:"Menetapkan baseline, memberi label revisi, dan menjalankan 14 butir pemeriksaan DCMA sebelum jadwal diserahkan."}
+  ],
+  lab:{
+    title:"Praktik: membangun jadwal 120 aktivitas dan memvalidasinya",
+    steps:[
+      {d:"Turunkan WBS dari daftar deliverable kontrak, hentikan penurunan ketika satu paket bisa diberikan kepada satu penanggung jawab."},
+      {d:"Buat daftar aktivitas dengan penamaan kata kerja ditambah objek, contohnya Pasang bekisting pondasi P1 sampai P12."},
+      {d:"Hitung durasi dari kuantitas dibagi produktivitas harian, lalu catat asumsinya pada kolom notebook.", n:"Kolom notebook inilah yang menyelamatkan Anda saat klaim."},
+      {d:"Bangun logika antar aktivitas tanpa melihat kolom tanggal, lalu jalankan penjadwalan dengan F9."},
+      {d:"Periksa laporan schedule log untuk open end, out of sequence, dan aktivitas tanpa pendahulu."},
+      {d:"Jalankan pemeriksaan DCMA: logika hilang, lag, lead, jenis hubungan, hard constraint, high float, negative float, high duration, invalid dates, resource, missed tasks, critical path test, CPLI, dan BEI."},
+      {d:"Lakukan uji jalur kritis dengan menambah durasi satu aktivitas kritis sebesar 100 hari dan pastikan tanggal selesai proyek ikut bergeser.", n:"Jika tidak bergeser, jaringan Anda putus di suatu tempat."},
+      {d:"Buat resource pool untuk tenaga kerja utama, tetapkan unit per jam, lalu muat ke aktivitas."},
+      {d:"Jalankan resource leveling dengan batas sumber daya nyata, lalu bandingkan tanggal selesai sebelum dan sesudah leveling."},
+      {d:"Tampilkan histogram tenaga kerja dan kurva S rencana, lalu ekspor ke Excel."},
+      {d:"Simpan baseline dengan nama BL-01 disertai tanggal dan nomor revisi."},
+      {d:"Susun ringkasan satu halaman berisi jalur kritis, tiga risiko jadwal terbesar, dan asumsi utama."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: jalur pipa 12 km, hitung CPM secara manual",
+    konteks:"Jadwal ringkas pemasangan jalur pipa dengan delapan aktivitas. Semua hubungan Finish to Start tanpa lag. Hitung tanggal paling awal, tanggal paling lambat, total float, dan tentukan jalur kritisnya.",
+    tabel:{head:["ID","Aktivitas","Durasi (hari)","Pendahulu"],rows:[
+      ["A10","Mobilisasi dan survei","6","—"],
+      ["A20","Pembebasan koridor kerja","10","A10"],
+      ["A30","Penggalian parit","18","A20"],
+      ["A40","Stringing pipa","8","A20"],
+      ["A50","Pengelasan dan uji radiografi","20","A30, A40"],
+      ["A60","Pelapisan sambungan","6","A50"],
+      ["A70","Penimbunan kembali","9","A60"],
+      ["A80","Uji hidrostatik","7","A70"]
+    ]},
+    tugas:[
+      "Lakukan forward pass untuk menentukan early start dan early finish setiap aktivitas.",
+      "Lakukan backward pass untuk menentukan late start dan late finish.",
+      "Hitung total float setiap aktivitas dan tandai jalur kritisnya.",
+      "Jika pengelasan terlambat mulai 5 hari karena juru las belum tersertifikasi, hitung dampaknya terhadap tanggal selesai."
+    ],
+    bahas:[
+      "Durasi proyek adalah 76 hari. Rangkaian A10, A20, A30, A50, A60, A70, A80 berjumlah 6 tambah 10 tambah 18 tambah 20 tambah 6 tambah 9 tambah 7 sama dengan 76 hari.",
+      "A40 stringing pipa memiliki total float 10 hari, karena A30 penggalian membutuhkan 18 hari sedangkan stringing hanya 8 hari, sementara keduanya mendahului pengelasan.",
+      "Seluruh aktivitas selain A40 berada pada jalur kritis dengan total float nol.",
+      "Keterlambatan 5 hari pada A50 yang berada di jalur kritis langsung memundurkan tanggal selesai menjadi 81 hari, karena tidak ada float yang menyerapnya. Inilah alasan sertifikasi juru las harus dijadwalkan sebagai aktivitas tersendiri sebelum pengelasan dimulai."
+    ]
+  },
+  keluaran:["Jadwal 120 aktivitas beserta baseline BL-01","Laporan pemeriksaan DCMA 14 butir","Kurva S rencana dan histogram tenaga kerja"],
+  prompts:[
+    "Bertindaklah sebagai reviewer jadwal independen. Berikut daftar aktivitas, durasi, dan hubungan logika dari jadwal saya. Periksa open end, redundant logic, lag berlebihan, dan constraint keras. Untuk setiap temuan, jelaskan risikonya terhadap jalur kritis dan usulkan perbaikan konkret. Sajikan sebagai tabel temuan dengan tingkat keparahan tinggi, sedang, rendah."
+  ]
+},
+
+{
+  code:"3.0", track:"control", bar:[20,12], crit:true,
+  title:"Project control, earned value, dan pelaporan",
+  sub:"Pembaruan progres, EVM, laporan mingguan, DPR, dan dashboard",
+  jam:"20 jam", minggu:"Minggu 5–8", level:"Menengah",
+  prasyarat:"Modul 2 selesai dan Anda memiliki jadwal ber-baseline.",
+  ringkasan:"Pengendalian proyek dimulai ketika baseline dikunci. Bab ini melatih siklus mingguan yang sama yang dijalankan tim project control di proyek EPC: kumpulkan data, perbarui jadwal, hitung kinerja, dan tulis narasi yang bisa ditindaklanjuti.",
+  outcomes:[
+    "Menetapkan rules of credit untuk setiap jenis pekerjaan agar pengukuran progres tidak menjadi perdebatan.",
+    "Memperbarui jadwal dengan benar memakai data date, actual start, actual finish, dan remaining duration.",
+    "Menghitung PV, EV, AC, SV, CV, SPI, CPI, EAC, ETC, VAC, dan TCPI serta menafsirkannya.",
+    "Menyusun laporan harian, laporan mingguan, dan look ahead tiga minggu yang dipakai rapat proyek.",
+    "Membangun dashboard ringkas yang menjawab tiga pertanyaan manajemen: seberapa terlambat, seberapa mahal, dan apa tindakannya."
+  ],
+  syllabus:[
+    {t:"Sistem pengukuran progres", d:"Weighted milestone, unit complete, start finish 20 80, level of effort. Menyusun rules of credit per disiplin dan menyepakatinya dengan klien sejak awal."},
+    {t:"Siklus pembaruan", d:"Menetapkan data date, memasukkan actual start dan actual finish, menilai remaining duration, menangani pekerjaan yang berjalan di luar urutan, serta menjalankan penjadwalan ulang."},
+    {t:"Earned value", d:"Definisi PV, EV, AC. Menghitung SV, CV, SPI, CPI. Metode peramalan EAC dengan asumsi kinerja berulang dan asumsi kinerja gabungan biaya jadwal. Menghitung TCPI untuk menguji realisme target."},
+    {t:"Analisis penyimpangan", d:"Mencari akar penyebab dari sisi produktivitas, pasokan material, cuaca, perubahan lingkup, dan keterlambatan persetujuan. Menyusun tabel penyebab dan tindakan."},
+    {t:"Paket laporan", d:"Daily progress report, laporan mingguan, laporan bulanan, look ahead tiga minggu, dan daftar kendala beserta pemiliknya."},
+    {t:"Dashboard", d:"Merancang satu halaman yang memuat kurva S rencana dan realisasi, SPI dan CPI, sepuluh aktivitas kritis terdekat, dan daftar kendala terbuka."}
+  ],
+  lab:{
+    title:"Praktik: menjalankan satu siklus pembaruan mingguan",
+    steps:[
+      {d:"Kunci baseline BL-01 lalu salin proyek menjadi versi berjalan untuk pembaruan."},
+      {d:"Susun formulir pengumpulan data lapangan berisi aktivitas, kuantitas terpasang, tanggal mulai, dan kendala."},
+      {d:"Tetapkan data date pada hari Jumat pukul 17.00 dan pertahankan jadwal ini setiap minggu.", n:"Data date yang berpindah-pindah membuat perbandingan antar minggu tidak sah."},
+      {d:"Masukkan actual start dan actual finish, lalu perbarui remaining duration berdasarkan penilaian pengawas lapangan, bukan berdasarkan sisa durasi otomatis."},
+      {d:"Isi physical percent complete sesuai rules of credit yang sudah disepakati."},
+      {d:"Jalankan penjadwalan dengan opsi retained logic, lalu catat aktivitas yang berjalan di luar urutan."},
+      {d:"Bandingkan jadwal berjalan dengan baseline memakai kolom variance start, variance finish, dan variance total float."},
+      {d:"Hitung PV, EV, AC pada tanggal data date, lalu turunkan SPI, CPI, dan EAC."},
+      {d:"Susun look ahead tiga minggu yang hanya berisi aktivitas yang benar-benar dapat dikerjakan, lengkap dengan prasyaratnya."},
+      {d:"Tulis narasi laporan mingguan maksimal satu halaman dengan struktur kondisi, penyebab, dampak, tindakan, dan pemilik tindakan."},
+      {d:"Perbarui daftar kendala dengan tanggal jatuh tempo dan nama pemilik, bukan nama departemen."},
+      {d:"Arsipkan XER mingguan dengan penamaan berisi tanggal data date agar jejak pembaruan dapat diaudit."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: EVM proyek EPC pada bulan keenam",
+    konteks:"Nilai kontrak 10 juta dolar dengan durasi 18 bulan. Pada akhir bulan keenam, data berikut tercatat pada tanggal data date.",
+    tabel:{head:["Parameter","Nilai (USD)","Catatan"],rows:[
+      ["BAC","10.000.000","anggaran total"],
+      ["PV","3.200.000","rencana sampai data date"],
+      ["EV","2.880.000","nilai pekerjaan terpasang"],
+      ["AC","3.300.000","biaya aktual terserap"]
+    ]},
+    tugas:[
+      "Hitung SV, CV, SPI, dan CPI.",
+      "Hitung EAC dengan asumsi kinerja biaya saat ini berlanjut, lalu hitung VAC.",
+      "Hitung TCPI terhadap BAC dan nilai apakah target anggaran masih masuk akal.",
+      "Tulis narasi tiga kalimat untuk rapat proyek."
+    ],
+    bahas:[
+      "SV sama dengan EV dikurangi PV, yaitu minus 320.000 dolar. CV sama dengan EV dikurangi AC, yaitu minus 420.000 dolar.",
+      "SPI sama dengan EV dibagi PV, yaitu 0,90. Artinya proyek berjalan pada 90 persen dari kecepatan rencana. CPI sama dengan EV dibagi AC, yaitu 0,873.",
+      "EAC sama dengan BAC dibagi CPI, yaitu sekitar 11.455.000 dolar, sehingga VAC sama dengan BAC dikurangi EAC, yaitu minus 1.455.000 dolar.",
+      "TCPI sama dengan BAC dikurangi EV dibagi BAC dikurangi AC, yaitu 7.120.000 dibagi 6.700.000 sama dengan 1,063. Sisa pekerjaan harus dikerjakan 6,3 persen lebih efisien dari anggaran, padahal kinerja berjalan baru 0,873. Target anggaran awal sudah tidak realistis tanpa perubahan cara kerja.",
+      "Narasi rapat: kemajuan tertinggal 10 persen dari rencana dan biaya melampaui nilai pekerjaan sebesar 420 ribu dolar. Bila pola ini berlanjut, biaya akhir diperkirakan 11,46 juta dolar. Tindakan yang diajukan adalah penambahan satu kru pengelasan dan percepatan persetujuan gambar kerja yang saat ini menahan dua paket kritis."
+    ]
+  },
+  keluaran:["Berkas jadwal terbaru dengan data date mingguan","Lembar perhitungan EVM","Satu laporan mingguan dan satu look ahead tiga minggu"],
+  prompts:[
+    "Anda adalah project control manager. Data proyek pada data date: BAC 10.000.000, PV 3.200.000, EV 2.880.000, AC 3.300.000. Hitung SV, CV, SPI, CPI, EAC, VAC, dan TCPI. Kemudian tulis narasi laporan mingguan maksimal 150 kata dengan struktur kondisi, penyebab, dampak, dan tindakan yang diusulkan beserta pemiliknya."
+  ]
+},
+
+{
+  code:"4.0", track:"control", bar:[30,10], crit:true,
+  title:"Analisis keterlambatan dan klaim perpanjangan waktu",
+  sub:"Time impact analysis, window analysis, dan pembuktian jalur kritis",
+  jam:"18 jam", minggu:"Minggu 8–10", level:"Lanjut",
+  prasyarat:"Modul 2 dan 3 selesai, serta tersedia baseline dan jadwal pembaruan berkala.",
+  ringkasan:"Klaim perpanjangan waktu dimenangkan oleh catatan, bukan oleh opini. Bab ini mengajarkan metode analisis yang diakui secara internasional dan cara menyusun dokumen klaim yang dapat dipertahankan.",
+  outcomes:[
+    "Membedakan keterlambatan yang dapat dimaafkan, yang dapat dikompensasi, dan yang bersamaan.",
+    "Memilih metode analisis yang sesuai dengan ketersediaan data dan ketentuan kontrak.",
+    "Membangun fragnet dampak dan menyisipkannya ke jadwal pada titik waktu yang benar.",
+    "Menyusun narasi klaim yang menghubungkan peristiwa, bukti, dampak jalur kritis, dan jumlah hari yang diminta.",
+    "Mengenali celah yang biasa dipakai pihak lawan untuk menolak klaim."
+  ],
+  syllabus:[
+    {t:"Dasar kontrak", d:"Klausul keterlambatan pada FIDIC dan kontrak lokal, kewajiban pemberitahuan, batas waktu pengajuan, dan akibat hukum bila pemberitahuan terlambat."},
+    {t:"Taksonomi keterlambatan", d:"Excusable dan non excusable, compensable dan non compensable, concurrent delay, pacing delay, serta hubungan antara keterlambatan dan percepatan."},
+    {t:"Metode prospektif", d:"Impacted as planned dan time impact analysis. Cara membangun fragnet, menempatkannya pada jadwal terbaru sebelum peristiwa, dan membaca pergeseran tanggal selesai."},
+    {t:"Metode retrospektif", d:"As planned versus as built, window atau time slice analysis, dan collapsed as built. Kelebihan dan kelemahan masing masing metode."},
+    {t:"Bukti dan dokumentasi", d:"Daily report, catatan cuaca, surat menyurat, notulen rapat, permintaan informasi, catatan pengiriman material, dan foto berstempel waktu."},
+    {t:"Penyusunan dokumen klaim", d:"Struktur dokumen: ringkasan eksekutif, dasar kontrak, kronologi peristiwa, metodologi analisis, perhitungan, lampiran bukti, dan jumlah hari yang diminta."}
+  ],
+  lab:{
+    title:"Praktik: menyusun klaim perpanjangan waktu dengan time impact analysis",
+    steps:[
+      {d:"Kumpulkan jadwal baseline yang disetujui beserta seluruh jadwal pembaruan bulanan."},
+      {d:"Buat daftar peristiwa keterlambatan lengkap dengan tanggal mulai, tanggal berakhir, penyebab, dan pihak yang bertanggung jawab."},
+      {d:"Pilih jadwal pembaruan terakhir sebelum peristiwa terjadi sebagai jadwal dasar analisis."},
+      {d:"Bangun fragnet untuk satu peristiwa, misalnya keterlambatan persetujuan gambar kerja, berisi aktivitas penundaan dan hubungannya ke aktivitas terdampak."},
+      {d:"Sisipkan fragnet ke jadwal dasar, jalankan penjadwalan, lalu catat pergeseran tanggal selesai proyek."},
+      {d:"Ulangi langkah tersebut untuk setiap peristiwa secara berurutan sesuai kronologi."},
+      {d:"Periksa keberadaan keterlambatan bersamaan pada jendela waktu yang sama dan tentukan perlakuannya sesuai kontrak."},
+      {d:"Susun tabel rekapitulasi berisi peristiwa, jendela waktu, hari dampak, dan pihak yang bertanggung jawab."},
+      {d:"Lampirkan bukti untuk setiap peristiwa dan beri penomoran yang dirujuk langsung dari narasi."},
+      {d:"Tulis narasi klaim yang menjelaskan hubungan sebab akibat dengan bahasa sederhana."},
+      {d:"Siapkan jadwal pemulihan yang menunjukkan langkah mitigasi yang sudah dilakukan kontraktor.", n:"Upaya mitigasi memperkuat posisi klaim Anda."},
+      {d:"Lakukan uji lawan: bayangkan Anda konsultan klien dan cari tiga cara untuk membantah klaim Anda sendiri."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: klaim 45 hari pada proyek fasilitas produksi",
+    konteks:"Durasi kontrak 480 hari. Tiga peristiwa terjadi pada jendela waktu berbeda. Kontraktor mengajukan perpanjangan waktu 45 hari kalender.",
+    tabel:{head:["Jendela","Peristiwa","Dampak diklaim","Tanggung jawab"],rows:[
+      ["Hari 90–140","Persetujuan gambar kerja tertunda 28 hari","22 hari","Pemberi kerja"],
+      ["Hari 160–210","Perubahan spesifikasi katup","15 hari","Pemberi kerja"],
+      ["Hari 220–260","Kekurangan juru las bersertifikat","18 hari","Kontraktor"]
+    ]},
+    tugas:[
+      "Tentukan peristiwa mana yang berada pada jalur kritis pada masing masing jendela.",
+      "Identifikasi adanya keterlambatan bersamaan dan jelaskan dampaknya terhadap hak kompensasi biaya.",
+      "Hitung jumlah hari perpanjangan waktu yang layak diajukan dan susun argumennya."
+    ],
+    bahas:[
+      "Pada jendela pertama, keterlambatan persetujuan menyerap seluruh float aktivitas rekayasa dan mendorong jalur kritis sebanyak 22 hari. Hak perpanjangan waktu dan biaya dapat diajukan.",
+      "Pada jendela kedua, perubahan spesifikasi berdampak 15 hari, namun 8 hari di antaranya bersamaan dengan kekurangan juru las yang merupakan tanggung jawab kontraktor. Praktik yang lazim adalah kontraktor memperoleh perpanjangan waktu untuk periode bersamaan tersebut tetapi tidak memperoleh kompensasi biaya.",
+      "Total perpanjangan waktu yang dapat dipertahankan adalah 37 hari, terdiri atas 22 hari dan 15 hari, sedangkan kompensasi biaya hanya untuk 29 hari. Klaim 45 hari terlalu tinggi karena memasukkan dampak yang tidak menyentuh jalur kritis, dan justru melemahkan kredibilitas keseluruhan berkas."
+    ]
+  },
+  keluaran:["Berkas fragnet untuk setiap peristiwa","Tabel rekapitulasi dampak per jendela","Dokumen klaim perpanjangan waktu lengkap dengan lampiran"],
+  prompts:[
+    "Anda adalah delay analyst berpengalaman. Berikut kronologi tiga peristiwa keterlambatan beserta jendela waktunya. Susun kerangka dokumen klaim perpanjangan waktu dengan metode time impact analysis, tuliskan bukti apa saja yang harus saya lampirkan untuk setiap peristiwa, dan buat daftar tiga bantahan yang paling mungkin diajukan konsultan pemberi kerja beserta cara menjawabnya."
+  ]
+},
+
+{
+  code:"5.0", track:"core", bar:[38,12], crit:false,
+  title:"Anatomi jadwal proyek nyata lintas industri",
+  sub:"EPC, migas, konstruksi, MEP, pusat data, dan turnaround",
+  jam:"16 jam", minggu:"Minggu 10–13", level:"Menengah",
+  prasyarat:"Modul 2 selesai.",
+  ringkasan:"Setiap industri punya ritme, satuan ukur, dan titik kritis yang berbeda. Bab ini membedah struktur jadwal khas enam jenis proyek supaya Anda tidak menyamaratakan pendekatan.",
+  outcomes:[
+    "Menyusun kerangka jadwal EPC yang menyambungkan rekayasa, pengadaan, konstruksi, dan komisioning.",
+    "Membuat jadwal turnaround dengan satuan jam dan kalender 24 jam.",
+    "Menyusun jadwal MEP gedung bertingkat dengan pendekatan per lantai dan per zona.",
+    "Menjadwalkan komisioning pusat data mengikuti tingkat pengujian bertahap.",
+    "Menentukan tingkat kedalaman jadwal dari level 1 sampai level 5 dan kapan tiap level dipakai."
+  ],
+  syllabus:[
+    {t:"Jadwal EPC", d:"Daftar deliverable rekayasa, jalur pengadaan dengan tenggang waktu panjang, jendela konstruksi, serta rangkaian prakomisioning dan komisioning. Titik serah antar fase dan risiko pada sambungannya."},
+    {t:"Migas dan turnaround", d:"Jadwal shutdown dengan satuan jam, kerja shift, pekerjaan berisiko tinggi, critical path yang diukur per jam, dan rencana pemulihan bila ditemukan pekerjaan tambahan saat pembongkaran."},
+    {t:"Konstruksi gedung", d:"Urutan struktur, pekerjaan arsitektur, dan penyelesaian akhir, disertai teknik line of balance untuk pekerjaan berulang antar lantai."},
+    {t:"MEP", d:"Koordinasi antar disiplin, prasyarat ruang, urutan pemasangan gantungan, tray, pipa, dan saluran udara, serta pengujian sistem."},
+    {t:"Pusat data", d:"Rangkaian pengujian dari pabrik sampai integrasi sistem, kebutuhan witness point, dan jadwal serah terima ke operasi."},
+    {t:"Tingkat jadwal", d:"Level 1 untuk manajemen, level 2 untuk ringkasan fase, level 3 untuk pengendalian kontrak, level 4 untuk pelaksanaan lapangan, level 5 untuk pekerjaan harian."}
+  ],
+  lab:{
+    title:"Praktik: menyusun kerangka jadwal EPC level 3",
+    steps:[
+      {d:"Susun daftar deliverable rekayasa: diagram alir proses, diagram pemipaan dan instrumentasi, tata letak, dan gambar isometrik."},
+      {d:"Tetapkan tenggang waktu pengadaan untuk barang berjangka panjang, misalnya kompresor 52 minggu dan katup khusus 30 minggu."},
+      {d:"Hubungkan penerbitan gambar untuk konstruksi dengan aktivitas pemesanan material secara logis."},
+      {d:"Susun urutan konstruksi berdasarkan area dan sistem, bukan hanya berdasarkan disiplin.", n:"Komisioning berjalan per sistem, sehingga penataan berbasis sistem mempermudah serah terima."},
+      {d:"Tambahkan aktivitas prakomisioning per sistem beserta titik saksi bersama klien."},
+      {d:"Tetapkan milestone kontrak: penyelesaian mekanikal, energisasi, dan serah terima."},
+      {d:"Buat kalender shift 24 jam untuk periode turnaround dan terapkan hanya pada aktivitas terkait."},
+      {d:"Susun satu jadwal turnaround 21 hari dengan satuan jam untuk satu unit proses."},
+      {d:"Buat penyajian line of balance untuk pekerjaan MEP delapan lantai."},
+      {d:"Susun rangkaian pengujian pusat data dari pengujian pabrik sampai integrasi sistem."},
+      {d:"Ringkas jadwal level 3 menjadi level 1 satu halaman untuk rapat direksi."},
+      {d:"Tulis catatan dasar jadwal berisi asumsi, pengecualian, dan risiko utama."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: turnaround unit proses selama 21 hari",
+    konteks:"Unit harus berhenti berproduksi selama 21 hari. Kehilangan pendapatan akibat berhenti berproduksi adalah 180.000 dolar per hari. Ditemukan pekerjaan tambahan berupa penggantian tray pada kolom setelah pembongkaran.",
+    tabel:{head:["Fase","Durasi rencana","Catatan"],rows:[
+      ["Penghentian dan pembersihan","48 jam","jalur kritis"],
+      ["Pembongkaran dan pemeriksaan","72 jam","temuan pekerjaan tambahan"],
+      ["Pekerjaan perbaikan","240 jam","dapat dikerjakan paralel"],
+      ["Perakitan kembali dan uji","96 jam","jalur kritis"],
+      ["Penyalaan kembali","48 jam","jalur kritis"]
+    ]},
+    tugas:[
+      "Hitung total durasi rencana dalam hari dan bandingkan dengan jendela 21 hari.",
+      "Penggantian tray menambah 36 jam pada jalur kritis. Hitung kerugian pendapatan bila tidak dilakukan percepatan.",
+      "Usulkan strategi percepatan beserta perkiraan biayanya dan bandingkan dengan kerugian pendapatan."
+    ],
+    bahas:[
+      "Total 504 jam sama dengan 21 hari, sehingga tidak tersedia cadangan waktu sama sekali. Jadwal turnaround tanpa cadangan adalah tanda bahaya sejak awal.",
+      "Tambahan 36 jam sama dengan 1,5 hari, yang berarti kerugian pendapatan sekitar 270.000 dolar.",
+      "Menambah satu kru pada pekerjaan perakitan kembali dengan biaya sekitar 60.000 dolar dapat memulihkan 24 jam. Karena kerugian pendapatan per hari jauh lebih besar dari biaya percepatan, keputusan mempercepat jelas menguntungkan. Prinsip ini harus dituangkan sebagai aturan keputusan sebelum turnaround dimulai, bukan diperdebatkan saat kejadian."
+    ]
+  },
+  keluaran:["Kerangka jadwal EPC level 3","Jadwal turnaround berbasis jam","Penyajian line of balance untuk pekerjaan MEP"],
+  prompts:[
+    "Anda adalah turnaround planner. Susun daftar aktivitas level 4 dengan satuan jam untuk turnaround kolom distilasi selama 21 hari, mencakup penghentian, pembersihan, pembongkaran, pemeriksaan, perbaikan, perakitan kembali, pengujian, dan penyalaan kembali. Tandai aktivitas yang berpotensi menjadi jalur kritis dan sebutkan lima pekerjaan tambahan yang paling sering muncul setelah pembongkaran."
+  ]
+},
+
+{
+  code:"6.0", track:"ai", bar:[46,12], crit:false,
+  title:"P6 bertemu Power BI dan otomasi alur data",
+  sub:"Membaca XER, membangun model data, dan menyusun dashboard yang diperbarui sendiri",
+  jam:"18 jam", minggu:"Minggu 13–16", level:"Lanjut",
+  prasyarat:"Modul 3 selesai dan Anda terbiasa dengan Excel tingkat menengah.",
+  ringkasan:"Laporan yang disusun ulang secara manual setiap minggu memakan waktu yang seharusnya dipakai untuk menganalisis. Bab ini mengubah berkas XER menjadi sumber data yang dapat diperbarui otomatis.",
+  outcomes:[
+    "Membaca struktur internal berkas XER dan memahami tabel utamanya.",
+    "Menarik data XER ke Power BI memakai Power Query dan membentuk model bintang.",
+    "Menulis ukuran DAX untuk progres, SPI, CPI, dan pengelompokan float.",
+    "Membangun dashboard satu halaman yang menjawab pertanyaan manajemen.",
+    "Menyusun alur pembaruan mingguan yang berjalan tanpa penyuntingan manual."
+  ],
+  syllabus:[
+    {t:"Struktur XER", d:"Berkas XER adalah teks bertabulasi. Tabel PROJECT, PROJWBS, TASK, TASKPRED, TASKRSRC, RSRC, CALENDAR, dan UDFVALUE. Kolom kunci dan hubungan antar tabel."},
+    {t:"Pengambilan data", d:"Memakai Power Query untuk memisahkan blok tabel dalam satu berkas XER, menetapkan tipe data, dan menangani berkas mingguan dalam satu folder."},
+    {t:"Model data", d:"Tabel fakta aktivitas, dimensi WBS, dimensi kalender, dan dimensi snapshot data date. Menghindari hubungan banyak ke banyak yang membuat angka tidak konsisten."},
+    {t:"Ukuran DAX", d:"Progres berbobot, kurva S rencana dan realisasi, SPI dan CPI, jumlah aktivitas dengan float negatif, dan perbandingan antar snapshot."},
+    {t:"Visual", d:"Gantt sederhana, kurva S, histogram sumber daya, tabel sepuluh aktivitas paling kritis, dan kartu indikator."},
+    {t:"Otomasi dan add in", d:"Menggunakan add in seperti Plexxel untuk menarik data P6 ke Excel dan Power BI, menyusun folder snapshot mingguan, serta menjadwalkan pembaruan."}
+  ],
+  lab:{
+    title:"Praktik: dari XER ke dashboard yang diperbarui sendiri",
+    steps:[
+      {d:"Buka berkas XER dengan editor teks dan kenali baris berawalan penanda tabel serta baris berisi data."},
+      {d:"Buat folder snapshot dengan penamaan berisi tanggal data date, misalnya 2026-09-11_ADC-26-014.xer."},
+      {d:"Di Power BI, gunakan sumber data folder lalu pisahkan tabel TASK, TASKPRED, PROJWBS, dan TASKRSRC."},
+      {d:"Bersihkan tipe data tanggal dan durasi, lalu tambahkan kolom tanggal data date dari nama berkas.", n:"Kolom inilah yang memungkinkan perbandingan antar minggu."},
+      {d:"Bangun model bintang dengan tabel fakta aktivitas dan dimensi WBS, kalender, serta snapshot."},
+      {d:"Tulis ukuran progres berbobot memakai bobot biaya anggaran atau jam kerja anggaran."},
+      {d:"Tulis ukuran SPI sebagai earned value dibagi planned value dan tampilkan sebagai kartu indikator."},
+      {d:"Buat pengelompokan float: kritis nol atau kurang, hampir kritis satu sampai sepuluh hari, dan aman di atas sepuluh hari."},
+      {d:"Susun visual Gantt sederhana memakai bar chart bertumpuk dengan nilai awal transparan."},
+      {d:"Tambahkan tabel sepuluh aktivitas dengan float paling rendah yang belum selesai."},
+      {d:"Uji pembaruan dengan menambahkan satu berkas XER baru ke folder lalu menekan perbarui."},
+      {d:"Dokumentasikan alur ini dalam satu halaman agar rekan tim dapat menjalankannya tanpa Anda."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: laporan mingguan 14 jam menjadi 40 menit",
+    konteks:"Tim project control dengan tiga proyek aktif menyusun laporan mingguan secara manual: menyalin data dari P6 ke Excel, membuat grafik, lalu menempelkannya ke slide presentasi.",
+    tabel:{head:["Kegiatan","Sebelum","Sesudah"],rows:[
+      ["Ekspor dan rapikan data","6 jam","5 menit"],
+      ["Susun grafik dan tabel","4 jam","otomatis"],
+      ["Susun slide","3 jam","15 menit"],
+      ["Periksa dan koreksi","1 jam","20 menit"]
+    ]},
+    tugas:[
+      "Hitung penghematan jam per bulan dan nilainya bila biaya tenaga planner adalah 25 dolar per jam.",
+      "Identifikasi risiko baru yang muncul akibat otomasi dan cara mengendalikannya."
+    ],
+    bahas:[
+      "Penghematan adalah 13 jam 20 menit per minggu atau sekitar 53 jam per bulan, setara sekitar 1.330 dolar per bulan untuk satu orang. Namun nilai terbesarnya bukan penghematan biaya, melainkan waktu analisis yang akhirnya tersedia.",
+      "Risiko utama adalah kesalahan data yang menyebar diam diam ke seluruh laporan. Kendalikan dengan tiga pemeriksaan tetap: jumlah aktivitas harus sama dengan jumlah pada P6, total anggaran harus cocok, dan tanggal data date pada dashboard harus sesuai dengan berkas terbaru."
+    ]
+  },
+  keluaran:["Berkas Power BI dengan model data XER","Dokumen alur pembaruan satu halaman","Dashboard proyek satu halaman"],
+  prompts:[
+    "Anda adalah data engineer yang memahami Primavera P6. Jelaskan struktur tabel TASK, TASKPRED, PROJWBS, dan TASKRSRC dalam berkas XER, sebutkan kolom kunci untuk menghubungkan tabel tersebut, lalu tuliskan langkah Power Query untuk memisahkan keempat tabel itu dari satu berkas XER menjadi empat query terpisah."
+  ]
+},
+
+{
+  code:"7.0", track:"ai", bar:[52,14], crit:true,
+  title:"AI untuk planning engineer",
+  sub:"Pemakaian nyata, pola prompt, otomasi, dan batas yang harus dijaga",
+  jam:"20 jam", minggu:"Minggu 16–19", level:"Lanjut",
+  prasyarat:"Modul 2 dan 3 selesai. Anda perlu paham jadwal yang benar sebelum meminta AI membantu.",
+  ringkasan:"AI tidak menggantikan planner. AI memperbesar jangkauan planner yang sudah paham dasar. Bab ini memberi pola kerja yang jelas: mana yang aman didelegasikan, mana yang wajib diverifikasi manusia, dan bagaimana menjaga kerahasiaan data klien.",
+  outcomes:[
+    "Menyusun prompt dengan pola peran, konteks, tugas, batasan, dan format keluaran.",
+    "Memakai AI untuk menghasilkan rancangan WBS, daftar aktivitas, dan tinjauan logika jadwal.",
+    "Meminta AI menulis kode untuk membaca XER dan menghasilkan laporan otomatis.",
+    "Menyusun narasi laporan dan kerangka klaim dengan bantuan AI lalu memverifikasinya.",
+    "Menerapkan aturan kerahasiaan data dan prosedur verifikasi sebelum keluaran AI dipakai."
+  ],
+  syllabus:[
+    {t:"Peta pemakaian", d:"Tugas dengan hasil tinggi dan risiko rendah: penyusunan rancangan awal, peringkasan, penulisan ulang narasi, pembuatan kode bantu. Tugas berisiko tinggi: penentuan durasi, keputusan klaim, dan penilaian tanggung jawab keterlambatan."},
+    {t:"Pola prompt", d:"Peran, konteks proyek, tugas spesifik, batasan, format keluaran, dan kriteria penilaian. Teknik memberi contoh, meminta penalaran bertahap, dan meminta daftar asumsi."},
+    {t:"Penyusunan lingkup", d:"Menghasilkan rancangan WBS dari dokumen lingkup, menurunkannya menjadi daftar aktivitas, dan memetakan ketergantungan awal untuk kemudian dikoreksi planner."},
+    {t:"Tinjauan jadwal", d:"Memakai AI sebagai pemeriksa awal untuk open end, constraint keras, lag berlebihan, dan durasi tidak masuk akal, sebelum pemeriksaan resmi dijalankan."},
+    {t:"Otomasi dengan kode", d:"Meminta AI menulis skrip untuk membaca XER, menghitung indikator, dan menghasilkan laporan. Membaca kode secukupnya untuk memastikan hasilnya benar."},
+    {t:"Narasi dan komunikasi", d:"Menyusun narasi laporan mingguan, ringkasan untuk direksi, surat pemberitahuan, dan kerangka dokumen klaim."},
+    {t:"Batas dan etika", d:"Larangan mengunggah data rahasia klien, kewajiban memverifikasi angka, penandaan bagian yang dibantu AI, dan pencatatan asumsi."}
+  ],
+  lab:{
+    title:"Praktik: membangun alur kerja planner berbantuan AI",
+    steps:[
+      {d:"Tulis ulang satu prompt buruk menjadi prompt berpola lengkap, lalu bandingkan mutu jawabannya."},
+      {d:"Minta AI menyusun rancangan WBS dari satu paragraf lingkup pekerjaan, lalu koreksi secara manual dan catat apa yang salah.", n:"Catatan kesalahan ini adalah bahan belajar paling berharga di bab ini."},
+      {d:"Minta AI menurunkan WBS menjadi daftar aktivitas dengan kolom durasi usulan dan dasar asumsinya."},
+      {d:"Tempelkan daftar aktivitas beserta hubungan logikanya, lalu minta AI menandai open end dan logika yang meragukan."},
+      {d:"Minta AI menulis skrip Python untuk membaca berkas XER dan menghasilkan daftar aktivitas dengan float negatif."},
+      {d:"Jalankan skrip tersebut pada berkas latihan dan bandingkan hasilnya dengan tampilan di P6."},
+      {d:"Minta AI menyusun narasi laporan mingguan dari angka EVM Anda, lalu periksa setiap angka yang disebutkan."},
+      {d:"Minta AI membuat sepuluh pertanyaan yang mungkin diajukan klien atas laporan tersebut, lalu siapkan jawabannya."},
+      {d:"Susun prompt yang dapat dipakai ulang setiap minggu dan simpan sebagai pustaka prompt tim."},
+      {d:"Tetapkan aturan data: informasi apa yang boleh dan tidak boleh dimasukkan ke alat AI.", n:"Anonimkan nama klien, harga satuan, dan data personel sebelum menempelkan apa pun."},
+      {d:"Buat daftar periksa verifikasi tiga baris yang wajib dilewati sebelum keluaran AI dikirim ke pihak luar."},
+      {d:"Ukur waktu penyelesaian satu siklus laporan sebelum dan sesudah memakai alur ini."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: tinjauan jadwal 1.800 aktivitas dalam satu hari kerja",
+    konteks:"Anda menerima jadwal kontraktor berisi 1.800 aktivitas dan hanya memiliki satu hari untuk memberi tanggapan resmi. Tinjauan manual menyeluruh tidak mungkin dilakukan dalam waktu tersebut.",
+    tabel:{head:["Tahap","Dikerjakan oleh","Waktu"],rows:[
+      ["Ekstraksi data dan pemeriksaan otomatis","skrip hasil AI","25 menit"],
+      ["Pengelompokan temuan per tingkat keparahan","AI","20 menit"],
+      ["Penilaian teknis atas temuan","planner","3 jam"],
+      ["Penulisan surat tanggapan","AI lalu disunting planner","1 jam"]
+    ]},
+    tugas:[
+      "Tentukan pemeriksaan mana yang aman diserahkan sepenuhnya ke otomasi dan mana yang wajib dinilai manusia.",
+      "Susun struktur surat tanggapan resmi kepada kontraktor.",
+      "Tetapkan cara Anda mempertanggungjawabkan keluaran yang dibantu AI bila ditanya klien."
+    ],
+    bahas:[
+      "Pemeriksaan yang bersifat hitungan, seperti jumlah open end, jumlah constraint keras, jumlah lag negatif, dan sebaran float, aman diotomasi karena hasilnya dapat diperiksa ulang. Penilaian apakah suatu durasi masuk akal, apakah suatu logika mencerminkan cara kerja lapangan, dan apakah suatu constraint dibenarkan kontrak, tetap harus dinilai manusia.",
+      "Surat tanggapan disusun dengan struktur: dasar peninjauan, ringkasan temuan menurut tingkat keparahan, permintaan perbaikan yang spesifik, dan tenggat penyerahan ulang.",
+      "Pertanggungjawaban dijaga dengan menyimpan skrip, berkas masukan, dan catatan verifikasi. Yang ditandatangani adalah penilaian Anda, sehingga setiap angka yang dikutip harus sudah Anda periksa sendiri."
+    ]
+  },
+  keluaran:["Pustaka prompt planner berisi minimal 15 prompt","Skrip pembaca XER yang berfungsi","Aturan pemakaian AI dan kerahasiaan data satu halaman"],
+  prompts:[
+    "Anda adalah planning engineer senior bersertifikat PMP. Konteks: proyek EPC fasilitas produksi, durasi kontrak 480 hari, kontrak FIDIC Red Book. Tugas: dari paragraf lingkup berikut, susun WBS sampai tingkat empat, lalu turunkan menjadi daftar aktivitas dengan usulan durasi dan dasar perhitungannya. Batasan: jangan mengarang kuantitas, tandai setiap asumsi dengan label ASUMSI. Format: tabel dengan kolom kode WBS, aktivitas, durasi, dasar durasi, dan asumsi.",
+    "Bertindaklah sebagai pemeriksa mutu jadwal. Berikut keluaran tabel aktivitas beserta pendahulu dan pengikutnya. Tandai aktivitas tanpa pendahulu atau tanpa pengikut, hubungan dengan lag lebih dari 10 hari, dan constraint keras. Kelompokkan temuan menjadi tinggi, sedang, rendah, dan untuk setiap temuan tuliskan dampaknya terhadap keandalan jalur kritis.",
+    "Anda adalah asisten pelaporan project control. Dari angka berikut, tulis narasi laporan mingguan 150 kata dalam bahasa Indonesia formal dengan struktur kondisi, penyebab, dampak, tindakan, dan pemilik tindakan. Jangan menambahkan angka yang tidak saya berikan. Setelah narasi, tuliskan daftar angka yang Anda pakai agar saya dapat memeriksanya."
+  ]
+},
+
+{
+  code:"8.0", track:"ai", bar:[58,10], crit:false,
+  title:"Dua puluh berkas proyek nyata untuk latihan",
+  sub:"Pustaka latihan, cara memakainya, dan rubrik penilaian mandiri",
+  jam:"14 jam", minggu:"Minggu 17–19", level:"Menengah",
+  prasyarat:"Modul 1 sampai 3 selesai.",
+  ringkasan:"Keterampilan penjadwalan tumbuh dari jam terbang pada berkas yang berantakan, bukan pada contoh yang sudah rapi. Pustaka ini berisi berkas dengan masalah yang sengaja dipertahankan agar Anda terbiasa membereskannya.",
+  outcomes:[
+    "Mengimpor berkas XER dari berbagai sumber tanpa merusak basis data sendiri.",
+    "Melakukan pemeriksaan kesehatan jadwal dalam waktu kurang dari 30 menit per berkas.",
+    "Memperbaiki masalah umum seperti kalender ganda, resource ganda, dan constraint tersembunyi.",
+    "Menilai pekerjaan sendiri memakai rubrik yang sama dengan yang dipakai pemeriksa jadwal."
+  ],
+  syllabus:[
+    {t:"Isi pustaka", d:"Berkas latihan mencakup gedung bertingkat, jalan dan jembatan, pabrik pengolahan, jalur pipa, gardu induk, MEP rumah sakit, pusat data, turnaround kilang, tangki penyimpanan, dan pekerjaan lepas pantai, masing masing dalam versi baseline dan versi pembaruan."},
+    {t:"Prosedur impor aman", d:"Membuat basis data terpisah untuk latihan, memakai opsi impor yang tidak menimpa data global, serta memeriksa kalender dan resource yang terbawa."},
+    {t:"Pemeriksaan kesehatan 30 menit", d:"Urutan tetap: struktur WBS, jumlah aktivitas, sebaran durasi, open end, constraint, lag, sebaran float, kalender, resource, dan baseline."},
+    {t:"Perbaikan masalah umum", d:"Kalender bernama sama dengan isi berbeda, resource ganda akibat impor berulang, aktivitas level of effort yang salah pakai, dan float negatif yang tidak dijelaskan."},
+    {t:"Rubrik penilaian", d:"Lima aspek: kelengkapan lingkup, kualitas logika, kewajaran durasi, keterbacaan struktur, dan kesiapan untuk dikendalikan. Setiap aspek bernilai satu sampai lima."}
+  ],
+  lab:{
+    title:"Praktik: membedah satu berkas asing dalam 30 menit",
+    steps:[
+      {d:"Buat basis data latihan terpisah dan jangan pernah mengimpor berkas asing ke basis data kerja."},
+      {d:"Impor XER dengan opsi menambah data baru, lalu periksa daftar kalender dan resource yang ikut masuk."},
+      {d:"Catat jumlah aktivitas, jumlah hubungan, dan rasio hubungan terhadap aktivitas.", n:"Rasio di bawah 1,5 biasanya menandakan jaringan yang terlalu longgar."},
+      {d:"Periksa aktivitas tanpa pendahulu dan tanpa pengikut, lalu daftar aktivitasnya."},
+      {d:"Periksa constraint yang dipakai dan cari yang tidak memiliki dasar kontrak."},
+      {d:"Periksa sebaran durasi dan tandai aktivitas berdurasi lebih dari 44 hari."},
+      {d:"Periksa sebaran total float dan cari kelompok float yang sangat besar atau negatif."},
+      {d:"Bandingkan jadwal berjalan dengan baseline bila tersedia, lalu catat pergeseran terbesar."},
+      {d:"Tulis ringkasan temuan satu halaman dengan tiga masalah utama dan usulan perbaikannya."},
+      {d:"Nilai berkas tersebut memakai rubrik lima aspek dan simpan hasilnya."},
+      {d:"Ulangi proses ini untuk berkas dari industri yang berbeda agar pola masalahnya terlihat."},
+      {d:"Setelah sepuluh berkas, tulis daftar sepuluh kesalahan paling sering yang Anda temukan."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: jadwal dengan float sangat besar",
+    konteks:"Sebuah berkas latihan proyek gardu induk berisi 640 aktivitas. Sebanyak 210 aktivitas memiliki total float di atas 120 hari, sedangkan durasi proyek hanya 300 hari.",
+    tabel:{head:["Indikator","Nilai","Ambang yang lazim"],rows:[
+      ["Aktivitas tanpa pendahulu","37","maksimal 1"],
+      ["Total float di atas 120 hari","210 aktivitas","di bawah 5 persen"],
+      ["Rasio hubungan per aktivitas","1,2","1,8 sampai 2,5"],
+      ["Hard constraint","14","seminimal mungkin"]
+    ]},
+    tugas:[
+      "Jelaskan penyebab paling mungkin dari float yang sangat besar tersebut.",
+      "Tentukan urutan perbaikan yang paling berdampak.",
+      "Jelaskan mengapa jadwal ini berbahaya bila dipakai sebagai dasar pengendalian."
+    ],
+    bahas:[
+      "Float besar hampir selalu disebabkan oleh jaringan yang tidak tersambung. Dengan 37 aktivitas tanpa pendahulu dan rasio hubungan hanya 1,2, sebagian besar aktivitas mengambang bebas sehingga P6 memberi mereka float yang tidak nyata.",
+      "Urutan perbaikan: sambungkan aktivitas tanpa pendahulu dan tanpa pengikut lebih dulu, hapus constraint yang tidak berdasar, lalu jalankan ulang penjadwalan dan periksa kembali sebaran float. Memperbaiki durasi sebelum memperbaiki logika adalah urutan yang keliru.",
+      "Jadwal seperti ini berbahaya karena jalur kritisnya tidak dapat dipercaya. Setiap analisis keterlambatan yang dibangun di atasnya akan runtuh ketika diperiksa pihak lain."
+    ]
+  },
+  keluaran:["Sepuluh lembar ringkasan temuan berkas latihan","Daftar sepuluh kesalahan tersering","Nilai rubrik mandiri untuk setiap berkas"],
+  prompts:[
+    "Saya menyalin ringkasan indikator berikut dari satu jadwal P6: jumlah aktivitas, aktivitas tanpa pendahulu, rasio hubungan, sebaran float, dan jumlah hard constraint. Tafsirkan kesehatan jadwal ini, urutkan tiga perbaikan yang paling berdampak, dan jelaskan alasan urutannya."
+  ]
+},
+
+{
+  code:"9.0", track:"control", bar:[62,10], crit:false,
+  title:"Standar pelaporan proyek di kawasan Teluk",
+  sub:"Pola kerja pada proyek besar Aramco, ADNOC, dan Qatar Energy",
+  jam:"10 jam", minggu:"Minggu 18–20", level:"Menengah",
+  prasyarat:"Modul 3 selesai.",
+  ringkasan:"Proyek pemilik besar di kawasan Teluk menuntut disiplin format yang tinggi. Bab ini membedah pola umum yang berulang pada persyaratan mereka, sehingga Anda dapat menyiapkan paket laporan yang lolos pemeriksaan sejak penyerahan pertama.",
+  outcomes:[
+    "Menyusun paket dokumen pengendalian proyek sesuai pola persyaratan pemilik proyek besar.",
+    "Menerapkan sistem pembobotan progres yang dapat diaudit.",
+    "Menyiapkan jadwal untuk proses persetujuan bertahap oleh konsultan pemilik.",
+    "Menyusun laporan bulanan lengkap beserta lampiran pendukungnya."
+  ],
+  syllabus:[
+    {t:"Persyaratan jadwal", d:"Tingkat kedalaman jadwal yang diminta, batas jumlah constraint, kewajiban menyertakan resource dan cost loading, serta dokumen dasar jadwal yang menjelaskan asumsi."},
+    {t:"Sistem pembobotan", d:"Pembobotan berbasis jam kerja atau nilai, aturan pemberian kredit per disiplin, dan cara menutup perbedaan antara progres fisik dengan progres keuangan."},
+    {t:"Paket laporan bulanan", d:"Ringkasan eksekutif, kurva S, histogram, daftar aktivitas kritis, catatan keterlambatan, status permintaan informasi, status material, dan lampiran foto."},
+    {t:"Proses persetujuan", d:"Penyerahan jadwal awal, tanggapan konsultan, penyerahan ulang, dan penetapan baseline. Cara menjawab komentar secara tertulis dengan rapi."},
+    {t:"Mutu dokumen", d:"Konsistensi penomoran, keseragaman satuan, kesesuaian angka antar lampiran, dan penelusuran balik ke berkas jadwal."}
+  ],
+  lab:{
+    title:"Praktik: menyusun paket laporan bulanan",
+    steps:[
+      {d:"Susun dokumen dasar jadwal berisi lingkup, asumsi, pengecualian, kalender, dan metode pembobotan."},
+      {d:"Tetapkan aturan pemberian kredit untuk sipil, mekanikal, kelistrikan, dan instrumentasi."},
+      {d:"Bangun tabel pembobotan dari jam kerja anggaran per disiplin dan pastikan totalnya seratus persen."},
+      {d:"Siapkan kurva S rencana, realisasi, dan perkiraan dalam satu grafik."},
+      {d:"Susun histogram tenaga kerja rencana dibandingkan realisasi per minggu."},
+      {d:"Siapkan daftar dua puluh aktivitas kritis terdekat dengan kolom kendala dan pemilik tindakan."},
+      {d:"Susun catatan keterlambatan berisi peristiwa, tanggal, dampak, dan status pemberitahuan."},
+      {d:"Periksa silang seluruh angka pada laporan terhadap berkas jadwal.", n:"Angka yang berbeda antar lampiran adalah alasan penolakan paling sering."},
+      {d:"Susun tabel tanggapan atas komentar konsultan dengan kolom nomor komentar, tanggapan, dan lokasi perbaikan."},
+      {d:"Gabungkan seluruh dokumen menjadi satu berkas dengan daftar isi dan penomoran halaman."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: jadwal ditolak pada penyerahan pertama",
+    konteks:"Kontraktor menyerahkan jadwal awal dan menerima 46 komentar dari konsultan pemilik. Batas waktu penyerahan ulang adalah 14 hari, dan pembayaran termin pertama tertahan sampai baseline disetujui.",
+    tabel:{head:["Kelompok komentar","Jumlah","Contoh"],rows:[
+      ["Logika dan constraint","18","aktivitas tanpa pendahulu, constraint tanpa dasar"],
+      ["Pembobotan progres","11","metode kredit tidak dijelaskan"],
+      ["Kelengkapan lingkup","9","komisioning tidak dirinci per sistem"],
+      ["Format dan penyajian","8","penamaan aktivitas tidak konsisten"]
+    ]},
+    tugas:[
+      "Susun rencana penyelesaian 46 komentar dalam 14 hari beserta pembagian tugasnya.",
+      "Tentukan kelompok komentar mana yang harus diselesaikan lebih dulu dan jelaskan alasannya.",
+      "Rancang cara agar penolakan serupa tidak terulang pada proyek berikutnya."
+    ],
+    bahas:[
+      "Kelompok logika dan constraint diselesaikan lebih dulu karena perbaikannya mengubah tanggal dan float, sehingga seluruh lampiran harus dibuat ulang setelahnya. Memperbaiki format lebih dulu berarti mengerjakan pekerjaan yang sama dua kali.",
+      "Rencana 14 hari yang masuk akal: empat hari untuk logika dan constraint, tiga hari untuk pembobotan, tiga hari untuk kelengkapan lingkup, dua hari untuk format, dan dua hari untuk pemeriksaan silang serta penyusunan tabel tanggapan.",
+      "Pencegahan dilakukan dengan menjalankan pemeriksaan mandiri memakai daftar periksa konsultan sebelum penyerahan. Biaya satu hari pemeriksaan mandiri jauh lebih murah dibandingkan tertahannya termin pembayaran selama satu bulan."
+    ]
+  },
+  keluaran:["Dokumen dasar jadwal","Tabel pembobotan progres","Paket laporan bulanan lengkap"],
+  prompts:[
+    "Anda adalah project control lead pada proyek EPC untuk pemilik proyek besar di kawasan Teluk. Susun daftar isi paket laporan bulanan beserta isi minimal setiap bagian, lalu buat daftar periksa mandiri berisi 20 butir yang harus saya lewati sebelum menyerahkan paket tersebut kepada konsultan pemilik."
+  ]
+},
+
+{
+  code:"10.0", track:"career", bar:[68,12], crit:false,
+  title:"Membangun karier planning engineer",
+  sub:"CV yang lolos ATS, LinkedIn, pencarian kerja, dan wawancara teknis",
+  jam:"12 jam", minggu:"Minggu 19–20", level:"Semua tingkat",
+  prasyarat:"Minimal empat modul selesai sehingga Anda punya portofolio untuk ditunjukkan.",
+  ringkasan:"Keahlian teknis tidak otomatis berubah menjadi tawaran kerja. Bab ini menjembatani keduanya dengan cara yang konkret dan dapat diukur.",
+  outcomes:[
+    "Menyusun CV dua halaman yang terbaca sistem penyaring otomatis dan tetap enak dibaca manusia.",
+    "Menulis capaian dengan pola tindakan, ukuran, dan hasil.",
+    "Menata profil LinkedIn agar muncul pada pencarian perekrut.",
+    "Menyiapkan portofolio proyek yang tidak melanggar kerahasiaan klien.",
+    "Menjawab pertanyaan wawancara teknis dengan struktur yang jelas."
+  ],
+  syllabus:[
+    {t:"CV berbasis ATS", d:"Tata letak satu kolom, judul bagian standar, kata kunci dari iklan lowongan, format tanggal konsisten, tanpa tabel dan gambar yang membingungkan pembaca otomatis."},
+    {t:"Menulis capaian", d:"Ubah deskripsi tugas menjadi capaian terukur. Contoh: memperbaiki 37 aktivitas tanpa pendahulu sehingga jadwal disetujui pada penyerahan kedua, dari sebelumnya empat kali penyerahan ulang."},
+    {t:"LinkedIn", d:"Judul profil berisi peran dan keahlian utama, bagian ringkasan yang menjawab masalah perekrut, bagian keahlian yang diurutkan, dan pola unggahan yang membangun kepercayaan."},
+    {t:"Pencarian kerja", d:"Kanal untuk pasar Pakistan dan kawasan Teluk, cara membaca iklan lowongan, cara menyesuaikan CV per lamaran, dan pendekatan langsung kepada perekrut."},
+    {t:"Wawancara teknis", d:"Pertanyaan yang hampir selalu muncul: perbedaan total float dan free float, cara menangani float negatif, cara memperbarui jadwal, metode analisis keterlambatan, dan cara Anda menangani perbedaan pendapat dengan manajer proyek."},
+    {t:"Negosiasi dan langkah awal", d:"Memahami komponen paket penghasilan, membandingkan tawaran, dan menyusun rencana 30 hari pertama di tempat kerja baru."}
+  ],
+  lab:{
+    title:"Praktik: menyiapkan berkas lamaran dalam satu minggu",
+    steps:[
+      {d:"Kumpulkan lima iklan lowongan yang Anda incar dan tandai kata kunci yang berulang."},
+      {d:"Susun ulang CV menjadi satu kolom dengan bagian ringkasan, keahlian, pengalaman, proyek, pendidikan, dan sertifikasi."},
+      {d:"Tulis ulang setiap butir pengalaman memakai pola tindakan, ukuran, dan hasil.", n:"Setiap butir wajib mengandung satu angka."},
+      {d:"Sisipkan kata kunci secara wajar pada bagian keahlian dan pengalaman, jangan menumpuknya di satu tempat."},
+      {d:"Uji CV dengan menyalin isinya ke berkas teks polos dan pastikan urutannya tetap terbaca."},
+      {d:"Perbarui judul dan ringkasan LinkedIn, lalu samakan riwayat pekerjaan dengan CV."},
+      {d:"Susun portofolio tiga halaman berisi tiga keluaran dari modul sebelumnya dengan data klien yang sudah dianonimkan."},
+      {d:"Siapkan jawaban tertulis untuk dua puluh pertanyaan wawancara teknis."},
+      {d:"Lakukan simulasi wawancara dengan rekan atau rekam diri sendiri dan tinjau hasilnya."},
+      {d:"Susun catatan riset per perusahaan berisi proyek yang sedang berjalan dan pertanyaan yang akan Anda ajukan."},
+      {d:"Buat tabel pelacakan lamaran berisi tanggal, posisi, kontak, dan status tindak lanjut."},
+      {d:"Tetapkan target mingguan yang terukur, misalnya delapan lamaran tersesuaikan dan tiga percakapan baru."}
+    ]
+  },
+  kasus:{
+    title:"Studi kasus: dari nol panggilan menjadi tiga wawancara",
+    konteks:"Seorang planner dengan pengalaman empat tahun mengirim 60 lamaran dalam tiga bulan tanpa satu pun panggilan. CV berisi deskripsi tugas umum, memakai tata letak dua kolom dengan ikon, dan sama untuk semua lamaran.",
+    tabel:{head:["Perubahan","Sebelum","Sesudah"],rows:[
+      ["Tata letak","dua kolom dengan ikon","satu kolom teks"],
+      ["Butir capaian berangka","0 dari 14","12 dari 14"],
+      ["Kesesuaian kata kunci","sekitar 35 persen","sekitar 80 persen"],
+      ["Penyesuaian per lamaran","tidak ada","ringkasan dan keahlian disesuaikan"],
+      ["Tingkat panggilan","0 dari 60","3 dari 22"]
+    ]},
+    tugas:[
+      "Jelaskan mengapa tata letak dua kolom sering menggagalkan pembacaan otomatis.",
+      "Ubah butir berikut menjadi capaian terukur: bertanggung jawab menyiapkan laporan mingguan.",
+      "Susun rencana lamaran dua belas minggu dengan target mingguan yang dapat diukur."
+    ],
+    bahas:[
+      "Sistem penyaring membaca dokumen secara berurutan. Tata letak dua kolom membuat teks dari kedua kolom tercampur sehingga kalimat menjadi tidak bermakna, dan ikon tidak terbaca sama sekali.",
+      "Versi terukur: menyusun laporan mingguan untuk proyek senilai 40 juta dolar dengan 1.200 aktivitas, memangkas waktu penyusunan dari 14 jam menjadi 3 jam melalui pembakuan templat dan otomasi pengambilan data.",
+      "Rencana dua belas minggu: minggu pertama dan kedua untuk membenahi CV, LinkedIn, dan portofolio; minggu ketiga sampai kedelapan untuk delapan lamaran tersesuaikan per minggu ditambah tiga percakapan baru; minggu kesembilan sampai kedua belas untuk persiapan wawancara intensif sambil tetap melamar. Yang dilacak setiap minggu adalah jumlah lamaran, jumlah balasan, dan jumlah wawancara, sehingga Anda tahu bagian mana yang perlu diperbaiki."
+    ]
+  },
+  keluaran:["CV dua halaman siap unggah","Profil LinkedIn yang sudah diperbarui","Portofolio tiga halaman dan tabel pelacakan lamaran"],
+  prompts:[
+    "Anda adalah perekrut teknis untuk posisi planning engineer di kawasan Teluk. Berikut iklan lowongan dan CV saya. Nilai kesesuaian keduanya dalam persen, sebutkan kata kunci penting yang belum muncul di CV saya, tandai butir pengalaman yang belum terukur, dan tulis ulang tiga butir terlemah memakai pola tindakan, ukuran, dan hasil."
+  ]
+}
+];
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+// hero gantt
+document.getElementById("gantt-rows").innerHTML = M.map(m=>{
+  const cls = m.crit ? "c" : (m.track==="career" ? "a" : "");
+  return '<div class="grow"><span class="id">'+m.code+'</span>'+
+    '<span class="track"><span class="bar '+cls+'" style="left:'+(m.bar[0]/80*100)+'%;width:'+(m.bar[1]/80*100)+'%"></span></span>'+
+    '<span style="font-size:12px;color:#9FB6CC">'+esc(m.minggu)+'</span></div>';
+}).join("");
+
+const trackLabel={core:"Penjadwalan",control:"Pengendalian & klaim",ai:"AI & data",career:"Karier"};
+
+function modHTML(m,i){
+  return '<article class="mod" data-track="'+m.track+'" id="bab-'+(i+1)+'">'+
+  '<button class="acc-head" aria-expanded="false" aria-controls="p'+i+'">'+
+    '<span class="wbs">'+m.code+'</span>'+
+    '<span><h3>'+esc(m.title)+'</h3><p>'+esc(m.sub)+'</p>'+
+      '<span class="tags"><span class="tag">'+trackLabel[m.track]+'</span><span class="tag">'+m.level+'</span><span class="tag">'+m.outcomes.length+' capaian</span><span class="tag">'+m.lab.steps.length+' langkah praktik</span></span></span>'+
+    '<span class="meta">'+m.jam+'<br>'+m.minggu+'</span>'+
+    '<span class="chev" aria-hidden="true"></span>'+
+  '</button>'+
+  '<div class="panel" id="p'+i+'">'+
+    '<div class="pgrid"><div>'+
+      '<div class="block"><h4>Mengapa bab ini ada</h4><p style="margin:0">'+esc(m.ringkasan)+'</p></div>'+
+      '<div class="block"><h4>Setelah bab ini Anda bisa</h4><ul>'+m.outcomes.map(o=>'<li>'+esc(o)+'</li>').join("")+'</ul></div>'+
+      '<div class="block"><h4>Silabus rinci</h4>'+m.syllabus.map(s=>'<div class="syl"><b>'+esc(s.t)+'</b><p>'+esc(s.d)+'</p></div>').join("")+'</div>'+
+      '<div class="block"><h4>'+esc(m.lab.title)+'</h4><ol class="lab">'+m.lab.steps.map(s=>'<li>'+esc(s.d)+(s.n?'<span class="note">'+esc(s.n)+'</span>':'')+'</li>').join("")+'</ol></div>'+
+      '<div class="block"><h4>Studi kasus</h4><div class="case"><h5>'+esc(m.kasus.title)+'</h5><p style="margin:0 0 6px">'+esc(m.kasus.konteks)+'</p>'+
+        '<table class="tbl"><thead><tr>'+m.kasus.tabel.head.map(h=>'<th>'+esc(h)+'</th>').join("")+'</tr></thead><tbody>'+
+        m.kasus.tabel.rows.map(r=>'<tr>'+r.map((c,idx)=>'<td'+(idx>0&&/^[\d.,\u2014 ]+$/.test(c)?' class="num"':'')+'>'+esc(c)+'</td>').join("")+'</tr>').join("")+
+        '</tbody></table>'+
+        '<b style="font-family:Archivo;font-size:14px">Yang harus Anda kerjakan</b><ul style="margin:6px 0 14px">'+m.kasus.tugas.map(t=>'<li>'+esc(t)+'</li>').join("")+'</ul>'+
+        '<details><summary style="cursor:pointer;font-family:Archivo;font-size:14px;font-weight:700">Buka pembahasan setelah Anda mencoba sendiri</summary><ul style="margin:10px 0 0">'+m.kasus.bahas.map(b=>'<li>'+esc(b)+'</li>').join("")+'</ul></details>'+
+      '</div></div>'+
+      '<div class="block"><h4>Prompt AI siap pakai</h4>'+m.prompts.map(p=>'<div class="prompt">'+esc(p)+'</div>').join("")+'</div>'+
+    '</div><aside class="side">'+
+      '<h4>Ringkasan bab</h4>'+
+      '<div class="kv"><b>Beban belajar</b>'+m.jam+' · '+m.minggu+'</div>'+
+      '<div class="kv"><b>Prasyarat</b>'+esc(m.prasyarat)+'</div>'+
+      '<div class="kv"><b>Keluaran yang harus Anda kumpulkan</b></div><ul style="margin:0 0 22px;padding-left:20px;font-size:15px;color:var(--slate)">'+m.keluaran.map(k=>'<li>'+esc(k)+'</li>').join("")+'</ul>'+
+      '<h4>Unduh materi bab ini</h4>'+
+      '<button class="dl" data-dl="full" data-i="'+i+'">Materi lengkap bab '+(i+1)+'<small>markdown · silabus, tutorial, studi kasus</small></button>'+
+      '<button class="dl" data-dl="lab" data-i="'+i+'">Lembar kerja tutorial<small>markdown · '+m.lab.steps.length+' langkah dengan kotak centang</small></button>'+
+      '<button class="dl" data-dl="case" data-i="'+i+'">Studi kasus dan pembahasan<small>markdown · data, tugas, pembahasan</small></button>'+
+      '<button class="dl" data-dl="prompt" data-i="'+i+'">Prompt AI bab ini<small>teks · siap tempel ke Claude</small></button>'+
+    '</aside></div>'+
+  '</div></article>';
+}
+document.getElementById("modules").innerHTML = M.map(modHTML).join("");
+
+/* ---------- interaksi accordion ---------- */
+document.getElementById("modules").addEventListener("click", e=>{
+  const head = e.target.closest(".acc-head");
+  if(head){
+    const mod = head.closest(".mod");
+    const open = mod.classList.toggle("open");
+    head.setAttribute("aria-expanded", open ? "true":"false");
+    return;
+  }
+  const btn = e.target.closest(".dl");
+  if(btn) download(btn.dataset.dl, +btn.dataset.i);
+});
+
+let allOpen=false;
+document.getElementById("expand-all").addEventListener("click", ()=>{
+  allOpen=!allOpen;
+  document.querySelectorAll(".mod").forEach(m=>{
+    m.classList.toggle("open", allOpen);
+    m.querySelector(".acc-head").setAttribute("aria-expanded", allOpen?"true":"false");
+  });
+  document.getElementById("expand-all").textContent = allOpen ? "Tutup semua bab" : "Buka semua bab";
+});
+
+document.querySelectorAll(".filters [data-filter]").forEach(b=>{
+  b.addEventListener("click", ()=>{
+    document.querySelectorAll(".filters [data-filter]").forEach(x=>x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    const f=b.dataset.filter;
+    document.querySelectorAll(".mod").forEach(m=>{
+      m.style.display = (f==="all"||m.dataset.track===f) ? "" : "none";
+    });
+  });
+});
+document.getElementById("print").addEventListener("click", ()=>{
+  document.querySelectorAll(".mod").forEach(m=>m.classList.add("open"));
+  window.print();
+});
+
+/* =========================================================
+   PEMBUATAN BERKAS UNDUHAN
+   ========================================================= */
+function save(name, text){
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url); a.remove();}, 800);
+}
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,48);
+
+function mdTable(t){
+  let s = "| " + t.head.join(" | ") + " |\n|" + t.head.map(()=>" --- ").join("|") + "|\n";
+  t.rows.forEach(r=> s += "| " + r.join(" | ") + " |\n");
+  return s + "\n";
+}
+function mdCase(m){
+  let s = "### Studi kasus: " + m.kasus.title + "\n\n" + m.kasus.konteks + "\n\n" + mdTable(m.kasus.tabel);
+  s += "**Yang harus Anda kerjakan**\n\n" + m.kasus.tugas.map((t,i)=>(i+1)+". "+t).join("\n") + "\n\n";
+  s += "**Pembahasan** (baca setelah mencoba sendiri)\n\n" + m.kasus.bahas.map(b=>"- "+b).join("\n") + "\n";
+  return s;
+}
+function mdLab(m){
+  let s = "### " + m.lab.title + "\n\n";
+  m.lab.steps.forEach((st,i)=>{
+    s += "- [ ] **Langkah " + String(i+1).padStart(2,"0") + ".** " + st.d + "\n";
+    if(st.n) s += "      > " + st.n + "\n";
+  });
+  return s + "\n";
+}
+function mdFull(m,i){
+  let s = "# Bab " + (i+1) + " — " + m.title + "\n\n_" + m.sub + "_\n\n";
+  s += "- Kode WBS: " + m.code + "\n- Beban belajar: " + m.jam + " (" + m.minggu + ")\n- Tingkat: " + m.level + "\n- Prasyarat: " + m.prasyarat + "\n\n";
+  s += "## Mengapa bab ini ada\n\n" + m.ringkasan + "\n\n";
+  s += "## Capaian pembelajaran\n\n" + m.outcomes.map(o=>"- "+o).join("\n") + "\n\n";
+  s += "## Silabus rinci\n\n" + m.syllabus.map((x,n)=>"**"+(i+1)+"."+(n+1)+" "+x.t+"**\n\n"+x.d+"\n").join("\n") + "\n";
+  s += "## Tutorial langkah demi langkah\n\n" + mdLab(m);
+  s += "## Studi kasus\n\n" + mdCase(m) + "\n";
+  s += "## Keluaran yang harus dikumpulkan\n\n" + m.keluaran.map(k=>"- [ ] "+k).join("\n") + "\n\n";
+  s += "## Prompt AI siap pakai\n\n" + m.prompts.map(p=>"```\n"+p+"\n```").join("\n\n") + "\n";
+  return s;
+}
+function header(){
+  return "PROGRAM PRIMAVERA P6 + AI UNTUK PLANNING ENGINEER\nPlanning Intelligence Lab — kurikulum v1.0\nDiunduh: " + new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}) + "\n\n";
+}
+
+function download(kind, i){
+  const m = M[i], base = "bab-"+(i+1)+"-"+slug(m.title);
+  if(kind==="full")  save(base+".md", header()+mdFull(m,i));
+  if(kind==="lab")   save(base+"-lembar-kerja.md", header()+"# Lembar kerja — "+m.title+"\n\n"+mdLab(m)+"\n## Keluaran\n\n"+m.keluaran.map(k=>"- [ ] "+k).join("\n")+"\n");
+  if(kind==="case")  save(base+"-studi-kasus.md", header()+"# Studi kasus — "+m.title+"\n\n"+mdCase(m));
+  if(kind==="prompt")save(base+"-prompt-ai.txt", header()+m.prompts.join("\n\n---\n\n")+"\n");
+}
+
+function all(){
+  let s = header() + "Kurikulum lengkap 10 bab: silabus, tutorial, studi kasus, dan prompt AI.\n\n## Daftar isi\n\n";
+  M.forEach((m,i)=> s += (i+1)+". "+m.title+" — "+m.jam+"\n");
+  s += "\n---\n\n";
+  M.forEach((m,i)=> s += mdFull(m,i) + "\n\n---\n\n");
+  save("materi-lengkap-primavera-p6-ai.md", s);
+}
+document.getElementById("dl-all").addEventListener("click", all);
+document.getElementById("dl-all-2").addEventListener("click", all);
+
+document.getElementById("dl-prompts").addEventListener("click", ()=>{
+  let s = header() + "KUMPULAN PROMPT AI UNTUK PLANNING ENGINEER\n\nAturan pakai: anonimkan nama klien, harga satuan, dan data personel sebelum menempelkan apa pun. Verifikasi setiap angka yang dikeluarkan AI sebelum dipakai di dokumen resmi.\n\n";
+  M.forEach((m,i)=>{
+    if(!m.prompts.length) return;
+    s += "==== BAB "+(i+1)+" — "+m.title+" ====\n\n" + m.prompts.join("\n\n---\n\n") + "\n\n";
+  });
+  save("pustaka-prompt-planning-engineer.txt", s);
+});
+
+document.getElementById("dl-check").addEventListener("click", ()=>{
+  let s = header() + "# Lembar checklist kemajuan belajar\n\nCentang setiap butir saat selesai. Satu bab dianggap tuntas bila seluruh langkah praktik, studi kasus, dan keluaran sudah selesai.\n\n";
+  M.forEach((m,i)=>{
+    s += "## Bab "+(i+1)+" — "+m.title+" ("+m.jam+")\n\n";
+    s += "- [ ] Membaca silabus dan memastikan prasyarat terpenuhi\n";
+    s += "- [ ] Menyelesaikan "+m.lab.steps.length+" langkah praktik\n";
+    s += "- [ ] Mengerjakan studi kasus sebelum membaca pembahasan\n";
+    m.keluaran.forEach(k=> s += "- [ ] Mengumpulkan keluaran: "+k+"\n");
+    s += "\n";
+  });
+  save("checklist-kemajuan-belajar.md", s);
+});
+
+document.getElementById("dl-csv").addEventListener("click", ()=>{
+  const q = v => '"'+String(v).replace(/"/g,'""')+'"';
+  let s = "\uFEFFKode WBS,Bab,Judul,Jalur,Tingkat,Beban jam,Jadwal,Jumlah langkah praktik,Jumlah capaian,Prasyarat\n";
+  M.forEach((m,i)=>{
+    s += [q(m.code),i+1,q(m.title),q(trackLabel[m.track]),q(m.level),q(m.jam),q(m.minggu),m.lab.steps.length,m.outcomes.length,q(m.prasyarat)].join(",")+"\n";
+  });
+  save("kurikulum-primavera-p6-ai.csv", s);
+});
+</script>
+</body>
+</html>

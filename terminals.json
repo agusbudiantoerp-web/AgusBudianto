@@ -1,0 +1,17 @@
+[
+ {
+  "nama": "Quant Terminal",
+  "deskripsi": "Terminal riset kuantitatif: backtest, walk-forward, portofolio, Monte Carlo, stress test, dan order flow. Berjalan penuh di browser Anda dengan data simulasi (bukan kuotasi pasar).",
+  "url": "https://agusbudiantoerp-web.github.io/ulilabsyor/quant-terminal.html"
+ },
+ {
+  "nama": "IDX Terminal",
+  "deskripsi": "Pemantau emiten bursa Indonesia: harga, sektor dan grup konglomerasi, berita, serta kepemilikan dan broker summary. Data berupa snapshot yang diperbarui berkala.",
+  "url": ""
+ },
+ {
+  "nama": "PE/VC Investment Engine",
+  "deskripsi": "DCF, LBO, cap table VC, Monte Carlo, dan memo investasi dari workbook Excel.",
+  "url": ""
+ }
+]

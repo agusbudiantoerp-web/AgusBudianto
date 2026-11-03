@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Management &amp; Project Management Toolkit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --navy-950:#0a0f1a;
+  --navy-900:#0e1626;
+  --navy-800:#131f34;
+  --panel:#152238;
+  --panel-2:#1b2c48;
+  --line:#26374f;
+  --steel:#4f86b8;
+  --steel-light:#9dc3e4;
+  --amber:#e8a33d;
+  --amber-soft:#f0c479;
+  --green:#3fb27f;
+  --red:#e0605a;
+  --text:#e8edf5;
+  --text-dim:#a9b6c9;
+  --text-mute:#6f7f97;
+  --radius:2px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--navy-950);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  line-height:1.55;
+}
+.mono{font-family:'IBM Plex Mono',monospace;}
+h1,h2,h3,h4{font-family:'Space Grotesk',system-ui,sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{color:inherit;}
+
+/* blueprint grid backdrop */
+.blueprint{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(79,134,184,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,134,184,0.07) 1px, transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(ellipse 90% 60% at 50% 0%, black 40%, transparent 90%);
+}
+
+.wrap{max-width:1240px; margin:0 auto; padding:0 28px; position:relative; z-index:1;}
+
+/* ---------- NAV ---------- */
+.nav{
+  position:sticky; top:0; z-index:50;
+  background:rgba(10,15,26,0.88); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; max-width:1240px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand-mark{
+  width:30px; height:30px; border:1.5px solid var(--amber); border-radius:2px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono'; font-weight:600; color:var(--amber); font-size:12px;
+}
+.brand-name{font-family:'Space Grotesk'; font-weight:700; font-size:14px; letter-spacing:0.02em;}
+.brand-name span{color:var(--amber);}
+.nav-links{display:flex; gap:26px; font-size:13px; color:var(--text-dim);}
+.nav-links a{text-decoration:none; transition:color .15s;}
+.nav-links a:hover{color:var(--amber-soft);}
+.nav-cta{
+  background:var(--amber); color:#1a1305; font-weight:600; font-size:13px;
+  padding:9px 16px; border-radius:2px; text-decoration:none; border:none; cursor:pointer;
+  font-family:'Inter';
+}
+
+/* ---------- HERO ---------- */
+.hero{padding:88px 0 56px; position:relative;}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--amber-soft); border:1px solid rgba(232,163,61,0.35); padding:6px 12px; border-radius:2px;
+  background:rgba(232,163,61,0.06);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green); box-shadow:0 0 0 3px rgba(63,178,127,0.2);}
+.hero h1{
+  font-size:clamp(34px,5vw,58px); font-weight:700; line-height:1.05; margin-top:22px; max-width:900px;
+}
+.hero h1 .accent{color:var(--steel-light);}
+.hero-sub{max-width:640px; margin-top:18px; font-size:16.5px; color:var(--text-dim);}
+.hero-actions{display:flex; flex-wrap:wrap; gap:12px; margin-top:32px;}
+.btn{
+  font-family:'Inter'; font-weight:600; font-size:14px; padding:13px 22px; border-radius:2px; cursor:pointer;
+  border:1px solid transparent; text-decoration:none; display:inline-flex; align-items:center; gap:8px;
+  transition:transform .12s ease, background .15s ease, border-color .15s ease;
+}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--amber); color:#1a1305;}
+.btn-primary:hover{background:var(--amber-soft);}
+.btn-outline{border-color:var(--line); color:var(--text);}
+.btn-outline:hover{border-color:var(--steel-light); color:var(--steel-light);}
+
+/* stat strip */
+.stats{
+  margin-top:56px; display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--line); border-radius:3px; overflow:hidden;
+  background:var(--panel);
+}
+.stat{padding:20px 22px; border-right:1px solid var(--line);}
+.stat:last-child{border-right:none;}
+.stat .num{font-family:'Space Grotesk'; font-size:26px; font-weight:700; color:var(--steel-light);}
+.stat .lbl{font-size:11.5px; color:var(--text-mute); margin-top:4px; text-transform:uppercase; letter-spacing:0.06em; font-family:'IBM Plex Mono';}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr);} .stat{border-bottom:1px solid var(--line);}}
+
+/* ---------- SECTION SHELL ---------- */
+section{padding:64px 0; border-top:1px solid var(--line); position:relative;}
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:34px;}
+.section-head .tag{font-family:'IBM Plex Mono'; font-size:11.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber-soft);}
+.section-head h2{font-size:clamp(24px,3vw,32px); margin-top:8px;}
+.section-head .desc{max-width:560px; color:var(--text-dim); font-size:14.5px; margin-top:8px;}
+
+/* loop concept strip */
+.loop{display:flex; flex-wrap:wrap; gap:0; align-items:center; margin-top:6px;}
+.loop-step{
+  font-family:'IBM Plex Mono'; font-size:12px; color:var(--text-dim); border:1px solid var(--line);
+  padding:8px 14px; border-radius:2px; background:var(--panel); white-space:nowrap;
+}
+.loop-arrow{color:var(--amber); padding:0 8px; font-size:14px;}
+
+/* ---------- FILTER BAR ---------- */
+.filter-bar{
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:28px;
+  padding:14px; background:var(--panel); border:1px solid var(--line); border-radius:3px;
+}
+.search-input{
+  flex:1; min-width:220px; background:var(--navy-900); border:1px solid var(--line); color:var(--text);
+  padding:10px 14px; border-radius:2px; font-size:14px; font-family:'Inter';
+}
+.search-input:focus{outline:none; border-color:var(--steel);}
+.chip{
+  font-family:'IBM Plex Mono'; font-size:11.5px; padding:8px 13px; border-radius:2px; border:1px solid var(--line);
+  color:var(--text-dim); background:var(--navy-900); cursor:pointer; white-space:nowrap; transition:all .12s;
+}
+.chip:hover{border-color:var(--steel-light); color:var(--steel-light);}
+.chip.active{background:var(--amber); color:#1a1305; border-color:var(--amber); font-weight:600;}
+
+/* ---------- TOOL GRID ---------- */
+.tool-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+@media(max-width:900px){.tool-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.tool-grid{grid-template-columns:1fr;}}
+.tool-card{
+  background:var(--panel); border:1px solid var(--line); border-radius:3px; padding:18px;
+  cursor:pointer; transition:border-color .15s, transform .12s, background .15s;
+  display:flex; flex-direction:column; gap:10px;
+}
+.tool-card:hover{border-color:var(--steel); background:var(--panel-2); transform:translateY(-2px);}
+.tool-card .cat-tag{
+  font-family:'IBM Plex Mono'; font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber-soft);
+}
+.tool-card h4{font-size:15.5px; font-weight:600;}
+.tool-card p{font-size:12.8px; color:var(--text-dim);}
+.tool-card .open-hint{
+  margin-top:auto; font-family:'IBM Plex Mono'; font-size:11px; color:var(--text-mute);
+  display:flex; align-items:center; gap:6px;
+}
+.tool-card:hover .open-hint{color:var(--steel-light);}
+
+.empty-state{padding:40px; text-align:center; color:var(--text-mute); font-family:'IBM Plex Mono'; font-size:13px;}
+
+/* ---------- LOOP DIAGRAM (concept) ---------- */
+.concept-band{
+  background:var(--panel); border:1px solid var(--line); border-radius:3px; padding:26px; margin-bottom:40px;
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+}
+
+/* ---------- MODAL ---------- */
+.modal-backdrop{
+  position:fixed; inset:0; background:rgba(6,9,16,0.72); backdrop-filter:blur(3px);
+  display:none; align-items:flex-start; justify-content:center; z-index:100; padding:5vh 16px; overflow-y:auto;
+}
+.modal-backdrop.open{display:flex;}
+.modal{
+  background:var(--navy-900); border:1px solid var(--line); border-radius:4px; max-width:760px; width:100%;
+  margin-bottom:5vh; box-shadow:0 30px 80px rgba(0,0,0,0.5);
+}
+.modal-head{
+  padding:24px 28px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:16px; align-items:flex-start;
+  background:linear-gradient(180deg, var(--panel-2), var(--navy-900));
+}
+.modal-head .cat-tag{font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--amber-soft);}
+.modal-head h3{font-size:22px; margin-top:6px;}
+.modal-head .desc{font-size:13.5px; color:var(--text-dim); margin-top:8px;}
+.modal-close{
+  background:none; border:1px solid var(--line); color:var(--text-dim); width:32px; height:32px; border-radius:2px;
+  cursor:pointer; font-size:16px; flex-shrink:0;
+}
+.modal-close:hover{border-color:var(--red); color:var(--red);}
+.modal-tabs{display:flex; gap:2px; padding:0 28px; border-bottom:1px solid var(--line); background:var(--navy-900);}
+.modal-tab{
+  font-family:'IBM Plex Mono'; font-size:12px; padding:12px 14px; color:var(--text-mute); cursor:pointer;
+  border-bottom:2px solid transparent; text-transform:uppercase; letter-spacing:0.04em;
+}
+.modal-tab.active{color:var(--amber-soft); border-bottom-color:var(--amber);}
+.modal-body{padding:24px 28px 30px; font-size:14.5px; color:var(--text);}
+.modal-pane{display:none;}
+.modal-pane.active{display:block;}
+.modal-pane h5{font-size:11.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--steel-light); font-family:'IBM Plex Mono'; margin-bottom:10px;}
+.steps-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px;}
+.steps-list li{
+  display:flex; gap:10px; align-items:flex-start; font-size:14px; color:var(--text-dim);
+  padding:10px 12px; background:var(--panel); border:1px solid var(--line); border-radius:2px;
+}
+.steps-list .num{
+  font-family:'IBM Plex Mono'; color:var(--amber); font-weight:600; font-size:12px; flex-shrink:0;
+  width:20px;
+}
+.case-box{
+  background:rgba(232,163,61,0.07); border:1px solid rgba(232,163,61,0.28); border-radius:2px; padding:16px; font-size:14px; color:var(--text-dim); margin-bottom:18px;
+}
+.sol-box{
+  background:rgba(63,178,127,0.07); border:1px solid rgba(63,178,127,0.28); border-radius:2px; padding:16px; font-size:14px; color:var(--text-dim);
+}
+.theory-text{color:var(--text-dim); font-size:14.5px;}
+
+/* ---------- QUIZ / MINI CHECK ---------- */
+.footer-cta{
+  text-align:center; padding:70px 0; border-top:1px solid var(--line);
+}
+.footer-cta h2{font-size:clamp(24px,3.4vw,36px); max-width:640px; margin:0 auto;}
+.footer-cta p{color:var(--text-dim); margin-top:14px; max-width:520px; margin-left:auto; margin-right:auto;}
+.footer-cta .hero-actions{justify-content:center; margin-top:26px;}
+
+footer{border-top:1px solid var(--line); padding:30px 0; font-size:12.5px; color:var(--text-mute);}
+footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:9px;}
+::-webkit-scrollbar-track{background:var(--navy-950);}
+::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="blueprint"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-name">MANAGEMENT<span>OS</span></div>
+    </div>
+    <div class="nav-links">
+      <a href="#tools">Tools</a>
+      <a href="#loop">Konsep</a>
+      <a href="#dashboard-note">Dashboard</a>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('tools').scrollIntoView()">Explore Management Tools</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span> ONE INTEGRATED MANAGEMENT SYSTEM</div>
+    <h1>Management &amp; Project<br/><span class="accent">Management Toolkit</span></h1>
+    <p class="hero-sub">One integrated system for Strategy, Planning, Execution, Problem Solving &amp; Continuous Improvement — dengan teori, rumus, contoh soal, dan pembahasan untuk 30 framework manajemen inti.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#tools">Explore Management Tools ↓</a>
+      <a class="btn btn-outline" id="download-btn" href="#" download>Download Excel Workbook ⤓</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">30</div><div class="lbl">Management Tools</div></div>
+      <div class="stat"><div class="num">8</div><div class="lbl">Kategori Utama</div></div>
+      <div class="stat"><div class="num">30</div><div class="lbl">Contoh Soal &amp; Pembahasan</div></div>
+      <div class="stat"><div class="num">100%</div><div class="lbl">Siap Pakai / Editable</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="loop">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">Konsep Utama</div>
+        <h2>Strategy → Execution → Control → Improvement Loop</h2>
+        <p class="desc">Setiap tools dalam toolkit ini bukan berdiri sendiri — semuanya terhubung dalam satu alur berpikir manajemen, dari perumusan strategi sampai tindakan perbaikan.</p>
+      </div>
+    </div>
+    <div class="concept-band" id="loop-band"></div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">Toolkit Library</div>
+        <h2>30 Management Frameworks</h2>
+        <p class="desc">Klik salah satu tool untuk melihat teori, langkah/rumus, contoh soal, dan pembahasan lengkap.</p>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <input class="search-input" id="searchInput" type="text" placeholder="Cari tool… (mis. SWOT, EVM, Risk Register)"/>
+      <div id="chips" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="tool-grid" id="toolGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">Tidak ada tool yang cocok dengan pencarian.</div>
+  </div>
+</section>
+
+<section id="dashboard-note">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <div class="tag">Executive Dashboard</div>
+        <h2>Satu Sumber Kebenaran untuk Manajemen</h2>
+        <p class="desc">Workbook Excel yang bisa Anda unduh sudah memuat Executive Dashboard dengan formula otomatis yang membaca status KPI, Risk Register, OKR, dan EVM — cukup isi data pada tab masing-masing tool.</p>
+      </div>
+    </div>
+    <div class="tool-grid" style="grid-template-columns:repeat(4,1fr);">
+      <div class="tool-card" style="cursor:default;"><div class="cat-tag">01</div><h4>KPI Status</h4><p>Hitung otomatis status Hijau/Kuning/Merah dari target vs aktual.</p></div>
+      <div class="tool-card" style="cursor:default;"><div class="cat-tag">02</div><h4>Risk Heatmap</h4><p>Skor risiko = Probability × Impact, level otomatis 5×5.</p></div>
+      <div class="tool-card" style="cursor:default;"><div class="cat-tag">03</div><h4>OKR Achievement</h4><p>Achievement % dan status per Key Result terhitung otomatis.</p></div>
+      <div class="tool-card" style="cursor:default;"><div class="cat-tag">04</div><h4>EVM Health</h4><p>CPI, SPI, EAC, VAC — status Healthy/Attention/Critical otomatis.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="footer-cta" style="border-top:1px solid var(--line);">
+  <div class="wrap">
+    <h2>Buka Dashboard, Mulai Kelola Proyek &amp; Strategi Anda</h2>
+    <p>Download workbook Excel-nya untuk mulai mengisi data proyek Anda sendiri, lengkap dengan formula, dashboard, dan template siap pakai.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" id="download-btn-2" href="#" download>Download Excel Workbook ⤓</a>
+      <a class="btn btn-outline" href="#tools">Create Management Plan</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>MANAGEMENT &amp; PROJECT MANAGEMENT TOOLKIT — Strategy • Planning • Execution • Control • Problem Solving • Continuous Improvement</div>
+    <div class="mono">v1.0</div>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="cat-tag" id="modalCat"></div>
+        <h3 id="modalTitle"></h3>
+        <p class="desc" id="modalDesc"></p>
+      </div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <div class="modal-tab active" data-tab="theory">Teori</div>
+      <div class="modal-tab" data-tab="steps">Langkah / Rumus</div>
+      <div class="modal-tab" data-tab="case">Contoh Soal &amp; Pembahasan</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-pane active" id="pane-theory">
+        <h5>Teori &amp; Penjelasan</h5>
+        <p class="theory-text" id="modalTheory"></p>
+      </div>
+      <div class="modal-pane" id="pane-steps">
+        <h5>Langkah / Rumus</h5>
+        <ul class="steps-list" id="modalSteps"></ul>
+      </div>
+      <div class="modal-pane" id="pane-case">
+        <h5>Contoh Soal</h5>
+        <div class="case-box" id="modalCase"></div>
+        <h5>Pembahasan / Solusi</h5>
+        <div class="sol-box" id="modalSolution"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="tools-data" type="application/json">
+{"categories": ["Strategy", "Goals & KPI", "Project Management", "Problem Solving", "Quality", "Decision Making", "Operations & CI", "People"], "tools": [{"id": "swot", "cat": "Strategy", "name": "SWOT Analysis", "desc": "Menganalisis kondisi internal (Strengths, Weaknesses) dan eksternal (Opportunities, Threats) organisasi untuk merumuskan strategi.", "theory": "SWOT adalah alat analisis strategis yang memetakan Strengths (kekuatan) dan Weaknesses (kelemahan) sebagai faktor internal yang bisa dikendalikan, serta Opportunities (peluang) dan Threats (ancaman) sebagai faktor eksternal di luar kendali organisasi. Hasil SWOT dilanjutkan ke TOWS Matrix untuk menghasilkan strategi konkret (SO, WO, ST, WT).", "steps": ["Identifikasi kekuatan internal (SDM, aset, brand, teknologi)", "Identifikasi kelemahan internal (proses, biaya, kapasitas)", "Identifikasi peluang eksternal (pasar, regulasi, tren)", "Identifikasi ancaman eksternal (kompetitor, ekonomi, teknologi baru)", "Beri skor Impact & Probability tiap item", "Susun TOWS: SO (agresif), WO (turnaround), ST (diversifikasi), WT (defensif)"], "case": "Perusahaan kontraktor tambang kecil sedang menyusun strategi 2027. Kekuatan: tim survey berpengalaman 15 tahun, hubungan baik dengan pemilik IUP. Kelemahan: armada dump truck tua (>10 tahun), modal kerja terbatas. Peluang: harga batubara naik, banyak IUP kecil butuh subkontraktor. Ancaman: regulasi lingkungan makin ketat, munculnya kontraktor besar yang masuk segmen kecil.", "solution": "S-O (agresif): manfaatkan relasi IUP + harga batubara naik untuk ambil kontrak baru dan negosiasi uang muka guna remajakan armada. W-O: gunakan peluang harga tinggi untuk ajukan pembiayaan/leasing alat baru. S-T: pakai reputasi tim survey untuk diferensiasi kepatuhan lingkungan agar tidak head-to-head harga dengan kontraktor besar. W-T (defensif): fokus pada 2-3 klien inti dan tunda ekspansi sampai modal kerja membaik."}, {"id": "pestel", "cat": "Strategy", "name": "PESTEL Analysis", "desc": "Memindai faktor makro Political, Economic, Social, Technological, Environmental, Legal yang memengaruhi bisnis.", "theory": "PESTEL digunakan untuk memahami lingkungan makro di luar kendali perusahaan sehingga strategi bisa diantisipasi lebih dini. Setiap faktor dinilai dari probabilitas terjadi, dampak terhadap bisnis, tren (naik/turun/stabil), dan horizon waktu, lalu dipetakan pada heatmap probabilitas x dampak.", "steps": ["Daftar faktor per kategori P-E-S-T-E-L", "Nilai Probability (1-5) dan Impact (1-5)", "Hitung skor risiko = Probability x Impact", "Tentukan tren & horizon waktu (pendek/menengah/panjang)", "Susun respons strategis per faktor prioritas tinggi"], "case": "Perusahaan manufaktur consumer goods mengevaluasi rencana ekspansi pabrik baru. Faktor kunci: (Political) rencana kenaikan tarif impor bahan baku, (Economic) inflasi & suku bunga naik, (Social) preferensi konsumen ke produk ramah lingkungan, (Technological) otomasi lini produksi makin murah, (Environmental) regulasi emisi karbon diperketat, (Legal) UU ketenagakerjaan baru soal upah minimum.", "solution": "Skoring: Kenaikan tarif impor P=4,I=5 -> skor 20 (kritis) -> respons: cari supplier lokal. Inflasi/suku bunga P=4,I=4 -> skor 16 -> respons: kunci pembiayaan bunga tetap sebelum naik lebih lanjut. Preferensi hijau P=3,I=3 -> skor 9 -> respons: sertifikasi eco-label sebagai diferensiasi. Otomasi murah P=3,I=4 -> skor 12 -> respons: studi kelayakan investasi otomasi bertahap. Hasil heatmap menunjukkan 2 faktor merah (tarif impor, inflasi) harus masuk mitigasi risiko prioritas pertama pada Risk Register proyek ekspansi."}, {"id": "porter5", "cat": "Strategy", "name": "Porter's Five Forces", "desc": "Mengukur daya tarik industri melalui 5 kekuatan kompetitif.", "theory": "Model Michael Porter menilai intensitas persaingan industri dari lima gaya: rivalitas kompetitor, ancaman pendatang baru, daya tawar pemasok, daya tawar pembeli, dan ancaman produk substitusi. Semakin tinggi total skor, semakin rendah daya tarik industri (persaingan ketat, margin tertekan).", "steps": ["Skor tiap gaya 1 (lemah) - 5 (kuat)", "Hitung rata-rata sebagai indeks daya tarik industri", "Identifikasi gaya dominan penekan margin", "Rumuskan strategi mitigasi per gaya"], "case": "Perusahaan jasa konsultan konstruksi mengevaluasi industri jasa pengawasan proyek (konsultan MK) di kotanya. Rivalry tinggi (banyak pemain lokal, skor 4). Ancaman pendatang baru sedang (butuh sertifikasi, skor 2). Daya tawar pemasok (tenaga ahli bersertifikat langka) tinggi (skor 4). Daya tawar pembeli (owner proyek besar) tinggi karena banyak pilihan konsultan (skor 4). Ancaman substitusi (owner pakai tim internal) sedang (skor 3).", "solution": "Rata-rata skor = (4+2+4+4+3)/5 = 3.4 dari 5 -> industri kurang menarik / margin tertekan. Gaya dominan: rivalitas & daya tawar pembeli. Rekomendasi: diferensiasi lewat spesialisasi (mis. pengawasan proyek tambang/EPC) agar keluar dari perbandingan harga langsung, dan buat kontrak retainer jangka panjang untuk mengurangi daya tawar pembeli per proyek."}, {"id": "vrio", "cat": "Strategy", "name": "VRIO Framework", "desc": "Menilai apakah sebuah resource/kapabilitas menghasilkan keunggulan kompetitif berkelanjutan.", "theory": "VRIO menguji resource melalui 4 pertanyaan berurutan: apakah Valuable (bernilai), Rare (langka), Inimitable (sulit ditiru), dan Organized (didukung organisasi untuk dieksploitasi). Kombinasi jawaban menentukan level keunggulan kompetitif.", "steps": ["Daftar resource/kapabilitas kunci", "Jawab Ya/Tidak untuk V, R, I, O secara berurutan", "Petakan hasil ke 4 kategori outcome", "Tentukan prioritas investasi resource"], "case": "Perusahaan logistik memiliki sistem tracking real-time berbasis GPS yang dikembangkan sendiri. Valuable: Ya (mengurangi biaya & klaim kehilangan). Rare: Ya (kompetitor lokal belum punya). Inimitable: Ya (butuh 2 tahun & investasi besar untuk ditiru). Organized: Tidak (tim IT internal belum terstruktur untuk maintain & scale sistem ini).", "solution": "V-R-I terpenuhi tapi O belum -> hasil VRIO: 'Temporary Competitive Advantage' (bukan sustained), karena tanpa organisasi yang siap, keunggulan bisa hilang atau tidak termanfaatkan penuh. Rekomendasi aksi: bentuk tim dedicated (product owner + dev) dan SOP maintenance agar naik kelas menjadi Sustained Competitive Advantage sebelum kompetitor mengejar dari sisi Inimitability."}, {"id": "bcg", "cat": "Strategy", "name": "BCG Matrix", "desc": "Memetakan portofolio produk/unit bisnis berdasarkan pangsa pasar relatif dan pertumbuhan pasar.", "theory": "BCG Matrix membagi portofolio menjadi 4 kuadran: Stars (growth tinggi, share tinggi), Cash Cows (growth rendah, share tinggi), Question Marks (growth tinggi, share rendah), dan Dogs (growth rendah, share rendah). Digunakan untuk keputusan alokasi investasi antar unit bisnis.", "steps": ["Hitung Market Growth Rate tiap produk/unit", "Hitung Relative Market Share = Share kita / Share pesaing terbesar", "Plot pada matrix 2x2 (garis batas biasanya growth 10% & share 1.0x)", "Tentukan strategi: invest, hold, harvest, atau divest"], "case": "Perusahaan FMCG punya 4 lini: Produk A (growth 15%, RMS 1.8), Produk B (growth 3%, RMS 2.1), Produk C (growth 18%, RMS 0.4), Produk D (growth 2%, RMS 0.3).", "solution": "Produk A -> Star (growth & share tinggi): terus investasi untuk mempertahankan posisi. Produk B -> Cash Cow (growth rendah, share tinggi): panen laba untuk danai unit lain. Produk C -> Question Mark (growth tinggi, share rendah): butuh keputusan investasi selektif atau divestasi jika tak sanggup mengejar share. Produk D -> Dog (growth & share rendah): kandidat divestasi/hentikan produksi bertahap. Alokasi kas disarankan: kas dari Produk B dipakai membiayai ekspansi Produk A dan uji pasar terbatas Produk C."}, {"id": "ansoff", "cat": "Strategy", "name": "Ansoff Matrix", "desc": "Menentukan arah strategi pertumbuhan: penetrasi pasar, pengembangan pasar, pengembangan produk, atau diversifikasi.", "theory": "Ansoff Matrix menyilangkan dua sumbu: produk (existing vs new) dan pasar (existing vs new), menghasilkan 4 strategi pertumbuhan dengan tingkat risiko meningkat dari Market Penetration ke Diversification.", "steps": ["Petakan opsi pertumbuhan ke 4 kuadran", "Nilai Opportunity, Risk, Investment, Expected Return tiap opsi", "Beri skor prioritas", "Pilih kombinasi strategi sesuai kapasitas modal & risk appetite"], "case": "Perusahaan katering korporat mempertimbangkan 4 opsi ekspansi: (1) tambah promo untuk klien existing, (2) buka layanan ke kota baru dengan menu sama, (3) luncurkan menu sehat premium untuk klien existing, (4) masuk bisnis event organizer (pasar & produk baru).", "solution": "Opsi 1 = Market Penetration, risiko rendah, investasi rendah, return cepat tapi terbatas -> prioritas jangka pendek. Opsi 2 = Market Development, risiko menengah (perlu riset kota baru & logistik) -> prioritas jangka menengah jika kapasitas dapur mencukupi. Opsi 3 = Product Development, risiko menengah, return berpotensi tinggi jika sesuai tren -> layak dipilot kecil. Opsi 4 = Diversification, risiko tertinggi karena kompetensi inti berbeda -> tunda sampai 3 opsi lain stabil. Rekomendasi urutan eksekusi: Opsi 1 -> Opsi 3 (pilot) -> Opsi 2 -> evaluasi ulang Opsi 4."}, {"id": "valuechain", "cat": "Strategy", "name": "Value Chain Analysis", "desc": "Memetakan aktivitas primer dan pendukung untuk menemukan sumber keunggulan biaya/diferensiasi.", "theory": "Model Porter ini memecah operasi perusahaan menjadi Aktivitas Primer (inbound logistics, operations, outbound logistics, marketing & sales, service) dan Aktivitas Pendukung (infrastruktur, HR, teknologi, procurement). Tiap aktivitas dinilai kontribusi biaya dan nilainya bagi pelanggan.", "steps": ["Petakan seluruh aktivitas primer & pendukung", "Nilai Cost dan Value tiap aktivitas", "Identifikasi aktivitas dengan cost tinggi tapi value rendah (peluang efisiensi)", "Identifikasi aktivitas dengan value tinggi (peluang diferensiasi)"], "case": "Pabrik furniture ekspor menganalisis rantai nilainya: Inbound logistics (biaya tinggi karena kayu impor), Operations (efisien, cost sedang), Outbound logistics (biaya tinggi, sering delay pengiriman), Marketing & Sales (value tinggi lewat pameran internasional), Service (lemah, minim garansi purna jual).", "solution": "Prioritas 1: Outbound logistics -> cost tinggi & value rendah karena delay merusak kepuasan pelanggan -> perbaiki lewat kontrak forwarder & konsolidasi pengiriman. Prioritas 2: Inbound logistics -> cari sumber kayu lokal bersertifikat untuk turunkan biaya impor. Peluang diferensiasi: perkuat Service (garansi + layanan purna jual) karena kompetitor lemah di area ini, sehingga bisa jadi nilai jual baru tanpa menaikkan biaya signifikan."}, {"id": "smart", "cat": "Goals & KPI", "name": "SMART Goals", "desc": "Menyusun tujuan yang Specific, Measurable, Achievable, Relevant, Time-bound.", "theory": "SMART adalah kriteria penulisan tujuan agar jelas dan bisa dieksekusi. Tujuan yang tidak memenuhi salah satu kriteria cenderung sulit diukur pencapaiannya atau tidak realistis dieksekusi tim.", "steps": ["Tulis tujuan awal secara umum", "Uji tiap huruf S-M-A-R-T dengan pertanyaan pemandu", "Revisi kalimat tujuan agar memenuhi seluruh kriteria", "Hitung skor kualitas 0-100 (20 poin per kriteria terpenuhi)"], "case": "Tujuan awal seorang Manajer Produksi: 'Meningkatkan produktivitas pabrik.'", "solution": "Uji SMART: Specific? Belum jelas area mana. Measurable? Belum ada angka. Time-bound? Belum ada tenggat. Revisi SMART: 'Meningkatkan output produksi lini A dari 800 unit/hari menjadi 950 unit/hari (naik 18.75%) dalam 3 bulan (Sep-Nov 2026) melalui optimasi changeover time.' Skor kualitas: Specific 20, Measurable 20, Achievable 20 (naik 18.75% realistis berdasar studi waktu), Relevant 20 (selaras target perusahaan), Time-bound 20 -> Total 100/100."}, {"id": "okr", "cat": "Goals & KPI", "name": "OKR (Objectives & Key Results)", "desc": "Menghubungkan Objective kualitatif dengan Key Result kuantitatif yang terukur triwulanan.", "theory": "OKR terdiri dari Objective (arah yang ambisius dan inspiratif) dan 3-5 Key Result (indikator terukur pencapaian). Achievement % dihitung dari (Current - Baseline)/(Target - Baseline) x 100%, dengan status Not Started/On Track/At Risk/Off Track/Completed.", "steps": ["Rumuskan Objective yang jelas & memotivasi", "Tetapkan 3-5 Key Result terukur dengan baseline & target", "Tentukan owner & deadline tiap KR", "Update Current secara berkala, hitung Achievement %", "Tetapkan status otomatis berdasar % capaian vs waktu berjalan"], "case": "Objective Q3 2026: 'Menjadi kontraktor tambang paling andal di region.' KR1: Equipment availability dari 78% ke 90% (current 84%). KR2: Zero LTI dari 2 insiden ke 0 (current 1). KR3: Cost per BCM turun dari Rp18.500 ke Rp16.000 (current Rp17.200).", "solution": "KR1 Achievement = (84-78)/(90-78) x100% = 50%. KR2 (dihitung terbalik krn target minimal): (2-1)/(2-0) x100% = 50%. KR3 = (18500-17200)/(18500-16000) x100% = 52%. Rata-rata OKR score = (50+50+52)/3 = 50.7% -> pada pertengahan kuarter ini tergolong 'On Track' jika waktu berjalan juga ~50%, tapi jika sudah minggu ke-10 dari 13 minggu maka statusnya 'At Risk' dan perlu action plan percepatan di KR2 (safety) karena stagnan."}, {"id": "kpi", "cat": "Goals & KPI", "name": "KPI Management", "desc": "Database indikator kinerja kunci dengan target, aktual, dan status otomatis.", "theory": "KPI adalah metrik terukur yang mencerminkan pencapaian tujuan strategis/operasional. Setiap KPI perlu definisi jelas, formula perhitungan, target, frekuensi pengukuran, dan pemilik (owner) yang bertanggung jawab. Status umumnya memakai traffic light: Hijau (tercapai), Kuning (peringatan, 80-99% target), Merah (kritis, <80% target).", "steps": ["Definisikan KPI & formula perhitungan yang jelas", "Tetapkan target & satuan", "Tentukan frekuensi update (harian/mingguan/bulanan)", "Input aktual secara berkala", "Hitung % capaian & tentukan status otomatis"], "case": "KPI 'On-Time Delivery' didefinisikan sebagai (Jumlah pengiriman tepat waktu / Total pengiriman) x 100%, target 95%. Bulan ini: 182 dari 200 pengiriman tepat waktu.", "solution": "Aktual = 182/200 x100% = 91%. % capaian terhadap target = 91/95 x100% = 95.8%. Karena berada di rentang 80-99% dari target, status = Kuning (Warning) -> perlu root cause analysis (mis. pakai 5 Whys) untuk 18 pengiriman yang telat sebelum status jatuh ke Merah bulan depan."}, {"id": "bsc", "cat": "Goals & KPI", "name": "Balanced Scorecard", "desc": "Mengukur kinerja dari 4 perspektif: Finansial, Pelanggan, Proses Internal, dan Pembelajaran & Pertumbuhan.", "theory": "BSC menyeimbangkan indikator finansial (lag indicator) dengan indikator non-finansial (lead indicator) agar strategi tidak hanya dikejar jangka pendek. Hubungan sebab-akibat antar perspektif divisualisasikan dalam Strategy Map: Learning & Growth mendorong Internal Process, mendorong Customer, mendorong Financial.", "steps": ["Tentukan sasaran strategis per 4 perspektif", "Tetapkan KPI & target tiap sasaran", "Bobot tiap perspektif sesuai prioritas strategi", "Hitung skor gabungan berbobot", "Gambarkan hubungan sebab-akibat pada Strategy Map"], "case": "Perusahaan jasa maintenance alat berat menilai kinerja Q2: Financial (Revenue growth 8% dari target 10% -> capaian 80%), Customer (NPS 42 dari target 50 -> capaian 84%), Internal Process (Cycle time perbaikan turun sesuai target -> capaian 100%), Learning & Growth (Jam training/karyawan 6 dari target 10 -> capaian 60%). Bobot: Financial 30%, Customer 30%, Internal 20%, Learning 20%.", "solution": "Skor berbobot = (80x0.3)+(84x0.3)+(100x0.2)+(60x0.2) = 24+25.2+20+12 = 81.2/100. Analisis sebab-akibat: capaian Learning & Growth paling rendah (60%) kemungkinan menjadi akar penyebab Financial belum tercapai penuh (SDM kurang terlatih -> produktivitas & upsell rendah). Rekomendasi: naikkan alokasi training di Q3 sebagai leading indicator untuk memperbaiki Customer & Financial di kuartal berikutnya."}, {"id": "hoshin", "cat": "Goals & KPI", "name": "Hoshin Kanri (X-Matrix)", "desc": "Menyelaraskan visi jangka panjang, objektif tahunan, prioritas improvement, dan KPI dalam satu matrix.", "theory": "Hoshin Kanri (policy deployment) menghubungkan 4 elemen dalam bentuk X-Matrix: Long-term goals (3-5 tahun), Annual objectives (tahun ini), Improvement priorities/initiatives (proyek/program), dan KPI (metrik pelacakan), lengkap dengan matriks korelasi & penanggung jawab.", "steps": ["Tetapkan 2-3 Long-term goals", "Turunkan 2-4 Annual objectives yang mendukung goal", "Tetapkan Improvement priorities/inisiatif konkret", "Tetapkan KPI pelacak tiap inisiatif", "Petakan korelasi (kuat/sedang/lemah) antar elemen di X-Matrix", "Tetapkan owner tiap kotak korelasi"], "case": "Long-term goal: 'Menjadi pabrik dengan OEE terbaik di grup pada 2029.' Annual objective 2026: 'Naikkan OEE dari 68% ke 75%.' Inisiatif: Program TPM & pelatihan operator. KPI: OEE bulanan, MTBF, jam training.", "solution": "Korelasi X-Matrix: Long-term goal - Annual objective = korelasi KUAT (langsung mendukung). Annual objective - Inisiatif TPM = korelasi KUAT. Inisiatif TPM - KPI OEE & MTBF = korelasi KUAT, sedangkan ke KPI jam training = korelasi SEDANG (pendukung tidak langsung). Owner ditetapkan: Annual objective (Plant Manager), Inisiatif TPM (Maintenance Manager), KPI harian (Shift Supervisor). Matrix ini memastikan setiap inisiatif improvement tahun berjalan benar-benar terhubung ke visi jangka panjang, bukan proyek berdiri sendiri."}, {"id": "charter", "cat": "Project Management", "name": "Project Charter", "desc": "Dokumen resmi yang mengesahkan proyek dan memberi wewenang kepada Project Manager.", "theory": "Project Charter adalah dokumen formal awal proyek berisi business case, objective, scope garis besar, budget, timeline, stakeholder kunci, risiko awal, asumsi, batasan, dan kriteria sukses. Dokumen ini menjadi acuan otorisasi sehingga proyek tidak berjalan tanpa mandat jelas.", "steps": ["Tulis business case & justifikasi proyek", "Tetapkan objective & success criteria terukur", "Tetapkan scope garis besar & deliverable utama", "Estimasi budget & timeline tingkat tinggi", "Identifikasi stakeholder, risiko, asumsi, dan constraint", "Dapatkan tanda tangan sponsor sebagai otorisasi resmi"], "case": "Proyek pembangunan gudang baru untuk perusahaan distribusi, budget indikatif Rp8 miliar, target selesai 6 bulan, sponsor adalah Direktur Operasional.", "solution": "Contoh isi charter: Business Case - kapasitas gudang existing sudah 95% terpakai, berisiko hambat pertumbuhan penjualan 20%/tahun. Objective - gudang baru 5.000 m2 siap operasi dalam 6 bulan dengan biaya <= Rp8.2M (toleransi 2.5%). Success Criteria - serah terima tepat waktu, tanpa kecelakaan kerja, biaya dalam toleransi. Stakeholder kunci - Direktur Operasional (sponsor), Manajer Gudang (user), Kontraktor. Risiko awal - keterlambatan izin IMB, cuaca hujan pada masa konstruksi. Constraint - lokasi tanah sudah fix, tidak boleh ganggu operasional gudang lama. Dengan charter ini disahkan, PM resmi berwenang membentuk tim dan menyusun WBS."}, {"id": "wbs", "cat": "Project Management", "name": "Work Breakdown Structure (WBS)", "desc": "Memecah proyek menjadi Phase -> Work Package -> Activity -> Task yang bisa diukur dan ditugaskan.", "theory": "WBS adalah dekomposisi hierarkis dari total scope proyek menjadi paket-paket kerja yang lebih kecil dan dapat dikelola, mengikuti '100% rule' (jumlah level di bawah harus mewakili 100% cakupan level di atasnya, tidak lebih tidak kurang). WBS menjadi dasar untuk estimasi biaya, jadwal, dan penugasan.", "steps": ["Tetapkan Project sebagai level 0", "Pecah menjadi Phase (level 1)", "Pecah tiap Phase menjadi Work Package (level 2)", "Pecah Work Package menjadi Activity/Task terukur (level 3-4)", "Beri ID, owner, durasi, dan budget tiap task terkecil", "Verifikasi 100% rule tiap level"], "case": "Proyek renovasi kantor 2 lantai. Buat WBS 3 level untuk Phase 'Pekerjaan Interior Lantai 1'.", "solution": "Level 0: Proyek Renovasi Kantor. Level 1 - Phase: Persiapan, Pekerjaan Struktur, Pekerjaan Interior Lantai 1, Pekerjaan Interior Lantai 2, Serah Terima. Level 2 - Work Package dari 'Interior Lantai 1': Pekerjaan Partisi, Pekerjaan Plafon, Pekerjaan Lantai, Pekerjaan MEP, Finishing & Cat. Level 3 - Task dari 'Pekerjaan Partisi': (1.3.1) Marking & layout - 2 hari, Rp3jt; (1.3.2) Pasang rangka partisi - 5 hari, Rp25jt; (1.3.3) Pasang gypsum board - 4 hari, Rp18jt; (1.3.4) QC & rapikan sambungan - 1 hari, Rp2jt. Total 4 task = 100% cakupan Work Package Partisi, memenuhi 100% rule."}, {"id": "raci", "cat": "Project Management", "name": "RACI Matrix", "desc": "Memperjelas peran tim: Responsible, Accountable, Consulted, Informed pada tiap aktivitas.", "theory": "RACI mencegah ambiguitas tanggung jawab dengan mendefinisikan siapa Mengerjakan (R), siapa yang Bertanggung jawab akhir & mengambil keputusan (A - idealnya hanya 1 orang per aktivitas), siapa yang Dimintai pendapat sebelum keputusan (C), dan siapa yang cukup Diinformasikan hasilnya (I).", "steps": ["Daftar seluruh aktivitas/deliverable di kolom", "Daftar seluruh peran/anggota tim di baris", "Isi tiap sel dengan R/A/C/I", "Validasi: setiap aktivitas minimal 1 R dan tepat 1 A", "Selesaikan konflik jika ada 2+ 'A' pada satu aktivitas"], "case": "Aktivitas 'Persetujuan Perubahan Desain' pada proyek konstruksi melibatkan: PM, Arsitek, Owner, dan Tim Engineering.", "solution": "PM = R (menyiapkan dokumen perubahan & analisis dampak), Owner = A (pengambil keputusan akhir, hanya 1), Arsitek = C (dimintai pendapat teknis desain sebelum diputuskan), Tim Engineering = C (dimintai pendapat dampak struktur/biaya), seluruh tim proyek lain = I (diinformasikan hasil keputusan). Validasi: aktivitas ini punya 1 R (PM) dan 1 A (Owner) -> memenuhi syarat RACI valid. Jika ditemukan PM juga diberi 'A', harus dikoreksi karena keputusan final perubahan desain semestinya wewenang Owner, bukan PM."}, {"id": "cpm", "cat": "Project Management", "name": "Critical Path Method (CPM) & Gantt Chart", "desc": "Menentukan jalur kritis (critical path) yaitu rangkaian aktivitas terpanjang yang menentukan durasi minimum proyek.", "theory": "CPM menghitung Earliest Start/Finish (forward pass) dan Latest Start/Finish (backward pass) tiap aktivitas untuk mendapatkan Total Float = LS - ES. Aktivitas dengan Float = 0 berada di jalur kritis; keterlambatan pada aktivitas ini langsung memundurkan tanggal selesai proyek.", "steps": ["Buat daftar aktivitas dengan durasi & dependency (predecessor)", "Hitung Forward Pass untuk Early Start (ES) & Early Finish (EF)", "Hitung Backward Pass untuk Late Start (LS) & Late Finish (LF)", "Hitung Float = LS - ES (atau LF - EF)", "Jalur kritis = rangkaian aktivitas dengan Float = 0"], "case": "Proyek kecil 4 aktivitas: A (3 hari, tanpa predecessor), B (4 hari, predecessor A), C (2 hari, predecessor A), D (3 hari, predecessor B & C).", "solution": "Forward pass: A: ES0-EF3. B: ES3-EF7 (setelah A). C: ES3-EF5 (setelah A). D: perlu B & C selesai, dimulai setelah yang terlambat = EF B (7), jadi ES7-EF10. Durasi proyek = 10 hari. Backward pass dari D (LF=10,LS=7): B perlu LF=7 (agar D bisa mulai hari 7) -> LS=3, Float B = LS-ES = 3-3 = 0 (kritis). C: LF juga harus <=7 agar D tak mundur, tapi durasi C=2 sehingga LS=5, Float C = 5-3 = 2 hari (tidak kritis, ada slack 2 hari). A: LS=0, Float=0 (kritis). Jalur kritis = A-B-D (total 3+4+3=10 hari), sedangkan C punya 2 hari float sehingga bisa mulai lebih lambat tanpa memundurkan proyek."}, {"id": "evm", "cat": "Project Management", "name": "Earned Value Management (EVM)", "desc": "Mengukur kinerja biaya & jadwal proyek secara objektif menggunakan PV, EV, AC.", "theory": "EVM membandingkan Planned Value (PV, nilai rencana pekerjaan), Earned Value (EV, nilai pekerjaan yang benar-benar selesai), dan Actual Cost (AC, biaya aktual dikeluarkan) untuk menghasilkan indikator objektif kinerja biaya (CPI) dan jadwal (SPI), serta proyeksi biaya akhir (EAC).", "steps": ["Tetapkan BAC (Budget at Completion)", "Hitung PV berdasarkan rencana s.d tanggal laporan", "Hitung EV = % pekerjaan selesai x BAC", "Catat AC = biaya aktual yang sudah dikeluarkan", "Hitung CV=EV-AC, SV=EV-PV, CPI=EV/AC, SPI=EV/PV", "Hitung EAC=BAC/CPI, ETC=EAC-AC, VAC=BAC-EAC"], "case": "Proyek dengan BAC Rp1.000.000.000. Pada bulan ke-4: rencana progress 45% (PV), progress aktual selesai 38% (EV), biaya aktual dikeluarkan Rp420.000.000 (AC).", "solution": "PV = 45% x 1.000.000.000 = Rp450.000.000. EV = 38% x 1.000.000.000 = Rp380.000.000. AC = Rp420.000.000. CV = EV-AC = 380jt-420jt = -Rp40.000.000 (cost overrun). SV = EV-PV = 380jt-450jt = -Rp70.000.000 (terlambat dari jadwal). CPI = EV/AC = 380/420 = 0.9048 (setiap Rp1 dikeluarkan hanya menghasilkan sekitar Rp0.90 nilai pekerjaan -> boros). SPI = EV/PV = 380/450 = 0.8444 (proyek berjalan di bawah rencana jadwal). EAC = BAC/CPI = 1.000.000.000/0.9048 = Rp1.105.263.158 (proyeksi biaya akhir membengkak ~10.5%). VAC = BAC-EAC = 1.000.000.000-1.105.263.158 = -Rp105.263.158. Kesimpulan: proyek 'Critical' di sisi biaya maupun jadwal, perlu corrective action segera (percepat progress & kendalikan cost overrun)."}, {"id": "risk", "cat": "Project Management", "name": "Risk Register", "desc": "Mendaftar, menilai, dan memitigasi risiko proyek secara sistematis.", "theory": "Risk Register mencatat setiap risiko dengan probabilitas, dampak, skor (Probability x Impact), level (rendah/sedang/tinggi/kritis pada heatmap 5x5), pemilik risiko, rencana mitigasi (preventif), dan kontingensi (jika risiko terjadi).", "steps": ["Identifikasi risiko dari brainstorming/lesson learned", "Analisis penyebab & konsekuensi tiap risiko", "Skor Probability (1-5) x Impact (1-5)", "Tentukan level risiko dari heatmap 5x5", "Tetapkan owner, mitigasi, dan kontingensi", "Tinjau ulang berkala (risk review)"], "case": "Proyek konstruksi jembatan mengidentifikasi risiko: 'Keterlambatan pengiriman girder beton pracetak dari pabrik ke lokasi karena akses jalan sempit', Probability dinilai 4 (sering terjadi berdasarkan proyek serupa), Impact dinilai 5 (bisa menunda milestone kritis 3 minggu).", "solution": "Skor risiko = Probability x Impact = 4 x 5 = 20 -> pada heatmap 5x5 masuk zona MERAH/Kritis (skor >=15). Mitigasi (preventif): survey & perkuat akses jalan sebelum girder tiba, jadwalkan pengiriman malam hari saat lalu lintas sepi, siapkan alat bantu (crane tambahan) di lokasi sempit. Kontingensi (jika tetap terjadi): siapkan opsi cor girder di lokasi (cast in-situ) sebagai alternatif untuk segmen yang aksesnya paling sulit. Owner: Site Manager. Due date mitigasi: sebelum minggu ke-6 (H-2 minggu dari jadwal pengiriman pertama)."}, {"id": "pdca", "cat": "Problem Solving", "name": "PDCA Cycle", "desc": "Siklus perbaikan berkelanjutan: Plan-Do-Check-Act.", "theory": "PDCA adalah siklus iteratif problem solving: Plan (identifikasi masalah, target, rencana aksi berdasar akar masalah), Do (implementasi rencana skala kecil/pilot), Check (bandingkan hasil aktual vs target), Act (standarisasi jika berhasil, atau ulangi siklus dengan penyesuaian jika belum).", "steps": ["Plan: definisikan problem, target, root cause, rencana aksi", "Do: implementasikan rencana (idealnya pilot dulu)", "Check: bandingkan hasil aktual vs target", "Act: standarisasi bila berhasil, atau kembali ke Plan jika belum"], "case": "Tingkat reject produk di line packing 6%, target diturunkan ke 2% dalam 1 bulan. Root cause awal diduga dari setting mesin sealer yang tidak konsisten.", "solution": "Plan: Target reject 2%, root cause = suhu sealer tidak stabil (fluktuasi +-15C), rencana aksi = pasang thermostat digital & buat SOP kalibrasi harian. Do: pilot pada 1 line selama 1 minggu. Check: hasil pilot reject turun jadi 2.3% (mendekati target, belum tercapai penuh). Act: karena hasil positif tapi belum 100% capai target, standarisasi thermostat digital ke SEMUA line (bukan ulang dari awal), lalu buka siklus PDCA baru dengan target lanjutan 1.5% dengan root cause baru (operator belum konsisten ikuti SOP kalibrasi) sebagai fokus siklus berikutnya."}, {"id": "5why", "cat": "Problem Solving", "name": "5 Whys", "desc": "Menelusuri akar masalah dengan bertanya 'mengapa' secara berulang (biasanya 5 kali).", "theory": "5 Whys adalah teknik sederhana namun efektif untuk masuk lebih dalam dari gejala (symptom) ke akar penyebab (root cause) dengan menanyakan 'mengapa' secara berurutan, tiap jawaban menjadi dasar pertanyaan berikutnya, sampai ditemukan penyebab yang bisa ditindaklanjuti secara sistemik.", "steps": ["Tulis problem statement secara spesifik", "Tanya 'Mengapa?' dan catat jawaban (Why 1)", "Ulangi bertanya 'Mengapa?' dari jawaban sebelumnya (Why 2-5)", "Berhenti saat mencapai akar penyebab sistemik yang actionable", "Tetapkan corrective action & preventive action"], "case": "Problem: 'Mesin conveyor packing berhenti mendadak setiap hari.'", "solution": "Why 1: Mengapa conveyor berhenti? -> Karena motor overheat dan trip. Why 2: Mengapa motor overheat? -> Karena beban conveyor melebihi kapasitas. Why 3: Mengapa beban melebihi kapasitas? -> Karena produk menumpuk di ujung conveyor. Why 4: Mengapa produk menumpuk? -> Karena kecepatan mesin packing di hilir lebih lambat dari conveyor. Why 5: Mengapa kecepatan tidak disesuaikan? -> Karena tidak ada prosedur sinkronisasi kecepatan antar mesin saat instalasi awal. Root Cause: tidak ada SOP sinkronisasi kecepatan lini. Corrective action: pasang sensor kecepatan otomatis (auto-adjust). Preventive action: buat SOP line balancing untuk setiap instalasi mesin baru ke depannya."}, {"id": "fishbone", "cat": "Problem Solving", "name": "Fishbone Diagram (Cause & Effect)", "desc": "Mengelompokkan kemungkinan penyebab masalah ke dalam kategori 6M: Man, Machine, Method, Material, Measurement, Environment.", "theory": "Diagram tulang ikan (Ishikawa) memvisualisasikan hubungan antara efek (masalah) dengan berbagai kategori penyebab potensial, membantu tim brainstorming secara terstruktur agar tidak ada sudut pandang penyebab yang terlewat.", "steps": ["Tulis 'efek/masalah' di kepala ikan", "Buat 6 tulang kategori: Man, Machine, Method, Material, Measurement, Environment", "Brainstorm penyebab potensial di tiap kategori", "Beri tanda penyebab yang paling mungkin (data/voting tim)", "Lanjutkan ke 5 Whys atau Pareto untuk validasi penyebab utama"], "case": "Masalah: 'Kualitas las (welding) sambungan pipa sering tidak sesuai spesifikasi (banyak porosity).'", "solution": "Man: welder belum tersertifikasi untuk posisi pengelasan tertentu. Machine: mesin las tidak dikalibrasi rutin, arus tidak stabil. Method: tidak ada standar preheat sebelum pengelasan. Material: elektroda disimpan di tempat lembab (terkontaminasi). Measurement: alat ukur arus/tegangan tidak terkalibrasi sehingga parameter aktual tidak akurat. Environment: pengelasan dilakukan di area terbuka saat angin kencang, memengaruhi shielding gas. Setelah brainstorming, tim voting penyebab paling dominan = Material (elektroda lembab) dan Environment (angin) berdasarkan data lapangan -> keduanya divalidasi lanjut dengan Pareto Analysis dari data laporan NCR 3 bulan terakhir."}, {"id": "dmaic", "cat": "Problem Solving", "name": "DMAIC (Six Sigma)", "desc": "Metodologi improvement terstruktur: Define, Measure, Analyze, Improve, Control.", "theory": "DMAIC digunakan untuk proyek perbaikan proses yang lebih kompleks dan berbasis data dibanding PDCA sederhana. Define menetapkan masalah & Voice of Customer (VOC)/Critical to Quality (CTQ); Measure mengumpulkan baseline data; Analyze mencari akar masalah statistik; Improve menguji solusi; Control memastikan hasil bertahan lewat control plan.", "steps": ["Define: problem statement, VOC, CTQ", "Measure: kumpulkan baseline data & validasi sistem pengukuran", "Analyze: cari root cause (statistik/fishbone/5 whys)", "Improve: uji & implementasikan solusi", "Control: buat control plan & monitoring KPI berkelanjutan"], "case": "Waktu tunggu klaim asuransi rata-rata 12 hari, VOC pelanggan menuntut maksimal 5 hari (CTQ). Data 3 bulan terakhir dikumpulkan untuk analisis.", "solution": "Define: CTQ = waktu proses klaim <=5 hari, baseline 12 hari. Measure: rata-rata aktual 12.4 hari, dengan variasi tinggi (rentang 3-25 hari) menandakan proses tidak stabil, bukan hanya lambat. Analyze: dari data ditemukan 60% waktu tunggu terjadi pada tahap 'verifikasi dokumen manual' (bottleneck). Improve: implementasi sistem verifikasi dokumen digital + checklist standar, uji coba pada 50 klaim -> rata-rata turun jadi 6.2 hari. Control: pasang KPI harian 'waktu verifikasi dokumen', dashboard tren mingguan, dan audit sampel bulanan untuk memastikan proses tidak kembali ke kebiasaan lama (regresi)."}, {"id": "5w2h", "cat": "Problem Solving", "name": "5W2H", "desc": "Menyusun action plan lengkap dengan menjawab What, Why, Where, When, Who, How, How Much.", "theory": "5W2H adalah kerangka pertanyaan untuk memastikan action plan lengkap dan tidak ambigu: apa yang dilakukan, mengapa penting, di mana, kapan, siapa penanggung jawab, bagaimana caranya, dan berapa biayanya.", "steps": ["Jawab What: apa tindakan yang dilakukan", "Jawab Why: mengapa tindakan ini perlu", "Jawab Where & When: lokasi dan waktu pelaksanaan", "Jawab Who: penanggung jawab", "Jawab How: metode pelaksanaan", "Jawab How Much: estimasi biaya/sumber daya"], "case": "Tindak lanjut dari hasil 5 Whys sebelumnya: memasang sensor kecepatan otomatis pada conveyor packing.", "solution": "What: Pasang sensor auto-adjust kecepatan conveyor. Why: Mencegah penumpukan produk yang menyebabkan motor overheat & downtime harian. Where: Line packing 2, area akhir conveyor sebelum mesin sealer. When: Minggu depan (dalam 5 hari kerja), sebelum shift malam agar tidak ganggu produksi shift siang. Who: Tim Maintenance (PIC: Budi) dengan supervisi Engineering Manager. How: Pasang sensor optik + PLC programming untuk sinkronisasi kecepatan otomatis dengan mesin sealer, uji coba 2 hari sebelum full deploy. How Much: Estimasi Rp15.000.000 (sensor + instalasi + testing), didanai dari budget maintenance improvement bulan berjalan."}, {"id": "fmea", "cat": "Quality", "name": "FMEA (Failure Mode & Effect Analysis)", "desc": "Mengidentifikasi mode kegagalan potensial, dampaknya, dan memprioritaskan mitigasi berdasarkan Risk Priority Number (RPN).", "theory": "FMEA menilai tiap potensi kegagalan (Failure Mode) dari 3 dimensi: Severity (keparahan dampak, 1-10), Occurrence (frekuensi kejadian, 1-10), dan Detection (kemampuan mendeteksi sebelum sampai ke pelanggan, 1-10, semakin sulit dideteksi semakin tinggi angka). RPN = Severity x Occurrence x Detection, semakin tinggi RPN semakin prioritas untuk dimitigasi.", "steps": ["Identifikasi Failure Mode potensial pada proses/produk", "Tentukan Effect (dampak) jika kegagalan terjadi", "Identifikasi Cause (penyebab) dan Existing Control saat ini", "Skor Severity, Occurrence, Detection (1-10)", "Hitung RPN = S x O x D", "Urutkan RPN tertinggi sebagai prioritas mitigasi"], "case": "Proses pengisian tabung gas LPG. Failure Mode: 'Katup tidak tertutup sempurna (bocor)'. Severity dinilai 9 (risiko kebakaran/ledakan, sangat berbahaya). Occurrence dinilai 3 (jarang terjadi berdasar data 6 bulan). Detection dinilai 6 (uji kebocoran manual, kadang terlewat pada shift sibuk).", "solution": "RPN = S x O x D = 9 x 3 x 6 = 162. Dibandingkan Failure Mode lain misal 'Label kadaluarsa salah cetak' (S=3, O=5, D=4, RPN=60), maka 'Katup bocor' (RPN 162) jauh lebih prioritas untuk dimitigasi meski Occurrence-nya rendah, karena Severity sangat tinggi. Rekomendasi mitigasi: pasang alat uji kebocoran otomatis (menurunkan Detection dari 6 ke 2) sehingga RPN baru = 9x3x2 = 54, turun signifikan dan keluar dari zona prioritas kritis."}, {"id": "pareto", "cat": "Quality", "name": "Pareto Analysis (80/20)", "desc": "Mengidentifikasi 'the vital few' penyebab yang berkontribusi paling besar terhadap masalah (prinsip 80/20).", "theory": "Pareto Analysis mengurutkan kategori masalah dari frekuensi tertinggi ke terendah, menghitung persentase dan persentase kumulatif, lalu memvisualisasikan sebagai diagram batang + garis kumulatif. Biasanya sekitar 20% kategori menyumbang 80% masalah, sehingga tim bisa fokus mitigasi di sana.", "steps": ["Kumpulkan data kategori masalah & frekuensinya", "Urutkan dari frekuensi tertinggi ke terendah", "Hitung Percentage tiap kategori = frekuensi/total x100%", "Hitung Cumulative % secara berjalan", "Tarik garis 80% untuk menentukan 'vital few'"], "case": "Data komplain pelanggan bulan ini per kategori: Keterlambatan pengiriman 45, Barang rusak 28, Salah kirim 12, Kemasan jelek 9, Lainnya 6. Total 100 komplain.", "solution": "Urutan & persentase: Keterlambatan 45 (45%, kumulatif 45%); Barang rusak 28 (28%, kumulatif 73%); Salah kirim 12 (12%, kumulatif 85%); Kemasan jelek 9 (9%, kumulatif 94%); Lainnya 6 (6%, kumulatif 100%). Garis 80% terlampaui setelah 3 kategori pertama (kumulatif 85%) -> 'vital few' = Keterlambatan pengiriman, Barang rusak, dan Salah kirim. Ketiganya (60% dari jumlah kategori) menyumbang 85% total komplain, sehingga tim harus fokus root cause analysis pada 3 kategori ini terlebih dulu, bukan menyebar effort ke 5 kategori sekaligus."}, {"id": "decmatrix", "cat": "Decision Making", "name": "Weighted Decision Matrix", "desc": "Memilih alternatif terbaik secara objektif dengan skor berbobot dari beberapa kriteria.", "theory": "Decision Matrix membandingkan beberapa alternatif terhadap kriteria yang sama, tiap kriteria diberi bobot sesuai kepentingan (total bobot 100%), tiap alternatif dinilai (rating) per kriteria, lalu dihitung Weighted Score = Bobot x Rating dan dijumlahkan untuk mendapat total skor tiap alternatif.", "steps": ["Tetapkan alternatif yang dibandingkan", "Tetapkan kriteria keputusan & bobotnya (total 100%)", "Beri rating tiap alternatif per kriteria (skala 1-5 atau 1-10)", "Hitung Weighted Score = Bobot x Rating per kriteria", "Jumlahkan total skor tiap alternatif, pilih tertinggi"], "case": "Memilih supplier ban untuk dump truck dari 3 alternatif (A, B, C). Kriteria: Harga (bobot 30%), Kualitas (35%), Ketersediaan Stok (20%), Layanan Purna Jual (15%). Rating (1-5): A: Harga 5, Kualitas 3, Stok 3, Layanan 3. B: Harga 3, Kualitas 5, Stok 4, Layanan 4. C: Harga 4, Kualitas 4, Stok 5, Layanan 3.", "solution": "Skor A = (0.30x5)+(0.35x3)+(0.20x3)+(0.15x3) = 1.5+1.05+0.6+0.45 = 3.60. Skor B = (0.30x3)+(0.35x5)+(0.20x4)+(0.15x4) = 0.9+1.75+0.8+0.6 = 4.05. Skor C = (0.30x4)+(0.35x4)+(0.20x5)+(0.15x3) = 1.2+1.4+1.0+0.45 = 4.05. B dan C sama-sama unggul (4.05) mengungguli A (3.60). Karena skor B dan C seri, keputusan tambahan bisa memakai kriteria tie-breaker seperti rekam jejak (track record) kerja sama sebelumnya, atau menambah kriteria 'fleksibilitas pembayaran' untuk membedakan keduanya lebih lanjut."}, {"id": "eisenhower", "cat": "Decision Making", "name": "Eisenhower Matrix", "desc": "Memprioritaskan tugas berdasarkan Urgent vs Important dalam 4 kuadran.", "theory": "Matrix ini membagi tugas menjadi 4 kuadran: Urgent+Important (Do First), Not Urgent+Important (Schedule), Urgent+Not Important (Delegate), Not Urgent+Not Important (Eliminate). Membantu manajer fokus pada hal penting sebelum menjadi genting, bukan sekadar reaktif memadamkan api.", "steps": ["Daftar seluruh tugas/permintaan yang masuk", "Nilai tiap tugas: Urgent? Important?", "Klasifikasikan ke 4 kuadran", "Tentukan aksi: Do First / Schedule / Delegate / Eliminate"], "case": "Seorang Site Manager punya 4 tugas hari ini: (1) Investigasi insiden near-miss kemarin, (2) Menyusun rencana pelatihan K3 untuk kuartal depan, (3) Membalas email undangan seminar yang bisa diwakilkan staf, (4) Scroll laporan cuaca yang sebenarnya sudah dikirim otomatis tiap pagi ke semua pihak.", "solution": "Tugas 1 (investigasi near-miss) = Urgent + Important -> Kuadran 'Do First', dikerjakan Site Manager sendiri hari ini juga karena menyangkut keselamatan. Tugas 2 (rencana training K3) = Not Urgent + Important -> Kuadran 'Schedule', dijadwalkan waktu khusus minggu ini agar tidak terus tergeser hal mendesak. Tugas 3 (balas undangan seminar) = Urgent + Not Important -> Kuadran 'Delegate', bisa didelegasikan ke staf admin. Tugas 4 (cek laporan cuaca otomatis) = Not Urgent + Not Important -> Kuadran 'Eliminate', tidak perlu dikerjakan manual karena sudah otomatis terkirim ke semua pihak."}, {"id": "5s", "cat": "Operations & CI", "name": "5S Audit", "desc": "Audit tempat kerja dari 5 dimensi: Sort, Set in Order, Shine, Standardize, Sustain.", "theory": "5S (Seiri-Seiton-Seiso-Seiketsu-Shitsuke, diadaptasi Sort-Set in Order-Shine-Standardize-Sustain) adalah fondasi Lean untuk menciptakan tempat kerja rapi, aman, dan efisien. Audit berkala memberi skor 0-100 tiap dimensi untuk melacak tren perbaikan area kerja.", "steps": ["Buat checklist observasi tiap dimensi S", "Beri skor 0-100 tiap dimensi berdasar temuan lapangan", "Hitung skor total (rata-rata 5 dimensi)", "Foto before-after sebagai bukti", "Bandingkan skor dengan audit periode sebelumnya (tren)"], "case": "Audit 5S bulanan gudang spare part: Sort 70 (masih ada barang tak terpakai tercampur), Set in Order 60 (label rak belum konsisten), Shine 85 (area cukup bersih), Standardize 50 (belum ada SOP tertulis penataan), Sustain 40 (audit sebelumnya tidak ditindaklanjuti).", "solution": "Skor total = (70+60+85+50+40)/5 = 61/100 -> kategori 'Perlu Perbaikan Signifikan'. Dimensi terlemah: Sustain (40), menandakan masalah bukan di 'tahu caranya' tapi di 'konsistensi menjaga'. Rekomendasi prioritas: (1) buat SOP penataan tertulis (naikkan Standardize) sebagai syarat agar Sustain bisa ditingkatkan, (2) jadwalkan audit 5S mingguan (bukan bulanan) selama 2 bulan ke depan untuk membangun kebiasaan, (3) target skor total naik ke 75 dalam 3 bulan dengan tren dicatat di history untuk melihat efektivitas tindakan."}, {"id": "kaizen", "cat": "Operations & CI", "name": "Kaizen / Continuous Improvement Register", "desc": "Mendokumentasikan ide perbaikan kecil berkelanjutan beserta perhitungan ROI-nya.", "theory": "Kaizen menekankan perbaikan kecil, terus-menerus, melibatkan seluruh karyawan (bukan hanya proyek besar top-down). Setiap ide dicatat dengan kondisi saat ini, usulan perbaikan, estimasi manfaat & biaya, lalu dihitung ROI = Annual Benefit / Improvement Cost untuk memprioritaskan implementasi.", "steps": ["Catat kondisi saat ini (current condition) & masalah", "Usulkan improvement konkret", "Estimasi Expected Benefit (tahunan) & Cost implementasi", "Hitung ROI = Annual Benefit / Cost", "Tetapkan owner & deadline implementasi", "Lacak status hingga selesai & verifikasi manfaat riil"], "case": "Operator mengusulkan mengganti wadah pengangkut komponen dari kardus sekali pakai menjadi bin plastik reusable. Biaya investasi bin: Rp30.000.000 (sekali beli). Penghematan kardus sekali pakai: Rp4.500.000/bulan.", "solution": "Annual Benefit = Rp4.500.000 x 12 = Rp54.000.000/tahun. ROI = Annual Benefit / Cost = 54.000.000 / 30.000.000 = 1.8 atau 180% (payback period = Cost/Benefit bulanan = 30.000.000/4.500.000 = 6.7 bulan). Karena ROI tinggi dan payback period di bawah 1 tahun, ide ini masuk prioritas tinggi untuk segera diimplementasikan. Setelah 6 bulan berjalan, tim harus memverifikasi apakah penghematan aktual sesuai estimasi (bukan hanya proyeksi) sebelum item ini ditutup statusnya sebagai 'Completed & Verified'."}, {"id": "competency", "cat": "People", "name": "Competency Matrix", "desc": "Memetakan level kompetensi tiap karyawan terhadap skill yang dibutuhkan untuk mengidentifikasi gap training.", "theory": "Competency Matrix menyilangkan Employee x Competency dengan skala 1 (Beginner) - 5 (Expert). Hasilnya divisualisasikan sebagai heatmap untuk melihat gap kompetensi tim secara cepat dan menyusun Training Matrix / rencana suksesi.", "steps": ["Daftar skill/kompetensi kunci yang dibutuhkan role tertentu", "Nilai level tiap karyawan per kompetensi (1-5)", "Tentukan target level minimum per kompetensi", "Hitung gap = Target - Current", "Susun training plan untuk gap terbesar/paling kritis"], "case": "Tim maintenance 3 orang dinilai pada 3 kompetensi kunci (target level 4 untuk semua): Andi (Troubleshooting Elektrik 4, Hidrolik 2, PLC Programming 1), Budi (Elektrik 3, Hidrolik 4, PLC 2), Citra (Elektrik 2, Hidrolik 3, PLC 4).", "solution": "Gap terbesar: Andi pada PLC Programming (target4-current1=gap3), Budi pada PLC Programming (gap2), Citra pada Elektrik (gap2). Analisis tim: kompetensi PLC Programming paling lemah di seluruh tim (rata-rata hanya 2.3 dari target 4) -> menjadi prioritas training team-wide, bukan hanya individu. Rekomendasi: jadwalkan training PLC dasar-lanjut untuk ketiganya dalam 2 bulan ke depan, sekaligus tunjuk Citra (level 4 di PLC) sebagai mentor internal untuk Andi & Budi guna mempercepat transfer skill tanpa biaya training eksternal tambahan."}]}
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById('tools-data').textContent);
+const TOOLS = DATA.tools;
+const CATEGORIES = DATA.categories;
+
+// ---- loop band ----
+const loopSteps = ["SWOT / PESTEL","Strategic Issue","Objective (OKR)","KPI","Project / WBS","Task","Risk","Action","Management Review"];
+const loopBand = document.getElementById('loop-band');
+loopSteps.forEach((s,i)=>{
+  const el = document.createElement('div'); el.className='loop-step'; el.textContent = s;
+  loopBand.appendChild(el);
+  if(i < loopSteps.length-1){ const a = document.createElement('span'); a.className='loop-arrow'; a.textContent='→'; loopBand.appendChild(a); }
+});
+
+// ---- chips ----
+const chipsWrap = document.getElementById('chips');
+let activeCat = 'Semua';
+function renderChips(){
+  chipsWrap.innerHTML = '';
+  ['Semua', ...CATEGORIES].forEach(cat=>{
+    const c = document.createElement('div');
+    c.className = 'chip' + (cat===activeCat ? ' active':'');
+    c.textContent = cat;
+    c.onclick = ()=>{ activeCat = cat; renderChips(); renderGrid(); };
+    chipsWrap.appendChild(c);
+  });
+}
+renderChips();
+
+// ---- grid ----
+const grid = document.getElementById('toolGrid');
+const emptyState = document.getElementById('emptyState');
+const searchInput = document.getElementById('searchInput');
+
+function renderGrid(){
+  const q = searchInput.value.trim().toLowerCase();
+  const filtered = TOOLS.filter(t=>{
+    const matchCat = activeCat==='Semua' || t.cat===activeCat;
+    const matchQ = !q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.cat.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  grid.innerHTML = '';
+  emptyState.style.display = filtered.length ? 'none' : 'block';
+  filtered.forEach(t=>{
+    const card = document.createElement('div');
+    card.className = 'tool-card';
+    card.innerHTML = `<div class="cat-tag">${t.cat}</div><h4>${t.name}</h4><p>${t.desc}</p><div class="open-hint">Lihat teori &amp; contoh soal →</div>`;
+    card.onclick = ()=>openModal(t.id);
+    grid.appendChild(card);
+  });
+}
+searchInput.addEventListener('input', renderGrid);
+renderGrid();
+
+// ---- modal ----
+const backdrop = document.getElementById('modalBackdrop');
+function openModal(id){
+  const t = TOOLS.find(x=>x.id===id);
+  if(!t) return;
+  document.getElementById('modalCat').textContent = t.cat;
+  document.getElementById('modalTitle').textContent = t.name;
+  document.getElementById('modalDesc').textContent = t.desc;
+  document.getElementById('modalTheory').textContent = t.theory;
+  document.getElementById('modalCase').textContent = t.case;
+  document.getElementById('modalSolution').textContent = t.solution;
+  const stepsList = document.getElementById('modalSteps');
+  stepsList.innerHTML = '';
+  t.steps.forEach((s,i)=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="num">${String(i+1).padStart(2,'0')}</span><span>${s}</span>`;
+    stepsList.appendChild(li);
+  });
+  document.querySelectorAll('.modal-tab').forEach(tb=>tb.classList.remove('active'));
+  document.querySelector('.modal-tab[data-tab="theory"]').classList.add('active');
+  document.querySelectorAll('.modal-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-theory').classList.add('active');
+  backdrop.classList.add('open');
+}
+document.getElementById('modalClose').onclick = ()=>backdrop.classList.remove('open');
+backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) backdrop.classList.remove('open'); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') backdrop.classList.remove('open'); });
+
+document.querySelectorAll('.modal-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.modal-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.modal-pane').forEach(p=>p.classList.remove('active'));
+    document.getElementById('pane-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+// download buttons -> point to the xlsx (same folder when hosted)
+['download-btn','download-btn-2'].forEach(id=>{
+  const el = document.getElementById(id);
+  el.setAttribute('href', 'Management_Toolkit.xlsx');
+});
+</script>
+</body>
+</html>

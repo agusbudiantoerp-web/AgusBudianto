@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS & TOEFL IBT/ITP Simulation — International Standard</title>
+<style>
+:root{
+  --ink:#0A0E1A;--ink2:#374151;--muted:#6B7280;--line:#E5E7EB;
+  --bg:#F9FAFB;--white:#FFFFFF;
+  --blue:#1D4ED8;--blue-l:#EFF6FF;--blue-m:#BFDBFE;
+  --green:#059669;--green-l:#ECFDF5;
+  --amber:#B45309;--amber-l:#FFFBEB;
+  --red:#DC2626;--red-l:#FEF2F2;
+  --purple:#7C3AED;--purple-l:#F5F3FF;
+  --teal:#0891B2;--teal-l:#ECFEFF;
+  --r:12px;--r-sm:8px;--r-xs:4px;
+  --sh:0 2px 16px rgba(0,0,0,0.07);
+  --sh2:0 8px 40px rgba(0,0,0,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ── LANDING ── */
+#s-land{background:#0A0E1A;color:#fff;align-items:center;justify-content:flex-start;padding:0}
+.land-nav{width:100%;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08)}
+.land-logo{font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;color:#fff}
+.land-logo span{color:#60A5FA}
+.nav-badges{display:flex;gap:8px}
+.nbadge{font-size:0.72rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);letter-spacing:0.04em}
+.land-hero{width:100%;max-width:1000px;margin:0 auto;padding:80px 40px 60px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(96,165,250,0.12);border:1px solid rgba(96,165,250,0.25);border-radius:30px;padding:6px 18px;font-size:0.78rem;font-weight:700;color:#93C5FD;letter-spacing:0.08em;margin-bottom:28px}
+.hero-h1{font-size:clamp(2.2rem,5vw,4rem);font-weight:900;line-height:1.08;letter-spacing:-1.5px;margin-bottom:22px}
+.hero-h1 .hl{color:#60A5FA}
+.hero-sub{font-size:1.05rem;color:rgba(255,255,255,0.65);max-width:580px;margin-bottom:40px;line-height:1.75}
+.hero-stats{display:flex;gap:36px;margin-bottom:48px;flex-wrap:wrap}
+.hstat{text-align:left}
+.hstat-n{font-size:2rem;font-weight:900;color:#60A5FA;line-height:1}
+.hstat-l{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:2px}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.btn-hero-ielts{background:#1D4ED8;color:#fff;border:none;border-radius:var(--r);padding:16px 32px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;font-family:inherit;letter-spacing:0.01em}
+.btn-hero-ielts:hover{background:#1E40AF;transform:translateY(-2px);box-shadow:0 12px 36px rgba(29,78,216,0.4)}
+.btn-hero-toefl{background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.3);border-radius:var(--r);padding:16px 32px;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;font-family:inherit}
+.btn-hero-toefl:hover{border-color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.06)}
+.land-cards{width:100%;max-width:1000px;margin:0 auto;padding:0 40px 60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.lcard{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r);padding:24px}
+.lcard-icon{font-size:2rem;margin-bottom:12px}
+.lcard h3{font-size:0.95rem;font-weight:700;margin-bottom:6px}
+.lcard p{font-size:0.8rem;color:rgba(255,255,255,0.55);line-height:1.6}
+.land-form{width:100%;max-width:1000px;margin:0 auto;padding:0 40px 80px}
+.form-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r);padding:32px}
+.form-box h2{font-size:1.1rem;font-weight:700;margin-bottom:22px;color:rgba(255,255,255,0.9)}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px}
+.fgroup{display:flex;flex-direction:column;gap:6px}
+.fgroup label{font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.06em;text-transform:uppercase}
+.fgroup input,.fgroup select{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:var(--r-sm);padding:10px 14px;font-size:0.95rem;font-family:inherit;outline:none;transition:border .2s}
+.fgroup input::placeholder{color:rgba(255,255,255,0.35)}
+.fgroup input:focus,.fgroup select:focus{border-color:#60A5FA}
+.fgroup select option{background:#1E293B;color:#fff}
+.test-type-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.tt-btn{flex:1;min-width:140px;padding:14px;border-radius:var(--r-sm);border:2px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-weight:700;font-size:0.9rem;transition:all .2s;font-family:inherit;text-align:center}
+.tt-btn.active{border-color:#60A5FA;background:rgba(96,165,250,0.15);color:#93C5FD}
+.tt-btn:hover:not(.active){border-color:rgba(255,255,255,0.35)}
+.btn-begin{width:100%;background:linear-gradient(90deg,#1D4ED8,#7C3AED);color:#fff;border:none;border-radius:var(--r);padding:18px;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;transition:all .3s;letter-spacing:0.02em}
+.btn-begin:hover{transform:translateY(-2px);box-shadow:0 14px 48px rgba(124,58,237,0.35)}
+
+/* ── TEST SHELL ── */
+#s-test{background:var(--bg);flex-direction:column}
+.test-topbar{background:var(--white);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.tt-logo{font-weight:900;font-size:1rem;color:var(--blue);white-space:nowrap}
+.progress-track{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px;transition:width .5s}
+.section-pill{background:var(--blue-l);color:var(--blue);font-size:0.72rem;font-weight:800;padding:4px 12px;border-radius:20px;white-space:nowrap;letter-spacing:0.04em}
+.timer-pill{background:#FEF3C7;color:#92400E;font-size:0.82rem;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap;min-width:70px;text-align:center}
+.timer-pill.urgent{background:#FEE2E2;color:#991B1B;animation:pulse .8s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+.test-body{flex:1;display:grid;grid-template-columns:1fr;max-width:1100px;margin:0 auto;width:100%;padding:28px 20px;gap:24px}
+.test-body.split{grid-template-columns:1fr 1fr}
+.passage-pane{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:28px;overflow-y:auto;max-height:75vh;font-size:0.93rem;line-height:1.8;color:var(--ink2)}
+.passage-pane h3{font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--blue);letter-spacing:-0.3px}
+.passage-pane p{margin-bottom:14px}
+.passage-pane .para-num{color:var(--blue);font-weight:700;margin-right:6px}
+
+.qpane{display:flex;flex-direction:column;gap:20px}
+.qcard{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:28px}
+.qcard-head{font-size:0.72rem;font-weight:800;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.qcard-head::after{content:'';flex:1;height:1px;background:var(--blue-m)}
+.q-inst{font-size:0.85rem;color:var(--muted);margin-bottom:16px;padding:10px 14px;background:var(--blue-l);border-radius:var(--r-xs);border-left:3px solid var(--blue)}
+.q-text{font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:16px;line-height:1.55}
+.q-num{font-size:0.75rem;color:var(--muted);margin-bottom:4px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border:1.5px solid var(--line);border-radius:var(--r-sm);cursor:pointer;transition:all .2s;font-size:0.93rem;color:var(--ink2);background:var(--bg)}
+.opt:hover{border-color:var(--blue);background:var(--blue-l)}
+.opt.sel{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.opt.correct{border-color:var(--green);background:var(--green-l);color:#065F46}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:#991B1B}
+.opt-key{width:26px;height:26px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.fill-in{width:100%;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:10px 14px;font-size:0.95rem;font-family:inherit;color:var(--ink);background:var(--bg);outline:none;transition:border .2s}
+.fill-in:focus{border-color:var(--blue)}
+.fill-in.correct{border-color:var(--green);background:var(--green-l)}
+.fill-in.wrong{border-color:var(--red);background:var(--red-l)}
+
+/* Writing */
+.writing-wrap{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:28px}
+.task-prompt{background:var(--blue-l);border:1px solid var(--blue-m);border-radius:var(--r-sm);padding:20px;margin-bottom:20px;font-size:0.92rem;color:var(--ink2);line-height:1.75}
+.task-prompt strong{color:var(--blue);display:block;margin-bottom:8px;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em}
+.writing-area{width:100%;min-height:260px;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:16px;font-size:0.95rem;font-family:inherit;color:var(--ink);background:var(--bg);outline:none;resize:vertical;line-height:1.75;transition:border .2s}
+.writing-area:focus{border-color:var(--blue)}
+.wc-bar{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:0.8rem;color:var(--muted)}
+.wc-num{font-weight:700;color:var(--blue)}
+
+/* Speaking */
+.speaking-wrap{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:28px}
+.speaking-card{border:1.5px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:20px}
+.speak-part{font-size:0.72rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.speak-q{font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:16px;line-height:1.5}
+.speak-sub{font-size:0.88rem;color:var(--muted);margin-bottom:16px;font-style:italic}
+.speak-cues{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.speak-cues li{font-size:0.88rem;color:var(--ink2);display:flex;gap:8px}
+.speak-cues li::before{content:'•';color:var(--purple)}
+.mic-area{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;background:var(--purple-l);border-radius:var(--r-sm)}
+.mic-btn{width:72px;height:72px;border-radius:50%;background:var(--purple);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.8rem;transition:all .3s;box-shadow:0 4px 20px rgba(124,58,237,0.3)}
+.mic-btn:hover{transform:scale(1.08);box-shadow:0 8px 30px rgba(124,58,237,0.45)}
+.mic-btn.recording{background:var(--red);animation:micpulse 1s ease infinite}
+@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0.5)}50%{box-shadow:0 0 0 16px rgba(220,38,38,0)}}
+.mic-status{font-size:0.85rem;color:var(--muted);font-weight:600}
+.speak-textarea{width:100%;min-height:120px;border:1.5px solid var(--line);border-radius:var(--r-sm);padding:14px;font-size:0.92rem;font-family:inherit;color:var(--ink);background:var(--bg);outline:none;resize:vertical;margin-top:12px}
+.speak-textarea:focus{border-color:var(--purple)}
+
+/* Listening */
+.audio-player{background:linear-gradient(135deg,#0F172A,#1E3A5F);border-radius:var(--r);padding:28px;margin-bottom:20px;color:#fff}
+.audio-title{font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.06em;margin-bottom:8px;text-transform:uppercase}
+.audio-desc{font-size:1rem;font-weight:600;margin-bottom:20px}
+.audio-controls{display:flex;align-items:center;gap:16px}
+.play-btn{width:48px;height:48px;border-radius:50%;background:#60A5FA;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.play-btn:hover{background:#3B82F6;transform:scale(1.05)}
+.audio-track{flex:1;position:relative}
+.audio-bar{width:100%;height:6px;background:rgba(255,255,255,0.2);border-radius:3px;cursor:pointer;position:relative}
+.audio-prog{height:100%;background:#60A5FA;border-radius:3px;transition:width .3s}
+.audio-time{font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:6px}
+.transcript-box{background:rgba(255,255,255,0.08);border-radius:var(--r-sm);padding:16px;margin-top:16px;font-size:0.85rem;color:rgba(255,255,255,0.75);line-height:1.7;max-height:160px;overflow-y:auto;display:none}
+.show-transcript-btn{font-size:0.78rem;color:rgba(255,255,255,0.5);background:none;border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 14px;cursor:pointer;margin-top:10px;font-family:inherit}
+
+/* Nav buttons */
+.nav-row{display:flex;gap:12px;justify-content:space-between;align-items:center;padding:20px;background:var(--white);border-top:1px solid var(--line);position:sticky;bottom:0}
+.btn-prev{background:var(--bg);border:1.5px solid var(--line);color:var(--muted);border-radius:var(--r-sm);padding:10px 24px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-prev:hover{border-color:var(--muted)}
+.btn-next{background:var(--blue);color:#fff;border:none;border-radius:var(--r-sm);padding:10px 28px;font-size:0.92rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-next:hover{background:var(--blue-dark,#1E40AF);transform:translateY(-1px)}
+.btn-next:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.q-counter{font-size:0.82rem;color:var(--muted)}
+
+/* Section intro */
+.section-intro{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:48px;text-align:center;max-width:600px;margin:60px auto}
+.si-icon{font-size:3.5rem;margin-bottom:16px}
+.si-title{font-size:1.6rem;font-weight:800;margin-bottom:10px}
+.si-sub{font-size:0.95rem;color:var(--muted);margin-bottom:28px;line-height:1.7}
+.si-rules{text-align:left;background:var(--blue-l);border-radius:var(--r-sm);padding:20px;margin-bottom:28px}
+.si-rules li{font-size:0.88rem;color:var(--ink2);padding:4px 0;display:flex;gap:8px}
+.si-rules li::before{content:'→';color:var(--blue);font-weight:700;flex-shrink:0}
+.btn-si-go{background:var(--blue);color:#fff;border:none;border-radius:var(--r);padding:14px 40px;font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s}
+.btn-si-go:hover{background:#1E40AF;transform:translateY(-2px)}
+
+/* Loading */
+#s-loading{background:#0A0E1A;align-items:center;justify-content:center;color:#fff}
+.ld-inner{text-align:center}
+.ld-ring{width:64px;height:64px;border:4px solid rgba(255,255,255,0.15);border-top-color:#60A5FA;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 24px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-t{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.ld-s{font-size:0.83rem;color:rgba(255,255,255,0.5)}
+.ld-bar{width:260px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:20px auto 0;overflow:hidden}
+.ld-fill{height:100%;background:#60A5FA;border-radius:2px;animation:ldprog 4s ease forwards}
+@keyframes ldprog{from{width:0}to{width:100%}}
+
+/* ── RESULT ── */
+#s-result{background:var(--bg);overflow-y:auto}
+.res-hero{background:linear-gradient(135deg,#0A0E1A 0%,#1E3A8A 60%,#312E81 100%);color:#fff;padding:60px 20px;text-align:center}
+.res-hero h1{font-size:2rem;font-weight:900;margin-bottom:6px}
+.res-hero p{color:rgba(255,255,255,0.65);margin-bottom:36px}
+.band-display{display:inline-flex;align-items:center;gap:32px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:var(--r);padding:28px 48px;flex-wrap:wrap;justify-content:center;gap:36px}
+.band-item{text-align:center}
+.band-n{font-size:3.5rem;font-weight:900;line-height:1;color:#60A5FA}
+.band-l{font-size:0.8rem;color:rgba(255,255,255,0.6);margin-top:4px}
+.cefr-badge{display:inline-block;background:#60A5FA;color:#0A0E1A;font-weight:900;font-size:1.4rem;padding:8px 20px;border-radius:30px;margin-top:12px}
+.res-body{max-width:960px;margin:0 auto;padding:40px 20px}
+.res-sec{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);padding:32px;margin-bottom:24px}
+.res-sec h2{font-size:1.15rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.res-sec h2 .ico{font-size:1.4rem}
+.score-bars{display:flex;flex-direction:column;gap:14px}
+.sb-row{display:flex;align-items:center;gap:14px}
+.sb-lbl{width:110px;font-size:0.88rem;font-weight:600;color:var(--ink2)}
+.sb-track{flex:1;height:22px;background:var(--line);border-radius:11px;overflow:hidden;position:relative}
+.sb-fill{height:100%;border-radius:11px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:0.75rem;font-weight:700;color:#fff;transition:width 1s ease}
+.sb-val{width:50px;font-size:0.9rem;font-weight:800;text-align:right}
+.review-list{display:flex;flex-direction:column;gap:16px}
+.review-item{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.review-head{padding:14px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;cursor:pointer;background:var(--bg)}
+.review-head:hover{background:#F1F5F9}
+.review-q{font-size:0.93rem;font-weight:600;color:var(--ink);flex:1}
+.review-status{font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.rs-c{background:var(--green-l);color:#065F46}
+.rs-w{background:var(--red-l);color:#991B1B}
+.rs-p{background:#FEF3C7;color:#92400E}
+.review-body{padding:20px;border-top:1px solid var(--line);display:none}
+.review-body.open{display:block}
+.your-ans{margin-bottom:10px;font-size:0.88rem;color:var(--ink2);padding:10px 14px;background:var(--bg);border-radius:var(--r-xs);border-left:3px solid var(--line)}
+.correct-ans{margin-bottom:12px;font-size:0.88rem;color:#065F46;padding:10px 14px;background:var(--green-l);border-radius:var(--r-xs);border-left:3px solid var(--green)}
+.explan{font-size:0.88rem;color:var(--ink2);line-height:1.7;padding:12px 14px;background:#FFFBEB;border-radius:var(--r-xs);border-left:3px solid #D97706}
+.explan strong{color:var(--amber)}
+.cefr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px}
+.cefr-card{border:2px solid var(--line);border-radius:var(--r-sm);padding:16px;text-align:center;transition:all .2s}
+.cefr-card.current{border-color:var(--blue);background:var(--blue-l)}
+.cefr-lvl{font-size:1.5rem;font-weight:900;color:var(--blue)}
+.cefr-desc{font-size:0.72rem;color:var(--muted);margin-top:4px}
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tip-card{background:var(--bg);border-radius:var(--r-sm);padding:18px;border:1px solid var(--line)}
+.tip-card h4{font-size:0.85rem;font-weight:700;margin-bottom:8px;color:var(--blue)}
+.tip-card p{font-size:0.8rem;color:var(--muted);line-height:1.6}
+.res-actions{text-align:center;padding:32px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-print{background:var(--blue);color:#fff;border:none;border-radius:var(--r);padding:14px 32px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s}
+.btn-print:hover{background:#1E40AF}
+.btn-again{background:var(--white);color:var(--ink);border:2px solid var(--line);border-radius:var(--r);padding:14px 32px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:inherit}
+
+@media(max-width:700px){
+  .land-hero,.land-cards,.land-form{padding-left:20px;padding-right:20px}
+  .land-nav{padding:14px 20px}
+  .test-body.split{grid-template-columns:1fr}
+  .passage-pane{max-height:40vh}
+  .band-display{padding:20px 24px;gap:20px}
+  .band-n{font-size:2.5rem}
+  .sb-lbl{width:80px;font-size:0.78rem}
+  .section-intro{margin:20px;padding:28px}
+}
+@media print{
+  #s-result .res-actions,.test-topbar{display:none!important}
+  #s-result{background:white}
+  .res-sec{box-shadow:none;border:1px solid #ddd}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LANDING ══════════ -->
+<div class="screen active" id="s-land">
+  <div class="land-nav">
+    <div class="land-logo">EduTest <span>Pro</span></div>
+    <div class="nav-badges">
+      <span class="nbadge">IELTS Academic</span>
+      <span class="nbadge">TOEFL iBT</span>
+      <span class="nbadge">TOEFL ITP</span>
+    </div>
+  </div>
+  <div class="land-hero">
+    <div class="hero-eyebrow">🏆 INTERNATIONAL STANDARD SIMULATION</div>
+    <h1 class="hero-h1">The Complete<br><span class="hl">IELTS & TOEFL</span><br>Simulation Platform</h1>
+    <p class="hero-sub">Full-length practice tests matching the exact format, question types, and scoring rubrics used by British Council, IDP, ETS, EF, and LIA — with detailed answer explanations.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-n">40</div><div class="hstat-l">Reading Questions</div></div>
+      <div class="hstat"><div class="hstat-n">40</div><div class="hstat-l">Listening Questions</div></div>
+      <div class="hstat"><div class="hstat-n">2</div><div class="hstat-l">Writing Tasks</div></div>
+      <div class="hstat"><div class="hstat-n">3</div><div class="hstat-l">Speaking Parts</div></div>
+    </div>
+    <div class="hero-ctas">
+      <button class="btn-hero-ielts" onclick="setMode('ielts');document.getElementById('form-anchor').scrollIntoView({behavior:'smooth'})">Start IELTS Academic</button>
+      <button class="btn-hero-toefl" onclick="setMode('toefl-ibt');document.getElementById('form-anchor').scrollIntoView({behavior:'smooth'})">Start TOEFL iBT</button>
+    </div>
+  </div>
+  <div class="land-cards">
+    <div class="lcard"><div class="lcard-icon">📖</div><h3>Reading</h3><p>IELTS: 3 academic passages, 40 Qs, 60 min. TOEFL iBT: 2-3 passages, 30-40 Qs. True/False/NG, MCQ, matching headings, gap fill.</p></div>
+    <div class="lcard"><div class="lcard-icon">🎧</div><h3>Listening</h3><p>IELTS: 4 sections, 40 Qs, 30 min. TOEFL iBT: 4-6 lectures + conversations. Multiple choice, note completion, diagram labelling.</p></div>
+    <div class="lcard"><div class="lcard-icon">✍️</div><h3>Writing</h3><p>IELTS: Task 1 (graph/chart) + Task 2 (essay) 60 min. TOEFL iBT: Integrated + Independent essay. Band 1-9 / 0-30 scoring.</p></div>
+    <div class="lcard"><div class="lcard-icon">🎙️</div><h3>Speaking</h3><p>IELTS: 3 parts, 11-14 min. TOEFL iBT: 4 tasks (1 independent + 3 integrated). Fluency, coherence, lexical resource, grammar.</p></div>
+  </div>
+  <div class="land-form" id="form-anchor">
+    <div class="form-box">
+      <h2>⚙️ Configure Your Test</h2>
+      <div class="test-type-btns">
+        <button class="tt-btn active" id="tt-ielts" onclick="setMode('ielts')">IELTS Academic</button>
+        <button class="tt-btn" id="tt-ibt" onclick="setMode('toefl-ibt')">TOEFL iBT</button>
+        <button class="tt-btn" id="tt-itp" onclick="setMode('toefl-itp')">TOEFL ITP</button>
+      </div>
+      <div class="form-row">
+        <div class="fgroup"><label>Full Name</label><input type="text" id="inp-name" placeholder="Your full name"></div>
+        <div class="fgroup"><label>Target Score</label>
+          <select id="inp-target">
+            <option value="">Select target</option>
+            <option value="5.0">IELTS 5.0 (B1 — University entry)</option>
+            <option value="6.0">IELTS 6.0 (B2 — Most universities)</option>
+            <option value="6.5">IELTS 6.5 (B2+ — Competitive programs)</option>
+            <option value="7.0">IELTS 7.0 (C1 — Top universities)</option>
+            <option value="8.0">IELTS 8.0+ (C2 — Mastery)</option>
+          </select>
+        </div>
+        <div class="fgroup"><label>Test Duration</label>
+          <select id="inp-mode">
+            <option value="full">Full Test (~2.5 hrs)</option>
+            <option value="quick">Quick Practice (45 min)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-begin" onclick="beginTest()">Begin Test Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TEST ══════════ -->
+<div class="screen" id="s-test">
+  <div class="test-topbar">
+    <div class="tt-logo">EduTest Pro</div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="section-pill" id="sec-pill">Reading</div>
+    <div class="timer-pill" id="timer-pill">60:00</div>
+  </div>
+  <div id="test-main"></div>
+  <div class="nav-row">
+    <button class="btn-prev" onclick="goBack()" id="btn-back">← Back</button>
+    <span class="q-counter" id="q-counter"></span>
+    <button class="btn-next" id="btn-nxt" onclick="goNext()">Next →</button>
+  </div>
+</div>
+
+<!-- ══════════ LOADING ══════════ -->
+<div class="screen" id="s-loading">
+  <div class="ld-inner">
+    <div class="ld-ring"></div>
+    <div class="ld-t">Marking Your Test...</div>
+    <div class="ld-s" id="ld-sub">Applying IELTS Band Descriptors</div>
+    <div class="ld-bar"><div class="ld-fill"></div></div>
+  </div>
+</div>
+
+<!-- ══════════ RESULT ══════════ -->
+<div class="screen" id="s-result"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  APP STATE
+// ═══════════════════════════════════════════════════════════
+const APP={name:'',mode:'ielts',target:'6.5',testMode:'full',
+  step:0, // 0=reading-intro,1=reading,2=listening-intro,3=listening,4=writing-intro,5=writing,6=speaking-intro,7=speaking
+  rIdx:0,lIdx:0,wIdx:0,spIdx:0,
+  answers:{},writings:{},speakings:{},
+  timerInt:null,timeLeft:0
+};
+
+// ═══════════════════════════════════════════════════════════
+//  CONTENT DATABASE — IELTS/TOEFL standard questions
+// ═══════════════════════════════════════════════════════════
+
+// ─── READING PASSAGE 1 (Academic — Science) ───
+const PASSAGE1={
+  title:'The Science of Sleep: Why We Dream',
+  body:`<p><span class="para-num">A</span>Sleep is one of the most mysterious and vital processes that the human body undergoes. Despite occupying roughly one-third of our lives, the scientific understanding of why humans and most animals sleep has long eluded researchers. In recent decades, however, neuroscience has made remarkable strides in illuminating the biological and psychological functions of sleep, particularly the role of dreaming in memory consolidation and emotional regulation.</p>
+<p><span class="para-num">B</span>The human sleep cycle consists of several distinct stages, broadly categorized into non-rapid eye movement (NREM) sleep and rapid eye movement (REM) sleep. NREM sleep, which accounts for approximately 75–80% of total sleep time, is divided into three stages progressing from light to deep sleep. During deep NREM sleep, the brain engages in slow-wave activity that is critical for the consolidation of declarative memories — those involving facts and events. REM sleep, by contrast, is characterized by vivid dreaming, a high level of brain activity resembling the waking state, and temporary muscle paralysis known as atonia.</p>
+<p><span class="para-num">C</span>The function of REM sleep and dreaming has been the subject of intense debate. One influential theory, proposed by neuroscientists Hobson and McCarley in 1977, suggested that dreams are merely the brain's attempt to make sense of random neural firing during REM sleep — a process they termed the "activation-synthesis" hypothesis. However, this reductionist view has been largely challenged by subsequent research. Studies using functional magnetic resonance imaging (fMRI) have demonstrated that the limbic system, the brain's emotional center, is highly active during REM sleep, suggesting that dreams serve an important emotional processing function.</p>
+<p><span class="para-num">D</span>Contemporary sleep researchers, including Rosalind Cartwright and Matthew Walker, argue that REM sleep acts as a form of "overnight therapy." According to this model, the brain reprocesses emotionally charged memories during REM sleep in a neurochemical environment that is uniquely low in norepinephrine — a stress-related neurotransmitter. This allows the emotional tone of memories to be modified without the physiological stress response, potentially explaining why people often feel more emotionally balanced after a good night's sleep.</p>
+<p><span class="para-num">E</span>Beyond emotional regulation, sleep — particularly the combination of NREM and REM stages — plays a crucial role in creative problem-solving. A landmark study conducted at Harvard Medical School found that participants who were allowed to sleep between two learning sessions showed a 20% improvement in problem-solving ability compared to those who remained awake. The researchers attributed this to the brain's ability to detect non-obvious patterns and make distant associative connections during sleep.</p>
+<p><span class="para-num">F</span>Sleep deprivation, conversely, has profound and wide-ranging consequences. Studies have consistently shown that even mild sleep restriction — reducing sleep to six hours per night over two weeks — produces cognitive deficits equivalent to two full nights of total sleep deprivation, yet individuals remain largely unaware of this decline. The long-term consequences are more alarming still: chronic sleep deprivation has been associated with increased risk of Alzheimer's disease, cardiovascular disease, metabolic disorders, and compromised immune function.</p>
+<p><span class="para-num">G</span>The global public health implications are significant. A 2019 survey by the World Health Organization estimated that two-thirds of adults across developed nations fail to obtain the recommended eight hours of sleep. This "sleep loss epidemic," as Walker has described it, costs the United States alone an estimated $411 billion annually in lost productivity and healthcare expenditure. Addressing it requires not only individual behavioral changes but also structural reforms — including later school start times, workplace nap policies, and public awareness campaigns that destigmatize the act of prioritizing sleep.</p>`
+};
+
+// ─── READING QUESTIONS (Q1-13) ───
+const READ_Q = [
+  // True/False/Not Given (1-7)
+  {id:'r1',type:'tfng',q:'The authors of the activation-synthesis hypothesis argued that dreaming serves no meaningful function.',opts:['TRUE','FALSE','NOT GIVEN'],correct:1,
+   exp:'Paragraph C states that Hobson and McCarley suggested dreams are the brain\'s attempt to make sense of random neural firing — implying they believed dreaming had no deeper purpose. The statement is TRUE based on the implication. However, note that they did attribute a functional role (making sense of signals). The answer is FALSE — they believed dreams were the brain\'s attempt to make meaning. The activation-synthesis theory claims dreams emerge from random signals, but the brain still tries to synthesize meaning, which is a function. Answer: FALSE.'},
+  {id:'r2',type:'tfng',q:'REM sleep involves complete paralysis of all bodily functions.',opts:['TRUE','FALSE','NOT GIVEN'],correct:1,
+   exp:'Paragraph B states that REM sleep involves "temporary muscle paralysis known as atonia" — this affects voluntary muscles, not all bodily functions (heart, lungs still operate). The claim that ALL bodily functions are paralyzed is therefore FALSE.'},
+  {id:'r3',type:'tfng',q:'Norepinephrine levels are lower during REM sleep than during waking hours.',opts:['TRUE','FALSE','NOT GIVEN'],correct:0,
+   exp:'Paragraph D explicitly states that REM sleep occurs in "a neurochemical environment that is uniquely low in norepinephrine." This directly supports the statement — answer is TRUE.'},
+  {id:'r4',type:'tfng',q:'Participants in the Harvard study were tested on creative writing tasks.',opts:['TRUE','FALSE','NOT GIVEN'],correct:2,
+   exp:'Paragraph E mentions a Harvard Medical School study on problem-solving after sleep but provides no details about what specific type of tasks were used. Since the passage does not confirm or deny this, the answer is NOT GIVEN.'},
+  {id:'r5',type:'tfng',q:'Chronic sleep restriction lasting two weeks can impair cognitive performance as severely as staying awake for 48 hours.',opts:['TRUE','FALSE','NOT GIVEN'],correct:0,
+   exp:'Paragraph F directly states that "reducing sleep to six hours per night over two weeks produces cognitive deficits equivalent to two full nights of total sleep deprivation." This confirms the statement — answer is TRUE.'},
+  {id:'r6',type:'tfng',q:'The WHO survey was conducted specifically to study sleep patterns in developing nations.',opts:['TRUE','FALSE','NOT GIVEN'],correct:1,
+   exp:'Paragraph G mentions the 2019 WHO survey estimated two-thirds of adults in "developed nations" fail to get enough sleep. The question claims the survey focused on developing nations — this is FALSE according to the passage.'},
+  {id:'r7',type:'tfng',q:'Matthew Walker coined the term "sleep loss epidemic."',opts:['TRUE','FALSE','NOT GIVEN'],correct:0,
+   exp:'Paragraph G states: "This \'sleep loss epidemic,\' as Walker has described it..." — attributing the phrase to Walker. The answer is TRUE.'},
+  // MCQ (8-10)
+  {id:'r8',type:'mcq',q:'According to the passage, what distinguishes NREM sleep from REM sleep?',opts:['NREM sleep involves vivid dreaming while REM does not','NREM sleep is associated with slow-wave brain activity and memory consolidation, while REM involves high brain activity and dreaming','REM sleep is the deeper form of sleep that lasts longer','NREM sleep is marked by atonia and REM is not'],correct:1,
+   exp:'Paragraph B distinguishes the two clearly: NREM involves slow-wave activity critical for declarative memory (facts/events) consolidation, while REM is characterized by vivid dreaming and high brain activity. Answer: B.'},
+  {id:'r9',type:'mcq',q:'What does the "overnight therapy" model primarily suggest?',opts:['Dreams allow the brain to rehearse traumatic events','REM sleep enables the brain to reduce the emotional intensity of memories in a low-stress neurochemical state','Dreaming activates the immune system to fight disease','Sleep is only useful for physical recovery'],correct:1,
+   exp:'Paragraph D explains the overnight therapy model: during REM, emotionally charged memories are reprocessed in a low-norepinephrine environment, modifying their emotional tone without triggering stress — making people feel more balanced. Answer: B.'},
+  {id:'r10',type:'mcq',q:'Which of the following best describes the main argument of the passage?',opts:['Sleep is primarily important for physical restoration','Dreams are a random and meaningless by-product of brain activity','Sleep — especially its REM stage — serves vital cognitive, emotional, and public health functions','Modern society sleeps too much, causing health problems'],correct:2,
+   exp:'The passage covers multiple functions: memory consolidation (Para B, E), emotional regulation (Para C, D), problem-solving (Para E), and public health impact (Para F, G). The overarching argument is that sleep is critically important for cognitive, emotional, and public health — Answer: C.'},
+  // Gap fill (11-13)
+  {id:'r11',type:'fill',q:'Complete the sentence using NO MORE THAN TWO WORDS from the passage:\n\nDeep NREM sleep is critical for the consolidation of ________ memories, which involve facts and events.',correct:'declarative',
+   exp:'Paragraph B explicitly states: "critical for the consolidation of declarative memories — those involving facts and events." The answer is DECLARATIVE.'},
+  {id:'r12',type:'fill',q:'Complete the sentence using NO MORE THAN TWO WORDS from the passage:\n\nAccording to the Harvard study, participants who slept between learning sessions showed a 20% improvement in their ability to solve ________ problems.',correct:'problem-solving',
+   exp:'Paragraph E: "a 20% improvement in problem-solving ability." The answer is PROBLEM-SOLVING (accept: problems).'},
+  {id:'r13',type:'fill',q:'Complete the sentence using NO MORE THAN THREE WORDS:\n\nThe WHO estimated that sleep deprivation costs the United States $411 billion annually in lost productivity and ________ expenditure.',correct:'healthcare',
+   exp:'Paragraph G: "lost productivity and healthcare expenditure." The answer is HEALTHCARE (or healthcare expenditure).'},
+];
+
+// ─── LISTENING SECTION (simulated transcripts) ───
+const LISTEN_SECTIONS=[
+  {
+    title:'Section 1: Accommodation Enquiry',
+    desc:'A conversation between a student and a university housing officer.',
+    transcript:`Housing Officer: Good morning, Riverside University Housing Office, how can I help you?
+Student: Hi, I'm calling to enquire about student accommodation for next semester. My name is Sarah Chen.
+Housing Officer: Of course, Sarah. Are you a first-year student or returning?
+Student: I'll be starting my second year. I'm currently in the on-campus dormitory but I'd like to move to private accommodation.
+Housing Officer: We have two main options — Elmwood House, which is a 10-minute walk from campus, or Lakeside Apartments, which are slightly further, about 20 minutes by bus.
+Student: What's the price difference?
+Housing Officer: Elmwood is £650 per month, all utilities included. Lakeside is £520 but utilities are separate — usually about £80 per month.
+Student: And what's the contract length for Lakeside?
+Housing Officer: Minimum 9 months, but you can extend to 12.
+Student: Is there a gym at Elmwood?
+Housing Officer: Yes, there's a fully equipped gym and a shared kitchen on every floor. Lakeside has a communal lounge but no gym.
+Student: I think I prefer Elmwood. What documents do I need?
+Housing Officer: You'll need a copy of your student ID, proof of enrollment, and one month's deposit — which is refundable.`,
+    questions:[
+      {id:'l1',type:'mcq',q:'Where is Elmwood House located relative to campus?',opts:['5-minute walk','10-minute walk','20-minute walk','15-minute bus ride'],correct:1,
+       exp:'The housing officer says Elmwood House is "a 10-minute walk from campus." Answer: B.'},
+      {id:'l2',type:'mcq',q:'What is the total monthly cost of Lakeside Apartments, including estimated utilities?',opts:['£520','£600','£600 approx','£650'],correct:2,
+       exp:'Lakeside is £520 + ~£80 utilities = approximately £600 per month. Answer: C.'},
+      {id:'l3',type:'fill',q:'The minimum contract length at Lakeside Apartments is ________ months.',correct:'9',
+       exp:'The officer states: "Minimum 9 months." Answer: 9.'},
+      {id:'l4',type:'mcq',q:'Which facility is available at Elmwood but NOT at Lakeside?',opts:['Communal lounge','Shared kitchen','Gym','Study room'],correct:2,
+       exp:'The officer confirms Elmwood has "a fully equipped gym" while Lakeside only has "a communal lounge but no gym." Answer: C.'},
+      {id:'l5',type:'fill',q:'Students applying for accommodation must provide a copy of their ________ and proof of enrollment.',correct:'student ID',
+       exp:'The officer lists: "student ID, proof of enrollment, and one month\'s deposit." Answer: student ID.'},
+    ]
+  },
+  {
+    title:'Section 2: Academic Lecture — Climate Change',
+    desc:'A university lecture on the economic impacts of climate change.',
+    transcript:`Professor: Good afternoon, everyone. Today we're going to examine something that sits at the intersection of environmental science and economics — specifically, the quantifiable economic consequences of climate change.
+The Intergovernmental Panel on Climate Change — the IPCC — released a landmark report in 2022 estimating that limiting global warming to 1.5 degrees Celsius above pre-industrial levels would require immediate, rapid, and large-scale reductions in greenhouse gas emissions across all sectors.
+Now, the economic cost of inaction is staggering. A 2018 study published in Nature found that for every degree Celsius of warming above the historical average, global GDP contracts by approximately 1.2%. When you consider that we are currently on track for 2.7 degrees by 2100 under current policies, this implies a cumulative economic loss of over 23% of global GDP by the end of the century.
+Agriculture is particularly vulnerable. Rising temperatures, more frequent droughts, and unpredictable rainfall patterns are expected to reduce crop yields by 2–6% per decade. In sub-Saharan Africa and South Asia — regions that already face food insecurity — yields of staple crops such as maize, wheat, and rice could decline by up to 25% by 2050.
+However, the transition to a low-carbon economy also presents significant economic opportunities. The International Renewable Energy Agency estimates that the renewable energy sector could employ 42 million people globally by 2050 — a threefold increase from current levels. Solar and wind energy in particular are now cost-competitive with fossil fuels in most markets, without subsidies.`,
+    questions:[
+      {id:'l6',type:'mcq',q:'According to the IPCC 2022 report, what is needed to limit warming to 1.5°C?',opts:['Gradual reduction of emissions over 50 years','Immediate, rapid, and large-scale reductions in all sectors','Switching only the transport sector to renewables','Carbon taxes in developed countries only'],correct:1,
+       exp:'The professor quotes the IPCC: "immediate, rapid, and large-scale reductions in greenhouse gas emissions across all sectors." Answer: B.'},
+      {id:'l7',type:'fill',q:'For every degree Celsius of warming above the historical average, global GDP contracts by approximately ________%.',correct:'1.2',
+       exp:'The professor states: "global GDP contracts by approximately 1.2%." Answer: 1.2.'},
+      {id:'l8',type:'mcq',q:'What is the projected global GDP loss by 2100 under current emission policies?',opts:['12%','17%','23%','30%'],correct:2,
+       exp:'The professor says: "a cumulative economic loss of over 23% of global GDP by the end of the century." Answer: C.'},
+      {id:'l9',type:'fill',q:'Crop yields of staple crops in sub-Saharan Africa could decline by up to ________% by 2050.',correct:'25',
+       exp:'The professor states yields of staple crops "could decline by up to 25% by 2050." Answer: 25.'},
+      {id:'l10',type:'mcq',q:'How many people could the renewable energy sector employ globally by 2050?',opts:['14 million','28 million','42 million','56 million'],correct:2,
+       exp:'The professor quotes IRENA: "42 million people globally by 2050." Answer: C.'},
+    ]
+  }
+];
+
+// ─── WRITING TASKS ───
+const WRITE_TASKS=[
+  {
+    id:'w1',
+    type:'Task 1 — Academic (Graph Description)',
+    time:20,
+    prompt:`The bar chart below shows the percentage of households in six countries that owned at least one car in 2000 and 2020.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.\n\nWrite at least 150 words.`,
+    chartDesc:`[Chart data — describe this in your writing]\nCountry | 2000 | 2020\nUSA     | 72%  | 81%\nGermany | 65%  | 74%\nJapan   | 59%  | 68%\nBrazil  | 28%  | 47%\nIndia   | 8%   | 22%\nNigeria | 5%   | 14%`,
+    rubric:'Band descriptors: Task Achievement (Does the response cover the key features?), Coherence & Cohesion (Is information logically organised?), Lexical Resource (Range and accuracy of vocabulary), Grammatical Range & Accuracy.',
+    modelAnswer:`The bar chart illustrates the proportion of households owning at least one car across six nations in 2000 and 2020.\n\nOverall, car ownership increased in all countries during the two-decade period, with particularly significant growth in developing nations. Developed countries maintained considerably higher ownership rates throughout.\n\nIn 2000, the USA led with 72% of households owning a car, followed by Germany (65%) and Japan (59%). By 2020, these figures had risen to 81%, 74%, and 68% respectively, representing moderate growth of approximately 9 percentage points each.\n\nThe most dramatic increases occurred in emerging economies. Brazil's car ownership nearly doubled from 28% to 47%, while India's rate almost tripled from just 8% to 22%. Nigeria, though remaining the lowest, also saw ownership nearly triple from 5% to 14%.\n\nIn conclusion, while wealthy nations recorded steady growth, the sharpest increases were observed in developing countries, suggesting rapid motorisation trends linked to economic development, though a substantial gap in ownership rates persists globally.`,
+  },
+  {
+    id:'w2',
+    type:'Task 2 — Academic Essay',
+    time:40,
+    prompt:`Some people believe that universities should focus primarily on academic subjects and theoretical knowledge. Others argue that universities should prepare students more directly for employment by emphasizing practical skills.\n\nDiscuss both views and give your own opinion.\n\nWrite at least 250 words.`,
+    rubric:'Assess: Task Response (addresses both views + opinion), Cohesion & Coherence (logical paragraphing), Lexical Resource (academic vocabulary), Grammatical Range & Accuracy.',
+    modelAnswer:`The debate over whether universities should prioritise academic knowledge or vocational preparation is one that continues to generate considerable discussion among educators, employers, and policymakers. While both perspectives have merit, I believe the most effective higher education systems combine theoretical rigour with practical relevance.\n\nProponents of a purely academic approach contend that universities serve a distinct intellectual purpose that cannot be replicated elsewhere. Deep engagement with theory, critical thinking, and foundational knowledge across disciplines produces graduates who are adaptable, capable of independent analysis, and equipped to navigate an unpredictable labour market where specific skills may rapidly become obsolete. A philosophy student, for instance, may never directly apply Kantian ethics in an office, yet the capacity for systematic reasoning developed through such study is invaluable in countless professional contexts.\n\nConversely, advocates of vocational training argue that universities have a responsibility to respond to the demands of modern economies. Graduate unemployment and underemployment remain persistent concerns in many countries, and employers frequently report that new graduates lack basic workplace competencies — project management, communication, data literacy, and teamwork. Curricula that incorporate internships, industry partnerships, and applied project work can dramatically improve employability without necessarily sacrificing intellectual depth.\n\nIn my view, a false dichotomy exists between these positions. The most reputable universities globally — institutions like MIT, Oxford, and the National University of Singapore — succeed precisely because they integrate both dimensions: demanding academic standards alongside strong industry engagement, research opportunities, and entrepreneurship programmes.\n\nIn conclusion, universities should not choose between theory and practice but should deliberately cultivate both, ensuring graduates possess not only disciplinary expertise but also the practical competencies that make that knowledge actionable in the real world.`,
+  }
+];
+
+// ─── SPEAKING TASKS ───
+const SPEAK_TASKS=[
+  {
+    part:'Part 1 — Introduction & Interview',
+    time:240,
+    intro:'The examiner will ask you general questions about yourself and familiar topics. Answer naturally and expand your responses.',
+    questions:[
+      {q:"Let's talk about your hometown. Can you describe the place where you grew up?",sub:"Talk about its size, location, what it's known for.",tips:['Use present and past tense','Mention specific features (landscape, industry, culture)','Aim for 3-5 sentences']},
+      {q:"Do you think technology has changed the way people communicate with friends and family?",sub:"Compare past and present communication methods.",tips:['Give a clear opinion','Use examples','Compare then and now with phrases like "In the past..." / "Nowadays..."']},
+    ]
+  },
+  {
+    part:'Part 2 — Individual Long Turn (Cue Card)',
+    time:180,
+    intro:'You have 1 minute to prepare and then speak for 1-2 minutes on the topic below.',
+    questions:[
+      {q:"Describe a book or film that had a significant impact on your life.",
+       sub:"You should say:\n• What the book/film was and when you first encountered it\n• What it was about\n• Why it had such an impact on you\n• And explain whether you would recommend it to others",
+       tips:['Use a clear structure: introduce → describe → explain impact → recommend','Use descriptive language and specific details','Link ideas with: furthermore, additionally, as a result, however']},
+    ]
+  },
+  {
+    part:'Part 3 — Two-Way Discussion',
+    time:300,
+    intro:'The examiner will ask more abstract questions related to the Part 2 topic. Justify your views with reasons and examples.',
+    questions:[
+      {q:"In your opinion, do books or films have a greater influence on society?",sub:"Justify your view with examples.",tips:['Use discourse markers: "In my view...", "It could be argued that..."','Compare the two mediums','Acknowledge the opposing view before giving your own']},
+      {q:"Some people argue that technology is reducing the amount of time people spend reading. To what extent do you agree?",sub:"Support your position with evidence or examples.",tips:['Structure: agree/disagree/partially agree → reasons → examples → conclusion','Use academic vocabulary: "undeniably", "to a certain extent", "it stands to reason that"']},
+    ]
+  }
+];
+
+// Flatten all questions for navigation
+let ALL_STEPS=[];
+
+// ═══════════════════════════════════════════════════════════
+//  UI UTILITIES
+// ═══════════════════════════════════════════════════════════
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s-'+id).classList.add('active')}
+function setMode(m){
+  APP.mode=m;
+  ['ielts','ibt','itp'].forEach(x=>document.getElementById('tt-'+x).classList.remove('active'));
+  document.getElementById('tt-'+m.replace('toefl-','')).classList.add('active');
+}
+
+function beginTest(){
+  const nm=document.getElementById('inp-name').value.trim();
+  if(!nm){alert('Please enter your name.');return}
+  APP.name=nm;
+  APP.target=document.getElementById('inp-target').value||'6.5';
+  APP.testMode=document.getElementById('inp-mode').value;
+  APP.answers={};APP.writings={};APP.speakings={};
+  buildSteps();
+  APP.step=0;
+  show('test');
+  renderStep();
+}
+
+function buildSteps(){
+  ALL_STEPS=[];
+  // 0: reading intro
+  ALL_STEPS.push({type:'section-intro',section:'reading'});
+  // 1-13: reading questions
+  READ_Q.forEach(q=>ALL_STEPS.push({type:'reading',q}));
+  // listening intro
+  ALL_STEPS.push({type:'section-intro',section:'listening'});
+  // listening questions
+  LISTEN_SECTIONS.forEach(sec=>{
+    ALL_STEPS.push({type:'listen-section',sec});
+    sec.questions.forEach(q=>ALL_STEPS.push({type:'listening',q,sec}));
+  });
+  // writing intro
+  ALL_STEPS.push({type:'section-intro',section:'writing'});
+  WRITE_TASKS.forEach(t=>ALL_STEPS.push({type:'writing',task:t}));
+  // speaking intro
+  ALL_STEPS.push({type:'section-intro',section:'speaking'});
+  SPEAK_TASKS.forEach(t=>ALL_STEPS.push({type:'speaking',task:t}));
+  // done
+  ALL_STEPS.push({type:'finish'});
+}
+
+function renderStep(){
+  const s=ALL_STEPS[APP.step];
+  const total=ALL_STEPS.length;
+  document.getElementById('prog-fill').style.width=((APP.step/total)*100)+'%';
+  document.getElementById('q-counter').textContent=`Step ${APP.step+1} of ${total}`;
+  clearTimer();
+
+  if(s.type==='section-intro') renderIntro(s.section);
+  else if(s.type==='reading') renderReading(s.q);
+  else if(s.type==='listen-section') renderListenSection(s.sec);
+  else if(s.type==='listening') renderListening(s.q,s.sec);
+  else if(s.type==='writing') renderWriting(s.task);
+  else if(s.type==='speaking') renderSpeaking(s.task);
+  else if(s.type==='finish') finishTest();
+
+  // Update section pill
+  const secMap={reading:'📖 Reading',listening:'🎧 Listening',writing:'✍️ Writing',speaking:'🎙️ Speaking'};
+  const secKey=s.type.includes('read')?'reading':s.type.includes('list')?'listening':s.type.includes('writ')?'writing':s.type.includes('speak')?'speaking':'';
+  if(secKey)document.getElementById('sec-pill').textContent=secMap[secKey]||'Test';
+
+  // Back/Next visibility
+  document.getElementById('btn-back').style.visibility=APP.step===0?'hidden':'visible';
+  const nxt=document.getElementById('btn-nxt');
+  if(s.type==='finish'){nxt.style.display='none'}
+  else{nxt.style.display='';nxt.textContent=APP.step===ALL_STEPS.length-2?'Submit Test ✓':'Next →'}
+}
+
+// ─── SECTION INTRO ───
+const INTRO_DATA={
+  reading:{icon:'📖',title:'Reading Section',sub:'3 academic passages · 40 questions · 60 minutes',rules:['Read each passage carefully before answering','Questions follow the passage order (mostly)','For True/False/Not Given — base answers ONLY on the text','For gap-fill, use exact words from the passage','You may refer back to the passage at any time']},
+  listening:{icon:'🎧',title:'Listening Section',sub:'4 sections · 40 questions · 30 minutes',rules:['Read the questions BEFORE the recording plays','Write your answers as you listen','Spelling must be correct for fill-in-blank','You will hear each recording ONCE only','In this simulation, read the transcript carefully']},
+  writing:{icon:'✍️',title:'Writing Section',sub:'2 tasks · 60 minutes (Task 1: 20 min, Task 2: 40 min)',rules:['Task 1: Summarise a graph, chart, or diagram (min. 150 words)','Task 2: Write a discursive essay (min. 250 words)','Task 2 is worth TWICE as many marks as Task 1','Focus on task achievement, coherence, vocabulary, and grammar','Use formal academic register — avoid contractions and slang']},
+  speaking:{icon:'🎙️',title:'Speaking Section',sub:'3 parts · 11–14 minutes total',rules:['Part 1: General questions about yourself (4–5 min)','Part 2: Speak for 1–2 minutes on a cue card topic','Part 3: Abstract discussion based on Part 2 topic','In this simulation, write your spoken response in the text area','Focus on: fluency, coherence, vocabulary, pronunciation, grammar']},
+};
+function renderIntro(sec){
+  const d=INTRO_DATA[sec];
+  document.getElementById('test-main').innerHTML=`
+  <div style="padding:20px">
+  <div class="section-intro">
+    <div class="si-icon">${d.icon}</div>
+    <div class="si-title">${d.title}</div>
+    <div class="si-sub">${d.sub}</div>
+    <ul class="si-rules">${d.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
+    <button class="btn-si-go" onclick="goNext()">Start ${d.title} →</button>
+  </div></div>`;
+  document.getElementById('btn-nxt').style.display='none';
+  document.getElementById('btn-back').style.visibility=APP.step===0?'hidden':'visible';
+}
+
+// ─── READING ───
+let currentPassage=PASSAGE1;
+function renderReading(q){
+  document.getElementById('btn-nxt').style.display='';
+  const ans=APP.answers[q.id];
+  let inputHtml='';
+  if(q.type==='tfng'||q.type==='mcq'){
+    inputHtml=`<div class="opts">${q.opts.map((o,i)=>`
+      <div class="opt ${ans===i?'sel':''}" onclick="selectOpt('${q.id}',${i},this)">
+        <span class="opt-key">${['A','B','C','D'][i]}</span><span>${o}</span>
+      </div>`).join('')}</div>`;
+  } else {
+    inputHtml=`<input class="fill-in" type="text" id="fi-${q.id}" placeholder="Type your answer here..." value="${ans||''}" oninput="APP.answers['${q.id}']=this.value">`;
+  }
+  document.getElementById('test-main').innerHTML=`
+  <div class="test-body split">
+    <div class="passage-pane">
+      <h3>${currentPassage.title}</h3>
+      ${currentPassage.body}
+    </div>
+    <div class="qpane">
+      <div class="qcard">
+        <div class="qcard-head">Question ${READ_Q.indexOf(q)+1} of ${READ_Q.length}</div>
+        ${q.type==='tfng'?`<div class="q-inst">Do the following statements agree with the information given in the passage?<br>Write TRUE, FALSE, or NOT GIVEN.</div>`:''}
+        ${q.type==='fill'?`<div class="q-inst">Complete the sentence. Use NO MORE THAN THREE WORDS from the passage.</div>`:''}
+        <div class="q-text">${q.q.replace(/\n/g,'<br>')}</div>
+        ${inputHtml}
+      </div>
+    </div>
+  </div>`;
+  startTimer(3600,true);
+}
+
+// ─── LISTENING ───
+function renderListenSection(sec){
+  document.getElementById('btn-nxt').style.display='';
+  let shown=sec._shown||false;
+  document.getElementById('test-main').innerHTML=`
+  <div style="padding:20px;max-width:800px;margin:0 auto">
+    <div class="audio-player">
+      <div class="audio-title">🎧 ${sec.title}</div>
+      <div class="audio-desc">${sec.desc}</div>
+      <div class="audio-controls">
+        <button class="play-btn" onclick="toggleTranscript('tr-${sec.title.replace(/\s/g,'')}')">▶</button>
+        <div class="audio-track">
+          <div class="audio-bar"><div class="audio-prog" style="width:0%"></div></div>
+          <div class="audio-time">Click the button to read the audio transcript</div>
+        </div>
+      </div>
+      <button class="show-transcript-btn" onclick="toggleTranscript('tr-${sec.title.replace(/\s/g,'')}')">📄 Show / Hide Transcript</button>
+      <div class="transcript-box" id="tr-${sec.title.replace(/\s/g,'')}">${sec.transcript.replace(/\n/g,'<br>')}</div>
+    </div>
+    <p style="text-align:center;color:var(--muted);font-size:0.88rem">Read the transcript carefully, then answer the questions on the following screens.</p>
+  </div>`;
+}
+function toggleTranscript(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block'}
+
+function renderListening(q,sec){
+  document.getElementById('btn-nxt').style.display='';
+  const ans=APP.answers[q.id];
+  let inputHtml='';
+  if(q.type==='mcq'){
+    inputHtml=`<div class="opts">${q.opts.map((o,i)=>`
+      <div class="opt ${ans===i?'sel':''}" onclick="selectOpt('${q.id}',${i},this)">
+        <span class="opt-key">${['A','B','C','D'][i]}</span><span>${o}</span>
+      </div>`).join('')}</div>`;
+  } else {
+    inputHtml=`<input class="fill-in" type="text" id="fi-${q.id}" placeholder="Your answer..." value="${ans||''}" oninput="APP.answers['${q.id}']=this.value">`;
+  }
+  const allLQ=LISTEN_SECTIONS.flatMap(s=>s.questions);
+  const idx=allLQ.findIndex(x=>x.id===q.id)+1;
+  document.getElementById('test-main').innerHTML=`
+  <div style="padding:20px;max-width:700px;margin:0 auto">
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">${sec.title}</div>
+    <div class="qcard">
+      <div class="qcard-head">Listening Q${idx} of ${allLQ.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${inputHtml}
+    </div>
+  </div>`;
+}
+
+// ─── WRITING ───
+function renderWriting(task){
+  document.getElementById('btn-nxt').style.display='';
+  const saved=APP.writings[task.id]||'';
+  document.getElementById('test-main').innerHTML=`
+  <div style="padding:20px;max-width:800px;margin:0 auto">
+    <div class="writing-wrap">
+      <div class="qcard-head">${task.type}</div>
+      <div class="task-prompt">
+        <strong>📋 Task Instructions</strong>
+        ${task.prompt.replace(/\n/g,'<br>')}
+        ${task.chartDesc?`<br><br><strong>📊 Data Reference</strong><br><pre style="font-size:0.85rem;margin-top:8px;font-family:monospace;color:var(--ink2)">${task.chartDesc}</pre>`:''}
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px">⏱ Recommended time: ${task.time} minutes</div>
+      <textarea class="writing-area" id="wa-${task.id}" oninput="saveWriting('${task.id}')" placeholder="Write your response here...">${saved}</textarea>
+      <div class="wc-bar">
+        <span>Word count: <span class="wc-num" id="wc-${task.id}">${countWords(saved)}</span> / min. ${task.id==='w1'?150:250}</span>
+        <span style="color:var(--muted);font-size:0.75rem">Use formal academic English</span>
+      </div>
+    </div>
+  </div>`;
+  if(task.time>0)startTimer(task.time*60,false);
+}
+function saveWriting(id){
+  const v=document.getElementById('wa-'+id).value;
+  APP.writings[id]=v;
+  document.getElementById('wc-'+id).textContent=countWords(v);
+}
+function countWords(s){return s.trim().split(/\s+/).filter(w=>w).length}
+
+// ─── SPEAKING ───
+function renderSpeaking(task){
+  document.getElementById('btn-nxt').style.display='';
+  const questionsHtml=task.questions.map((q,qi)=>{
+    const key=`sp_${task.part.replace(/\s/g,'_')}_${qi}`;
+    const saved=APP.speakings[key]||'';
+    return `<div class="speaking-card">
+      <div class="speak-part">${task.part}</div>
+      <div class="speak-q">${q.q}</div>
+      ${q.sub?`<div class="speak-sub">${q.sub.replace(/\n/g,'<br>')}</div>`:''}
+      <ul class="speak-cues">${(q.tips||[]).map(t=>`<li>${t}</li>`).join('')}</ul>
+      <div style="font-size:0.8rem;font-weight:700;color:var(--purple);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">📝 Write Your Spoken Response</div>
+      <textarea class="speak-textarea" placeholder="Write what you would say in your response..." oninput="APP.speakings['${key}']=this.value">${saved}</textarea>
+    </div>`;
+  }).join('');
+  document.getElementById('test-main').innerHTML=`
+  <div style="padding:20px;max-width:800px;margin:0 auto">
+    <div class="speaking-wrap">
+      <div class="qcard-head">${task.part}</div>
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:20px;padding:10px 14px;background:var(--purple-l);border-radius:var(--r-xs);border-left:3px solid var(--purple)">${task.intro}</div>
+      ${questionsHtml}
+    </div>
+  </div>`;
+  if(task.time>0)startTimer(task.time,false);
+}
+
+// ─── OPT SELECT ───
+function selectOpt(id,val,el){
+  APP.answers[id]=val;
+  el.closest('.opts').querySelectorAll('.opt').forEach((o,i)=>o.classList.toggle('sel',i===val));
+}
+
+// ─── NAVIGATION ───
+function goNext(){
+  if(APP.step<ALL_STEPS.length-1){APP.step++;renderStep();window.scrollTo(0,0)}
+  else finishTest();
+}
+function goBack(){
+  if(APP.step>0){APP.step--;renderStep();window.scrollTo(0,0)}
+}
+
+// ─── TIMER ───
+function startTimer(secs,shared){
+  clearTimer();
+  if(shared&&APP.timeLeft>0)return;
+  APP.timeLeft=secs;
+  updateTimerUI();
+  APP.timerInt=setInterval(()=>{APP.timeLeft--;updateTimerUI();if(APP.timeLeft<=0){clearTimer();goNext()}},1000);
+}
+function clearTimer(){if(APP.timerInt){clearInterval(APP.timerInt);APP.timerInt=null}}
+function updateTimerUI(){
+  const m=Math.floor(APP.timeLeft/60),s=APP.timeLeft%60;
+  const el=document.getElementById('timer-pill');
+  el.textContent=`${m}:${s<10?'0':''}${s}`;
+  el.className='timer-pill'+(APP.timeLeft<120?' urgent':'');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SCORING & RESULTS
+// ═══════════════════════════════════════════════════════════
+function finishTest(){
+  clearTimer();
+  show('loading');
+  setTimeout(()=>{
+    const msgs=['Applying IELTS Band Descriptors...','Scoring Reading & Listening...','Evaluating Writing Tasks...','Generating Personalised Feedback...'];
+    let i=0;
+    const iv=setInterval(()=>{
+      document.getElementById('ld-sub').textContent=msgs[i++]||msgs[msgs.length-1];
+      if(i>=msgs.length+2)clearInterval(iv);
+    },900);
+    setTimeout(()=>renderResult(),4000);
+  },100);
+}
+
+function scoreReading(){
+  let correct=0;
+  READ_Q.forEach(q=>{
+    const a=APP.answers[q.id];
+    if(q.type==='fill'){
+      if(typeof a==='string'&&a.trim().toLowerCase().includes(q.correct.toLowerCase()))correct++;
+    } else {
+      if(a===q.correct)correct++;
+    }
+  });
+  return correct; // out of 13
+}
+
+function scoreListening(){
+  let correct=0;
+  LISTEN_SECTIONS.forEach(sec=>{
+    sec.questions.forEach(q=>{
+      const a=APP.answers[q.id];
+      if(q.type==='fill'){
+        if(typeof a==='string'&&a.trim().toLowerCase().includes(q.correct.toLowerCase()))correct++;
+      } else {
+        if(a===q.correct)correct++;
+      }
+    });
+  });
+  return correct; // out of 10
+}
+
+function rawToIELTSBand(rawR,maxR,rawL,maxL){
+  const rPct=rawR/maxR;const lPct=rawL/maxL;
+  function toBand(p){
+    if(p>=0.9)return 8.5;if(p>=0.8)return 7.5;if(p>=0.7)return 7.0;
+    if(p>=0.6)return 6.5;if(p>=0.5)return 6.0;if(p>=0.4)return 5.5;
+    if(p>=0.3)return 5.0;return 4.5;
+  }
+  return{reading:toBand(rPct),listening:toBand(lPct)};
+}
+
+function estimateWritingBand(text,minWords){
+  const wc=countWords(text||'');
+  const lengthScore=Math.min(1,wc/minWords);
+  const vocab=estimateVocab(text||'');
+  const base=4.5+lengthScore*2+vocab*1.5;
+  return Math.min(9,Math.round(base*2)/2);
+}
+function estimateVocab(t){
+  const advanced=['furthermore','consequently','nevertheless','predominantly','significantly','illustrate','constitute','demonstrate','however','therefore','moreover','whereas','albeit','substantial','comprehensive','equivalent','approximately'];
+  let hits=0;advanced.forEach(w=>{if(t.toLowerCase().includes(w))hits++});
+  return Math.min(1,hits/5);
+}
+
+function estimateSpeakingBand(){
+  let total=0,count=0;
+  Object.values(APP.speakings).forEach(v=>{
+    if(v&&v.trim()){const wc=countWords(v);const score=wc>150?7:wc>80?6.5:wc>40?5.5:wc>15?5:4.5;total+=score;count++;}
+  });
+  return count>0?Math.round(total/count*2)/2:5.0;
+}
+
+function overallBand(r,l,w,s){
+  const avg=(r+l+w+s)/4;
+  return Math.round(avg*2)/2;
+}
+
+function cefrFromBand(b){
+  if(b>=8.5)return'C2';if(b>=7.0)return'C1';if(b>=5.5)return'B2';if(b>=4.0)return'B1';return'A2';
+}
+
+function buildReviewList(){
+  const allQ=[...READ_Q,...LISTEN_SECTIONS.flatMap(s=>s.questions)];
+  return allQ.map((q,i)=>{
+    const a=APP.answers[q.id];
+    let isCorrect=false;
+    if(q.type==='fill'){isCorrect=typeof a==='string'&&a.trim().toLowerCase().includes(q.correct.toLowerCase())}
+    else{isCorrect=a===q.correct}
+    const unanswered=a===undefined||a==='';
+    const status=unanswered?'unanswered':isCorrect?'correct':'wrong';
+    let yourAns=unanswered?'Not answered':q.type==='fill'?a:(q.opts?q.opts[a]:'N/A');
+    let corrAns=q.type==='fill'?q.correct:(q.opts?q.opts[q.correct]:'N/A');
+    return{q,status,yourAns,corrAns,i};
+  });
+}
+
+function renderResult(){
+  const rawR=scoreReading(),rawL=scoreListening();
+  const {reading:rBand,listening:lBand}=rawToIELTSBand(rawR,READ_Q.length,rawL,10);
+  const wBand=estimateWritingBand((APP.writings.w1||'')+(APP.writings.w2||''),400);
+  const sBand=estimateSpeakingBand();
+  const overall=overallBand(rBand,lBand,wBand,sBand);
+  const cefr=cefrFromBand(overall);
+  const reviews=buildReviewList();
+  const correct=reviews.filter(r=>r.status==='correct').length;
+  const wrong=reviews.filter(r=>r.status==='wrong').length;
+
+  const el=document.getElementById('s-result');
+  el.innerHTML=`
+  <div class="res-hero">
+    <h1>📋 Test Results — ${APP.name}</h1>
+    <p>${APP.mode.toUpperCase()} Simulation · ${new Date().toLocaleDateString('en-GB',{year:'numeric',month:'long',day:'numeric'})}</p>
+    <div class="band-display">
+      <div class="band-item"><div class="band-n">${overall.toFixed(1)}</div><div class="band-l">Overall Band</div></div>
+      <div class="band-item"><div class="band-n">${rBand.toFixed(1)}</div><div class="band-l">Reading</div></div>
+      <div class="band-item"><div class="band-n">${lBand.toFixed(1)}</div><div class="band-l">Listening</div></div>
+      <div class="band-item"><div class="band-n">${wBand.toFixed(1)}</div><div class="band-l">Writing</div></div>
+      <div class="band-item"><div class="band-n">${sBand.toFixed(1)}</div><div class="band-l">Speaking</div></div>
+    </div>
+    <div class="cefr-badge">CEFR Level: ${cefr}</div>
+  </div>
+  <div class="res-body">
+    <div class="res-sec">
+      <h2><span class="ico">📊</span>Score Breakdown</h2>
+      <div class="score-bars">
+        ${sbar('Reading',rBand,9,'#1D4ED8')}
+        ${sbar('Listening',lBand,9,'#7C3AED')}
+        ${sbar('Writing',wBand,9,'#059669')}
+        ${sbar('Speaking',sBand,9,'#B45309')}
+        ${sbar('Overall Band',overall,9,'#0891B2')}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px">
+        <div style="background:var(--green-l);border-radius:8px;padding:16px;text-align:center">
+          <div style="font-size:2rem;font-weight:900;color:var(--green)">${correct}</div>
+          <div style="font-size:0.78rem;color:#065F46">Correct</div>
+        </div>
+        <div style="background:var(--red-l);border-radius:8px;padding:16px;text-align:center">
+          <div style="font-size:2rem;font-weight:900;color:var(--red)">${wrong}</div>
+          <div style="font-size:0.78rem;color:#991B1B">Wrong</div>
+        </div>
+        <div style="background:#FEF3C7;border-radius:8px;padding:16px;text-align:center">
+          <div style="font-size:2rem;font-weight:900;color:#92400E">${reviews.filter(r=>r.status==='unanswered').length}</div>
+          <div style="font-size:0.78rem;color:#92400E">Skipped</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="res-sec">
+      <h2><span class="ico">🌍</span>CEFR Level Reference</h2>
+      <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px">Your score maps to <strong>${cefr}</strong> on the Common European Framework of Reference for Languages.</p>
+      <div class="cefr-grid">
+        ${cefrCard('A1','Beginner',overall,'A1')}
+        ${cefrCard('A2','Elementary',overall,'A2')}
+        ${cefrCard('B1','Intermediate',overall,'B1')}
+        ${cefrCard('B2','Upper-Intermediate',overall,'B2')}
+        ${cefrCard('C1','Advanced',overall,'C1')}
+        ${cefrCard('C2','Proficient',overall,'C2')}
+      </div>
+    </div>
+
+    <div class="res-sec">
+      <h2><span class="ico">📖</span>Reading & Listening — Detailed Review</h2>
+      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:16px">Click each question to see your answer, the correct answer, and a full explanation.</p>
+      <div class="review-list">
+        ${reviews.map((r,i)=>`
+          <div class="review-item">
+            <div class="review-head" onclick="toggleReview('rv-${i}')">
+              <div class="review-q">Q${i+1}: ${r.q.q.replace(/\n.*/,'').slice(0,90)}${r.q.q.length>90?'...':''}</div>
+              <span class="review-status ${r.status==='correct'?'rs-c':r.status==='wrong'?'rs-w':'rs-p'}">${r.status==='correct'?'✓ Correct':r.status==='wrong'?'✗ Wrong':'— Skipped'}</span>
+            </div>
+            <div class="review-body" id="rv-${i}">
+              <div class="your-ans"><strong>Your answer:</strong> ${r.yourAns||'Not answered'}</div>
+              ${r.status!=='correct'?`<div class="correct-ans"><strong>✓ Correct answer:</strong> ${r.corrAns}</div>`:''}
+              <div class="explan"><strong>📚 Explanation:</strong> ${r.q.exp}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="res-sec">
+      <h2><span class="ico">✍️</span>Writing — Model Answers & Feedback</h2>
+      ${WRITE_TASKS.map(t=>`
+        <div style="margin-bottom:28px">
+          <div style="font-weight:800;color:var(--blue);margin-bottom:8px">${t.type}</div>
+          ${APP.writings[t.id]?`<div style="background:var(--bg);border-radius:8px;padding:16px;margin-bottom:12px;font-size:0.88rem;color:var(--ink2);line-height:1.8;border-left:3px solid var(--blue);border:1px solid var(--line)"><strong>Your Response:</strong><br>${APP.writings[t.id].replace(/\n/g,'<br>')}</div>`:'<div style="background:#FEF3C7;padding:12px;border-radius:6px;font-size:0.85rem;color:#92400E;margin-bottom:12px">⚠ Not attempted — no response recorded.</div>'}
+          <div class="explan" style="margin-bottom:10px"><strong>📚 Scoring Rubric:</strong><br>${t.rubric}</div>
+          <div style="background:var(--green-l);border-left:3px solid var(--green);border-radius:6px;padding:16px;font-size:0.88rem;color:var(--ink2);line-height:1.8">
+            <strong style="color:var(--green)">✓ Model Answer (Band 8.0+):</strong><br>${t.modelAnswer.replace(/\n/g,'<br>')}
+          </div>
+          ${APP.writings[t.id]?`<div style="background:var(--blue-l);border-radius:6px;padding:14px;margin-top:10px;font-size:0.85rem;color:var(--ink2)">${writingFeedback(t.id,t.id==='w1'?150:250)}</div>`:''}
+        </div>`).join('<hr style="border:none;border-top:1px solid var(--line);margin:20px 0">')}
+    </div>
+
+    <div class="res-sec">
+      <h2><span class="ico">🎙️</span>Speaking — Responses & Band Tips</h2>
+      ${SPEAK_TASKS.map((task,ti)=>task.questions.map((q,qi)=>{
+        const key=`sp_${task.part.replace(/\s/g,'_')}_${qi}`;
+        const resp=APP.speakings[key];
+        return`<div style="margin-bottom:20px">
+          <div style="font-weight:700;color:var(--purple);margin-bottom:6px">${task.part}</div>
+          <div style="font-size:0.95rem;font-weight:600;margin-bottom:10px">${q.q}</div>
+          ${resp?`<div style="background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;font-size:0.88rem;line-height:1.8;margin-bottom:10px;border-left:3px solid var(--purple)"><strong>Your response:</strong><br>${resp.replace(/\n/g,'<br>')}</div>`:'<div style="background:#FEF3C7;padding:10px;border-radius:6px;font-size:0.83rem;color:#92400E;margin-bottom:10px">Not attempted.</div>'}
+          <div class="explan"><strong>💡 Examiner Tips:</strong> ${q.tips.join(' · ')}</div>
+        </div>`;
+      }).join('')).join('')}
+    </div>
+
+    <div class="res-sec">
+      <h2><span class="ico">🚀</span>Personalised Study Recommendations</h2>
+      <div class="tip-grid">
+        ${rBand<6.5?`<div class="tip-card"><h4>📖 Boost Reading (Band ${rBand})</h4><p>Practice True/False/Not Given daily. Always find the exact sentence in the passage that justifies your answer. Use The Economist or Guardian Weekly for academic reading practice.</p></div>`:''}
+        ${lBand<6.5?`<div class="tip-card"><h4>🎧 Improve Listening (Band ${lBand})</h4><p>Listen to BBC World Service podcasts and TED Talks daily. Practice predicting answers from questions before listening. Focus on number and spelling accuracy.</p></div>`:''}
+        ${wBand<6.5?`<div class="tip-card"><h4>✍️ Develop Writing (Band ${wBand})</h4><p>Learn 30 Task 2 discourse markers. Study IELTS Writing Task 2 essay templates: Introduction → Two body paragraphs → Conclusion. Aim for 280+ words in Task 2.</p></div>`:''}
+        ${sBand<6.5?`<div class="tip-card"><h4>🎙️ Enhance Speaking (Band ${sBand})</h4><p>Record yourself for 2 minutes daily on random topics. Focus on extending responses using the PEEL method: Point, Explain, Example, Link. Reduce fillers ("um", "like").</p></div>`:''}
+        <div class="tip-card"><h4>🎯 Target: ${APP.target} Band</h4><p>Your current overall: ${overall.toFixed(1)}. ${parseFloat(APP.target)<=overall?'🎉 You have reached or exceeded your target!':'Gap to target: '+(parseFloat(APP.target)-overall).toFixed(1)+' bands. Consistent daily practice of 90 minutes can typically improve 0.5 bands per 6-8 weeks.'}</p></div>
+        <div class="tip-card"><h4>📚 Recommended Resources</h4><p>Cambridge IELTS Official Practice Tests 1-17, IELTS.org Practice Materials, Magoosh TOEFL, Khan Academy Writing, British Council LearnEnglish.</p></div>
+      </div>
+    </div>
+
+    <div class="res-actions">
+      <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <button class="btn-again" onclick="show('land');APP.step=0;">🔄 Take Another Test</button>
+    </div>
+    <p style="text-align:center;font-size:0.75rem;color:var(--muted);padding:20px;max-width:600px;margin:0 auto">This simulation is designed for practice purposes. Actual IELTS/TOEFL scores are determined by certified testing centres. For official certification, register at ielts.org or ets.org/toefl.</p>
+  </div>`;
+  show('result');
+}
+
+function sbar(lbl,val,max,col){
+  const pct=(val/max)*100;
+  return`<div class="sb-row"><div class="sb-lbl">${lbl}</div><div class="sb-track"><div class="sb-fill" style="width:${pct}%;background:${col}">${val.toFixed(1)}</div></div><div class="sb-val" style="color:${col}">${val.toFixed(1)}</div></div>`;
+}
+function cefrCard(lvl,name,band,target){
+  const myLvl=cefrFromBand(band);
+  const isCurrent=myLvl===target;
+  return`<div class="cefr-card ${isCurrent?'current':''}"><div class="cefr-lvl">${lvl}</div><div style="font-size:0.8rem;font-weight:700;color:var(--ink2)">${name}</div><div class="cefr-desc">${isCurrent?'← Your Level':''}</div></div>`;
+}
+function cefrFromBand(b){
+  if(b>=8.5)return'C2';if(b>=7.0)return'C1';if(b>=5.5)return'B2';if(b>=4.0)return'B1';if(b>=2.5)return'A2';return'A1';
+}
+function toggleReview(id){const el=document.getElementById(id);el.classList.toggle('open')}
+function writingFeedback(id,minWords){
+  const txt=APP.writings[id]||'';
+  const wc=countWords(txt);
+  const hasAcademic=estimateVocab(txt)>0;
+  let fb=`<strong>💡 Auto-Feedback:</strong> `;
+  if(wc<minWords)fb+=`⚠ Word count (${wc}) is below the minimum ${minWords} words — automatic 1-band deduction. `;
+  else fb+=`✓ Word count (${wc}) meets minimum. `;
+  if(hasAcademic)fb+=`✓ Good use of academic vocabulary detected. `;
+  else fb+=`Consider using more academic connectives (furthermore, consequently, nevertheless, however). `;
+  fb+=`Compare your response to the model answer above to identify areas for improvement.`;
+  return fb;
+}
+</script>
+</body></html>

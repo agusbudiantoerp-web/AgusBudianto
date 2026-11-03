@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MFE Analytics — Mining Financial Engineering &amp; Risk Analytics System</title>
+
+<!-- Tailwind (Play CDN, full JIT — works standalone, no build step) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- React (version-pinned: unpinned "@18" / "latest" tags can silently resolve to a
+     newer major release whose UMD globals or bundle paths changed, which is what breaks
+     this page most often — Recharts 3.x in particular dropped the umd/Recharts.js build
+     entirely, so Recharts.BarChart etc. become undefined at runtime.) -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js" crossorigin></script>
+<!-- Recharts (charts) — pinned to the last 2.x release, which still ships a UMD bundle -->
+<script src="https://unpkg.com/recharts@2.15.0/umd/Recharts.js" crossorigin></script>
+<!-- Babel (so this file can hold plain JSX and run without a build step) -->
+<script src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js" crossorigin></script>
+
+<script>
+  // Fail loudly and visibly in the page itself instead of a silent blank screen,
+  // so any future CDN hiccup is obvious without opening devtools.
+  window.addEventListener("error", function (e) {
+    var root = document.getElementById("root");
+    if (root && !root.hasChildNodes()) {
+      root.innerHTML =
+        '<div style="font-family:monospace;color:#fca5a5;background:#0f172a;padding:24px;white-space:pre-wrap;">' +
+        '⚠ Script error while loading the app:\n\n' + (e.message || e) +
+        '\n\nThis usually means one of the CDN scripts (React / Recharts / Babel / Tailwind) ' +
+        'failed to load — check your internet connection and try reloading.</div>';
+    }
+  });
+</script>
+
+<style>
+  html, body { background:#020617; margin:0; height:100%; }
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
+  .font-body { font-family: 'Inter', sans-serif; }
+  .font-data { font-family: 'IBM Plex Mono', monospace; }
+  .mfe-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+  .mfe-scroll::-webkit-scrollbar-track { background: transparent; }
+  .mfe-scroll::-webkit-scrollbar-thumb { background: #33414f; border-radius: 8px; }
+  .bench-lines {
+    background-image: repeating-linear-gradient(
+      transparent, transparent 27px, rgba(201,117,47,0.10) 27px, rgba(201,117,47,0.10) 28px
+    );
+  }
+  .core-card { position: relative; overflow: hidden; }
+  input[type=number]::-webkit-inner-spin-button { opacity: 0.4; }
+</style>
+</head>
+<body class="font-body">
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+
+const { useState, useMemo } = React;
+const {
+  BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip: RTooltip,
+  ResponsiveContainer, PieChart, Pie, LineChart, Line, AreaChart, Area, Legend
+} = Recharts;
+
+/* ============================================================================
+   ICONS — small inline SVG set (no external icon library needed offline)
+   ========================================================================== */
+const ICON_PATHS = {
+  "layout-dashboard": (
+    <>
+      <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+      <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+      <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+      <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+    </>
+  ),
+  "file-input": (
+    <>
+      <path d="M6 3h8l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"></path>
+      <path d="M9 13h6M12 10l3 3-3 3"></path>
+    </>
+  ),
+  "factory": (
+    <>
+      <path d="M3 21V11l5 3v-3l5 3v-3l5 3v7H3z"></path>
+      <path d="M7 21v-4M12 21v-4M17 21v-4"></path>
+    </>
+  ),
+  "dollar-sign": (
+    <>
+      <line x1="12" y1="1" x2="12" y2="23"></line>
+      <path d="M16.5 7.5c0-1.4-2-2.5-4.5-2.5s-4.5 1-4.5 2.5S9.5 10 12 10s4.5 1 4.5 2.5S14.5 15 12 15s-4.5-1-4.5-2.5"></path>
+    </>
+  ),
+  "receipt": (
+    <>
+      <path d="M5 3h14v18l-2-1.3L15 21l-2-1.3L11 21l-2-1.3L7 21l-2-1.3z"></path>
+      <line x1="8" y1="8" x2="16" y2="8"></line>
+      <line x1="8" y1="12" x2="16" y2="12"></line>
+      <line x1="8" y1="16" x2="13" y2="16"></line>
+    </>
+  ),
+  "file-text": (
+    <>
+      <path d="M6 3h8l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"></path>
+      <line x1="8" y1="9" x2="16" y2="9"></line>
+      <line x1="8" y1="13" x2="16" y2="13"></line>
+      <line x1="8" y1="17" x2="13" y2="17"></line>
+    </>
+  ),
+  "wallet": (
+    <>
+      <path d="M3 7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"></path>
+      <path d="M16 12h3v3h-3a1.5 1.5 0 010-3z"></path>
+    </>
+  ),
+  "piggy-bank": (
+    <>
+      <path d="M4 10a5 5 0 015-5h5a5 5 0 015 5v3a5 5 0 01-5 5H9a5 5 0 01-5-5v-3z"></path>
+      <circle cx="8" cy="6" r="1.3"></circle>
+      <line x1="8" y1="18" x2="8" y2="20"></line>
+      <line x1="15" y1="18" x2="15" y2="20"></line>
+    </>
+  ),
+  "trending-up": (
+    <>
+      <polyline points="3 17 9 11 13 15 21 5"></polyline>
+      <polyline points="15 5 21 5 21 11"></polyline>
+    </>
+  ),
+  "sliders": (
+    <>
+      <line x1="4" y1="6" x2="20" y2="6"></line>
+      <circle cx="9" cy="6" r="2"></circle>
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <circle cx="16" cy="12" r="2"></circle>
+      <line x1="4" y1="18" x2="20" y2="18"></line>
+      <circle cx="11" cy="18" r="2"></circle>
+    </>
+  ),
+  "git-branch": (
+    <>
+      <circle cx="6" cy="6" r="2"></circle>
+      <circle cx="6" cy="18" r="2"></circle>
+      <circle cx="18" cy="6" r="2"></circle>
+      <line x1="6" y1="8" x2="6" y2="16"></line>
+      <path d="M6 8a6 6 0 006 6h4"></path>
+      <line x1="18" y1="8" x2="18" y2="6"></line>
+    </>
+  ),
+  "percent": (
+    <>
+      <line x1="19" y1="5" x2="5" y2="19"></line>
+      <circle cx="6.5" cy="6.5" r="2.5"></circle>
+      <circle cx="17.5" cy="17.5" r="2.5"></circle>
+    </>
+  ),
+  "dices": (
+    <>
+      <rect x="2" y="2" width="10" height="10" rx="2"></rect>
+      <circle cx="7" cy="7" r="1"></circle>
+      <rect x="12" y="12" width="10" height="10" rx="2"></rect>
+      <circle cx="15.5" cy="15.5" r="0.8"></circle>
+      <circle cx="18.5" cy="18.5" r="0.8"></circle>
+    </>
+  ),
+  "truck": (
+    <>
+      <rect x="1" y="7" width="13" height="9" rx="1"></rect>
+      <path d="M14 10h4l3 3v3h-7z"></path>
+      <circle cx="6" cy="19" r="2"></circle>
+      <circle cx="17" cy="19" r="2"></circle>
+    </>
+  ),
+  "gauge": (
+    <>
+      <circle cx="12" cy="13" r="8"></circle>
+      <line x1="12" y1="13" x2="16" y2="9"></line>
+      <line x1="8" y1="4" x2="8" y2="4"></line>
+    </>
+  ),
+  "clipboard-check": (
+    <>
+      <rect x="6" y="4" width="12" height="16" rx="2"></rect>
+      <rect x="9" y="2" width="6" height="4" rx="1"></rect>
+      <path d="M9 13l2 2 4-4"></path>
+    </>
+  ),
+  "file-bar-chart": (
+    <>
+      <path d="M6 3h8l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"></path>
+      <line x1="9" y1="17" x2="9" y2="14"></line>
+      <line x1="12" y1="17" x2="12" y2="12"></line>
+      <line x1="15" y1="17" x2="15" y2="15"></line>
+    </>
+  ),
+  "lock": (
+    <>
+      <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+      <path d="M8 11V7a4 4 0 018 0v4"></path>
+    </>
+  ),
+  "info": (
+    <>
+      <circle cx="12" cy="12" r="9"></circle>
+      <line x1="12" y1="11" x2="12" y2="16"></line>
+      <line x1="12" y1="7.5" x2="12" y2="7.51"></line>
+    </>
+  ),
+  "mountain": (
+    <path d="M3 20l7-12 4 6 3-4 4 10H3z"></path>
+  ),
+  "chevron-right": (
+    <polyline points="9 6 15 12 9 18"></polyline>
+  ),
+  "alert-triangle": (
+    <>
+      <path d="M12 2L2 20h20L12 2z"></path>
+      <line x1="12" y1="9" x2="12" y2="13"></line>
+      <line x1="12" y1="16.5" x2="12" y2="16.51"></line>
+    </>
+  ),
+  "check-circle": (
+    <>
+      <circle cx="12" cy="12" r="9"></circle>
+      <polyline points="8 12 11 15 16 9"></polyline>
+    </>
+  ),
+};
+
+function Icon({ name, size = 16, className = "" }) {
+  const content = ICON_PATHS[name] || null;
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" strokeWidth="2"
+      strokeLinecap="round" strokeLinejoin="round"
+      className={className}
+    >
+      {content}
+    </svg>
+  );
+}
+
+/* ============================================================================
+   CALCULATION ENGINE
+   In a full multi-file build these pure functions live under /lib/calc/:
+     production.ts | hauling.ts | revenue.ts | cost.ts | pnl.ts | finance.ts
+   Kept together here so this single HTML file runs standalone, offline-ready
+   (aside from the CDN script tags above).
+   ========================================================================== */
+
+function computeProduction(p, h) {
+  const totalMaterialM3 = p.oreVolume + p.obVolume;
+  const totalMaterialTon = totalMaterialM3 * p.density;
+
+  const retPerHour = 60 / h.cycleTime;
+  const availabilityFactor =
+    (h.truckAvailability / 100) * (h.physicalAvailability / 100) * (h.utilization / 100);
+  const effectiveHours = p.workingHours * availabilityFactor;
+  const retPerDay = retPerHour * effectiveHours;
+  const prodPerTruckPerDayTon = retPerDay * h.payload;
+
+  const fleetProdPerDayTon = prodPerTruckPerDayTon * h.numTrucks;
+  const fleetProdPerMonthTon = fleetProdPerDayTon * p.workingDays;
+
+  const requiredFleet =
+    prodPerTruckPerDayTon > 0
+      ? totalMaterialTon / (prodPerTruckPerDayTon * p.workingDays)
+      : 0;
+
+  const fleetUtilization =
+    fleetProdPerMonthTon > 0 ? (totalMaterialTon / fleetProdPerMonthTon) * 100 : 0;
+
+  return {
+    totalMaterialM3, totalMaterialTon, retPerHour, retPerDay, effectiveHours,
+    prodPerTruckPerDayTon, fleetProdPerDayTon, fleetProdPerMonthTon,
+    requiredFleet, fleetUtilization,
+  };
+}
+
+function computeRevenue(p, rev) {
+  const oreRevenue = p.oreVolume * rev.oreRate;
+  const obRevenue = p.obVolume * rev.obRate;
+  const otherRevenue = rev.otherRevenue;
+  const totalRevenue = oreRevenue + obRevenue + otherRevenue;
+  return { oreRevenue, obRevenue, otherRevenue, totalRevenue };
+}
+
+function computeCost(prod, cost, fixed) {
+  const fuelCost = prod.totalMaterialM3 * cost.fuelRatio * cost.fuelPrice;
+  const baseVariableCost = prod.totalMaterialM3 * cost.variableCostPerM3;
+  const lubricantCost = prod.totalMaterialM3 * cost.lubricantPerM3;
+  const tireMaintCost = prod.totalMaterialM3 * cost.tireMaintenancePerM3;
+  const operatorCost = prod.totalMaterialM3 * cost.operatorPerM3;
+  const otherVariableCost = prod.totalMaterialM3 * cost.otherVariablePerM3;
+
+  const totalVariableCost =
+    fuelCost + baseVariableCost + lubricantCost + tireMaintCost + operatorCost + otherVariableCost;
+
+  const totalFixedCost =
+    fixed.salary + fixed.management + fixed.office + fixed.camp +
+    fixed.insurance + fixed.permit + fixed.overhead + fixed.otherFixed;
+
+  return {
+    fuelCost, baseVariableCost, lubricantCost, tireMaintCost, operatorCost,
+    otherVariableCost, totalVariableCost, totalFixedCost,
+  };
+}
+
+function computePnL(revenue, cost, fin) {
+  const depreciation = fin.capex / (fin.projectLifeYears * 12);
+  const ebitda = revenue.totalRevenue - cost.totalVariableCost - cost.totalFixedCost;
+  const ebit = ebitda - depreciation;
+
+  const debt = fin.capex * (fin.debtPortion / 100);
+  const equity = fin.capex - debt;
+  const interestExpense = debt * (fin.interestRate / 100 / 12);
+
+  const ebt = ebit - interestExpense;
+  const tax = Math.max(ebt, 0) * (fin.taxRate / 100);
+  const netProfit = ebt - tax;
+
+  const grossMargin = revenue.totalRevenue > 0 ? ((revenue.totalRevenue - cost.totalVariableCost) / revenue.totalRevenue) * 100 : 0;
+  const ebitdaMargin = revenue.totalRevenue > 0 ? (ebitda / revenue.totalRevenue) * 100 : 0;
+  const ebitMargin = revenue.totalRevenue > 0 ? (ebit / revenue.totalRevenue) * 100 : 0;
+  const netMargin = revenue.totalRevenue > 0 ? (netProfit / revenue.totalRevenue) * 100 : 0;
+
+  const fcf = netProfit + depreciation; // simplified: WC & principal handled in Phase 3
+
+  return {
+    depreciation, ebitda, ebit, debt, equity, interestExpense, ebt, tax, netProfit,
+    grossMargin, ebitdaMargin, ebitMargin, netMargin, fcf,
+  };
+}
+
+function computeWACC(fin, pnl) {
+  const V = fin.capex;
+  const costOfEquity = fin.riskFreeRate / 100 + fin.beta * (fin.marketRiskPremium / 100);
+  const costOfDebtAfterTax = (fin.interestRate / 100) * (1 - fin.taxRate / 100);
+  const wacc = V > 0 ? (pnl.equity / V) * costOfEquity + (pnl.debt / V) * costOfDebtAfterTax : 0;
+  return { costOfEquity, costOfDebtAfterTax, wacc };
+}
+
+function npvFromMonthlyFCF(capex, monthlyFCF, months, monthlyRate) {
+  let npv = -capex;
+  for (let t = 1; t <= months; t++) {
+    npv += monthlyFCF / Math.pow(1 + monthlyRate, t);
+  }
+  return npv;
+}
+
+function irrMonthly(capex, monthlyFCF, months) {
+  let lo = -0.5, hi = 3.0;
+  const f = (r) => npvFromMonthlyFCF(capex, monthlyFCF, months, r);
+  if (f(lo) * f(hi) > 0) return null;
+  for (let i = 0; i < 100; i++) {
+    const mid = (lo + hi) / 2;
+    const fm = f(mid);
+    if (Math.abs(fm) < 1) return mid;
+    if (f(lo) * fm < 0) hi = mid; else lo = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+function computeInvestment(fin, pnl, wacc) {
+  const months = fin.projectLifeYears * 12;
+  const monthlyRate = wacc.wacc / 12;
+  const npv = npvFromMonthlyFCF(fin.capex, pnl.fcf, months, monthlyRate);
+  const irrM = irrMonthly(fin.capex, pnl.fcf, months);
+  const irrAnnual = irrM !== null ? Math.pow(1 + irrM, 12) - 1 : null;
+  const paybackMonths = pnl.fcf > 0 ? fin.capex / pnl.fcf : null;
+  return { npv, irrAnnual, paybackMonths, months };
+}
+
+/* ============================================================================
+   FORMATTERS
+   ========================================================================== */
+function formatCompact(value, currency, rate) {
+  let v = value;
+  let symbol = "Rp";
+  if (currency === "USD") { v = v / rate; symbol = "$"; }
+  const sign = v < 0 ? "-" : "";
+  const abs = Math.abs(v);
+  let out;
+  if (abs >= 1e12) out = (abs / 1e12).toFixed(2) + "T";
+  else if (abs >= 1e9) out = (abs / 1e9).toFixed(2) + "B";
+  else if (abs >= 1e6) out = (abs / 1e6).toFixed(1) + "M";
+  else if (abs >= 1e3) out = (abs / 1e3).toFixed(1) + "K";
+  else out = abs.toFixed(0);
+  return `${sign}${symbol} ${out}`;
+}
+function formatNum(v, digits = 0) {
+  return Number(v).toLocaleString("en-US", { maximumFractionDigits: digits, minimumFractionDigits: digits });
+}
+function formatPct(v, digits = 1) {
+  return `${v >= 0 ? "" : "-"}${Math.abs(v).toFixed(digits)}%`;
+}
+
+/* ============================================================================
+   DEFAULT SAMPLE PROJECT (Section 30)
+   ========================================================================== */
+const DEFAULT_INPUTS = {
+  meta: {
+    name: "East Berau Coal Block",
+    location: "East Kalimantan, Indonesia",
+    commodity: "Thermal Coal (Ore) + Overburden",
+    durationYears: 5,
+    analysisPeriod: "Monthly / Annual",
+  },
+  production: { oreVolume: 77800, obVolume: 50000, workingDays: 26, workingHours: 20, density: 1.5 },
+  hauling: {
+    cycleTime: 95, distanceOneWay: 70, loadedSpeed: 25, emptySpeed: 35, payload: 30,
+    truckAvailability: 83, physicalAvailability: 90, utilization: 85, numTrucks: 25, numExcavators: 4,
+  },
+  revenue: { oreRate: 145000, obRate: 35000, otherRevenue: 0, escalationRate: 3 },
+  cost: {
+    variableCostPerM3: 27000, fuelRatio: 2, fuelPrice: 15000, lubricantPerM3: 1500,
+    tireMaintenancePerM3: 2000, operatorPerM3: 1800, otherVariablePerM3: 500,
+  },
+  fixedCost: {
+    salary: 350000000, management: 150000000, office: 60000000, camp: 120000000,
+    insurance: 40000000, permit: 30000000, overhead: 80000000, otherFixed: 170000000,
+  },
+  financial: {
+    capex: 45000000000, debtPortion: 60, interestRate: 11, taxRate: 22,
+    projectLifeYears: 5, riskFreeRate: 6.5, beta: 1.1, marketRiskPremium: 6,
+  },
+  currency: "IDR",
+  exchangeRate: 15500,
+};
+
+/* ============================================================================
+   NAVIGATION
+   ========================================================================== */
+const NAV_ITEMS = [
+  { id: "dashboard", label: "Dashboard", icon: "layout-dashboard", active: true },
+  { id: "input", label: "Project Input", icon: "file-input", active: true },
+  { id: "production", label: "Production Model", icon: "factory", phase: 2 },
+  { id: "revcost", label: "Revenue & Cost", icon: "dollar-sign", phase: 2 },
+  { id: "pnl", label: "Profit & Loss", icon: "receipt", phase: 2 },
+  { id: "cashflow", label: "Cash Flow", icon: "wallet", phase: 3 },
+  { id: "workingcap", label: "Working Capital", icon: "piggy-bank", phase: 3 },
+  { id: "dcf", label: "DCF Valuation", icon: "file-text", phase: 3 },
+  { id: "investment", label: "Investment Analysis", icon: "trending-up", phase: 4 },
+  { id: "risk", label: "Risk Analysis", icon: "alert-triangle", phase: 5 },
+  { id: "sensitivity", label: "Sensitivity Analysis", icon: "sliders", phase: 5 },
+  { id: "scenario", label: "Scenario Analysis", icon: "git-branch", phase: 5 },
+  { id: "probability", label: "Probability Analysis", icon: "percent", phase: 6 },
+  { id: "montecarlo", label: "Monte Carlo Simulation", icon: "dices", phase: 6 },
+  { id: "fleet", label: "Fleet Optimization", icon: "truck", phase: 7 },
+  { id: "riskscore", label: "Risk Score", icon: "gauge", phase: 8 },
+  { id: "decision", label: "Management Decision", icon: "clipboard-check", phase: 8 },
+  { id: "reports", label: "Reports", icon: "file-bar-chart", phase: 9 },
+];
+
+/* ============================================================================
+   SMALL UI PRIMITIVES
+   ========================================================================== */
+function InfoTip({ text }) {
+  return (
+    <span className="relative inline-flex group align-middle ml-1.5">
+      <Icon name="info" size={13} className="text-slate-500 hover:text-amber-400 cursor-help" />
+      <span className="pointer-events-none absolute z-30 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 rounded-md bg-slate-800 border border-slate-600 text-slate-200 text-[11px] leading-snug p-2.5 shadow-xl font-body">
+        {text}
+      </span>
+    </span>
+  );
+}
+
+function SectionLabel({ eyebrow, title, sub }) {
+  return (
+    <div className="mb-5">
+      {eyebrow && (
+        <div className="text-orange-400 text-[11px] font-data tracking-[0.2em] uppercase mb-1.5">
+          {eyebrow}
+        </div>
+      )}
+      <h2 className="font-display text-xl text-white font-semibold">{title}</h2>
+      {sub && <p className="text-slate-400 text-sm mt-1 font-body max-w-2xl">{sub}</p>}
+    </div>
+  );
+}
+
+const STATUS = {
+  good: { text: "text-emerald-400", bg: "bg-emerald-400" },
+  warn: { text: "text-amber-400", bg: "bg-amber-400" },
+  bad: { text: "text-red-400", bg: "bg-red-400" },
+  info: { text: "text-blue-400", bg: "bg-blue-400" },
+};
+
+function KpiCard({ label, value, sub, status = "info", tip, mono = true }) {
+  const s = STATUS[status];
+  return (
+    <div className="core-card bg-slate-900/70 border border-slate-800 rounded-lg p-4 hover:border-slate-700 transition-colors">
+      <div className={`absolute left-0 top-0 bottom-0 w-[3px] ${s.bg}`}></div>
+      <div className="flex items-center text-slate-400 text-[11px] font-body uppercase tracking-wide">
+        {label}
+        {tip && <InfoTip text={tip} />}
+      </div>
+      <div className={`mt-1.5 font-display text-xl md:text-[22px] text-white ${mono ? "font-data" : ""}`}>
+        {value}
+      </div>
+      {sub && <div className={`mt-1 text-xs font-body ${s.text}`}>{sub}</div>}
+    </div>
+  );
+}
+
+function LockedPage({ item }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-[70vh] text-center px-6">
+      <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-5">
+        <Icon name={item.icon} size={26} className="text-slate-600" />
+      </div>
+      <h3 className="font-display text-lg text-white">{item.label}</h3>
+      <p className="text-slate-500 text-sm mt-2 max-w-sm font-body">
+        This module is part of the roadmap and will be enabled in{" "}
+        <span className="text-orange-400 font-medium">Phase {item.phase}</span> of the build, once
+        the calculation engine below it is in place.
+      </p>
+      <div className="flex items-center gap-1.5 mt-4 text-slate-600 text-xs font-data">
+        <Icon name="lock" size={12} /> LOCKED · ROADMAP
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================================
+   SIDEBAR
+   ========================================================================== */
+function Sidebar({ active, setActive, collapsed, setCollapsed }) {
+  return (
+    <aside className={`bg-slate-950 border-r border-slate-800 flex flex-col shrink-0 transition-all duration-200 ${collapsed ? "w-[64px]" : "w-[248px]"}`}>
+      <div className="h-16 flex items-center gap-2.5 px-4 border-b border-slate-800">
+        <div className="w-8 h-8 rounded bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center shrink-0">
+          <Icon name="mountain" size={17} className="text-white" />
+        </div>
+        {!collapsed && (
+          <div className="leading-tight overflow-hidden">
+            <div className="font-display text-white text-[13px] font-semibold whitespace-nowrap">MFE ANALYTICS</div>
+            <div className="text-slate-500 text-[10px] font-data tracking-wide whitespace-nowrap">MINING × FINANCE</div>
+          </div>
+        )}
+      </div>
+
+      <nav className="flex-1 overflow-y-auto mfe-scroll py-3 px-2">
+        {NAV_ITEMS.map((item) => {
+          const isActive = active === item.id;
+          const isLocked = !item.active;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActive(item.id)}
+              className={`w-full flex items-center gap-3 px-2.5 py-2 rounded-md mb-0.5 text-[13px] font-body transition-colors ${
+                isActive ? "bg-orange-500/10 text-orange-300 border border-orange-500/30"
+                : isLocked ? "text-slate-600 hover:text-slate-400 hover:bg-slate-900 border border-transparent"
+                : "text-slate-300 hover:bg-slate-900 border border-transparent"
+              }`}
+              title={collapsed ? item.label : undefined}
+            >
+              <Icon name={item.icon} size={16} className="shrink-0" />
+              {!collapsed && <span className="truncate text-left flex-1">{item.label}</span>}
+              {!collapsed && isLocked && <Icon name="lock" size={11} className="text-slate-700 shrink-0" />}
+            </button>
+          );
+        })}
+      </nav>
+
+      <button onClick={() => setCollapsed(!collapsed)} className="h-11 border-t border-slate-800 text-slate-500 hover:text-slate-300 flex items-center justify-center text-xs font-body">
+        <Icon name="chevron-right" size={14} className={`transition-transform ${collapsed ? "" : "rotate-180"}`} />
+        {!collapsed && <span className="ml-1">Collapse</span>}
+      </button>
+    </aside>
+  );
+}
+
+/* ============================================================================
+   TOP BAR
+   ========================================================================== */
+function TopBar({ meta, currency, setCurrency, activeLabel }) {
+  return (
+    <header className="h-16 border-b border-slate-800 bg-slate-950/60 backdrop-blur flex items-center justify-between px-6 shrink-0">
+      <div className="flex items-center gap-2 text-sm font-body min-w-0">
+        <span className="text-slate-500 truncate max-w-[220px]">{meta.name}</span>
+        <Icon name="chevron-right" size={14} className="text-slate-700 shrink-0" />
+        <span className="text-white font-medium">{activeLabel}</span>
+      </div>
+      <div className="flex items-center gap-3 shrink-0">
+        <div className="hidden md:flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-md p-0.5">
+          {["IDR", "USD"].map((c) => (
+            <button key={c} onClick={() => setCurrency(c)} className={`px-2.5 py-1 text-xs font-data rounded ${currency === c ? "bg-orange-500 text-white" : "text-slate-400 hover:text-white"}`}>
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ============================================================================
+   PROJECT OVERVIEW STRIP
+   ========================================================================== */
+function ProjectOverview({ meta }) {
+  const fields = [
+    ["Project", meta.name],
+    ["Location", meta.location],
+    ["Commodity", meta.commodity],
+    ["Duration", `${meta.durationYears} Years`],
+    ["Period", meta.analysisPeriod],
+  ];
+  return (
+    <div className="bench-lines rounded-lg border border-slate-800 bg-slate-900/40 px-5 py-4 mb-6 grid grid-cols-2 md:grid-cols-5 gap-4">
+      {fields.map(([k, v]) => (
+        <div key={k}>
+          <div className="text-[10px] uppercase tracking-widest text-slate-500 font-data">{k}</div>
+          <div className="text-white text-sm font-body mt-0.5 truncate">{v}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============================================================================
+   DASHBOARD PAGE
+   ========================================================================== */
+function DashboardPage({ inputs, prod, revenue, cost, pnl, wacc, inv, currency, rate }) {
+  const fmt = (v) => formatCompact(v, currency, rate);
+
+  const irrOk = inv.irrAnnual !== null && inv.irrAnnual > wacc.wacc;
+  const npvStatus = inv.npv > 0 ? "good" : "bad";
+  const irrStatus = inv.irrAnnual === null ? "warn" : irrOk ? "good" : "bad";
+  const fleetStatus = prod.fleetUtilization > 100 ? "bad" : prod.fleetUtilization > 90 ? "warn" : "good";
+  const marginStatus = pnl.ebitdaMargin > 30 ? "good" : pnl.ebitdaMargin > 15 ? "warn" : "bad";
+
+  const pnlBars = [
+    { name: "Revenue", value: revenue.totalRevenue, fill: "#34d399" },
+    { name: "Var. Cost", value: -cost.totalVariableCost, fill: "#f87171" },
+    { name: "Fixed Cost", value: -cost.totalFixedCost, fill: "#fb923c" },
+    { name: "EBITDA", value: pnl.ebitda, fill: "#38bdf8" },
+    { name: "Deprec.", value: -pnl.depreciation, fill: "#f87171" },
+    { name: "EBIT", value: pnl.ebit, fill: "#38bdf8" },
+    { name: "Interest", value: -pnl.interestExpense, fill: "#f87171" },
+    { name: "Tax", value: -pnl.tax, fill: "#f87171" },
+    { name: "Net Profit", value: pnl.netProfit, fill: "#34d399" },
+  ];
+
+  const costPie = [
+    { name: "Fuel", value: cost.fuelCost },
+    { name: "Base Variable", value: cost.baseVariableCost },
+    { name: "Lubricant", value: cost.lubricantCost },
+    { name: "Tire/Maint.", value: cost.tireMaintCost },
+    { name: "Operator", value: cost.operatorCost },
+    { name: "Other Var.", value: cost.otherVariableCost },
+    { name: "Fixed Cost", value: cost.totalFixedCost },
+  ];
+  const PIE_COLORS = ["#f97316", "#fb923c", "#fbbf24", "#f59e0b", "#facc15", "#eab308", "#64748b"];
+
+  const trend = useMemo(() => {
+    const months = ["M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12"];
+    const monthlyEsc = inputs.revenue.escalationRate / 100 / 12;
+    return months.map((m, i) => {
+      const growth = Math.pow(1 + monthlyEsc, i);
+      const rev = revenue.totalRevenue * growth;
+      const varCost = cost.totalVariableCost * growth;
+      const ebitda = rev - varCost - cost.totalFixedCost;
+      return { month: m, revenue: rev, ebitda };
+    });
+  }, [inputs, revenue, cost]);
+
+  const cumFlow = useMemo(() => {
+    const arr = [];
+    let cum = -inputs.financial.capex;
+    const monthlyRate = wacc.wacc / 12;
+    for (let t = 0; t <= Math.min(inv.months, 36); t++) {
+      if (t > 0) cum += pnl.fcf / Math.pow(1 + monthlyRate, t);
+      arr.push({ month: `M${t}`, cum });
+    }
+    return arr;
+  }, [inputs, pnl, wacc, inv]);
+
+  return (
+    <div>
+      <ProjectOverview meta={inputs.meta} />
+
+      <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-gradient-to-r from-slate-900 to-slate-900/40 px-5 py-3.5 mb-6">
+        <Icon name={inv.npv > 0 && irrOk ? "check-circle" : "alert-triangle"} size={20} className={inv.npv > 0 && irrOk ? "text-emerald-400 shrink-0" : "text-amber-400 shrink-0"} />
+        <div className="text-sm font-body text-slate-300">
+          <span className="text-white font-medium">
+            {inv.npv > 0 && irrOk ? "Project economics look attractive." : "Project economics need review."}
+          </span>{" "}
+          NPV is {fmt(inv.npv)} and project IRR{" "}
+          {inv.irrAnnual !== null ? `(${formatPct(inv.irrAnnual * 100)})` : "is not resolvable"}{" "}
+          {inv.irrAnnual !== null ? (irrOk ? "exceeds" : "is below") : ""} the computed WACC of{" "}
+          {formatPct(wacc.wacc * 100)}. Full Management Decision Engine arrives in Phase 8.
+        </div>
+      </div>
+
+      <SectionLabel eyebrow="Section 01" title="Operational KPIs" sub="Live output of the production and hauling calculation engine." />
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 mb-8">
+        <KpiCard label="Ore Volume / Month" value={`${formatNum(inputs.production.oreVolume)} m³`} status="info" tip="Target ore volume mined per month, as entered in Project Input." />
+        <KpiCard label="Overburden / Month" value={`${formatNum(inputs.production.obVolume)} m³`} status="info" tip="Target overburden (waste) volume moved per month." />
+        <KpiCard label="Total Material" value={`${formatNum(prod.totalMaterialM3)} m³`} sub={`${formatNum(prod.totalMaterialTon)} ton`} status="info" tip="Ore + Overburden volume, converted to tonnage using material density." />
+        <KpiCard label="Fleet Production" value={`${formatNum(prod.fleetProdPerMonthTon)} ton/mo`} status={fleetStatus} tip="Total monthly production capacity of the current fleet (trucks × payload × ret/day × working days)." />
+        <KpiCard label="Fleet Utilization" value={formatPct(prod.fleetUtilization)} sub={prod.fleetUtilization > 100 ? `Need ≈ ${Math.ceil(prod.requiredFleet)} trucks` : "Within capacity"} status={fleetStatus} tip="Required tonnage vs. current fleet capacity. Above 100% means the fleet is undersized for the production target." />
+        <KpiCard label="Number of Trucks" value={formatNum(inputs.hauling.numTrucks)} status="info" tip="Trucks currently assigned to the hauling fleet." />
+        <KpiCard label="Payload" value={`${inputs.hauling.payload} ton`} status="info" tip="Rated payload capacity per truck." />
+        <KpiCard label="Cycle Time" value={`${inputs.hauling.cycleTime} min`} status="info" tip="Time for one full haul cycle: load, haul, dump, return." />
+        <KpiCard label="Hauling Distance" value={`${inputs.hauling.distanceOneWay} km`} status="info" tip="One-way distance from loading point to dumping/processing point." />
+        <KpiCard label="Fuel Ratio" value={`${inputs.cost.fuelRatio} L/m³`} status="info" tip="Fuel consumed per cubic meter of material moved." />
+      </div>
+
+      <SectionLabel eyebrow="Section 02" title="Financial KPIs" sub="Monthly P&L, discounted cash flow, and investment metrics." />
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 mb-8">
+        <KpiCard label="Revenue" value={fmt(revenue.totalRevenue)} status="info" tip="Total monthly revenue = Ore Revenue + Overburden Revenue + Other Revenue." />
+        <KpiCard label="Variable Cost" value={fmt(cost.totalVariableCost)} status="warn" tip="Fuel + base variable + lubricant + tire/maintenance + operator + other variable costs, all volume-driven." />
+        <KpiCard label="Fixed Cost" value={fmt(cost.totalFixedCost)} status="warn" tip="Salary, management, office, camp, insurance, permit, overhead and other costs that don't scale with volume." />
+        <KpiCard label="EBITDA" value={fmt(pnl.ebitda)} sub={formatPct(pnl.ebitdaMargin) + " margin"} status={marginStatus} tip="Earnings before interest, tax, depreciation and amortization = Revenue − Variable Cost − Fixed Cost." />
+        <KpiCard label="Net Profit" value={fmt(pnl.netProfit)} sub={formatPct(pnl.netMargin) + " margin"} status={pnl.netProfit > 0 ? "good" : "bad"} tip="Bottom-line profit after depreciation, interest and tax." />
+        <KpiCard label="Free Cash Flow" value={fmt(pnl.fcf)} status={pnl.fcf > 0 ? "good" : "bad"} tip="Free Cash Flow represents cash available after operating requirements, capital expenditure and working capital investment. Simplified in Phase 1 as Net Profit + Depreciation." />
+        <KpiCard label="WACC" value={formatPct(wacc.wacc * 100)} status="info" tip="Weighted Average Cost of Capital: the blended, risk-adjusted return required by the project's debt and equity providers." />
+        <KpiCard label="NPV" value={fmt(inv.npv)} status={npvStatus} tip="Net Present Value: the present value of future project cash flows, discounted at WACC, after subtracting the initial investment." />
+        <KpiCard label="IRR" value={inv.irrAnnual !== null ? formatPct(inv.irrAnnual * 100) : "n/a"} status={irrStatus} tip="Internal Rate of Return: the discount rate at which NPV equals zero. Compared against WACC to judge attractiveness." />
+        <KpiCard label="Payback Period" value={inv.paybackMonths ? `${(inv.paybackMonths / 12).toFixed(1)} yrs` : "n/a"} status="info" tip="Simple payback: initial CAPEX divided by monthly Free Cash Flow." />
+      </div>
+
+      <SectionLabel eyebrow="Section 03 · Coming In Later Phases" title="Risk KPIs" sub="Structure is wired up now — values populate once Monte Carlo (Phase 6) and Risk Score (Phase 8) engines are built." />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        {["Risk Score", "Probability of Loss", "P5 / P50 / P95 NPV", "Value at Risk (95%)"].map((label) => (
+          <div key={label} className="rounded-lg border border-dashed border-slate-800 bg-slate-900/20 p-4 flex items-center justify-between">
+            <div>
+              <div className="text-slate-500 text-[11px] font-body uppercase tracking-wide">{label}</div>
+              <div className="text-slate-600 font-data text-lg mt-1">—</div>
+            </div>
+            <Icon name="lock" size={14} className="text-slate-700" />
+          </div>
+        ))}
+      </div>
+
+      <SectionLabel eyebrow="Section 04" title="Financial Visualization" />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-8">
+        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+          <div className="text-slate-300 text-sm font-body mb-3">P&amp;L Waterfall — Monthly (Rp)</div>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={pnlBars} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#334155" }} interval={0} angle={-25} textAnchor="end" height={55} />
+              <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} tickFormatter={(v) => formatCompact(v, currency, rate)} axisLine={{ stroke: "#334155" }} />
+              <RTooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 6, fontSize: 12 }} formatter={(v) => formatCompact(v, currency, rate)} />
+              <Bar dataKey="value" radius={[3, 3, 0, 0]}>
+                {pnlBars.map((entry, i) => (<Cell key={i} fill={entry.fill} />))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+          <div className="text-slate-300 text-sm font-body mb-3">Cost Composition</div>
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart>
+              <Pie data={costPie} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} paddingAngle={2}>
+                {costPie.map((entry, i) => (<Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />))}
+              </Pie>
+              <RTooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 6, fontSize: 12 }} formatter={(v) => formatCompact(v, currency, rate)} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#94a3b8" }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+          <div className="text-slate-300 text-sm font-body mb-3">Revenue &amp; EBITDA Trend — 12 Month Projection</div>
+          <ResponsiveContainer width="100%" height={240}>
+            <LineChart data={trend} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={{ stroke: "#334155" }} />
+              <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} tickFormatter={(v) => formatCompact(v, currency, rate)} axisLine={{ stroke: "#334155" }} />
+              <RTooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 6, fontSize: 12 }} formatter={(v) => formatCompact(v, currency, rate)} />
+              <Legend wrapperStyle={{ fontSize: 11, color: "#94a3b8" }} />
+              <Line type="monotone" dataKey="revenue" stroke="#34d399" strokeWidth={2} dot={false} name="Revenue" />
+              <Line type="monotone" dataKey="ebitda" stroke="#38bdf8" strokeWidth={2} dot={false} name="EBITDA" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+          <div className="text-slate-300 text-sm font-body mb-3">Discounted Cumulative Cash Flow — First 36 Months</div>
+          <ResponsiveContainer width="100%" height={240}>
+            <AreaChart data={cumFlow} margin={{ top: 5, right: 5, left: -10, bottom: 0 }}>
+              <defs>
+                <linearGradient id="cumGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#fb923c" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#fb923c" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={{ stroke: "#334155" }} interval={3} />
+              <YAxis tick={{ fill: "#94a3b8", fontSize: 10 }} tickFormatter={(v) => formatCompact(v, currency, rate)} axisLine={{ stroke: "#334155" }} />
+              <RTooltip contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 6, fontSize: 12 }} formatter={(v) => formatCompact(v, currency, rate)} />
+              <Area type="monotone" dataKey="cum" stroke="#fb923c" fill="url(#cumGrad)" strokeWidth={2} name="Cumulative DCF" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================================
+   PROJECT INPUT PAGE
+   ========================================================================== */
+function NumberField({ label, value, onChange, suffix, step = 1, tip }) {
+  return (
+    <label className="block">
+      <span className="text-slate-400 text-xs font-body flex items-center">
+        {label}
+        {tip && <InfoTip text={tip} />}
+      </span>
+      <div className="mt-1 flex items-center bg-slate-950 border border-slate-800 rounded-md focus-within:border-orange-500/60 overflow-hidden">
+        <input
+          type="number" step={step} value={value}
+          onChange={(e) => onChange(e.target.value === "" ? 0 : parseFloat(e.target.value))}
+          className="w-full bg-transparent px-3 py-2 text-white text-sm font-data outline-none"
+        />
+        {suffix && <span className="px-2.5 text-slate-500 text-xs font-body shrink-0">{suffix}</span>}
+      </div>
+    </label>
+  );
+}
+
+function InputCard({ title, icon, children }) {
+  return (
+    <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Icon name={icon} size={16} className="text-orange-400" />
+        <h3 className="font-display text-white text-sm font-semibold uppercase tracking-wide">{title}</h3>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">{children}</div>
+    </div>
+  );
+}
+
+function ProjectInputPage({ inputs, setInputs }) {
+  const set = (section, field) => (val) =>
+    setInputs((prev) => ({ ...prev, [section]: { ...prev[section], [field]: val } }));
+  const setMeta = (field) => (e) =>
+    setInputs((prev) => ({ ...prev, meta: { ...prev.meta, [field]: e.target.value } }));
+
+  return (
+    <div className="space-y-5 pb-10">
+      <SectionLabel eyebrow="Project Input" title="Assumptions &amp; Data Entry" sub="Every KPI on the Dashboard recalculates live from these fields. Nothing here is hard-coded." />
+
+      <div className="bg-slate-900/50 border border-slate-800 rounded-lg p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <Icon name="mountain" size={16} className="text-orange-400" />
+          <h3 className="font-display text-white text-sm font-semibold uppercase tracking-wide">Project Overview</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <label className="block">
+            <span className="text-slate-400 text-xs font-body">Project Name</span>
+            <input value={inputs.meta.name} onChange={setMeta("name")} className="mt-1 w-full bg-slate-950 border border-slate-800 rounded-md px-3 py-2 text-white text-sm font-body outline-none focus:border-orange-500/60" />
+          </label>
+          <label className="block">
+            <span className="text-slate-400 text-xs font-body">Location</span>
+            <input value={inputs.meta.location} onChange={setMeta("location")} className="mt-1 w-full bg-slate-950 border border-slate-800 rounded-md px-3 py-2 text-white text-sm font-body outline-none focus:border-orange-500/60" />
+          </label>
+          <label className="block">
+            <span className="text-slate-400 text-xs font-body">Commodity / Material</span>
+            <input value={inputs.meta.commodity} onChange={setMeta("commodity")} className="mt-1 w-full bg-slate-950 border border-slate-800 rounded-md px-3 py-2 text-white text-sm font-body outline-none focus:border-orange-500/60" />
+          </label>
+        </div>
+      </div>
+
+      <InputCard title="A · Production Input" icon="factory">
+        <NumberField label="Ore Volume / Month" value={inputs.production.oreVolume} onChange={set("production", "oreVolume")} suffix="m³" tip="Target ore volume mined per month." />
+        <NumberField label="Overburden Volume / Month" value={inputs.production.obVolume} onChange={set("production", "obVolume")} suffix="m³" tip="Target overburden (waste) volume moved per month." />
+        <NumberField label="Working Days / Month" value={inputs.production.workingDays} onChange={set("production", "workingDays")} suffix="days" />
+        <NumberField label="Working Hours / Day" value={inputs.production.workingHours} onChange={set("production", "workingHours")} suffix="hrs" />
+        <NumberField label="Material Density" value={inputs.production.density} onChange={set("production", "density")} suffix="ton/m³" step={0.1} tip="Used to convert volume (m³) into tonnage for fleet sizing." />
+      </InputCard>
+
+      <InputCard title="B · Hauling Input" icon="truck">
+        <NumberField label="Cycle Time" value={inputs.hauling.cycleTime} onChange={set("hauling", "cycleTime")} suffix="min/ret" tip="Time for one full haul cycle: load, haul, dump, return." />
+        <NumberField label="One-Way Distance" value={inputs.hauling.distanceOneWay} onChange={set("hauling", "distanceOneWay")} suffix="km" />
+        <NumberField label="Avg. Loaded Speed" value={inputs.hauling.loadedSpeed} onChange={set("hauling", "loadedSpeed")} suffix="km/h" />
+        <NumberField label="Avg. Empty Speed" value={inputs.hauling.emptySpeed} onChange={set("hauling", "emptySpeed")} suffix="km/h" />
+        <NumberField label="Payload / Truck" value={inputs.hauling.payload} onChange={set("hauling", "payload")} suffix="ton" />
+        <NumberField label="Truck Availability" value={inputs.hauling.truckAvailability} onChange={set("hauling", "truckAvailability")} suffix="%" />
+        <NumberField label="Physical Availability" value={inputs.hauling.physicalAvailability} onChange={set("hauling", "physicalAvailability")} suffix="%" />
+        <NumberField label="Utilization" value={inputs.hauling.utilization} onChange={set("hauling", "utilization")} suffix="%" />
+        <NumberField label="Number of Trucks" value={inputs.hauling.numTrucks} onChange={set("hauling", "numTrucks")} suffix="units" />
+        <NumberField label="Number of Excavators" value={inputs.hauling.numExcavators} onChange={set("hauling", "numExcavators")} suffix="units" />
+      </InputCard>
+
+      <InputCard title="Revenue Assumptions" icon="dollar-sign">
+        <NumberField label="Ore Rate" value={inputs.revenue.oreRate} onChange={set("revenue", "oreRate")} suffix="Rp/m³" step={1000} />
+        <NumberField label="Overburden Rate" value={inputs.revenue.obRate} onChange={set("revenue", "obRate")} suffix="Rp/m³" step={1000} />
+        <NumberField label="Other Revenue" value={inputs.revenue.otherRevenue} onChange={set("revenue", "otherRevenue")} suffix="Rp/mo" step={1000000} />
+        <NumberField label="Annual Escalation" value={inputs.revenue.escalationRate} onChange={set("revenue", "escalationRate")} suffix="%" step={0.5} tip="Annual growth applied to revenue and variable cost in the 12-month trend chart." />
+      </InputCard>
+
+      <InputCard title="Variable Cost" icon="receipt">
+        <NumberField label="Base Variable Cost" value={inputs.cost.variableCostPerM3} onChange={set("cost", "variableCostPerM3")} suffix="Rp/m³" step={500} />
+        <NumberField label="Fuel Ratio" value={inputs.cost.fuelRatio} onChange={set("cost", "fuelRatio")} suffix="L/m³" step={0.1} />
+        <NumberField label="Fuel Price" value={inputs.cost.fuelPrice} onChange={set("cost", "fuelPrice")} suffix="Rp/L" step={500} />
+        <NumberField label="Lubricant Cost" value={inputs.cost.lubricantPerM3} onChange={set("cost", "lubricantPerM3")} suffix="Rp/m³" step={100} />
+        <NumberField label="Tire &amp; Maintenance" value={inputs.cost.tireMaintenancePerM3} onChange={set("cost", "tireMaintenancePerM3")} suffix="Rp/m³" step={100} />
+        <NumberField label="Operator Cost" value={inputs.cost.operatorPerM3} onChange={set("cost", "operatorPerM3")} suffix="Rp/m³" step={100} />
+        <NumberField label="Other Variable Cost" value={inputs.cost.otherVariablePerM3} onChange={set("cost", "otherVariablePerM3")} suffix="Rp/m³" step={100} />
+      </InputCard>
+
+      <InputCard title="Fixed Cost / Month" icon="wallet">
+        <NumberField label="Salary" value={inputs.fixedCost.salary} onChange={set("fixedCost", "salary")} suffix="Rp" step={1000000} />
+        <NumberField label="Management Cost" value={inputs.fixedCost.management} onChange={set("fixedCost", "management")} suffix="Rp" step={1000000} />
+        <NumberField label="Office Cost" value={inputs.fixedCost.office} onChange={set("fixedCost", "office")} suffix="Rp" step={1000000} />
+        <NumberField label="Camp Cost" value={inputs.fixedCost.camp} onChange={set("fixedCost", "camp")} suffix="Rp" step={1000000} />
+        <NumberField label="Insurance" value={inputs.fixedCost.insurance} onChange={set("fixedCost", "insurance")} suffix="Rp" step={1000000} />
+        <NumberField label="Permit Cost" value={inputs.fixedCost.permit} onChange={set("fixedCost", "permit")} suffix="Rp" step={1000000} />
+        <NumberField label="Overhead" value={inputs.fixedCost.overhead} onChange={set("fixedCost", "overhead")} suffix="Rp" step={1000000} />
+        <NumberField label="Other Fixed Cost" value={inputs.fixedCost.otherFixed} onChange={set("fixedCost", "otherFixed")} suffix="Rp" step={1000000} />
+      </InputCard>
+
+      <InputCard title="Financial Assumptions (CAPEX / Capital Structure)" icon="trending-up">
+        <NumberField label="CAPEX (Initial Investment)" value={inputs.financial.capex} onChange={set("financial", "capex")} suffix="Rp" step={100000000} tip="Total capital expenditure for the fleet and infrastructure, used for depreciation, NPV and IRR." />
+        <NumberField label="Debt Portion" value={inputs.financial.debtPortion} onChange={set("financial", "debtPortion")} suffix="%" tip="Share of CAPEX financed through debt; the remainder is equity." />
+        <NumberField label="Interest Rate" value={inputs.financial.interestRate} onChange={set("financial", "interestRate")} suffix="% p.a." step={0.25} />
+        <NumberField label="Tax Rate" value={inputs.financial.taxRate} onChange={set("financial", "taxRate")} suffix="%" />
+        <NumberField label="Project Life" value={inputs.financial.projectLifeYears} onChange={set("financial", "projectLifeYears")} suffix="years" />
+        <NumberField label="Risk-Free Rate" value={inputs.financial.riskFreeRate} onChange={set("financial", "riskFreeRate")} suffix="%" step={0.1} tip="Used in CAPM to derive Cost of Equity." />
+        <NumberField label="Beta" value={inputs.financial.beta} onChange={set("financial", "beta")} suffix="" step={0.05} tip="Systematic risk factor used in CAPM: Ke = Rf + Beta × MRP." />
+        <NumberField label="Market Risk Premium" value={inputs.financial.marketRiskPremium} onChange={set("financial", "marketRiskPremium")} suffix="%" step={0.1} />
+        <NumberField label="Exchange Rate" value={inputs.exchangeRate} onChange={(v) => setInputs((p) => ({ ...p, exchangeRate: v }))} suffix="Rp/USD" step={50} />
+      </InputCard>
+    </div>
+  );
+}
+
+/* ============================================================================
+   ROOT APP
+   ========================================================================== */
+function MiningFinancialEngineeringSystem() {
+  const [inputs, setInputs] = useState(DEFAULT_INPUTS);
+  const [active, setActive] = useState("dashboard");
+  const [collapsed, setCollapsed] = useState(false);
+
+  const prod = useMemo(() => computeProduction(inputs.production, inputs.hauling), [inputs]);
+  const revenue = useMemo(() => computeRevenue(inputs.production, inputs.revenue), [inputs]);
+  const cost = useMemo(() => computeCost(prod, inputs.cost, inputs.fixedCost), [prod, inputs]);
+  const pnl = useMemo(() => computePnL(revenue, cost, inputs.financial), [revenue, cost, inputs]);
+  const wacc = useMemo(() => computeWACC(inputs.financial, pnl), [inputs, pnl]);
+  const inv = useMemo(() => computeInvestment(inputs.financial, pnl, wacc), [inputs, pnl, wacc]);
+
+  const activeItem = NAV_ITEMS.find((n) => n.id === active);
+
+  return (
+    <div className="h-screen w-full flex bg-slate-950 font-body">
+      <Sidebar active={active} setActive={setActive} collapsed={collapsed} setCollapsed={setCollapsed} />
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopBar meta={inputs.meta} currency={inputs.currency} setCurrency={(c) => setInputs((p) => ({ ...p, currency: c }))} activeLabel={activeItem.label} />
+        <main className="flex-1 overflow-y-auto mfe-scroll p-6">
+          {active === "dashboard" && (
+            <DashboardPage inputs={inputs} prod={prod} revenue={revenue} cost={cost} pnl={pnl} wacc={wacc} inv={inv} currency={inputs.currency} rate={inputs.exchangeRate} />
+          )}
+          {active === "input" && <ProjectInputPage inputs={inputs} setInputs={setInputs} />}
+          {activeItem && !activeItem.active && <LockedPage item={activeItem} />}
+        </main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<MiningFinancialEngineeringSystem />);
+</script>
+</body>
+</html>

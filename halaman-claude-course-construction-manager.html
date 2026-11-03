@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Course for Construction Managers — Kurikulum 28 Hari</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#161A1F;
+    --blueprint:#12263F;
+    --blueprint-2:#1B3A5C;
+    --concrete:#F3F1EC;
+    --paper:#FBFAF7;
+    --steel:#5C6773;
+    --line:#D8D3C7;
+    --orange:#E0631E;
+    --orange-deep:#B84E15;
+    --m1:#D97706;
+    --m2:#C2410C;
+    --m3:#15803D;
+    --m4:#1D4ED8;
+    --m5:#0F766E;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+  }
+  h1,h2,h3,.display{
+    font-family:'Archivo',sans-serif;
+    letter-spacing:-0.01em;
+    color:var(--blueprint);
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      linear-gradient(180deg, rgba(18,38,63,0.94), rgba(18,38,63,0.97)),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 44px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 44px);
+    color:#EDEFF2;
+    padding:88px 0 72px;
+    border-bottom:6px solid var(--orange);
+  }
+  .kicker{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:#B9C6D6;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .kicker .dot{width:8px;height:8px;background:var(--orange);border-radius:50%;display:inline-block;}
+  .hero h1{
+    font-size:52px;
+    font-weight:800;
+    line-height:1.06;
+    color:#fff;
+    max-width:760px;
+    margin:0 0 22px;
+  }
+  .hero h1 span{color:var(--orange);}
+  .hero p.lead{
+    font-size:18px;
+    color:#C9D3DE;
+    max-width:600px;
+    margin:0 0 34px;
+  }
+  .hero-meta{
+    display:flex;
+    gap:28px;
+    flex-wrap:wrap;
+    border-top:1px solid rgba(255,255,255,0.18);
+    padding-top:26px;
+    margin-top:8px;
+  }
+  .hero-meta .item .num{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;color:#fff;}
+  .hero-meta .item .lbl{font-size:12.5px;color:#A9B6C4;margin-top:2px;}
+
+  /* ---------- SECTION TITLES ---------- */
+  .section{padding:64px 0;}
+  .section-head{max-width:640px;margin-bottom:36px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:var(--orange-deep);
+    margin-bottom:10px;
+  }
+  .section h2{font-size:32px;font-weight:700;margin:0 0 10px;}
+  .section p.sub{color:var(--steel);font-size:15.5px;max-width:560px;}
+
+  /* ---------- ABOUT / INCLUDES ---------- */
+  .about{background:var(--concrete);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .includes-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .includes-grid .cell{background:var(--paper);padding:26px 24px;}
+  .includes-grid .cell .n{font-family:'IBM Plex Mono',monospace;color:var(--orange-deep);font-size:12.5px;margin-bottom:10px;}
+  .includes-grid .cell h3{font-size:17px;margin:0 0 8px;}
+  .includes-grid .cell p{font-size:14px;color:var(--steel);margin:0;}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline-section{padding:70px 0 40px;}
+  .hint{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;
+    color:var(--orange-deep);
+    background:#FBEEE4;
+    border:1px solid #F0CFB4;
+    padding:6px 12px;
+    margin-bottom:28px;
+  }
+  .module{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:36px;
+    margin-bottom:8px;
+  }
+  .module-side{
+    position:relative;
+    padding-left:30px;
+  }
+  .module-side::before{
+    content:"";
+    position:absolute;
+    left:8px;top:6px;bottom:-30px;
+    width:2px;
+    background:var(--mod-color);
+  }
+  .module:last-child .module-side::before{display:none;}
+  .module-side .mark{
+    position:absolute;left:0;top:2px;
+    width:18px;height:18px;border-radius:50%;
+    background:var(--mod-color);
+    border:3px solid var(--paper);
+    box-shadow:0 0 0 2px var(--mod-color);
+  }
+  .module-side .m-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--mod-color);margin-bottom:6px;}
+  .module-side h3{font-size:19px;margin:0 0 4px;line-height:1.2;}
+  .module-side .m-days{font-size:12.5px;color:var(--steel);font-family:'IBM Plex Mono',monospace;}
+  .day-list{
+    padding-bottom:40px;
+    display:grid;
+    gap:10px;
+  }
+  .day-item{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--mod-color);}
+  .day-row{
+    all:unset;
+    box-sizing:border-box;
+    cursor:pointer;
+    display:grid;
+    grid-template-columns:56px 1fr 70px 26px;
+    align-items:center;
+    gap:16px;
+    width:100%;
+    padding:13px 16px;
+  }
+  .day-row:hover{background:var(--concrete);}
+  .day-row:focus-visible{outline:2px solid var(--mod-color);outline-offset:-2px;}
+  .day-row .d-num{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--mod-color);font-size:14px;}
+  .day-row .d-title{font-size:14.5px;font-weight:500;color:var(--ink);}
+  .day-row .d-dur{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--steel);text-align:right;}
+  .day-row .d-chev{font-size:16px;color:var(--mod-color);text-align:center;transition:transform .15s ease;}
+  .day-row[aria-expanded="true"] .d-chev{transform:rotate(45deg);}
+  .day-detail{
+    padding:4px 20px 22px 20px;
+    border-top:1px solid var(--line);
+    background:var(--concrete);
+  }
+  .det-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--mod-color);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin:16px 0 6px;
+  }
+  .det-text{font-size:14px;color:var(--ink);margin:0;line-height:1.6;}
+  .det-list{margin:0;padding-left:18px;}
+  .det-list li{font-size:13.5px;color:var(--ink);margin-bottom:6px;line-height:1.55;}
+  .prompt-box{
+    background:var(--blueprint);
+    color:#E7ECF2;
+    border-left:3px solid var(--orange);
+    padding:12px 14px;
+    font-size:13px;
+    font-style:italic;
+    line-height:1.55;
+  }
+  .det-ref{font-size:12.5px;color:var(--steel);margin:14px 0 4px;}
+
+  /* ---------- DELIVERABLES / DOWNLOAD ---------- */
+  .deliverables{background:var(--blueprint);color:#EDEFF2;padding:70px 0;}
+  .deliverables .eyebrow{color:#9FC7FF;}
+  .deliverables h2{color:#fff;}
+  .deliverables p.sub{color:#B9C6D6;}
+  .doc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px;}
+  .doc-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.15);
+    padding:24px;
+  }
+  .doc-card .stamp{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--orange);
+    border:1px solid var(--orange);
+    padding:3px 8px;
+    margin-bottom:14px;
+  }
+  .doc-card h3{color:#fff;font-size:17px;margin:0 0 10px;}
+  .doc-card p{color:#B9C6D6;font-size:13.5px;margin:0 0 14px;}
+  .doc-card ul{margin:0;padding-left:18px;color:#C9D3DE;font-size:13px;}
+  .doc-card ul li{margin-bottom:5px;}
+
+  /* ---------- CASE STUDY ---------- */
+  .cases{padding:70px 0;}
+  .case-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+  .case-card{border:1px solid var(--line);background:var(--concrete);}
+  .case-toggle{
+    all:unset;
+    box-sizing:border-box;
+    display:block;
+    width:100%;
+    cursor:pointer;
+    padding:18px 20px;
+    border-left:4px solid var(--m-c,var(--orange-deep));
+  }
+  .case-toggle:hover{background:#EDEAE1;}
+  .case-toggle:focus-visible{outline:2px solid var(--m-c,var(--orange-deep));outline-offset:-2px;}
+  .case-card .mtag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--m-c,var(--orange-deep));margin-bottom:8px;}
+  .case-card h4{font-size:16px;margin:0 0 6px;line-height:1.3;color:var(--blueprint);}
+  .case-teaser{font-size:13px;color:var(--steel);margin:0 0 10px;}
+  .case-chev{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--m-c,var(--orange-deep));}
+  .case-toggle[aria-expanded="true"] .case-chev{display:none;}
+  .case-detail{
+    padding:4px 20px 22px 24px;
+    border-top:1px solid var(--line);
+    background:var(--paper);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:34px 0;
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:10px;
+  }
+  footer .f-left{font-size:13px;color:var(--steel);}
+  footer .f-right{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--steel);}
+
+  @media (max-width:760px){
+    .hero h1{font-size:36px;}
+    .includes-grid{grid-template-columns:1fr;}
+    .module{grid-template-columns:1fr;}
+    .module-side::before{display:none;}
+    .module-side{padding-left:0;}
+    .module-side .mark{display:none;}
+    .doc-grid{grid-template-columns:1fr;}
+    .day-row{grid-template-columns:36px 1fr auto 20px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker"><span class="dot"></span>PANDUAN PEMBELAJARAN — 28 HARI</div>
+    <h1>Claude Course <span>for Construction Managers</span></h1>
+    <p class="lead">Kurikulum terstruktur bagi Construction Manager untuk memakai Claude secara disiplin dalam laporan, koordinasi, mutu, kontrak, hingga membangun sistem kerja berbasis AI — lengkap dengan teori, referensi industri, dan studi kasus.</p>
+    <div class="hero-meta">
+      <div class="item"><div class="num">28</div><div class="lbl">Hari Pembelajaran</div></div>
+      <div class="item"><div class="num">05</div><div class="lbl">Modul Bertahap</div></div>
+      <div class="item"><div class="num">05</div><div class="lbl">Studi Kasus + Pembahasan</div></div>
+      <div class="item"><div class="num">11</div><div class="lbl">Template Spreadsheet Siap Pakai</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="about section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">TENTANG KURSUS</div>
+      <h2>Dari catatan lapangan menjadi sistem kerja yang rapi</h2>
+      <p class="sub">Setiap hari kursus berdurasi 10–25 menit dan menghasilkan keterampilan yang langsung terpakai di proyek berjalan — bukan teori yang berdiri sendiri.</p>
+    </div>
+    <div class="includes-grid">
+      <div class="cell">
+        <div class="n">01</div>
+        <h3>Teori & Konsep Kunci</h3>
+        <p>Setiap hari memuat tujuan pembelajaran dan konsep inti berbasis praktik industri konstruksi, bukan teori generik manajemen proyek.</p>
+      </div>
+      <div class="cell">
+        <div class="n">02</div>
+        <h3>Referensi Standar Industri</h3>
+        <p>Dirujuk ke PMBOK, FIDIC, AACE International, ISO 9001/31000/45001, OSHA 29 CFR 1926, dan standar lain yang relevan.</p>
+      </div>
+      <div class="cell">
+        <div class="n">03</div>
+        <h3>Contoh Prompt Claude</h3>
+        <p>Prompt siap pakai untuk setiap topik harian — laporan, RFI, change order, JSA, hingga risk register.</p>
+      </div>
+      <div class="cell">
+        <div class="n">04</div>
+        <h3>Studi Kasus & Pembahasan</h3>
+        <p>Lima studi kasus nyata di akhir tiap modul menghubungkan teori dengan konsekuensi lapangan yang sebenarnya.</p>
+      </div>
+      <div class="cell">
+        <div class="n">05</div>
+        <h3>Template SOP Spreadsheet</h3>
+        <p>11 sheet Excel siap isi: laporan mingguan, daily log, RFI log, change order, budget tracking (EVM), risk register, dan lainnya.</p>
+      </div>
+      <div class="cell">
+        <div class="n">06</div>
+        <h3>Sistem Kerja Berkelanjutan</h3>
+        <p>Modul penutup membangun SOP penggunaan Claude tingkat tim agar hasilnya konsisten lintas proyek dan anggota.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="timeline-section wrap">
+  <div class="section-head">
+    <div class="eyebrow">KURIKULUM</div>
+    <h2>Peta 28 hari, lima modul</h2>
+    <p class="sub">Alur belajar bergerak dari fondasi administratif menuju sistem kerja bertenaga AI yang terintegrasi penuh.</p>
+  </div>
+  <span class="hint">Klik judul hari untuk membuka tujuan, teori, contoh prompt, dan referensinya</span>
+
+
+  <div class="module" style="--mod-color:var(--m1)">
+    <div class="module-side">
+      <span class="mark"></span>
+      <div class="m-eyebrow">MODUL 01</div>
+      <h3>Fondasi Manajemen Proyek</h3>
+      <div class="m-days">HARI 1–7</div>
+    </div>
+    <div class="day-list">
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-1" aria-expanded="false">
+          <span class="d-num">01</span>
+          <span class="d-title">Project Reports</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-1" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mampu menyusun laporan proyek mingguan/bulanan yang ringkas, terstruktur, dan mudah dibaca oleh stakeholder.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Struktur baku laporan proyek: Ringkasan Eksekutif, Progres, Kendala, Rencana Tindak Lanjut.</li><li>Prinsip piramida terbalik — informasi paling penting (status keseluruhan, risiko) ditulis di awal.</li><li>Menggunakan data kuantitatif (persentase progres, S-Curve, milestone) agar laporan objektif, bukan naratif subjektif.</li><li>Menyesuaikan tingkat detail laporan dengan audiens (owner, kontraktor, tim internal).</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan laporan progres mingguan untuk proyek pembangunan gedung kantor 8 lantai. Progres fisik minggu ini 42% (rencana 45%), kendala: keterlambatan pengiriman baja struktur 5 hari, rencana mitigasi: percepatan pekerjaan finishing lantai 1-2. Format: Ringkasan Eksekutif, Progres Fisik, Kendala &amp; Risiko, Rencana Minggu Depan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> PMI, A Guide to the Project Management Body of Knowledge (PMBOK Guide), edisi 7 — bagian Project Communications Management.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-2" aria-expanded="false">
+          <span class="d-num">02</span>
+          <span class="d-title">Project Planning</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-2" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun rencana proyek awal (project charter ringkas, milestone, dan struktur pemecahan kerja/WBS) dengan bantuan Claude.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Work Breakdown Structure (WBS): memecah proyek menjadi paket pekerjaan yang dapat diukur dan dijadwalkan.</li><li>Menentukan milestone kritis (mobilisasi, struktur atas, MEP, serah terima).</li><li>Identifikasi dependensi antar pekerjaan (finish-to-start, start-to-start) sebagai dasar penjadwalan.</li><li>Menggunakan Claude untuk mem-brainstorm risiko awal proyek dan asumsi perencanaan.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan WBS 3 level untuk proyek konstruksi jembatan beton bentang 60 meter, termasuk pekerjaan persiapan, substruktur, superstruktur, dan finishing. Sertakan estimasi durasi relatif tiap paket pekerjaan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> PMI Practice Standard for Work Breakdown Structures, edisi ke-2.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-3" aria-expanded="false">
+          <span class="d-num">03</span>
+          <span class="d-title">Scope of Work</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-3" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menulis dokumen Scope of Work (SOW) yang jelas untuk mencegah perselisihan lingkup pekerjaan dengan subkontraktor.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>SOW harus menjawab: apa yang dikerjakan, standar kualitas, batasan (inclusions/exclusions), dan jadwal.</li><li>Memisahkan secara eksplisit item yang termasuk dan tidak termasuk dalam kontrak untuk menghindari klaim.</li><li>Mengaitkan SOW dengan spesifikasi teknis dan gambar kerja (drawing reference).</li><li>Bahasa SOW harus terukur (measurable) — hindari istilah ambigu seperti 'sesuai kebutuhan'.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Tuliskan Scope of Work untuk paket pekerjaan pemasangan curtain wall pada gedung 12 lantai, termasuk item yang dikecualikan (scaffolding, listrik sementara) dan standar mutu ACI/ASTM yang relevan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> FIDIC, Conditions of Contract for Construction (Red Book) — klausul tentang Scope dan Specification.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-4" aria-expanded="false">
+          <span class="d-num">04</span>
+          <span class="d-title">Site Reports</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-4" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Membuat laporan kondisi lapangan (site condition report) yang faktual sebagai bukti dokumentasi proyek.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Perbedaan site report dengan daily log: site report bersifat insidental (kondisi cuaca ekstrem, insiden, temuan lapangan).</li><li>Dokumentasi foto berkorelasi dengan narasi tertulis dan penanda waktu/lokasi.</li><li>Site report sebagai alat bukti hukum (evidence) dalam klaim keterlambatan akibat force majeure.</li><li>Struktur: Kondisi, Dampak terhadap Jadwal/Biaya, Tindakan yang Diambil.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Susun site condition report untuk kejadian banjir yang merendam area basement proyek selama 2 hari, termasuk dampak terhadap pekerjaan pengecoran dan tindakan pemulihan yang dilakukan tim."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> AACE International Recommended Practice 25R-03, Estimating Lost Labor Productivity in Construction Claims.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-5" aria-expanded="false">
+          <span class="d-num">05</span>
+          <span class="d-title">Daily Logs</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-5" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mendisiplinkan pencatatan aktivitas harian proyek secara konsisten dan cepat menggunakan Claude sebagai asisten penulisan.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Elemen wajib daily log: cuaca, jumlah tenaga kerja per trade, alat berat, aktivitas, kendala, kunjungan tamu.</li><li>Daily log adalah dokumen legal utama yang paling sering dirujuk saat sengketa kontrak.</li><li>Konsistensi format antar hari memudahkan analisis tren produktivitas.</li><li>Claude dapat merapikan catatan singkat (bullet lapangan) menjadi entri log formal.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Ubah catatan lapangan berikut menjadi entri daily log formal: cuaca cerah, 45 tukang, 2 excavator, 1 tower crane, pekerjaan pengecoran lantai 3 zona A, terlambat mulai 1 jam karena menunggu ready mix."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> Construction Industry Institute (CII), Best Practice: Daily Field Reporting.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-6" aria-expanded="false">
+          <span class="d-num">06</span>
+          <span class="d-title">Project Schedules</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-6" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun dan menganalisis jadwal proyek (Gantt chart/CPM) serta menjelaskan jalur kritis kepada stakeholder.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Critical Path Method (CPM): jalur dengan total float nol yang menentukan durasi minimum proyek.</li><li>Float/slack sebagai ruang toleransi keterlambatan pada aktivitas non-kritis.</li><li>Schedule compression: fast-tracking vs crashing, beserta trade-off biaya-waktu.</li><li>Menggunakan Claude untuk menerjemahkan output software penjadwalan (MS Project/Primavera) menjadi narasi untuk laporan.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Jelaskan dalam bahasa non-teknis kepada owner mengapa keterlambatan 3 hari pada pekerjaan pondasi berdampak pada keseluruhan jadwal proyek, berdasarkan data jalur kritis yang saya berikan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> PMI Practice Standard for Scheduling, edisi ke-3.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-7" aria-expanded="false">
+          <span class="d-num">07</span>
+          <span class="d-title">Meeting Notes</span>
+          <span class="d-dur">10 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-7" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mengubah catatan rapat mentah menjadi notulen terstruktur dengan action item yang jelas.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Notulen efektif memuat: peserta, keputusan, action item (siapa-apa-kapan), dan isu terbuka.</li><li>Memisahkan fakta/keputusan dari opini/diskusi agar notulen dapat dijadikan rujukan kontraktual.</li><li>Distribusi notulen tepat waktu (idealnya 24 jam) untuk menjaga akuntabilitas.</li><li>Claude efektif untuk merapikan rekaman rapat/point-point kasar menjadi notulen formal berbahasa profesional.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Rapikan poin-poin rapat koordinasi mingguan berikut menjadi notulen resmi dengan tabel action item (PIC dan tenggat waktu): [tempel poin-poin rapat]."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> RIBA Plan of Work — panduan tata kelola rapat proyek konstruksi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" style="--mod-color:var(--m2)">
+    <div class="module-side">
+      <span class="mark"></span>
+      <div class="m-eyebrow">MODUL 02</div>
+      <h3>Koordinasi &amp; Komunikasi</h3>
+      <div class="m-days">HARI 8–14</div>
+    </div>
+    <div class="day-list">
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-8" aria-expanded="false">
+          <span class="d-num">08</span>
+          <span class="d-title">Subcontractor Communication</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-8" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menulis komunikasi tertulis yang tegas namun profesional kepada subkontraktor terkait kinerja atau instruksi kerja.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Komunikasi tertulis dengan subkontraktor harus dapat ditelusuri (traceable) sebagai bagian dari rekam jejak kontrak.</li><li>Teknik 'sandwich' untuk feedback korektif: apresiasi – masalah – ekspektasi ke depan, tanpa mengaburkan urgensi.</li><li>Notice of non-compliance harus merujuk klausul kontrak spesifik.</li><li>Claude membantu menstandardisasi nada profesional lintas surat/email proyek.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Tulis surat teguran resmi kepada subkontraktor pekerjaan finishing karena keterlambatan 2 minggu dari jadwal yang disepakati, merujuk klausul keterlambatan pada kontrak, dengan nada tegas namun tetap profesional."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> AIA Document A201, General Conditions of the Contract for Construction.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-9" aria-expanded="false">
+          <span class="d-num">09</span>
+          <span class="d-title">RFIs &amp; Responses</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-9" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun Request for Information (RFI) yang efektif dan menjawab RFI dari subkontraktor secara tepat dan cepat.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>RFI yang baik bersifat spesifik, menyertakan referensi gambar/spesifikasi, dan mengusulkan solusi tentatif.</li><li>RFI yang tidak dijawab tepat waktu dapat menjadi dasar klaim keterlambatan oleh kontraktor.</li><li>Log RFI (nomor, tanggal, status, dampak jadwal) wajib dikelola secara terpusat.</li><li>Membedakan RFI klarifikasi desain vs RFI yang berpotensi menjadi change order.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan draft RFI mengenai ketidaksesuaian antara denah struktur dan denah arsitektur pada as kolom C-5, lengkap dengan pertanyaan spesifik dan usulan solusi sementara agar pekerjaan tidak terhenti."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> ConsensusDocs 200 — prosedur RFI dan dokumentasi klarifikasi desain.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-10" aria-expanded="false">
+          <span class="d-num">10</span>
+          <span class="d-title">Change Orders</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-10" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun dan mengevaluasi dokumen change order (perintah perubahan) secara akurat dari sisi lingkup, biaya, dan waktu.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Elemen change order: deskripsi perubahan, justifikasi, dampak biaya (cost breakdown), dan dampak jadwal (time extension).</li><li>Perbedaan Change Order, Change Directive, dan Field Order dalam terminologi kontrak.</li><li>Prinsip 'no work without approval' untuk item di luar lingkup asli guna melindungi hak klaim.</li><li>Menggunakan analisis time-impact untuk memvalidasi klaim perpanjangan waktu.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Susun dokumen change order untuk penambahan pekerjaan waterproofing basement yang tidak tercakup dalam kontrak awal, termasuk rincian biaya material-upah-alat dan dampaknya terhadap jadwal keseluruhan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> AACE International RP 10S-90, Cost Engineering Terminology — bagian Change Management.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-11" aria-expanded="false">
+          <span class="d-num">11</span>
+          <span class="d-title">Budget Tracking</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-11" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Memantau realisasi anggaran proyek terhadap rencana anggaran biaya (RAB) dan mengidentifikasi cost overrun sejak dini.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Earned Value Management (EVM): Planned Value, Earned Value, Actual Cost sebagai dasar pengendalian biaya objektif.</li><li>Cost Performance Index (CPI) dan Schedule Performance Index (SPI) sebagai indikator dini penyimpangan.</li><li>Kontingensi (contingency reserve) dan kapan boleh digunakan.</li><li>Claude dapat membantu menerjemahkan tabel angka menjadi narasi eksekutif tentang status anggaran.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Berdasarkan data ini — PV: Rp 4,2 miliar, EV: Rp 3,8 miliar, AC: Rp 4,5 miliar — hitung CPI dan SPI, lalu jelaskan artinya bagi manajemen proyek dan rekomendasi tindakan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> PMI Practice Standard for Earned Value Management, edisi ke-2.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-12" aria-expanded="false">
+          <span class="d-num">12</span>
+          <span class="d-title">Cost Reports</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-12" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun laporan biaya proyek periodik yang menghubungkan RAB, komitmen kontrak, dan proyeksi biaya akhir (forecast at completion).</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Struktur cost report: Anggaran, Komitmen, Realisasi, Perkiraan Biaya Akhir (EAC), dan Varians.</li><li>Estimate at Completion (EAC) dan Estimate to Complete (ETC) sebagai alat prediksi.</li><li>Kategorisasi biaya: langsung, tidak langsung, dan kontingensi agar mudah diaudit.</li><li>Melaporkan tren biaya, bukan hanya angka titik waktu tunggal.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buat template narasi cost report bulanan yang menjelaskan proyeksi Estimate at Completion proyek dari Rp 50 miliar menjadi Rp 52,5 miliar akibat eskalasi harga baja, beserta rekomendasi mitigasi."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> AACE International RP 34R-05, Basis of Estimate.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-13" aria-expanded="false">
+          <span class="d-num">13</span>
+          <span class="d-title">Risk Management</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-13" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mengidentifikasi, menilai, dan menyusun rencana mitigasi risiko proyek menggunakan pendekatan risk register.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Risk register: identifikasi, probabilitas, dampak, skor risiko, dan pemilik risiko (risk owner).</li><li>Matriks probabilitas-dampak untuk memprioritaskan risiko yang perlu mitigasi segera.</li><li>Strategi respons risiko: hindari, mitigasi, transfer (asuransi), dan terima.</li><li>Risiko konstruksi umum: cuaca, ketersediaan material, tenaga kerja, dan perubahan regulasi.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan risk register untuk proyek konstruksi di area rawan gempa, mencakup minimal 8 risiko dengan probabilitas, dampak, skor, dan strategi mitigasi masing-masing."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> ISO 31000:2018, Risk Management — Guidelines.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-14" aria-expanded="false">
+          <span class="d-num">14</span>
+          <span class="d-title">Safety Documentation</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-14" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun dokumentasi K3 (JSA, laporan insiden, toolbox meeting) yang sesuai standar keselamatan kerja.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Job Safety Analysis (JSA) memecah pekerjaan menjadi langkah, bahaya potensial, dan pengendalian.</li><li>Hierarki pengendalian bahaya: eliminasi, substitusi, rekayasa, administratif, APD.</li><li>Laporan insiden harus faktual, kronologis, dan bebas dari opini kesalahan sebelum investigasi selesai.</li><li>Toolbox meeting harian sebagai media komunikasi bahaya spesifik hari itu.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Susun Job Safety Analysis (JSA) untuk pekerjaan pengelasan di ketinggian 15 meter, termasuk identifikasi bahaya dan pengendalian sesuai hierarki pengendalian."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> OSHA 29 CFR 1926 — Safety and Health Regulations for Construction; ISO 45001:2018.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" style="--mod-color:var(--m3)">
+    <div class="module-side">
+      <span class="mark"></span>
+      <div class="m-eyebrow">MODUL 03</div>
+      <h3>Kualitas, Keselamatan &amp; Progres</h3>
+      <div class="m-days">HARI 15–18</div>
+    </div>
+    <div class="day-list">
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-15" aria-expanded="false">
+          <span class="d-num">15</span>
+          <span class="d-title">Quality Control</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-15" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun prosedur dan checklist quality control (QC) untuk memastikan pekerjaan sesuai spesifikasi.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Perbedaan Quality Control (inspeksi hasil) dan Quality Assurance (proses pencegahan cacat).</li><li>Inspection and Test Plan (ITP): titik inspeksi wajib (hold point, witness point) dalam siklus pekerjaan.</li><li>Non-Conformance Report (NCR) sebagai mekanisme formal menangani penyimpangan mutu.</li><li>Sampling dan metode uji sesuai standar (SNI, ASTM) untuk material kritis seperti beton dan baja.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan checklist Inspection and Test Plan (ITP) untuk pekerjaan pengecoran kolom beton bertulang, mencakup hold point sebelum dan sesudah pengecoran."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> ISO 9001:2015, Quality Management Systems; ACI 311.6, Guide for Concrete Inspection.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-16" aria-expanded="false">
+          <span class="d-num">16</span>
+          <span class="d-title">Progress Updates</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-16" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun update progres yang ringkas untuk komunikasi rutin ke tim internal maupun owner.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Update progres harian/mingguan berbeda kedalaman dari laporan bulanan formal — fokus pada perubahan sejak update terakhir.</li><li>Visualisasi progres (foto before-after, dashboard) mempercepat pemahaman non-teknis.</li><li>Menonjolkan 'apa yang berubah' dan 'apa yang perlu perhatian', bukan mengulang seluruh status proyek.</li><li>Konsistensi frekuensi update membangun kepercayaan stakeholder.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buat update progres singkat (maksimal 150 kata) untuk grup WhatsApp proyek, merangkum pencapaian minggu ini dan fokus minggu depan berdasarkan data berikut: [tempel data]."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> CII Best Practice: Project Change Management and Progress Reporting.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-17" aria-expanded="false">
+          <span class="d-num">17</span>
+          <span class="d-title">Issue Tracking</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-17" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mengelola daftar isu (issue log) proyek secara sistematis dari identifikasi hingga penyelesaian.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Issue log memuat: deskripsi, prioritas, penanggung jawab, status, dan tanggal target selesai.</li><li>Eskalasi isu berdasarkan tingkat dampak terhadap jadwal, biaya, atau keselamatan.</li><li>Membedakan isu operasional harian dengan risiko strategis proyek.</li><li>Tinjauan isu terbuka secara berkala dalam rapat koordinasi mingguan.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Susun issue log untuk 5 isu lapangan berikut, lengkap dengan prioritas dan usulan penanggung jawab: [daftar isu lapangan]."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> PMI PMBOK Guide, edisi 7 — Project Issue Management practices.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-18" aria-expanded="false">
+          <span class="d-num">18</span>
+          <span class="d-title">Client Updates</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-18" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menulis komunikasi kepada klien/owner yang membangun kepercayaan meski menyampaikan kabar kurang baik.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Prinsip 'no surprises' — kabar buruk harus disampaikan sesegera mungkin, bukan ditunda.</li><li>Struktur komunikasi: situasi saat ini, dampak, opsi solusi, rekomendasi.</li><li>Menyeimbangkan transparansi dengan menjaga kepercayaan diri tim proyek.</li><li>Menyesuaikan bahasa teknis menjadi bahasa bisnis yang dipahami owner non-teknis.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Tulis email kepada owner untuk menginformasikan potensi keterlambatan serah terima 3 minggu akibat kelangkaan material, sertakan 2 opsi mitigasi yang dapat dipertimbangkan owner."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> RICS Guidance Note, Client Communication in Construction Projects.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" style="--mod-color:var(--m4)">
+    <div class="module-side">
+      <span class="mark"></span>
+      <div class="m-eyebrow">MODUL 04</div>
+      <h3>Klien &amp; Manajemen Kontrak</h3>
+      <div class="m-days">HARI 19–23</div>
+    </div>
+    <div class="day-list">
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-19" aria-expanded="false">
+          <span class="d-num">19</span>
+          <span class="d-title">Project Documentation</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-19" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mengorganisir dan menyusun sistem dokumentasi proyek yang lengkap dan mudah ditelusuri (traceable).</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Document Control Plan: penamaan file, versi, dan hak akses sebagai fondasi tata kelola dokumen.</li><li>Kategori dokumen wajib: kontraktual, teknis, korespondensi, keuangan, dan K3.</li><li>Retensi dan arsip dokumen sesuai kebutuhan audit dan masa pemeliharaan (defect liability period).</li><li>Peran Claude dalam merangkum tumpukan dokumen menjadi ringkasan eksekutif yang actionable.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Rancang struktur folder dan konvensi penamaan dokumen untuk proyek konstruksi multi-tahun agar mudah ditelusuri saat audit maupun serah terima ke tim baru."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> ISO 15489-1:2016, Information and Documentation — Records Management.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-20" aria-expanded="false">
+          <span class="d-num">20</span>
+          <span class="d-title">Contract Summaries</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-20" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Merangkum klausul kontrak yang kompleks menjadi ringkasan praktis untuk tim operasional lapangan.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Klausul kunci yang wajib dirangkum: lingkup, jadwal, pembayaran, denda keterlambatan (LAD), dan force majeure.</li><li>Perbedaan tanggung jawab dalam kontrak lump sum vs unit price vs cost plus.</li><li>Mengidentifikasi klausul berisiko tinggi (indemnity, liquidated damages) yang perlu perhatian khusus manajemen.</li><li>Ringkasan kontrak bukan pengganti dokumen asli — selalu cantumkan referensi pasal.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Rangkum klausul-klausul kunci berikut dari kontrak FIDIC Red Book menjadi tabel referensi cepat untuk tim lapangan, mencakup denda keterlambatan, mekanisme klaim, dan masa pemeliharaan."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> FIDIC Red Book 1999/2017 — Conditions of Contract for Construction.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-21" aria-expanded="false">
+          <span class="d-num">21</span>
+          <span class="d-title">Bid &amp; Proposal Analysis</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-21" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mengevaluasi penawaran subkontraktor/vendor secara objektif dari aspek teknis dan komersial.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Kriteria evaluasi bid: kesesuaian teknis, harga, jadwal, rekam jejak (track record), dan kapasitas keuangan.</li><li>Bid leveling: menyamakan basis perbandingan antar penawar yang memiliki asumsi lingkup berbeda.</li><li>Red flag dalam penawaran: harga jauh di bawah pasar, kelengkapan dokumen yang minim.</li><li>Dokumentasi justifikasi pemilihan pemenang untuk transparansi dan audit.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Bandingkan 3 penawaran subkontraktor pekerjaan MEP berikut dari sisi harga, jadwal, dan kelengkapan teknis, lalu rekomendasikan pemenang dengan justifikasi: [data penawaran]."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> CIOB Code of Practice for Project Management, edisi ke-5.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-22" aria-expanded="false">
+          <span class="d-num">22</span>
+          <span class="d-title">Resource Planning</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-22" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Merencanakan kebutuhan tenaga kerja, alat, dan material selaras dengan jadwal proyek.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Histogram sumber daya untuk mengidentifikasi puncak (peak) dan lembah kebutuhan tenaga kerja.</li><li>Resource leveling untuk menghindari fluktuasi tajam kebutuhan sumber daya antar minggu.</li><li>Perencanaan procurement long-lead item agar tidak menjadi bottleneck jadwal.</li><li>Keselarasan antara rencana sumber daya dan cash flow proyek.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Berdasarkan jadwal pekerjaan struktur 6 bulan berikut, buatkan estimasi kebutuhan tukang per minggu dan identifikasi minggu dengan potensi kekurangan tenaga kerja."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> PMI Practice Standard for Project Resource Management.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-23" aria-expanded="false">
+          <span class="d-num">23</span>
+          <span class="d-title">Team Documentation</span>
+          <span class="d-dur">15 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-23" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun dokumentasi struktur tim, deskripsi peran, dan panduan onboarding anggota baru.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>RACI matrix (Responsible, Accountable, Consulted, Informed) untuk kejelasan peran dalam tim proyek.</li><li>Dokumentasi onboarding mempercepat produktivitas anggota tim baru di proyek jangka panjang.</li><li>Struktur organisasi proyek harus selaras dengan struktur WBS dan jalur pelaporan kontraktual.</li><li>Claude dapat membantu menyusun deskripsi peran (job description) yang konsisten lintas posisi.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan RACI matrix untuk proses persetujuan change order yang melibatkan Site Engineer, Construction Manager, Quantity Surveyor, dan Owner Representative."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> APM Body of Knowledge, edisi ke-7 — Team Management.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="module" style="--mod-color:var(--m5)">
+    <div class="module-side">
+      <span class="mark"></span>
+      <div class="m-eyebrow">MODUL 05</div>
+      <h3>Sistem Kerja Bertenaga AI</h3>
+      <div class="m-days">HARI 24–28</div>
+    </div>
+    <div class="day-list">
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-24" aria-expanded="false">
+          <span class="d-num">24</span>
+          <span class="d-title">Construction Templates</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-24" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Membangun kumpulan template dokumen standar proyek (laporan, RFI, NCR, checklist) yang dapat dipakai berulang.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Template mengurangi waktu penyusunan dokumen berulang dan menjaga konsistensi kualitas output.</li><li>Template yang baik memiliki placeholder jelas dan instruksi pengisian singkat.</li><li>Versi template harus dikendalikan (version control) agar seluruh tim memakai revisi terbaru.</li><li>Template dapat diberikan ke Claude sebagai referensi format agar output konsisten.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Berdasarkan template laporan mingguan yang saya lampirkan, isi laporan minggu ini menggunakan data berikut dan pastikan formatnya konsisten dengan template."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> Construction Industry Institute (CII) Toolkit — Standard Document Templates.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-25" aria-expanded="false">
+          <span class="d-num">25</span>
+          <span class="d-title">Reusable Claude Prompts</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-25" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Menyusun pustaka prompt (prompt library) pribadi untuk tugas-tugas rutin manajemen konstruksi.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Prompt efektif menyertakan: peran, konteks, format output yang diinginkan, dan batasan.</li><li>Menyimpan prompt yang terbukti efektif untuk dipakai ulang lintas proyek menghemat waktu signifikan.</li><li>Teknik iterasi prompt: mulai umum, lalu perbaiki berdasarkan output yang dihasilkan.</li><li>Prompt sebaiknya menyertakan contoh (few-shot) untuk hasil yang lebih konsisten dengan gaya organisasi.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Buatkan 5 template prompt siap pakai untuk tugas rutin saya sebagai Construction Manager: laporan mingguan, RFI, notulen rapat, update klien, dan JSA."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> Anthropic, Prompt Engineering Overview — docs.claude.com.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-26" aria-expanded="false">
+          <span class="d-num">26</span>
+          <span class="d-title">AI-Powered Project Workflows</span>
+          <span class="d-dur">20 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-26" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Merancang alur kerja proyek yang mengintegrasikan Claude pada beberapa titik proses secara berurutan.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Workflow AI memetakan titik-titik proses (input lapangan → draf dokumen → review manusia → distribusi) di mana Claude berperan.</li><li>Human-in-the-loop tetap wajib — Claude membantu draf dan analisis, keputusan akhir tetap pada manusia berwenang.</li><li>Mengintegrasikan output Claude dengan sistem lain (email, spreadsheet, dokumen) untuk workflow end-to-end.</li><li>Mengukur efisiensi workflow (waktu tersimpan, konsistensi kualitas) sebagai dasar perbaikan berkelanjutan.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Rancang alur kerja mingguan bagi tim proyek saya di mana Claude membantu menyusun draf laporan progres dari data mentah lapangan sebelum direview oleh Project Manager."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> Anthropic, Building Effective Agents — anthropic.com/research.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-27" aria-expanded="false">
+          <span class="d-num">27</span>
+          <span class="d-title">Building Your Claude System</span>
+          <span class="d-dur">25 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-27" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Merancang sistem kerja pribadi/tim yang terintegrasi memanfaatkan seluruh keterampilan Hari 1–26.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Audit tugas administratif rutin untuk menentukan prioritas otomasi dengan Claude.</li><li>Menyusun 'Standard Operating Procedure' penggunaan Claude untuk tim proyek agar konsisten.</li><li>Menentukan batasan penggunaan AI: data sensitif, keputusan kontraktual, dan validasi teknis tetap memerlukan tinjauan ahli.</li><li>Rencana pelatihan singkat bagi anggota tim baru agar dapat menggunakan sistem yang sama.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Bantu saya menyusun SOP satu halaman tentang kapan dan bagaimana tim proyek saya boleh menggunakan Claude untuk dokumen resmi, termasuk proses review sebelum dokumen dikirim ke owner."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> CIOB, Digital Transformation in Construction Management — panduan praktik terbaik.</p>
+        </div>
+      </div>
+
+      <div class="day-item">
+        <button class="day-row" data-target="day-28" aria-expanded="false">
+          <span class="d-num">28</span>
+          <span class="d-title">Final Project &amp; Certificate</span>
+          <span class="d-dur">25 menit</span>
+          <span class="d-chev">＋</span>
+        </button>
+        <div class="day-detail" id="day-28" hidden>
+          <p class="det-label">Tujuan Pembelajaran</p>
+          <p class="det-text">Mengaplikasikan seluruh keterampilan kursus pada satu proyek simulasi menyeluruh dan menyelesaikan sertifikasi.</p>
+          <p class="det-label">Konsep Kunci</p>
+          <ul class="det-list"><li>Proyek akhir mengintegrasikan laporan, RFI, change order, risk register, dan update klien dalam satu skenario proyek.</li><li>Evaluasi diri terhadap kualitas dokumen: kejelasan, keterukuran, dan kesesuaian standar industri.</li><li>Refleksi praktik: dokumen mana yang paling menghemat waktu dan mana yang masih perlu tinjauan manual ketat.</li><li>Rencana penerapan sistem Claude secara berkelanjutan di proyek nyata pasca-kursus.</li></ul>
+          <p class="det-label">Contoh Prompt Claude</p>
+          <div class="prompt-box">"Berikan skenario proyek konstruksi lengkap (gedung komersial 10 lantai) sebagai simulasi ujian akhir saya, lalu evaluasi dokumen-dokumen yang saya susun berdasarkan skenario tersebut."</div>
+          <p class="det-ref"><strong>Sumber Referensi:</strong> Rangkuman seluruh referensi Hari 1–27 sebagai basis evaluasi akhir.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section class="cases">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">STUDI KASUS</div>
+      <h2>Teori yang diuji dengan kejadian nyata</h2>
+      <p class="sub">Klik tiap kasus untuk membaca kejadian lengkap dan pembahasannya.</p>
+    </div>
+    <div class="case-grid">
+
+      <div class="case-card" style="--m-c:var(--m1)">
+        <button class="case-toggle" data-target="case-1" aria-expanded="false">
+          <div class="mtag">MODUL 01</div>
+          <h4>Laporan Progres yang Menyesatkan</h4>
+          <p class="case-teaser">Sebuah proyek apartemen 20 lantai melaporkan progres fisik 60% pada bulan ke-8 dari rencana 18 b…</p>
+          <span class="case-chev">Baca kasus &amp; pembahasan ＋</span>
+        </button>
+        <div class="case-detail" id="case-1" hidden>
+          <p class="det-label">Kasus</p>
+          <p class="det-text">Sebuah proyek apartemen 20 lantai melaporkan progres fisik 60% pada bulan ke-8 dari rencana 18 bulan, namun laporan yang dikirim ke owner hanya berisi narasi umum tanpa data kuantitatif per elemen pekerjaan (struktur, arsitektur, MEP). Owner baru menyadari keterlambatan signifikan pada pekerjaan MEP (progres aktual 25% dari rencana 45%) setelah kunjungan lapangan mendadak pada bulan ke-10, yang memicu ketidakpercayaan dan potensi pemutusan kontrak.</p>
+          <p class="det-label">Pembahasan</p>
+          <p class="det-text">Akar masalah adalah laporan proyek yang tidak memisahkan progres per disiplin kerja dan tidak menyertakan pembanding rencana-vs-aktual (S-Curve). Dengan pendekatan Hari 1 (Project Reports), Construction Manager seharusnya menyusun laporan dengan breakdown progres per WBS Level 2 (Hari 2), menyertakan kurva-S, dan menonjolkan varians negatif di bagian awal laporan sesuai prinsip piramida terbalik. Tindakan korektif: (1) susun ulang format laporan bulanan dengan tabel progres per disiplin, (2) tambahkan bagian 'Item Perhatian Utama' di halaman pertama, (3) lakukan rapat eskalasi begitu varians melebihi ambang 10%, bukan menunggu laporan bulanan berikutnya. Pelajaran utama: transparansi data kuantitatif lebih penting daripada kelengkapan narasi dalam membangun kepercayaan owner.</p>
+        </div>
+      </div>
+
+      <div class="case-card" style="--m-c:var(--m2)">
+        <button class="case-toggle" data-target="case-2" aria-expanded="false">
+          <div class="mtag">MODUL 02</div>
+          <h4>RFI yang Terlambat Dijawab Memicu Klaim</h4>
+          <p class="case-teaser">Kontraktor mengajukan RFI terkait ketidaksesuaian elevasi balok pada gambar struktur dan arsitek…</p>
+          <span class="case-chev">Baca kasus &amp; pembahasan ＋</span>
+        </button>
+        <div class="case-detail" id="case-2" hidden>
+          <p class="det-label">Kasus</p>
+          <p class="det-text">Kontraktor mengajukan RFI terkait ketidaksesuaian elevasi balok pada gambar struktur dan arsitektur. Tim Construction Manager tidak memiliki log RFI terpusat sehingga RFI tersebut tidak terjawab selama 18 hari kerja, menyebabkan penghentian pekerjaan struktur di zona terkait. Kontraktor kemudian mengajukan klaim perpanjangan waktu (time extension) dan biaya tambahan akibat idle tenaga kerja.</p>
+          <p class="det-label">Pembahasan</p>
+          <p class="det-text">Kasus ini menunjukkan pentingnya disiplin pengelolaan RFI (Hari 9) yang terhubung dengan log terpusat dan SLA respons (misalnya maksimum 7 hari kerja). Dengan Claude, tim dapat menyusun RFI yang lebih spesifik sejak awal (menyertakan usulan solusi tentatif) sehingga mempercepat proses review oleh konsultan. Secara kontraktual, keterlambatan jawaban RFI melebihi waktu wajar sering diakui sebagai excusable delay yang dapat menjadi dasar klaim sah — sehingga penting bagi Construction Manager untuk memantau status RFI melalui log dan melakukan eskalasi proaktif sebelum tenggat SLA terlampaui. Pelajaran utama: kecepatan dan kejelasan respons RFI berdampak langsung pada eksposur klaim biaya dan waktu proyek.</p>
+        </div>
+      </div>
+
+      <div class="case-card" style="--m-c:var(--m3)">
+        <button class="case-toggle" data-target="case-3" aria-expanded="false">
+          <div class="mtag">MODUL 03</div>
+          <h4>Cacat Mutu yang Baru Terdeteksi Saat Serah Terima</h4>
+          <p class="case-teaser">Pada tahap serah terima, konsultan pengawas menemukan retak struktural pada beberapa balok lanta…</p>
+          <span class="case-chev">Baca kasus &amp; pembahasan ＋</span>
+        </button>
+        <div class="case-detail" id="case-3" hidden>
+          <p class="det-label">Kasus</p>
+          <p class="det-text">Pada tahap serah terima, konsultan pengawas menemukan retak struktural pada beberapa balok lantai 5 yang seharusnya terdeteksi sejak proses pengecoran. Investigasi menunjukkan tidak ada hold point inspeksi sebelum pengecoran, dan checklist QC yang digunakan bersifat umum tanpa mengacu pada spesifikasi teknis proyek.</p>
+          <p class="det-label">Pembahasan</p>
+          <p class="det-text">Masalah utama adalah ketiadaan Inspection and Test Plan (ITP) yang spesifik dengan hold point wajib (Hari 15), sehingga cacat tulangan tidak tertangkap sebelum pengecoran berlangsung — titik di mana perbaikan jauh lebih murah. Construction Manager dapat menggunakan Claude untuk menyusun ITP yang disesuaikan dengan spesifikasi proyek dan menstandardisasi Non-Conformance Report (NCR) setiap kali ditemukan penyimpangan, sehingga ada rekam jejak korektif yang terlacak. Selain itu, update progres mingguan (Hari 16) yang hanya melaporkan persentase tanpa status mutu per elemen turut menyembunyikan masalah ini dari radar manajemen. Pelajaran utama: kecepatan progres tidak boleh mengorbankan titik inspeksi kritis, dan pelaporan progres idealnya menyertakan indikator mutu, bukan hanya kuantitas pekerjaan selesai.</p>
+        </div>
+      </div>
+
+      <div class="case-card" style="--m-c:var(--m4)">
+        <button class="case-toggle" data-target="case-4" aria-expanded="false">
+          <div class="mtag">MODUL 04</div>
+          <h4>Kekeliruan Evaluasi Tender Subkontraktor</h4>
+          <p class="case-teaser">Tim proyek memilih subkontraktor pekerjaan pondasi dengan harga terendah tanpa melakukan bid lev…</p>
+          <span class="case-chev">Baca kasus &amp; pembahasan ＋</span>
+        </button>
+        <div class="case-detail" id="case-4" hidden>
+          <p class="det-label">Kasus</p>
+          <p class="det-text">Tim proyek memilih subkontraktor pekerjaan pondasi dengan harga terendah tanpa melakukan bid leveling menyeluruh. Belakangan diketahui penawaran tersebut mengecualikan pekerjaan dewatering yang sebenarnya krusial untuk kondisi tanah proyek, menyebabkan klaim biaya tambahan signifikan setelah kontrak ditandatangani.</p>
+          <p class="det-label">Pembahasan</p>
+          <p class="det-text">Kasus ini adalah kegagalan proses bid leveling (Hari 21) — penawaran termurah belum tentu paling ekonomis jika lingkup pekerjaannya tidak setara dengan penawar lain. Claude dapat digunakan untuk menyusun matriks perbandingan terstruktur yang secara eksplisit memetakan item lingkup per penawar, sehingga perbedaan eksklusi seperti dewatering langsung terlihat sebelum keputusan diambil. Selain itu, Scope of Work (Hari 3) yang diberikan kepada calon subkontraktor semestinya secara eksplisit mencantumkan pekerjaan dewatering sebagai item wajib, bukan diasumsikan implisit. Pelajaran utama: evaluasi tender harus menyamakan basis lingkup pekerjaan terlebih dahulu sebelum membandingkan harga, dan SOW yang ambigu adalah akar dari banyak klaim di kemudian hari.</p>
+        </div>
+      </div>
+
+      <div class="case-card" style="--m-c:var(--m5)">
+        <button class="case-toggle" data-target="case-5" aria-expanded="false">
+          <div class="mtag">MODUL 05</div>
+          <h4>Dari Kerja Manual ke Sistem Terstandarisasi</h4>
+          <p class="case-teaser">Sebuah perusahaan kontraktor dengan 6 proyek berjalan menghadapi ketidakkonsistenan kualitas lap…</p>
+          <span class="case-chev">Baca kasus &amp; pembahasan ＋</span>
+        </button>
+        <div class="case-detail" id="case-5" hidden>
+          <p class="det-label">Kasus</p>
+          <p class="det-text">Sebuah perusahaan kontraktor dengan 6 proyek berjalan menghadapi ketidakkonsistenan kualitas laporan antar Construction Manager — sebagian laporan sangat rinci, sebagian lain terlalu ringkas sehingga menyulitkan manajemen pusat memantau portofolio proyek secara agregat.</p>
+          <p class="det-label">Pembahasan</p>
+          <p class="det-text">Solusi yang diterapkan adalah membangun 'Sistem Claude' tingkat perusahaan (Hari 27): pustaka template terstandarisasi (Hari 24) dan prompt library bersama (Hari 25) yang wajib digunakan seluruh Construction Manager, sehingga struktur dan tingkat detail laporan menjadi seragam meskipun ditulis oleh orang berbeda. Alur kerja (Hari 26) ditetapkan: data lapangan mentah dikumpulkan tiap Jumat, diproses menjadi draf laporan menggunakan Claude dengan template baku, kemudian direview Project Director sebelum didistribusikan Senin pagi. Hasilnya, waktu penyusunan laporan berkurang signifikan dan manajemen pusat dapat membandingkan performa antar proyek secara apel-ke-apel. Pelajaran utama: nilai AI dalam manajemen konstruksi meningkat drastis ketika distandardisasi menjadi sistem organisasi, bukan sekadar kebiasaan individu.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="deliverables">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">PAKET UNDUHAN</div>
+      <h2>Dua dokumen pendamping kursus ini</h2>
+      <p class="sub">Landing page ini kini memuat seluruh materi. Dua berkas berikut melengkapinya dalam format cetak dan kerja.</p>
+    </div>
+    <div class="doc-grid">
+      <div class="doc-card">
+        <span class="stamp">.DOCX</span>
+        <h3>Panduan Lengkap Kursus</h3>
+        <p>Buku panduan 28 hari — teori, konsep kunci, contoh prompt, referensi, dan 5 studi kasus + pembahasan per modul, dalam format cetak.</p>
+        <ul>
+          <li>Struktur per hari: Tujuan, Konsep, Prompt, Referensi</li>
+          <li>Daftar referensi lengkap (PMI, FIDIC, ISO, OSHA, dll.)</li>
+          <li>19 halaman siap cetak / dibagikan ke tim</li>
+        </ul>
+      </div>
+      <div class="doc-card">
+        <span class="stamp">.XLSX</span>
+        <h3>Template SOP Spreadsheet</h3>
+        <p>11 sheet siap isi untuk dokumentasi harian proyek, lengkap dengan formula otomatis (EVM, total biaya, skor risiko).</p>
+        <ul>
+          <li>Laporan Mingguan, Daily Log, RFI & Change Order Log</li>
+          <li>Budget Tracking (CPI/SPI), Cost Report, Risk Register</li>
+          <li>ITP/QC Checklist, Issue Log, Safety JSA</li>
+        </ul>
+      </div>
+      <div class="doc-card">
+        <span class="stamp">WEB</span>
+        <h3>Landing Page Ini</h3>
+        <p>Versi interaktif kurikulum — klik untuk membuka materi tiap hari dan studi kasus tanpa perlu membuka dokumen lain.</p>
+        <ul>
+          <li>Peta 28 hari dalam 5 modul, dapat diklik</li>
+          <li>5 studi kasus lengkap dengan pembahasan</li>
+          <li>Dapat disimpan &amp; dibagikan sebagai satu file HTML</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <div class="f-left">Claude Course for Construction Managers — Panduan Belajar 28 Hari</div>
+    <div class="f-right">MODUL 01–05 · HARI 01–28</div>
+  </footer>
+</div>
+
+<script>
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.day-row, .case-toggle');
+  if(!btn) return;
+  var id = btn.getAttribute('data-target');
+  var panel = document.getElementById(id);
+  if(!panel) return;
+  var expanded = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!expanded));
+  panel.hidden = expanded;
+});
+</script>
+
+</body>
+</html>

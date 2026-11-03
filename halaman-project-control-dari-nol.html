@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Control — Dari Nol Hingga Mahir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0E2A44;
+    --navy-2:#163a5c;
+    --paper:#F6F3EC;
+    --paper-2:#EFEAE0;
+    --gold:#C08A28;
+    --gold-2:#E3B04B;
+    --ink:#1B2733;
+    --muted:#5C6B79;
+    --line: rgba(14,42,68,0.14);
+    --actual:#1B7F5A;
+    --actual-bg:#E7F3EC;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+  h1,h2,h3{font-family:'Source Serif 4', serif; margin:0; color:var(--navy);}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- HEADER / NAV ---------- */
+  header.top{
+    position:sticky; top:0; z-index:50;
+    background:rgba(246,243,236,0.9);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1080px; margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Source Serif 4',serif; font-weight:700; font-size:1.05rem; color:var(--navy);}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);}
+  .topbar nav a{color:var(--navy-2); text-decoration:none; font-size:0.92rem; margin-left:26px; font-weight:500;}
+  .topbar nav a:hover{color:var(--gold);}
+  .btn-download-small{
+    background:var(--navy); color:#fff; padding:9px 18px; border-radius:3px; text-decoration:none;
+    font-size:0.88rem; font-weight:600; border:1px solid var(--navy);
+  }
+  .btn-download-small:hover{background:var(--navy-2);}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:76px 0 40px;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;}
+  .kicker{color:var(--gold); font-weight:600; font-size:0.85rem; margin-bottom:14px;}
+  .hero h1{font-size:3rem; line-height:1.08; font-weight:700; letter-spacing:-0.5px;}
+  .hero h1 em{font-style:normal; color:var(--gold);}
+  .hero p.lead{margin-top:20px; font-size:1.08rem; line-height:1.65; color:var(--muted); max-width:46ch;}
+  .hero-ctas{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--navy); color:#fff; padding:14px 26px; text-decoration:none; font-weight:600;
+    border-radius:3px; font-size:0.95rem; display:inline-flex; align-items:center; gap:10px;
+    border:1px solid var(--navy);
+  }
+  .btn-primary:hover{background:var(--navy-2);}
+  .btn-ghost{
+    padding:14px 22px; text-decoration:none; font-weight:600; font-size:0.95rem; color:var(--navy);
+    border:1px solid var(--line); border-radius:3px; background:transparent; cursor:pointer;
+  }
+  .btn-ghost:hover{border-color:var(--navy);}
+
+  .curve-card{
+    background:#fff; border:1px solid var(--line); border-radius:6px; padding:22px 24px 16px;
+    box-shadow: 0 18px 40px -22px rgba(14,42,68,0.35);
+  }
+  .curve-card .curve-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+  .curve-card .curve-head span.mono{font-size:0.72rem; color:var(--muted); letter-spacing:0.03em;}
+  .legend{display:flex; gap:18px; margin-top:6px; font-size:0.78rem; color:var(--muted);}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .swatch{width:14px;height:3px; display:inline-block; border-radius:2px;}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:64px 0;}
+  .section-head{max-width:640px; margin-bottom:40px;}
+  .section-head .kicker{margin-bottom:10px;}
+  .section-head h2{font-size:2.1rem; line-height:1.2;}
+  .section-head p{color:var(--muted); margin-top:14px; font-size:1.02rem; line-height:1.6;}
+
+  /* Formula strip */
+  .formula-strip{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;
+  }
+  .formula-cell{background:#fff; padding:22px 20px;}
+  .formula-cell .label{font-size:0.78rem; color:var(--muted); font-weight:600; margin-bottom:8px;}
+  .formula-cell .expr{font-family:'IBM Plex Mono',monospace; font-size:1.15rem; color:var(--navy); font-weight:600;}
+
+  /* ---------- ROADMAP / MODULES ---------- */
+  .roadmap{position:relative;}
+  .roadmap-line{
+    position:absolute; left:27px; top:6px; bottom:6px; width:2px;
+    background:repeating-linear-gradient(to bottom, var(--gold) 0 6px, transparent 6px 12px);
+  }
+  .module{
+    position:relative; padding-left:70px; margin-bottom:10px; border:1px solid var(--line); border-radius:6px;
+    background:#fff; transition:border-color .15s ease;
+  }
+  .module:hover{border-color:var(--gold-2);}
+  .module.open{border-color:var(--gold);}
+  .module-num{
+    position:absolute; left:14px; top:22px; width:28px; height:28px; border-radius:50%;
+    background:var(--paper); border:2px solid var(--navy); color:var(--navy); font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem; display:flex; align-items:center; justify-content:center; font-weight:600; z-index:2;
+  }
+  .module.open .module-num{background:var(--navy); color:#fff;}
+  .module.starred .module-num{border-color:var(--gold); color:var(--gold);}
+  .module.starred.open .module-num{background:var(--gold); color:#fff; border-color:var(--gold);}
+  .module-head{display:flex; align-items:center; justify-content:space-between; padding:20px 22px 20px 4px; gap:16px; cursor:pointer;}
+  .module-title{font-family:'Source Serif 4',serif; font-size:1.18rem; color:var(--navy); font-weight:600;}
+  .module-title .star{color:var(--gold); margin-left:6px; font-size:1rem;}
+  .module-sub{font-size:0.85rem; color:var(--muted); margin-top:4px; font-weight:400; font-family:'Inter',sans-serif;}
+  .chevron{width:20px; height:20px; flex-shrink:0; transition:transform .2s ease; color:var(--muted);}
+  .module.open .chevron{transform:rotate(180deg); color:var(--gold);}
+  .module-body{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .module-body-inner{padding:0 22px 26px 4px;}
+
+  /* subtopic tab pills */
+  .subtabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .subtab-btn{
+    background:var(--paper-2); border:1px solid var(--line); color:var(--navy-2); font-size:0.83rem;
+    padding:7px 14px; border-radius:20px; cursor:pointer; font-family:'Inter',sans-serif; font-weight:500;
+  }
+  .subtab-btn:hover{border-color:var(--gold-2);}
+  .subtab-btn.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .module.starred .subtab-btn.active{background:var(--gold); border-color:var(--gold); color:#fff;}
+
+  .subtopic-panel{border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .subtopic-panel-head{
+    background:var(--paper-2); padding:12px 18px; font-family:'Source Serif 4',serif; font-weight:600;
+    color:var(--navy); font-size:1.02rem; border-bottom:1px solid var(--line);
+  }
+  .block-row{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line);}
+  .block{background:#fff; padding:18px 18px;}
+  .block.full{grid-column:1/-1; background:var(--actual-bg);}
+  .block .block-label{
+    font-size:0.72rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:8px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .block.teori .block-label{color:var(--navy-2);}
+  .block.kasus .block-label{color:#8a651a;}
+  .block.pembahasan .block-label{color:var(--actual);}
+  .block p{margin:0; font-size:0.92rem; line-height:1.6; color:var(--ink);}
+  .block.kasus{background:#FBF6EA;}
+
+  .module-refs{padding:14px 18px 4px; border-top:1px dashed var(--line); margin-top:14px;}
+  .module-refs .ref-label{font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;}
+  .module-refs ul{margin:0; padding-left:18px;}
+  .module-refs li{font-size:0.85rem; color:var(--muted); margin-bottom:4px; line-height:1.5;}
+
+  @media(max-width:640px){
+    .block-row{grid-template-columns:1fr;}
+  }
+
+  /* ---------- WHO / OUTCOMES ---------- */
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .card{background:#fff; border:1px solid var(--line); border-radius:6px; padding:26px;}
+  .card h3{font-size:1.1rem; margin-bottom:10px;}
+  .card p{color:var(--muted); font-size:0.92rem; line-height:1.55; margin:0;}
+  .card .icon{width:34px;height:34px; margin-bottom:16px; color:var(--gold);}
+
+  /* ---------- TIMELINE (belajar) ---------- */
+  .timeline-table{width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .timeline-table th{
+    text-align:left; background:var(--navy); color:#fff; font-size:0.8rem; padding:12px 16px; font-weight:600;
+  }
+  .timeline-table td{padding:13px 16px; border-top:1px solid var(--line); font-size:0.9rem; color:var(--ink);}
+  .timeline-table tr:nth-child(even) td{background:var(--paper-2);}
+  .badge{display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:600;}
+  .badge.core{background:#FBF1DD; color:#8a651a;}
+  .badge.base{background:#E4EEF4; color:#2A6A8C;}
+  .badge.adv{background:#E9E4F4; color:#5B3F94;}
+
+  /* ---------- FINAL CTA ---------- */
+  .final-cta{
+    background:var(--navy); border-radius:10px; padding:56px 48px; text-align:center; position:relative; overflow:hidden;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:32px 32px;
+  }
+  .final-cta h2{color:#fff; font-size:2rem;}
+  .final-cta p{color:#C7D3DD; max-width:52ch; margin:16px auto 30px; line-height:1.6;}
+  .final-cta .btn-primary{background:var(--gold); border-color:var(--gold); color:var(--navy);}
+  .final-cta .btn-primary:hover{background:var(--gold-2);}
+
+  footer{padding:32px; text-align:center; color:var(--muted); font-size:0.82rem; border-top:1px solid var(--line);}
+
+  @media(max-width:860px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:2.2rem;}
+    .grid3{grid-template-columns:1fr;}
+    .formula-strip{grid-template-columns:1fr;}
+    .topbar nav{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>Project Control — Modul Belajar</div>
+    <nav>
+      <a href="#kurikulum">Kurikulum</a>
+      <a href="#evm">EVM</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <a class="btn-download-small" href="Modul_Project_Control_Dari_Nol_Hingga_Mahir.docx" download>Unduh Modul (.docx)</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker">MODUL PEMBELAJARAN · 9 BAB · TEORI + STUDI KASUS</div>
+      <h1>Kuasai Project Control, dari <em>garis dasar</em> hingga <em>simulasi risiko</em>.</h1>
+      <p class="lead">Kurikulum interaktif untuk Planner, Cost Engineer, dan Project Control Engineer. Setiap sub-bab dilengkapi teori, studi kasus, pembahasan, dan referensi — bukan sekadar daftar topik.</p>
+      <div class="hero-ctas">
+        <a class="btn-primary" href="Modul_Project_Control_Dari_Nol_Hingga_Mahir.docx" download>
+          Unduh Modul Lengkap (Word)
+        </a>
+        <a class="btn-ghost" href="#kurikulum">Jelajahi Kurikulum ↓</a>
+      </div>
+    </div>
+
+    <div class="curve-card">
+      <div class="curve-head">
+        <h3 style="font-size:1rem;">Kurva-S Proyek</h3>
+        <span class="mono">CUT-OFF: BULAN 5</span>
+      </div>
+      <svg viewBox="0 0 400 240" width="100%" height="auto">
+        <line x1="40" y1="10" x2="40" y2="200" stroke="#B9C3CC" stroke-width="1"/>
+        <line x1="40" y1="200" x2="390" y2="200" stroke="#B9C3CC" stroke-width="1"/>
+        <text x="8" y="16" font-size="9" fill="#5C6B79" font-family="IBM Plex Mono">100%</text>
+        <text x="14" y="106" font-size="9" fill="#5C6B79" font-family="IBM Plex Mono">50%</text>
+        <text x="18" y="204" font-size="9" fill="#5C6B79" font-family="IBM Plex Mono">0%</text>
+        <path d="M40,200 C 90,198 130,150 170,110 C 230,55 300,20 390,12" fill="none" stroke="#C08A28" stroke-width="2.5"/>
+        <path d="M40,200 C 90,199 130,165 165,135 C 200,108 230,88 250,80" fill="none" stroke="#1B7F5A" stroke-width="2.5"/>
+        <circle cx="250" cy="80" r="4" fill="#1B7F5A"/>
+        <line x1="250" y1="80" x2="250" y2="200" stroke="#B9C3CC" stroke-dasharray="3,3" stroke-width="1"/>
+        <text x="252" y="212" font-size="8" fill="#5C6B79" font-family="IBM Plex Mono">t=5</text>
+      </svg>
+      <div class="legend">
+        <span><i class="swatch" style="background:#C08A28"></i>Planned (PV)</span>
+        <span><i class="swatch" style="background:#1B7F5A"></i>Actual (EV)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="evm">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">BAB PALING PENTING</div>
+      <h2>Earned Value Management, dalam enam variabel inti.</h2>
+      <p>Seluruh analisis kinerja proyek modern bertumpu pada tiga angka dasar ini — dari situ, indeks dan proyeksi biaya akhir proyek dapat dihitung secara objektif. Buka Bab 4 di bawah untuk teori dan studi kasus numerik lengkapnya.</p>
+    </div>
+    <div class="formula-strip">
+      <div class="formula-cell"><div class="label">PLANNED VALUE</div><div class="expr">PV = %Rencana × BAC</div></div>
+      <div class="formula-cell"><div class="label">EARNED VALUE</div><div class="expr">EV = %Aktual × BAC</div></div>
+      <div class="formula-cell"><div class="label">SCHEDULE INDEX</div><div class="expr">SPI = EV / PV</div></div>
+      <div class="formula-cell"><div class="label">COST INDEX</div><div class="expr">CPI = EV / AC</div></div>
+      <div class="formula-cell"><div class="label">ESTIMATE AT COMPLETION</div><div class="expr">EAC = BAC / CPI</div></div>
+      <div class="formula-cell"><div class="label">VARIANCE AT COMPLETION</div><div class="expr">VAC = BAC − EAC</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="kurikulum">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">KURIKULUM · 9 MODUL INTERAKTIF</div>
+      <h2>Urutan belajar dari nol hingga mahir.</h2>
+      <p>Buka setiap bab, lalu pilih sub-bab untuk membaca teori singkat, studi kasus, dan pembahasannya. Setiap bab juga memuat daftar referensi lanjutan di bagian bawah.</p>
+    </div>
+    <div class="roadmap" id="roadmap">
+      <div class="roadmap-line"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">UNTUK SIAPA</div>
+      <h2>Dirancang untuk peran yang menjalankan kendali proyek sehari-hari.</h2>
+    </div>
+    <div class="grid3">
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19h16M4 19V9l4-3 4 3 4-3 4 3v10"/></svg>
+        <h3>Planner / Scheduler</h3>
+        <p>Menguasai WBS, logika ketergantungan, critical path, dan resource leveling untuk membangun jadwal yang realistis dan dapat dieksekusi.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <h3>Cost / Project Control Engineer</h3>
+        <p>Menghitung EVM (SPI, CPI, EAC) secara akurat, membangun dashboard, dan menyampaikan status proyek berbasis data ke manajemen.</p>
+      </div>
+      <div class="card">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l6-6 4 4 8-8M21 7v6h-6"/></svg>
+        <h3>Project Manager</h3>
+        <p>Memahami bahasa data project control untuk mengambil keputusan cepat: kapan harus eskalasi, kapan cukup memantau.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">ESTIMASI WAKTU BELAJAR</div>
+      <h2>Rencana belajar 12–16 minggu.</h2>
+    </div>
+    <table class="timeline-table">
+      <tr><th>Tahap</th><th>Bab</th><th>Kategori</th><th>Estimasi</th></tr>
+      <tr><td>Fondasi</td><td>1. Fundamental Project Control</td><td><span class="badge base">Dasar</span></td><td>1 minggu</td></tr>
+      <tr><td>Perencanaan</td><td>2. Project Planning</td><td><span class="badge base">Dasar</span></td><td>1–2 minggu</td></tr>
+      <tr><td>Pengukuran</td><td>3. Progress Measurement</td><td><span class="badge base">Dasar</span></td><td>1 minggu</td></tr>
+      <tr><td>Inti</td><td>4. Earned Value Management ⭐</td><td><span class="badge core">Inti</span></td><td>2 minggu</td></tr>
+      <tr><td>Operasional</td><td>5. Cost Control</td><td><span class="badge base">Dasar</span></td><td>1 minggu</td></tr>
+      <tr><td>Operasional</td><td>6. Equipment & Productivity Control</td><td><span class="badge base">Dasar</span></td><td>1 minggu</td></tr>
+      <tr><td>Antisipatif</td><td>7. Risk & Forecasting</td><td><span class="badge core">Inti</span></td><td>1 minggu</td></tr>
+      <tr><td>Komunikasi</td><td>8. Dashboard Project Control</td><td><span class="badge base">Dasar</span></td><td>1–2 minggu</td></tr>
+      <tr><td>Mahir</td><td>9. Advanced Project Control</td><td><span class="badge adv">Lanjutan</span></td><td>2–3 minggu</td></tr>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="final-cta">
+      <h2>Modul lengkap 27 halaman siap diunduh.</h2>
+      <p>Berisi seluruh 9 bab lengkap dengan rumus, tabel, studi kasus numerik, catatan praktis, dan latihan self-check di setiap bab — dalam satu dokumen Word yang bisa dicetak atau dipelajari langsung.</p>
+      <div class="hero-ctas" style="justify-content:center;">
+        <a class="btn-primary" href="Modul_Project_Control_Dari_Nol_Hingga_Mahir.docx" download>Unduh Modul (.docx)</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>Modul Pembelajaran Project Control — Dari Nol hingga Mahir · Edisi 2026</footer>
+
+<script>
+/* =========================================================
+   DATA: setiap sub-bab punya teori, kasus, pembahasan
+   ========================================================= */
+const modules = [
+{
+  n:1, title:"Fundamental Project Control",
+  sub:"Fondasi konsep yang mendasari seluruh modul berikutnya",
+  topics:[
+    {name:"Scope", teori:"Scope adalah batasan pekerjaan yang harus diselesaikan, terdiri dari deliverable in-scope dan out-of-scope, dituangkan dalam Scope Statement dan WBS sebagai baseline acuan.", kasus:"Klien meminta tambahan lapisan aspal pada proyek jalan secara lisan di lapangan tanpa dokumen resmi apa pun.", pembahasan:"Karena tidak melalui mekanisme Change Request, biaya tambahan ini sulit ditagihkan secara kontraktual — contoh klasik scope creep yang harus dicegah sejak awal."},
+    {name:"Schedule", teori:"Schedule merepresentasikan waktu pelaksanaan seluruh aktivitas, disusun berjenjang dari Master Schedule (milestone) hingga Detailed Schedule (harian/mingguan).", kasus:"Direksi memakai master schedule 20 milestone, sementara tim lapangan mengacu pada detailed schedule 1.200 aktivitas yang datanya sudah dua minggu tidak diupdate.", pembahasan:"Ketidaksinkronan antar level jadwal membuat laporan ke direksi tidak mencerminkan kondisi riil lapangan — update detailed schedule harus konsisten menjadi sumber data master schedule."},
+    {name:"Cost", teori:"Cost control memantau BAC, committed cost, actual cost, dan forecast secara siklikal agar pengeluaran tidak melampaui anggaran yang disetujui.", kasus:"Actual cost tercatat Rp500 juta dari budget Rp800 juta, terlihat aman — namun ternyata ada PO senilai Rp300 juta yang sudah ditandatangani namun belum dibayar.", pembahasan:"Memantau actual cost saja menyesatkan; committed cost wajib turut dipantau agar sisa anggaran yang terlihat 'aman' tidak keliru diartikan sebagai ruang gerak yang sebenarnya sudah habis."},
+    {name:"Resource", teori:"Resource mencakup 4M — Man, Material, Machine, Money — yang direncanakan melalui resource planning dan divisualisasikan lewat resource histogram.", kasus:"Pada bulan ke-3, proyek kekurangan 15 tukang besi karena resource plan awal tidak memperhitungkan lonjakan kebutuhan pembesian struktur.", pembahasan:"Resource histogram yang dibuat sejak tahap perencanaan akan menampakkan lonjakan kebutuhan ini jauh-jauh hari, memberi waktu untuk mobilisasi tenaga kerja tambahan."},
+    {name:"Progress", teori:"Progress dapat diukur dari sisi waktu (schedule progress) maupun volume pekerjaan nyata (physical progress), dengan physical progress umumnya lebih objektif.", kasus:"Laporan mingguan menyatakan progress 45% berdasarkan proporsi waktu yang telah berlalu, padahal volume pekerjaan fisik yang benar-benar selesai baru 30%.", pembahasan:"Progress berbasis waktu rentan menyesatkan pada aktivitas yang tidak linear; verifikasi terhadap volume fisik aktual tetap wajib dilakukan sebelum melaporkan angka progress ke stakeholder."},
+    {name:"Risk", teori:"Dalam konteks project control, risk adalah kejadian tidak pasti yang berpotensi memengaruhi scope, schedule, atau cost, dan dipantau melalui risk register.", kasus:"Pompa impor untuk proyek berasal dari satu-satunya supplier, dengan potensi keterlambatan pengiriman 6 minggu akibat proses bea cukai.", pembahasan:"Risiko single-source-supplier seperti ini wajib masuk risk register sejak dini dengan opsi mitigasi seperti dual-sourcing atau pemesanan lebih awal (long-lead item planning)."},
+    {name:"Reporting", teori:"Reporting menyampaikan status proyek secara berkala dan terstruktur — dari daily report hingga management report — agar keputusan diambil berdasarkan data akurat.", kasus:"Laporan bulanan ke klien hanya menampilkan persentase progress fisik, tanpa mencantumkan indikator SPI maupun CPI.", pembahasan:"Tanpa indikator EVM, klien hanya melihat kecepatan visual proyek tanpa mengetahui efisiensi biayanya — laporan yang baik wajib memuat kedua dimensi tersebut secara bersamaan."},
+  ],
+  referensi:["A Guide to the Project Management Body of Knowledge (PMBOK Guide) — PMI", "Project Management: A Systems Approach — Harold Kerzner", "AACE International Recommended Practices — Project Control Terminology"]
+},
+{
+  n:2, title:"Project Planning",
+  sub:"Membangun rencana proyek yang solid sebelum eksekusi",
+  topics:[
+    {name:"WBS", teori:"WBS adalah dekomposisi hierarkis lingkup proyek menjadi work package yang lebih kecil, disusun berdasarkan deliverable dan mengikuti aturan 100%.", kasus:"Tim planning menyusun WBS berdasarkan struktur departemen (Sipil, Elektrikal, Mekanikal) alih-alih berdasarkan deliverable proyek.", pembahasan:"WBS berbasis departemen menyulitkan pengukuran progress per paket pekerjaan yang sesungguhnya; WBS yang benar harus berbasis deliverable agar setiap work package dapat diberi bobot dan progress secara independen."},
+    {name:"Activity", teori:"Activity adalah komponen kerja yang diturunkan dari work package, dilengkapi Activity Attributes seperti predecessor, successor, dan resource.", kasus:"Aktivitas 'Pengecoran Kolom Lantai 2' didefinisikan tanpa predecessor yang jelas dari pekerjaan bekisting sebelumnya.", pembahasan:"Activity attribute yang tidak lengkap menyebabkan kesalahan logic saat perhitungan CPM dijalankan, berpotensi menghasilkan jadwal yang secara teknis tidak mungkin dieksekusi."},
+    {name:"Duration", teori:"Estimasi durasi dapat menggunakan metode analogous, parametric, atau three-point (PERT) tergantung ketersediaan data historis dan tingkat ketidakpastian.", kasus:"Estimasi pengecoran 500 m³ menggunakan rate parametrik 50 m³/hari menghasilkan 10 hari, namun estimasi PERT menghasilkan Te lebih panjang karena mempertimbangkan risiko cuaca musim hujan.", pembahasan:"Untuk aktivitas dengan variabilitas tinggi seperti pengecoran di musim hujan, kombinasi parametric sebagai basis dan PERT untuk mengoreksi ketidakpastian menghasilkan estimasi yang lebih realistis."},
+    {name:"Logic/Relationship", teori:"Empat jenis relasi (FS, SS, FF, SF) beserta lag/lead menentukan urutan pelaksanaan aktivitas dalam Precedence Diagramming Method.", kasus:"Pekerjaan finishing dinding dijadwalkan mulai 3 hari setelah plesteran mulai (SS+3), bukan menunggu plesteran selesai penuh (FS).", pembahasan:"Penggunaan relasi SS dengan lag yang tepat memungkinkan overlap pekerjaan yang aman secara teknis, memperpendek durasi total proyek dibanding pendekatan FS murni yang lebih konservatif."},
+    {name:"Critical Path", teori:"Critical Path Method menghitung Early Start/Finish (forward pass) dan Late Start/Finish (backward pass) untuk menentukan jalur dengan total float nol.", kasus:"Jalur pengadaan struktur baja impor memiliki total float 0 hari, sementara pekerjaan sipil pondasi memiliki float 15 hari.", pembahasan:"Karena pengadaan baja berada pada critical path, seluruh perhatian project control harus difokuskan pada jalur ini — keterlambatan pekerjaan pondasi sebesar 10 hari sekalipun masih dapat ditoleransi tanpa memengaruhi tanggal selesai proyek."},
+    {name:"Baseline Schedule", teori:"Baseline Schedule adalah versi jadwal yang disetujui sebagai acuan pengukuran kinerja, dan hanya boleh diubah melalui proses re-baselining formal.", kasus:"Seorang PM mengubah baseline setiap bulan mengikuti angka actual progress agar laporan selalu terlihat 'on track'.", pembahasan:"Praktik ini keliru secara fundamental — mengubah baseline mengikuti actual menghilangkan fungsi baseline sebagai alat ukur objektif, sehingga varians (SV, CV) yang dilaporkan menjadi tidak bermakna."},
+  ],
+  referensi:["Practice Standard for Scheduling — PMI", "Guide to Good Practice in the Management of Time in Complex Projects — CIOB", "Primavera P6 Professional — Oracle User Documentation"]
+},
+{
+  n:3, title:"Progress Measurement",
+  sub:"Mengukur kemajuan proyek secara objektif dan konsisten",
+  topics:[
+    {name:"Planned Progress", teori:"Planned Progress dihitung dari distribusi bobot aktivitas terhadap baseline schedule pada tanggal cut-off tertentu, bukan sekadar rasio waktu berlalu.", kasus:"Baseline schedule proyek berdurasi 10 bulan menunjukkan planned progress kumulatif 38% pada akhir bulan ke-4.", pembahasan:"Angka 38% ini berasal dari akumulasi bobot aktivitas yang direncanakan selesai, bukan dari 4/10 bulan (=40%) — perbedaan ini penting karena distribusi pekerjaan sepanjang durasi proyek jarang linear."},
+    {name:"Actual Progress", teori:"Actual Progress diperoleh dari verifikasi lapangan, survei volume, atau laporan teknis yang idealnya diperiksa oleh pihak independen.", kasus:"Mandor melaporkan progress pengecoran 100%, namun hasil pengukuran independen oleh Quantity Surveyor menunjukkan volume yang benar-benar tertuang baru 85%.", pembahasan:"Laporan lapangan cenderung bias optimis; verifikasi independen dari QS atau surveyor tetap diperlukan sebelum angka actual progress digunakan untuk perhitungan EVM."},
+    {name:"Physical Progress", teori:"Physical Progress mengukur volume pekerjaan nyata yang telah selesai (m³, ton, meter) dibanding total volume rencana, lebih tahan manipulasi dibanding estimasi visual.", kasus:"Pekerjaan pengaspalan dihitung berdasarkan ton aspal yang benar-benar terpasang dibandingkan total ton rencana keseluruhan ruas jalan.", pembahasan:"Karena berbasis kuantitas fisik yang dapat diverifikasi di lapangan, physical progress menjadi metode paling dipercaya untuk pekerjaan dengan volume terukur seperti pengaspalan, pengecoran, atau pemasangan pipa."},
+    {name:"Weighted Progress", teori:"Karena setiap paket pekerjaan berkontribusi berbeda terhadap total proyek, progress masing-masing paket dikalikan bobotnya (weight factor) sebelum dijumlahkan.", kasus:"Paket Struktur berbobot 55% baru mencapai 60% progress, sementara paket MEP berbobot 45% baru mencapai 20%.", pembahasan:"Overall weighted progress = (55%×60%) + (45%×20%) = 33% + 9% = 42% — angka ini jauh lebih rendah dari kesan 'struktur sudah maju pesat', karena bobot MEP yang besar turut menekan progress keseluruhan proyek."},
+    {name:"S-Curve", teori:"S-Curve memplot progress kumulatif Planned vs Actual terhadap waktu; gap antar kurva mencerminkan status proyek terlambat atau lebih cepat.", kasus:"Pada bulan ke-6, kurva actual berada 12 poin persentase di bawah kurva planned pada tanggal yang sama.", pembahasan:"Gap 12% ini adalah sinyal dini keterlambatan yang harus segera direspons dengan recovery plan (percepatan/crashing pada aktivitas kritis) sebelum gap semakin melebar mendekati akhir proyek."},
+  ],
+  referensi:["AACE International RP 24R-03 — Developing Physical Progress and Percent Complete", "Construction Planning, Equipment, and Methods — Peurifoy & Schexnayder", "PMBOK Guide — Project Schedule Management"]
+},
+{
+  n:4, title:"Earned Value Management (EVM)", star:true,
+  sub:"Integrasi scope, schedule, dan cost dalam satu analisis",
+  topics:[
+    {name:"PV", teori:"Planned Value adalah nilai pekerjaan yang direncanakan selesai pada tanggal cut-off, dihitung dari % rencana dikalikan BAC.", kasus:"BAC proyek Rp1.000.000.000, dengan planned progress bulan ke-5 sebesar 50%.", pembahasan:"PV = 50% × Rp1.000.000.000 = Rp500.000.000 — nilai ini murni fungsi dari rencana, sama sekali tidak terpengaruh oleh kondisi aktual di lapangan."},
+    {name:"EV", teori:"Earned Value adalah nilai pekerjaan yang benar-benar selesai, dihitung dari % aktual dikalikan BAC — bukan biaya yang dikeluarkan.", kasus:"Pada cut-off yang sama, actual progress tercatat 40%.", pembahasan:"EV = 40% × Rp1.000.000.000 = Rp400.000.000 — dinilai dengan budget, sehingga dapat dibandingkan setara (apple-to-apple) dengan PV maupun AC."},
+    {name:"AC", teori:"Actual Cost adalah biaya riil yang telah dikeluarkan atau menjadi kewajiban untuk pekerjaan yang telah dilaksanakan.", kasus:"Biaya aktual yang tercatat dari invoice yang telah dibayar adalah Rp450.000.000.", pembahasan:"Bila terdapat committed cost yang belum tercatat sebagai accrued expense, AC berisiko understate kondisi keuangan riil proyek pada periode tersebut."},
+    {name:"SV", teori:"Schedule Variance mengukur selisih nilai pekerjaan selesai terhadap rencana dalam satuan uang: SV = EV − PV.", kasus:"SV = Rp400 juta − Rp500 juta = −Rp100.000.000.", pembahasan:"SV negatif menandakan proyek terlambat dari jadwal; namun karena satuannya uang bukan waktu, hasil ini perlu diterjemahkan hati-hati ke estimasi hari keterlambatan menggunakan data schedule terpisah."},
+    {name:"CV", teori:"Cost Variance mengukur selisih nilai pekerjaan selesai terhadap biaya aktual: CV = EV − AC.", kasus:"CV = Rp400 juta − Rp450 juta = −Rp50.000.000.", pembahasan:"CV negatif berarti setiap pekerjaan yang telah diselesaikan menelan biaya lebih besar dari nilai yang seharusnya — indikasi pemborosan atau inefisiensi produktivitas."},
+    {name:"SPI", teori:"Schedule Performance Index mengukur efisiensi jadwal dalam bentuk rasio: SPI = EV / PV.", kasus:"SPI = 400/500 = 0,80.", pembahasan:"Proyek hanya mencapai 80% dari kecepatan yang direncanakan — bila tren ini berlanjut tanpa koreksi, keterlambatan akan terus membesar secara progresif hingga akhir proyek."},
+    {name:"CPI", teori:"Cost Performance Index mengukur efisiensi biaya dalam bentuk rasio: CPI = EV / AC.", kasus:"CPI = 400/450 = 0,89.", pembahasan:"Setiap Rp1 yang dikeluarkan hanya menghasilkan nilai pekerjaan senilai Rp0,89 — semakin lama CPI bertahan di bawah 1, semakin sulit dipulihkan karena sisa anggaran yang tersedia untuk pekerjaan mendatang makin menipis."},
+    {name:"EAC", teori:"Estimate at Completion memproyeksikan total biaya akhir proyek, dengan tiga metode umum tergantung asumsi kinerja yang digunakan.", kasus:"Menggunakan metode EAC = BAC/CPI: EAC = Rp1.000 juta / 0,89 = Rp1.123.600.000.", pembahasan:"Bila keterlambatan jadwal turut memengaruhi biaya sisa pekerjaan (misalnya biaya percepatan/crashing), metode gabungan EAC = AC + [(BAC−EV)/(CPI×SPI)] menghasilkan proyeksi yang lebih konservatif dan realistis."},
+    {name:"ETC", teori:"Estimate to Complete memperkirakan biaya yang masih dibutuhkan untuk menyelesaikan sisa pekerjaan: ETC = EAC − AC.", kasus:"ETC = Rp1.123,6 juta − Rp450 juta = Rp673.600.000.", pembahasan:"Angka ETC ini penting untuk perencanaan cash flow sisa proyek dan menjadi dasar negosiasi pendanaan tambahan dengan sponsor, terpisah dari angka EAC total."},
+    {name:"VAC", teori:"Variance at Completion menunjukkan selisih antara anggaran awal dan proyeksi akhir: VAC = BAC − EAC.", kasus:"VAC = Rp1.000 juta − Rp1.123,6 juta = −Rp123.600.000.", pembahasan:"VAC negatif harus dilaporkan sedini mungkin kepada sponsor proyek agar tindakan mitigasi — value engineering, negosiasi ulang lingkup, atau penambahan dana — dapat diambil sebelum anggaran benar-benar habis."},
+  ],
+  referensi:["ANSI/EIA-748 — Earned Value Management Systems Standard", "Practice Standard for Earned Value Management — PMI", "Earned Value Project Management — Quentin Fleming & Joel Koppelman"]
+},
+{
+  n:5, title:"Cost Control",
+  sub:"Menjaga pengeluaran proyek tetap dalam koridor anggaran",
+  topics:[
+    {name:"Budget", teori:"Budget dialokasikan melalui Cost Breakdown Structure (CBS) yang idealnya selaras dengan struktur WBS agar biaya dapat ditelusuri ke paket pekerjaan spesifik.", kasus:"Budget pekerjaan MEP dialokasikan 18% dari BAC berdasarkan data historis proyek sejenis sebelumnya.", pembahasan:"Alokasi berbasis data historis mempercepat proses budgeting, namun tetap perlu divalidasi terhadap spesifikasi teknis proyek berjalan karena setiap proyek memiliki kompleksitas MEP yang berbeda."},
+    {name:"Actual Cost", teori:"Actual Cost terdiri dari committed cost (nilai PO/kontrak), accrued cost (kewajiban belum ditagih), dan paid cost (sudah dibayar) yang harus dibedakan secara jelas.", kasus:"Subkontraktor mekanikal telah menyelesaikan pekerjaan senilai Rp200 juta, namun invoice baru akan diajukan bulan berikutnya.", pembahasan:"Bila accrued cost ini tidak dicatat, actual cost periode berjalan akan understate kondisi riil, menyebabkan CPI terlihat lebih baik dari yang sebenarnya."},
+    {name:"Cost Forecast", teori:"Cost Forecast memproyeksikan biaya akhir proyek dengan menjumlahkan actual cost, committed cost yang belum terserap, dan ETC untuk pekerjaan yang belum terkontrak.", kasus:"AC Rp450 juta + committed belum terserap Rp150 juta + ETC pekerjaan belum terkontrak Rp500 juta = forecast Rp1.100.000.000.", pembahasan:"Forecast manual berbasis komponen ini sebaiknya di-cross-check terhadap EAC hasil perhitungan EVM (Bab 4) — selisih signifikan antara keduanya mengindikasikan asumsi yang perlu ditinjau ulang."},
+    {name:"Cash Flow", teori:"Cash Flow Curve menggambarkan aliran masuk dan keluar biaya proyek; Net Cash Flow negatif pada suatu periode dapat mengganggu likuiditas operasional.", kasus:"Pada bulan ke-3, cash out untuk pembayaran subkontraktor dan material mencapai Rp300 juta, sementara termin pembayaran dari klien baru cair bulan ke-4.", pembahasan:"Gap waktu antara cash out dan cash in ini memerlukan skema bridging financing agar operasional proyek tidak terhambat menunggu pencairan termin."},
+    {name:"Cost per Unit", teori:"Unit Rate dihitung dari total biaya aktual dibagi total volume terpasang, digunakan untuk benchmarking dan deteksi inefisiensi.", kasus:"Unit rate aktual pengecoran beton tercatat Rp1.200.000/m³, sementara unit rate rencana adalah Rp1.100.000/m³ — deviasi +9%.", pembahasan:"Deviasi 9% ini perlu ditelusuri akar penyebabnya (root cause analysis) — apakah karena kenaikan harga semen, produktivitas pekerja yang rendah, atau pemborosan material di lapangan."},
+    {name:"Cost Variance", teori:"Analisis varians biaya dapat dilakukan pada berbagai level: terhadap budget, terhadap forecast periode sebelumnya, maupun terhadap unit rate rencana.", kasus:"Forecast bulan ini naik 5% dari forecast bulan lalu tanpa ada perubahan lingkup pekerjaan (scope) yang disetujui.", pembahasan:"Tren forecast yang memburuk secara berturut-turut merupakan red flag yang wajib dieskalasi ke manajemen, meskipun secara nominal kenaikannya masih terlihat kecil."},
+  ],
+  referensi:["Cost Engineering Terminology — AACE International", "Project Cost Estimating and Control — Kenneth Humphreys", "Total Cost Management Framework — AACE International"]
+},
+{
+  n:6, title:"Equipment & Productivity Control",
+  sub:"Mengoptimalkan kinerja alat berat dan produktivitas lapangan",
+  topics:[
+    {name:"Availability", teori:"Physical Availability mengukur persentase waktu alat siap pakai (tidak breakdown), dihitung dari total jam dikurangi downtime dibagi total jam.", kasus:"Sebuah excavator memiliki total 24 jam dalam sehari dengan downtime 4 jam akibat kerusakan hidrolik.", pembahasan:"PA = (24−4)/24 = 83,3% — angka ini di bawah standar industri (biasanya >85%), mengindikasikan perlunya evaluasi manajemen spare part dan jadwal preventive maintenance."},
+    {name:"Utilization", teori:"Utilization mengukur seberapa optimal jam yang tersedia (available) benar-benar dimanfaatkan untuk operasi produktif.", kasus:"Dari 20 jam available, alat hanya dioperasikan 14 jam karena kekurangan operator pada shift malam.", pembahasan:"UA = 14/20 = 70% — meskipun alat tersedia (Availability tinggi), rendahnya utilization di sini murni disebabkan masalah manajemen manpower, bukan kondisi alat itu sendiri."},
+    {name:"Productivity", teori:"Productivity mengukur rasio output yang dihasilkan terhadap jam kerja efektif, menjadi indikator langsung efisiensi operasi alat.", kasus:"Sebuah dump truck menghasilkan 480 BCM material dalam 8 jam kerja efektif.", pembahasan:"Productivity = 480/8 = 60 BCM/jam — angka ini perlu dibandingkan dengan target produktivitas alat sejenis untuk menilai apakah faktor operator, medan kerja, atau jarak angkut memengaruhi hasil."},
+    {name:"Cycle Time", teori:"Cycle Time adalah total waktu satu siklus kerja penuh alat angkut, terdiri dari loading, hauling, dumping, return, dan delay.", kasus:"Cycle time sebuah dump truck tercatat 18 menit (loading 3, hauling 8, dumping 2, return 4, delay 1 menit).", pembahasan:"Delay 1 menit per siklus tampak kecil, namun bila dikalikan ribuan siklus dalam sebulan, akumulasi loss produktivitasnya menjadi signifikan dan layak diinvestigasi penyebabnya (antrian, komunikasi radio, dsb)."},
+    {name:"Fuel Consumption", teori:"Fuel Ratio memantau konsumsi bahan bakar per jam operasi atau per unit produksi, penting untuk kontrol biaya sekaligus deteksi dini kebocoran/pencurian BBM.", kasus:"Sebuah alat mengonsumsi 15 liter/jam, sementara standar pabrikan untuk model yang sama adalah 12 liter/jam.", pembahasan:"Deviasi 25% ini mengindikasikan kemungkinan mesin tidak dalam kondisi optimal, gaya operasi yang boros, atau bahkan indikasi kebocoran/penyalahgunaan BBM yang perlu diinvestigasi segera."},
+    {name:"Maintenance", teori:"Preventive Maintenance mencegah kerusakan melalui perawatan terjadwal, sementara Corrective Maintenance memperbaiki setelah kerusakan terjadi; MTBF dan MTTR mengukur kehandalan dan kecepatan respons.", kasus:"MTBF sebuah alat menurun dari 300 jam menjadi 150 jam dalam tiga bulan terakhir.", pembahasan:"Penurunan MTBF signifikan seperti ini biasanya mengindikasikan preventive maintenance tidak dijalankan sesuai jadwal — audit terhadap kepatuhan jadwal servis perlu segera dilakukan."},
+    {name:"Production Target", teori:"Production Target adalah sasaran output periodik yang dijadikan acuan evaluasi kinerja aktual, diukur melalui persentase pencapaian (achievement).", kasus:"Target produksi harian ditetapkan 5.000 BCM, sementara realisasi aktual hanya 4.200 BCM.", pembahasan:"Achievement = 4.200/5.000 = 84% — gap 16% ini perlu dianalisis lebih lanjut apakah penyebabnya cuaca, breakdown alat, atau kekurangan jumlah unit armada, agar rencana pemulihan dapat difokuskan tepat sasaran."},
+  ],
+  referensi:["Caterpillar Performance Handbook — Caterpillar Inc.", "SME Mining Engineering Handbook — Society for Mining, Metallurgy & Exploration", "Construction Planning, Equipment, and Methods — Peurifoy & Schexnayder"]
+},
+{
+  n:7, title:"Risk & Forecasting",
+  sub:"Mengantisipasi ketidakpastian secara kuantitatif",
+  topics:[
+    {name:"Risk Register", teori:"Risk Register mencatat seluruh risiko teridentifikasi beserta probabilitas, dampak, risk owner, dan rencana mitigasi, serta wajib direview berkala.", kasus:"Risk register proyek EPC mencatat 45 risiko teridentifikasi, dengan 8 di antaranya berkategori high.", pembahasan:"Risk register bukan dokumen sekali buat di awal proyek — kedelapan risiko high tersebut harus direview statusnya setiap periode pelaporan, dan risiko baru yang muncul selama eksekusi wajib ditambahkan."},
+    {name:"Probability × Impact", teori:"Risk Matrix memprioritaskan risiko berdasarkan skor gabungan probabilitas dan dampak (skala 1–5), menghasilkan kategori rendah, sedang, atau tinggi.", kasus:"Risiko 'keterlambatan izin lingkungan' diberi skor probabilitas 4 dan dampak 5, menghasilkan skor risiko 20.", pembahasan:"Skor 20 (kategori tinggi) menempatkan risiko izin ini sebagai prioritas mitigasi nomor satu, bahkan di atas risiko-risiko teknis lain yang secara teknis mungkin lebih 'terasa' namun skornya lebih rendah."},
+    {name:"Contingency", teori:"Contingency Reserve dihitung dari Expected Monetary Value (EMV = Probability × Dampak Biaya) untuk seluruh risiko yang teridentifikasi.", kasus:"Tiga risiko utama proyek memiliki EMV masing-masing Rp60 juta, Rp25 juta, dan Rp10 juta.", pembahasan:"Total contingency yang disarankan adalah Rp95 juta — pendekatan berbasis EMV ini memberi dasar kuantitatif untuk bernegosiasi dengan sponsor, jauh lebih kredibel dibanding menetapkan contingency flat 10% dari BAC tanpa dasar perhitungan."},
+    {name:"Forecast", teori:"Forecast risiko dapat bersifat deterministic (satu angka tunggal) atau probabilistic (rentang P10–P90) menggunakan simulasi Monte Carlo.", kasus:"EAC deterministik proyek dihitung Rp1,12 miliar, sementara hasil simulasi probabilistik menunjukkan P80 sebesar Rp1,18 miliar.", pembahasan:"Untuk keputusan pendanaan yang konservatif, sponsor sebaiknya mengacu pada angka P80 (bukan angka deterministik tunggal) karena lebih merepresentasikan tingkat keyakinan menghadapi ketidakpastian yang masih tersisa."},
+    {name:"What-if Analysis", teori:"What-if Analysis menguji dampak perubahan asumsi tertentu terhadap jadwal/biaya sebelum risiko benar-benar terjadi, biasanya disimulasikan pada software scheduling.", kasus:"Simulasi skenario 'material terlambat 2 minggu' pada Primavera P6 menunjukkan proyek hanya mundur 9 hari, bukan 14 hari penuh, karena sebagian keterlambatan terserap oleh float yang tersedia.", pembahasan:"Hasil simulasi ini menjadi dasar keputusan apakah percepatan (crashing) pada aktivitas lain masih diperlukan untuk mengompensasi sisa 9 hari keterlambatan, atau cukup dipantau karena masih dalam batas toleransi kontrak."},
+  ],
+  referensi:["Practice Standard for Project Risk Management — PMI", "ISO 31000 — Risk Management Guidelines", "AACE International RP 40R-08 — Risk Analysis and Contingency Determination"]
+},
+{
+  n:8, title:"Dashboard Project Control",
+  sub:"Mengomunikasikan data proyek secara visual dan efektif",
+  topics:[
+    {name:"Excel", teori:"Excel memungkinkan pembuatan dashboard fleksibel menggunakan PivotTable, rumus SUMIFS/XLOOKUP, combo chart untuk S-Curve, dan conditional formatting untuk status RAG.", kasus:"Tim project control membangun S-Curve otomatis yang ter-update setiap kali data mingguan diinput ke sheet mentah, memakai kombinasi SUMIFS dan PivotChart.", pembahasan:"Otomatisasi ini memangkas waktu penyusunan laporan mingguan dari semula satu hari kerja penuh menjadi kurang dari satu jam, membebaskan waktu tim untuk fokus pada analisis, bukan sekadar rekap data."},
+    {name:"Power BI", teori:"Power BI membangun dashboard interaktif dan real-time menggunakan data model relasional, formula DAX, serta slicer untuk filter dinamis.", kasus:"Perusahaan dengan 12 proyek paralel membangun satu dashboard Power BI terpusat yang menampilkan SPI/CPI seluruh proyek sekaligus, dengan slicer per proyek dan per periode.", pembahasan:"Direksi dapat membandingkan kinerja antar proyek secara real-time tanpa menunggu laporan manual dari masing-masing PM — keunggulan utama Power BI dibanding Excel pada skala program multi-proyek."},
+    {name:"S-Curve", teori:"Pada level dashboard, S-Curve idealnya ditampilkan berlapis: progress, cost, dan manpower berdampingan agar anomali dapat terdeteksi lebih cepat.", kasus:"Dashboard menampilkan tiga S-Curve bersebelahan: progress fisik sesuai rencana, namun manpower actual justru di bawah manpower rencana.", pembahasan:"Anomali ini mengindikasikan produktivitas per orang yang justru lebih tinggi dari asumsi — informasi berharga untuk merevisi rencana resource pada paket pekerjaan serupa di proyek berikutnya."},
+    {name:"KPI Dashboard", teori:"KPI Dashboard merangkum indikator kunci dalam format scorecard dengan status warna RAG (Red-Amber-Green) berdasarkan threshold yang telah disepakati.", kasus:"Indikator CPI proyek berada di angka 0,89, berada di bawah threshold merah yang ditetapkan sebesar 0,90.", pembahasan:"Status merah pada dashboard secara otomatis memicu mekanisme eskalasi wajib ke level direksi sesuai SOP pelaporan perusahaan, tanpa perlu menunggu inisiatif manual dari tim lapangan."},
+    {name:"Management Report", teori:"Management Report yang efektif berupa executive summary ringkas berisi status, isu kritis, dan action items dengan PIC serta tenggat waktu yang jelas.", kasus:"Laporan bulanan ke klien menyoroti tiga isu kritis dan tiga action items dengan penanggung jawab dan due date yang eksplisit, dikemas dalam satu halaman.", pembahasan:"Format ringkas dan actionable seperti ini jauh lebih efektif dibanding laporan 40 halaman yang jarang dibaca tuntas oleh direksi — tujuan laporan adalah mendorong keputusan, bukan sekadar mendokumentasikan data."},
+  ],
+  referensi:["Microsoft Power BI Documentation — Microsoft Learn", "Information Dashboard Design — Stephen Few", "Storytelling with Data — Cole Nussbaumer Knaflic"]
+},
+{
+  n:9, title:"Advanced Project Control", star:true,
+  sub:"Teknik analisis tingkat mahir untuk kasus kompleks",
+  topics:[
+    {name:"Resource Loading", teori:"Resource Loading memetakan kebutuhan resource terhadap waktu dalam bentuk histogram, digunakan untuk mendeteksi periode over-allocation sejak dini.", kasus:"Histogram tenaga kerja tukang besi menunjukkan lonjakan kebutuhan hingga 80 orang pada minggu ke-10, padahal kapasitas mobilisasi maksimal hanya 50 orang.", pembahasan:"Temuan ini teridentifikasi jauh-jauh hari melalui resource loading, memberi waktu bagi PM untuk menyesuaikan sequence pekerjaan atau menambah kapasitas mobilisasi sebelum minggu ke-10 tiba."},
+    {name:"Resource Leveling", teori:"Resource Leveling meratakan kebutuhan resource dengan menggeser aktivitas dalam batas float (within float) atau melampaui float (beyond float) bila diperlukan.", kasus:"Leveling within float menggeser pekerjaan non-kritis pengecatan mundur 5 hari untuk meratakan kebutuhan tukang, tanpa mengubah tanggal selesai proyek.", pembahasan:"Bila leveling within float masih belum cukup meratakan beban kerja, opsi berikutnya adalah leveling beyond float — namun ini berkonsekuensi memperpanjang durasi proyek dan wajib melalui persetujuan formal PM/klien."},
+    {name:"Delay Analysis", teori:"Delay Analysis menentukan penyebab dan tanggung jawab keterlambatan melalui berbagai metode forensik, dari As-Planned vs As-Built hingga Time Impact Analysis.", kasus:"Klaim perpanjangan waktu diajukan kontraktor menggunakan metode Time Impact Analysis, menyisipkan delay event 'keterlambatan izin' ke dalam update jadwal pada bulan kejadian tersebut.", pembahasan:"TIA lebih mudah diterima oleh arbiter/pihak ketiga karena secara kronologis lebih objektif dibanding klaim berbasis As-Planned vs As-Built yang membandingkan kondisi awal dan akhir tanpa mempertimbangkan update jadwal di antaranya."},
+    {name:"Productivity Analysis", teori:"Measured Mile Analysis membandingkan produktivitas pada periode tidak terganggu dengan periode terdampak untuk mengukur loss of productivity secara kuantitatif.", kasus:"Produktivitas pemasangan pipa pada periode normal tercatat 40 meter/hari, turun menjadi 22 meter/hari pada periode cuaca ekstrem.", pembahasan:"Loss of productivity sebesar 18 meter/hari ini menjadi dasar kuantitatif yang kredibel untuk mengajukan klaim kompensasi akibat cuaca ekstrem kepada pemilik proyek."},
+    {name:"Cost Forecasting", teori:"Forecasting lanjutan mengombinasikan trend-based forecasting (CPI periode terbaru) dengan bottom-up forecasting (re-estimasi rinci sisa pekerjaan) untuk hasil yang lebih akurat.", kasus:"Forecast berbasis CPI kumulatif menghasilkan EAC Rp1,10 miliar, sementara bottom-up re-estimasi tiap paket sisa menghasilkan EAC Rp1,15 miliar.", pembahasan:"Selisih ini umumnya muncul karena tren CPI historis belum menangkap risiko baru pada paket pekerjaan yang belum dimulai — kombinasi kedua metode memberi gambaran forecast yang lebih komprehensif."},
+    {name:"Monte Carlo Simulation", teori:"Monte Carlo Simulation menjalankan ribuan iterasi acak terhadap variabel tidak pasti untuk menghasilkan distribusi probabilitas hasil akhir proyek, bukan angka tunggal deterministik.", kasus:"Simulasi 10.000 iterasi terhadap durasi 200 aktivitas menghasilkan P50 proyek selesai pada hari ke-310 dan P80 pada hari ke-325.", pembahasan:"Kontrak yang menjanjikan penyelesaian pada hari ke-300 kepada klien sebenarnya membawa risiko tinggi, karena confidence level tanggal tersebut jauh di bawah 50% berdasarkan hasil simulasi — informasi krusial untuk negosiasi tanggal serah terima yang realistis."},
+  ],
+  referensi:["AACE International RP 57R-09 — Integrated Cost and Schedule Risk Analysis Using Monte Carlo Simulation", "Delay and Disruption Protocol — Society of Construction Law (SCL)", "Primavera Risk Analysis — Oracle User Documentation"]
+},
+];
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+const roadmap = document.getElementById('roadmap');
+
+modules.forEach((m, mIdx) => {
+  const el = document.createElement('div');
+  el.className = 'module' + (m.star ? ' starred' : '');
+
+  const head = document.createElement('div');
+  head.className = 'module-head';
+  head.innerHTML = `
+    <div>
+      <div class="module-title">${m.title}${m.star ? '<span class="star">★</span>' : ''}</div>
+      <div class="module-sub">${m.sub}</div>
+    </div>
+    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  `;
+
+  const num = document.createElement('div');
+  num.className = 'module-num';
+  num.textContent = String(m.n).padStart(2,'0');
+
+  const body = document.createElement('div');
+  body.className = 'module-body';
+
+  const bodyInner = document.createElement('div');
+  bodyInner.className = 'module-body-inner';
+
+  // subtopic tabs
+  const subtabs = document.createElement('div');
+  subtabs.className = 'subtabs';
+  const panel = document.createElement('div');
+  panel.className = 'subtopic-panel';
+
+  function renderTopic(tIdx){
+    const t = m.topics[tIdx];
+    panel.innerHTML = `
+      <div class="subtopic-panel-head">${m.n}.${tIdx+1} ${t.name}</div>
+      <div class="block-row">
+        <div class="block teori">
+          <div class="block-label">📘 Teori</div>
+          <p>${t.teori}</p>
+        </div>
+        <div class="block kasus">
+          <div class="block-label">🧩 Studi Kasus</div>
+          <p>${t.kasus}</p>
+        </div>
+        <div class="block full pembahasan">
+          <div class="block-label">💬 Pembahasan</div>
+          <p>${t.pembahasan}</p>
+        </div>
+      </div>
+    `;
+    Array.from(subtabs.children).forEach((btn,i) => btn.classList.toggle('active', i===tIdx));
+  }
+
+  m.topics.forEach((t, tIdx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'subtab-btn';
+    btn.textContent = t.name;
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      renderTopic(tIdx);
+    });
+    subtabs.appendChild(btn);
+  });
+
+  const refs = document.createElement('div');
+  refs.className = 'module-refs';
+  refs.innerHTML = `
+    <div class="ref-label">Referensi Lanjutan</div>
+    <ul>${m.referensi.map(r => `<li>${r}</li>`).join('')}</ul>
+  `;
+
+  bodyInner.appendChild(subtabs);
+  bodyInner.appendChild(panel);
+  bodyInner.appendChild(refs);
+  body.appendChild(bodyInner);
+
+  renderTopic(0);
+
+  head.addEventListener('click', () => {
+    const isOpen = el.classList.contains('open');
+    el.classList.toggle('open');
+    body.style.maxHeight = isOpen ? '0px' : body.scrollHeight + 'px';
+  });
+
+  el.appendChild(num);
+  el.appendChild(head);
+  el.appendChild(body);
+  roadmap.appendChild(el);
+});
+
+// open first module by default
+setTimeout(() => { roadmap.querySelector('.module .module-head').click(); }, 150);
+</script>
+
+</body>
+</html>

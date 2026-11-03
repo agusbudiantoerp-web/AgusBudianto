@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Owning &amp; Operating Cost — Alat Berat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#10171D;
+    --bg-1:#161F27;
+    --bg-panel:#1B2530;
+    --bg-panel-2:#212C38;
+    --line:#2E3B47;
+    --line-strong:#3D4E5D;
+    --yellow:#F4B324;
+    --yellow-dim:#8A6A1E;
+    --rust:#E15A2B;
+    --steel:#5C8AAE;
+    --text-hi:#F2EFE6;
+    --text-mid:#B7BFC7;
+    --text-dim:#7C8792;
+    --green:#5FA779;
+    --red:#D96464;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg-0);color:var(--text-hi);font-family:'Inter',sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+
+  /* ===== HERO ===== */
+  .hero{
+    background:
+      linear-gradient(180deg, rgba(16,23,29,0) 0%, var(--bg-0) 92%),
+      repeating-linear-gradient(135deg, rgba(244,179,36,0.035) 0px, rgba(244,179,36,0.035) 2px, transparent 2px, transparent 26px),
+      var(--bg-1);
+    border-bottom:1px solid var(--line);
+    padding:56px 24px 44px;
+  }
+  .hero-inner{max-width:1180px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--yellow);display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--yellow);display:inline-block;}
+  h1{
+    font-family:'Oswald',sans-serif;font-weight:600;text-transform:uppercase;
+    font-size:clamp(30px,4.4vw,50px);line-height:1.04;letter-spacing:.01em;margin:0 0 14px;
+  }
+  h1 span{color:var(--yellow);}
+  .hero-sub{max-width:640px;color:var(--text-mid);font-size:15.5px;line-height:1.65;margin:0 0 34px;}
+
+  .readout{
+    display:flex;flex-wrap:wrap;gap:0;
+    border:1px solid var(--line-strong);
+    background:var(--bg-panel);
+    border-radius:14px;overflow:hidden;
+  }
+  .readout-cell{
+    flex:1 1 200px;padding:20px 24px;border-right:1px solid var(--line);position:relative;
+  }
+  .readout-cell:last-child{border-right:none;}
+  .readout-cell.main{background:var(--bg-panel-2);}
+  .r-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;}
+  .r-value{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:26px;color:var(--text-hi);}
+  .readout-cell.main .r-value{color:var(--yellow);font-size:32px;}
+  .r-unit{font-size:13px;color:var(--text-dim);margin-left:4px;font-weight:400;}
+
+  /* ===== SECTION HEADERS ===== */
+  .section{padding:44px 0 8px;}
+  .section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;border-bottom:1px solid var(--line);padding-bottom:14px;}
+  .section-num{font-family:'IBM Plex Mono',monospace;color:var(--yellow-dim);font-size:14px;}
+  .section-title{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:20px;font-weight:500;color:var(--text-hi);}
+  .section-note{margin-left:auto;font-size:12.5px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;}
+
+  /* preset + machine info */
+  .grid-2{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;}
+  @media (max-width:820px){.grid-2{grid-template-columns:1fr;}}
+
+  .panel{
+    background:var(--bg-panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;
+  }
+  .panel-title{font-family:'Oswald',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--yellow);margin:0 0 16px;padding-bottom:10px;border-bottom:1px dashed var(--line-strong);}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12.5px;color:var(--text-mid);margin-bottom:6px;}
+  .field .hint{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-dim);margin-left:6px;}
+  .field-row{display:flex;gap:12px;}
+  .field-row .field{flex:1;}
+  input[type=text], input[type=number], select{
+    width:100%;background:var(--bg-1);border:1px solid var(--line-strong);color:var(--text-hi);
+    padding:9px 10px;border-radius:7px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;
+  }
+  input[type=text]:focus, input[type=number]:focus, select:focus{outline:none;border-color:var(--yellow);}
+  select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--text-dim) 50%),linear-gradient(135deg,var(--text-dim) 50%,transparent 50%);background-position:calc(100% - 16px) center,calc(100% - 11px) center;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+  input[type=range]{width:100%;}
+
+  .preset-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .preset-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:8px 13px;border-radius:20px;
+    border:1px solid var(--line-strong);background:transparent;color:var(--text-mid);cursor:pointer;transition:all .12s;
+  }
+  .preset-btn:hover{border-color:var(--yellow);color:var(--text-hi);}
+  .preset-btn.active{background:var(--yellow);border-color:var(--yellow);color:#20160A;font-weight:600;}
+
+  /* ===== COST TABLE (mirrors the reference sheet) ===== */
+  .cost-card{
+    background:var(--bg-panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:22px;
+  }
+  .cost-card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 22px;background:var(--bg-panel-2);border-bottom:1px solid var(--line);
+  }
+  .cost-card-head h3{font-family:'Oswald',sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:.05em;margin:0;color:var(--text-hi);}
+  .cost-card-total{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:16px;color:var(--yellow);}
+
+  table.costtbl{width:100%;border-collapse:collapse;}
+  table.costtbl tr{border-bottom:1px solid var(--line);}
+  table.costtbl tr:last-child{border-bottom:none;}
+  table.costtbl td{padding:11px 22px;vertical-align:middle;font-size:13.5px;}
+  td.label{width:26%;color:var(--text-hi);}
+  td.label .sub{display:block;font-size:11px;color:var(--text-dim);font-weight:400;margin-top:2px;}
+  td.formula{width:34%;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-mid);line-height:1.5;}
+  td.inputs{width:22%;}
+  td.result{width:18%;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--text-hi);white-space:nowrap;}
+  .mini-input{display:inline-flex;align-items:center;gap:5px;margin:2px 8px 2px 0;}
+  .mini-input input{width:82px;padding:5px 7px;font-size:12px;}
+  .mini-input span{font-size:10.5px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;}
+
+  .frac{display:inline-block;text-align:center;vertical-align:middle;}
+  .frac .num{display:block;border-bottom:1px solid var(--text-dim);padding:0 2px 2px;}
+  .frac .den{display:block;padding:2px 2px 0;}
+
+  /* grand total strip */
+  .grand{
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+    background:linear-gradient(90deg, var(--bg-panel-2), var(--bg-panel));
+    border:1px solid var(--yellow-dim);border-radius:12px;padding:22px 26px;margin-top:6px;
+  }
+  .grand-label{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.04em;font-size:16px;}
+  .grand-label small{display:block;font-family:'IBM Plex Mono',monospace;text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--text-dim);margin-top:4px;}
+  .grand-value{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:34px;color:var(--yellow);}
+
+  .annual-strip{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;}
+  .astat{flex:1 1 200px;background:var(--bg-panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;}
+  .astat .al{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+  .astat .av{font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:600;}
+
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px;}
+  button.act{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;padding:12px 22px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--line-strong);background:var(--bg-panel);color:var(--text-hi);display:inline-flex;align-items:center;gap:9px;transition:all .12s;
+  }
+  button.act.primary{background:var(--yellow);border-color:var(--yellow);color:#20160A;}
+  button.act:hover{border-color:var(--yellow);}
+  button.act.primary:hover{filter:brightness(1.06);}
+
+  .note-box{
+    margin-top:34px;background:var(--bg-panel);border:1px dashed var(--line-strong);border-radius:10px;padding:16px 20px;
+    font-size:12.5px;color:var(--text-mid);line-height:1.7;
+  }
+  .note-box b{color:var(--text-hi);}
+
+  footer{
+    margin-top:60px;border-top:1px solid var(--line);padding-top:26px;
+    display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;
+  }
+  .footer-author{font-family:'Oswald',sans-serif;font-size:13.5px;letter-spacing:.02em;color:var(--text-hi);}
+  .footer-author .role{display:block;font-family:'Inter',sans-serif;font-size:11.5px;color:var(--text-dim);margin-top:3px;}
+  .footer-meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);}
+
+  ::-webkit-scrollbar{height:8px;width:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:4px;}
+
+  @media(max-width:700px){
+    td.formula{display:none;}
+    td.label{width:38%;}
+    table.costtbl td{padding:10px 14px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Fleet cost engineering · Rp / jam</div>
+    <h1>Kalkulator <span>owning &amp; operating cost</span><br>alat berat</h1>
+    <p class="hero-sub">Hitung biaya kepemilikan dan operasional per jam untuk excavator, dump truck, bulldozer, dan wheel loader — mengikuti metodologi standar (Komatsu / Caterpillar Performance Handbook), disesuaikan ke Rupiah. Ubah angka di bawah, hasil terhitung otomatis.</p>
+
+    <div class="readout">
+      <div class="readout-cell">
+        <div class="r-label">Owning cost</div>
+        <div class="r-value" id="ro-owning">Rp 0<span class="r-unit">/jam</span></div>
+      </div>
+      <div class="readout-cell">
+        <div class="r-label">Operating cost</div>
+        <div class="r-value" id="ro-operating">Rp 0<span class="r-unit">/jam</span></div>
+      </div>
+      <div class="readout-cell main">
+        <div class="r-label">Total O&amp;O cost / jam</div>
+        <div class="r-value" id="ro-total">Rp 0</div>
+      </div>
+      <div class="readout-cell">
+        <div class="r-label">Total biaya tahunan</div>
+        <div class="r-value" id="ro-annual" style="font-size:20px;">Rp 0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 0. DATA ALAT -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">00</span>
+      <span class="section-title">Data mesin &amp; asumsi dasar</span>
+      <span class="section-note">Machine &amp; model</span>
+    </div>
+
+    <div class="preset-row" id="presetRow"></div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-title">Identitas &amp; umur ekonomis</div>
+        <div class="field-row">
+          <div class="field"><label>Model alat</label><input type="text" id="machineModel" value="Excavator PC 200"></div>
+          <div class="field"><label>Attachment</label><input type="text" id="attachment" value="Standard bucket"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Annual use <span class="hint">jam/thn</span></label><input type="number" id="annualHours" value="5000"></div>
+          <div class="field"><label>Umur ekonomis <span class="hint">tahun</span></label><input type="number" id="depYears" value="5"></div>
+        </div>
+        <div class="field"><label>Total jam pakai (depreciation period) <span class="hint">jam</span></label><input type="number" id="depHours" value="25000"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Harga &amp; nilai sisa</div>
+        <div class="field"><label>Harga alat on-road termasuk attachment <span class="hint">Rp</span></label><input type="number" id="deliveredPrice" value="1530000000" step="1000000"></div>
+        <div class="field-row">
+          <div class="field"><label>Harga ban depan <span class="hint">Rp, 0 jika crawler</span></label><input type="number" id="tireFront" value="0"></div>
+          <div class="field"><label>Harga ban belakang <span class="hint">Rp, 0 jika crawler</span></label><input type="number" id="tireRear" value="0"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Umur ban <span class="hint">jam, isi jika ada ban</span></label><input type="number" id="tireLife" value="1"></div>
+          <div class="field"><label>Trade-in value <span class="hint">% harga alat</span></label><input type="number" id="tradeIn" value="20"></div>
+        </div>
+        <div class="field"><label>Interest + Insurance + Taxes <span class="hint">% per tahun</span></label><input type="number" id="iitRate" value="15"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. OWNING COST -->
+  <div class="cost-card" style="margin-top:26px;">
+    <div class="cost-card-head">
+      <h3>1 · Owning cost — biaya kepemilikan</h3>
+      <div class="cost-card-total" id="sumOwning">Rp 0 /jam</div>
+    </div>
+    <table class="costtbl">
+      <tr>
+        <td class="label">a. Depreciation<span class="sub">Penyusutan nilai alat</span></td>
+        <td class="formula">
+          <span class="frac"><span class="num">Net depreciation value</span><span class="den">Depreciation period (jam)</span></span><br>
+          Net dep. value = (Harga − Ban) − Trade-in value
+        </td>
+        <td class="inputs" style="color:var(--text-dim);font-size:11.5px;font-family:'IBM Plex Mono',monospace;">otomatis dari data alat di atas</td>
+        <td class="result" id="res-depreciation">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">b. Interest, insurance &amp; taxes (IIT)<span class="sub">Bunga modal, asuransi, pajak</span></td>
+        <td class="formula">
+          Factor = 1 − <span class="frac"><span class="num">(n−1)(1−r)</span><span class="den">2n</span></span><br>
+          IIT = <span class="frac"><span class="num">Factor × Harga × Rate</span><span class="den">Annual use (jam)</span></span>
+        </td>
+        <td class="inputs" style="color:var(--text-dim);font-size:11.5px;font-family:'IBM Plex Mono',monospace;">n = umur ekonomis, r = trade-in %</td>
+        <td class="result" id="res-iit">Rp 0</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 2. OPERATING COST -->
+  <div class="cost-card">
+    <div class="cost-card-head">
+      <h3>2 · Operating cost — biaya operasional</h3>
+      <div class="cost-card-total" id="sumOperating">Rp 0 /jam</div>
+    </div>
+    <table class="costtbl" id="opTable">
+      <tr data-row="fuel">
+        <td class="label">a. Fuel<span class="sub">Solar / BBM</span></td>
+        <td class="formula">Konsumsi (l/jam) × Harga (Rp/l)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="fuelCons" value="15" step="0.1"><span>l/jam</span></span>
+          <span class="mini-input"><input type="number" id="fuelPrice" value="13500" step="100"><span>Rp/l</span></span>
+        </td>
+        <td class="result" id="res-fuel">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">b. Engine oil</td>
+        <td class="formula">Konsumsi (l/jam) × Harga (Rp/l)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="engOilCons" value="0.14" step="0.01"><span>l/jam</span></span>
+          <span class="mini-input"><input type="number" id="engOilPrice" value="65000" step="500"><span>Rp/l</span></span>
+        </td>
+        <td class="result" id="res-engoil">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">c. Transmission oil</td>
+        <td class="formula">Konsumsi (l/jam) × Harga (Rp/l)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="transOilCons" value="0.012" step="0.001"><span>l/jam</span></span>
+          <span class="mini-input"><input type="number" id="transOilPrice" value="65000" step="500"><span>Rp/l</span></span>
+        </td>
+        <td class="result" id="res-transoil">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">d. Final drive oil</td>
+        <td class="formula">Konsumsi (l/jam) × Harga (Rp/l)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="finalOilCons" value="0.011" step="0.001"><span>l/jam</span></span>
+          <span class="mini-input"><input type="number" id="finalOilPrice" value="65000" step="500"><span>Rp/l</span></span>
+        </td>
+        <td class="result" id="res-finaloil">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">e. Hydraulic oil</td>
+        <td class="formula">Konsumsi (l/jam) × Harga (Rp/l)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="hydOilCons" value="0.128" step="0.001"><span>l/jam</span></span>
+          <span class="mini-input"><input type="number" id="hydOilPrice" value="65000" step="500"><span>Rp/l</span></span>
+        </td>
+        <td class="result" id="res-hydoil">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">f. Filter<span class="sub">Semua filter</span></td>
+        <td class="formula">Faktor × (b + c + d + e)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="filterFactor" value="0.5" step="0.01"><span>faktor</span></span>
+        </td>
+        <td class="result" id="res-filter">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">g. Grease</td>
+        <td class="formula">Konsumsi (kg/jam) × Harga (Rp/kg)</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="greaseCons" value="0.12" step="0.01"><span>kg/jam</span></span>
+          <span class="mini-input"><input type="number" id="greasePrice" value="55000" step="500"><span>Rp/kg</span></span>
+        </td>
+        <td class="result" id="res-grease">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">h. Repairs<span class="sub">Reparasi &amp; overhaul</span></td>
+        <td class="formula">Basic repair cost × extended life multiplier</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="repairBase" value="6000" step="100"><span>Rp/jam</span></span>
+          <span class="mini-input"><input type="number" id="repairMult" value="1.00" step="0.01"><span>×</span></span>
+        </td>
+        <td class="result" id="res-repair">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">i. Tires / undercarriage<span class="sub">Ban (wheel) atau track (crawler)</span></td>
+        <td class="formula"><span class="frac"><span class="num">Harga ban</span><span class="den">Umur ban (jam)</span></span></td>
+        <td class="inputs" style="color:var(--text-dim);font-size:11.5px;font-family:'IBM Plex Mono',monospace;">otomatis dari harga &amp; umur ban di atas</td>
+        <td class="result" id="res-tires">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">j. Special item<span class="sub">GET / cutting edge / undercarriage crawler</span></td>
+        <td class="formula">Input langsung Rp/jam</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="specialItem" value="900" step="50"><span>Rp/jam</span></span>
+        </td>
+        <td class="result" id="res-special">Rp 0</td>
+      </tr>
+      <tr>
+        <td class="label">k. Operator wage<span class="sub">Upah operator</span></td>
+        <td class="formula">Input langsung Rp/jam</td>
+        <td class="inputs">
+          <span class="mini-input"><input type="number" id="operatorWage" value="35000" step="500"><span>Rp/jam</span></span>
+        </td>
+        <td class="result" id="res-operator">Rp 0</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- GRAND TOTAL -->
+  <div class="section">
+    <div class="grand">
+      <div class="grand-label">Total hourly owning &amp; operating cost<small>Biaya sewa/produksi minimum per jam operasi alat</small></div>
+      <div class="grand-value" id="grandTotal">Rp 0</div>
+    </div>
+    <div class="annual-strip">
+      <div class="astat"><div class="al">Biaya tahunan</div><div class="av" id="annualCost" style="color:var(--yellow);">Rp 0</div></div>
+      <div class="astat"><div class="al">Owning cost share</div><div class="av" id="owningShare" style="color:var(--steel);">0%</div></div>
+      <div class="astat"><div class="al">Operating cost share</div><div class="av" id="operatingShare" style="color:var(--rust);">0%</div></div>
+      <div class="astat"><div class="al">Biaya per m³ / ton produksi <span class="hint" style="text-transform:none;">(opsional)</span></div>
+        <div class="av"><input type="number" id="prodRate" value="0" step="0.1" style="width:70px;display:inline-block;padding:3px 6px;font-size:13px;"> <span style="font-size:11px;color:var(--text-dim);">m³/jam →</span> <span id="perM3" style="color:var(--green);">Rp 0</span></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="act primary" id="btnDownload"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg> Download hasil (.csv)</button>
+      <button class="act" id="btnReset"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6h6M20 20v-6h-6M4 10a8 8 0 0114-4.7M20 14a8 8 0 01-14 4.7"/></svg> Reset ke default preset</button>
+      <button class="act" id="btnPrint"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="14" width="12" height="8"/><path d="M6 14V4h12v10M6 9h12"/></svg> Cetak / simpan PDF</button>
+    </div>
+
+    <div class="note-box">
+      <b>Catatan metodologi.</b> Perhitungan mengikuti pendekatan standar buku manual alat berat (Komatsu Specifications &amp; Application Handbook / Caterpillar Performance Handbook): Owning cost dihitung dari penyusutan nilai alat dibagi jam pakai ditambah biaya bunga-asuransi-pajak (IIT) yang dihitung dari faktor rata-rata nilai buku selama masa pakai. Operating cost dijumlahkan dari komponen bahan bakar, pelumas, filter, grease, reparasi, ban/undercarriage, item khusus, dan upah operator. Semua angka default bersifat <b>ilustratif</b> — ganti dengan data RAB / harga aktual proyek Anda untuk hasil yang akurat. File ini berjalan sepenuhnya di browser, tidak ada data yang dikirim ke server manapun.
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-author">
+      Disusun oleh Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.
+      <span class="role">Mining engineer &amp; project cost control specialist</span>
+    </div>
+    <div class="footer-meta">OO-COST-CALC · v1.0 · Rp / IDR</div>
+  </footer>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const fmt = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+const fmt2 = n => 'Rp ' + n.toLocaleString('id-ID', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+const presets = {
+  "Excavator": {model:"Excavator PC 200", attach:"Standard bucket", price:1530000000, hours:5000, depY:5, depH:25000, tireF:0, tireR:0, tireLife:1, tradeIn:20, iit:15, fuel:15, fp:13500, eo:0.14, to:0.012, fo:0.011, ho:0.128, grease:0.12, gp:55000, repair:6000, mult:1.0, special:900, wage:35000},
+  "Dump Truck": {model:"Dump Truck HD 465", attach:"Standard dump body", price:3800000000, hours:4500, depY:5, depH:22500, tireF:9500000, tireR:9500000, tireLife:4000, tradeIn:20, iit:15, fuel:28, fp:13500, eo:0.20, to:0.03, fo:0.02, ho:0.06, grease:0.15, gp:55000, repair:9500, mult:1.0, special:1200, wage:38000},
+  "Bulldozer": {model:"Bulldozer D85", attach:"Straight blade", price:2650000000, hours:5000, depY:6, depH:30000, tireF:0, tireR:0, tireLife:1, tradeIn:15, iit:15, fuel:22, fp:13500, eo:0.18, to:0.02, fo:0.015, ho:0.10, grease:0.20, gp:55000, repair:7800, mult:1.0, special:1600, wage:35000},
+  "Wheel Loader": {model:"Wheel Loader WA 380", attach:"General purpose bucket", price:1950000000, hours:4500, depY:5, depH:22500, tireF:14500000, tireR:14500000, tireLife:5000, tradeIn:20, iit:15, fuel:16, fp:13500, eo:0.13, to:0.015, fo:0.01, ho:0.09, grease:0.10, gp:55000, repair:5800, mult:1.0, special:700, wage:35000},
+};
+
+const presetRow = $('presetRow');
+let currentPreset = 'Excavator';
+Object.keys(presets).forEach(name=>{
+  const b = document.createElement('button');
+  b.className = 'preset-btn' + (name===currentPreset?' active':'');
+  b.textContent = name;
+  b.onclick = () => { applyPreset(name); [...presetRow.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); currentPreset=name; calc(); };
+  presetRow.appendChild(b);
+});
+
+function applyPreset(name){
+  const p = presets[name];
+  $('machineModel').value = p.model;
+  $('attachment').value = p.attach;
+  $('deliveredPrice').value = p.price;
+  $('annualHours').value = p.hours;
+  $('depYears').value = p.depY;
+  $('depHours').value = p.depH;
+  $('tireFront').value = p.tireF;
+  $('tireRear').value = p.tireR;
+  $('tireLife').value = p.tireLife;
+  $('tradeIn').value = p.tradeIn;
+  $('iitRate').value = p.iit;
+  $('fuelCons').value = p.fuel;
+  $('fuelPrice').value = p.fp;
+  $('engOilCons').value = p.eo;
+  $('engOilPrice').value = p.gp ? 65000 : 65000;
+  $('transOilCons').value = p.to;
+  $('finalOilCons').value = p.fo;
+  $('hydOilCons').value = p.ho;
+  $('greaseCons').value = p.grease;
+  $('greasePrice').value = p.gp;
+  $('repairBase').value = p.repair;
+  $('repairMult').value = p.mult;
+  $('specialItem').value = p.special;
+  $('operatorWage').value = p.wage;
+}
+
+function calc(){
+  const price = +$('deliveredPrice').value || 0;
+  const tireF = +$('tireFront').value || 0;
+  const tireR = +$('tireRear').value || 0;
+  const tireLife = +$('tireLife').value || 1;
+  const tradeInPct = (+$('tradeIn').value || 0) / 100;
+  const depYears = +$('depYears').value || 1;
+  const depHours = +$('depHours').value || 1;
+  const annualHours = +$('annualHours').value || 1;
+  const iitRate = (+$('iitRate').value || 0) / 100;
+
+  const tirePrice = tireF + tireR;
+  const priceLessTire = price - tirePrice;
+  const tradeInValue = priceLessTire * tradeInPct;
+  const netDepValue = priceLessTire - tradeInValue;
+
+  const depreciation = netDepValue / depHours;
+
+  const n = depYears;
+  const r = tradeInPct;
+  const factor = 1 - ((n-1)*(1-r)) / (2*n);
+  const iit = (factor * price * iitRate) / annualHours;
+
+  const owning = depreciation + iit;
+
+  const fuel = (+$('fuelCons').value||0) * (+$('fuelPrice').value||0);
+  const engOil = (+$('engOilCons').value||0) * (+$('engOilPrice').value||0);
+  const transOil = (+$('transOilCons').value||0) * (+$('transOilPrice').value||0);
+  const finalOil = (+$('finalOilCons').value||0) * (+$('finalOilPrice').value||0);
+  const hydOil = (+$('hydOilCons').value||0) * (+$('hydOilPrice').value||0);
+  const filter = (+$('filterFactor').value||0) * (engOil+transOil+finalOil+hydOil);
+  const grease = (+$('greaseCons').value||0) * (+$('greasePrice').value||0);
+  const repair = (+$('repairBase').value||0) * (+$('repairMult').value||1);
+  const tires = tirePrice > 0 ? tirePrice / tireLife : 0;
+  const special = +$('specialItem').value || 0;
+  const operator = +$('operatorWage').value || 0;
+
+  const operating = fuel+engOil+transOil+finalOil+hydOil+filter+grease+repair+tires+special+operator;
+  const total = owning + operating;
+  const annual = total * annualHours;
+
+  $('res-depreciation').textContent = fmt2(depreciation);
+  $('res-iit').textContent = fmt2(iit);
+  $('sumOwning').textContent = fmt(owning) + ' /jam';
+
+  $('res-fuel').textContent = fmt2(fuel);
+  $('res-engoil').textContent = fmt2(engOil);
+  $('res-transoil').textContent = fmt2(transOil);
+  $('res-finaloil').textContent = fmt2(finalOil);
+  $('res-hydoil').textContent = fmt2(hydOil);
+  $('res-filter').textContent = fmt2(filter);
+  $('res-grease').textContent = fmt2(grease);
+  $('res-repair').textContent = fmt2(repair);
+  $('res-tires').textContent = fmt2(tires);
+  $('res-special').textContent = fmt2(special);
+  $('res-operator').textContent = fmt2(operator);
+  $('sumOperating').textContent = fmt(operating) + ' /jam';
+
+  $('grandTotal').textContent = fmt(total) + ' /jam';
+  $('annualCost').textContent = fmt(annual);
+  $('owningShare').textContent = (total>0 ? (owning/total*100):0).toFixed(1) + '%';
+  $('operatingShare').textContent = (total>0 ? (operating/total*100):0).toFixed(1) + '%';
+
+  $('ro-owning').innerHTML = fmt(owning) + '<span class="r-unit">/jam</span>';
+  $('ro-operating').innerHTML = fmt(operating) + '<span class="r-unit">/jam</span>';
+  $('ro-total').textContent = fmt(total);
+  $('ro-annual').textContent = fmt(annual);
+
+  const prodRate = +$('prodRate').value || 0;
+  $('perM3').textContent = prodRate>0 ? fmt2(total/prodRate) : 'Rp 0';
+
+  window._lastCalc = {model:$('machineModel').value, attachment:$('attachment').value, owning, operating, total, annual, depreciation, iit, fuel, engOil, transOil, finalOil, hydOil, filter, grease, repair, tires, special, operator};
+}
+
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calc));
+
+$('btnReset').onclick = () => { applyPreset(currentPreset); calc(); };
+$('btnPrint').onclick = () => window.print();
+$('btnDownload').onclick = () => {
+  const d = window._lastCalc;
+  const rows = [
+    ['Owning & Operating Cost Calculator','',''],
+    ['Model', d.model, ''],
+    ['Attachment', d.attachment, ''],
+    ['', '', ''],
+    ['Komponen','Nilai (Rp/jam)',''],
+    ['a. Depreciation', d.depreciation.toFixed(2), ''],
+    ['b. Interest, Insurance, Taxes', d.iit.toFixed(2), ''],
+    ['Total Owning Cost', d.owning.toFixed(2), ''],
+    ['a. Fuel', d.fuel.toFixed(2), ''],
+    ['b. Engine Oil', d.engOil.toFixed(2), ''],
+    ['c. Transmission Oil', d.transOil.toFixed(2), ''],
+    ['d. Final Drive Oil', d.finalOil.toFixed(2), ''],
+    ['e. Hydraulic Oil', d.hydOil.toFixed(2), ''],
+    ['f. Filter', d.filter.toFixed(2), ''],
+    ['g. Grease', d.grease.toFixed(2), ''],
+    ['h. Repairs', d.repair.toFixed(2), ''],
+    ['i. Tires/Undercarriage', d.tires.toFixed(2), ''],
+    ['j. Special Item', d.special.toFixed(2), ''],
+    ['k. Operator Wage', d.operator.toFixed(2), ''],
+    ['Total Operating Cost', d.operating.toFixed(2), ''],
+    ['TOTAL O&O COST / JAM', d.total.toFixed(2), ''],
+    ['TOTAL BIAYA TAHUNAN', d.annual.toFixed(2), ''],
+    ['', '', ''],
+    ['Disusun oleh', 'Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.', ''],
+  ];
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(["\uFEFF"+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `OO_Cost_${d.model.replace(/\s+/g,'_')}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+applyPreset(currentPreset);
+calc();
+</script>
+</body>
+</html>

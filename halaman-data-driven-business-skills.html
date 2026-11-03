@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data-Driven Business Skills Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A101C;
+    --panel:#0F1A2B;
+    --panel2:#132238;
+    --line:#22344C;
+    --amber:#E8A33D;
+    --amber-dim:#8A661F;
+    --teal:#2FB380;
+    --paper:#F3F6FB;
+    --ink:#0E1420;
+    --muted:#8A99B3;
+    --muted-dark:#54637C;
+    --white:#FDFEFF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--navy);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .display{font-family:'Space Grotesk',sans-serif;}
+
+  /* ---------- ambient blueprint grid ---------- */
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:42px 42px;
+    opacity:.18;
+  }
+  .grid-bg::after{
+    content:"";
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 20% 10%, rgba(232,163,61,.08), transparent 45%),
+               radial-gradient(circle at 85% 30%, rgba(47,179,128,.07), transparent 40%);
+  }
+
+  section{position:relative; z-index:1; padding:88px 8vw;}
+  @media(max-width:720px){ section{padding:64px 6vw;} }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 8vw;
+    background:rgba(10,16,28,.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk',sans-serif; font-weight:700; letter-spacing:.02em; font-size:15px;}
+  .brand .dot{width:9px; height:9px; border-radius:50%; background:var(--amber); box-shadow:0 0 10px var(--amber); animation:blink 2.4s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.35;}}
+  nav .tag{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); border:1px solid var(--line); padding:5px 10px; border-radius:3px;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:92vh;
+    display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center;
+    padding-top:64px;
+  }
+  @media(max-width:900px){ .hero{grid-template-columns:1fr; min-height:auto;} }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em;
+    color:var(--amber); border:1px solid var(--amber-dim); background:rgba(232,163,61,.07);
+    padding:6px 12px; border-radius:3px; margin-bottom:22px;
+  }
+  .hero h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(34px,4.6vw,58px);
+    line-height:1.06;
+    letter-spacing:-.01em;
+    margin-bottom:22px;
+  }
+  .hero h1 em{color:var(--amber); font-style:normal;}
+  .hero p.lede{
+    font-size:16.5px; color:#C4CEDD; max-width:52ch; margin-bottom:32px;
+  }
+  .hero-stats{display:flex; gap:0; border-top:1px solid var(--line); padding-top:20px;}
+  .hero-stats div{flex:1; padding-right:18px; border-right:1px solid var(--line);}
+  .hero-stats div:last-child{border-right:none;}
+  .hero-stats .num{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:var(--white);}
+  .hero-stats .lbl{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:2px;}
+
+  /* ---------- signature: instrument panel ---------- */
+  .panel{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:26px;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.03);
+  }
+  .panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .panel-head .title{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); letter-spacing:.06em;}
+  .panel-head .status{display:flex; align-items:center; gap:6px; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--teal);}
+  .panel-head .status .led{width:6px; height:6px; border-radius:50%; background:var(--teal); box-shadow:0 0 6px var(--teal);}
+
+  .gauges{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .gauge-card{background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:8px; padding:16px; text-align:center;}
+  .gauge-card svg{width:96px; height:60px;}
+  .gauge-card .glabel{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:.04em;}
+  .gauge-card .gval{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; color:var(--amber); margin-top:2px;}
+  .needle{transform-origin:48px 52px; animation:sweep 2.6s cubic-bezier(.2,.9,.2,1) 1 forwards;}
+  @keyframes sweep{from{transform:rotate(-90deg);} }
+  @media (prefers-reduced-motion: reduce){ .needle{animation:none;} .brand .dot{animation:none;} }
+
+  .ticker{
+    margin-top:16px; padding:12px 14px; border-radius:6px;
+    background:#0B1526; border:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--teal);
+    overflow:hidden; white-space:nowrap;
+  }
+  .ticker span{opacity:.85;}
+  .ticker .sep{color:var(--muted-dark); margin:0 10px;}
+
+  /* ---------- section headers ---------- */
+  .kicker{
+    font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.1em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:10px;
+  }
+  h2.sect{
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    font-size:clamp(24px,3vw,34px); margin-bottom:14px; max-width:26ch;
+  }
+  .sect-sub{color:var(--muted); max-width:62ch; margin-bottom:44px; font-size:15px;}
+
+  /* ---------- module grid ---------- */
+  .modgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media(max-width:980px){ .modgrid{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:620px){ .modgrid{grid-template-columns:1fr;} }
+
+  .modcard{
+    background:var(--panel); border:1px solid var(--line); border-radius:9px;
+    padding:22px; transition:border-color .2s ease, transform .2s ease;
+    position:relative; overflow:hidden;
+  }
+  .modcard:hover{border-color:var(--amber-dim); transform:translateY(-3px);}
+  .modcard::before{
+    content:attr(data-num);
+    position:absolute; top:14px; right:16px;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted-dark);
+  }
+  .modcard h3{font-family:'Space Grotesk',sans-serif; font-size:17px; margin-bottom:6px; padding-right:34px;}
+  .modcard .mcat{font-size:11px; color:var(--amber); font-family:'JetBrains Mono',monospace; letter-spacing:.04em; margin-bottom:12px; text-transform:uppercase;}
+  .modcard .readout{
+    background:#0B1526; border:1px solid var(--line); border-radius:5px;
+    padding:9px 11px; font-family:'JetBrains Mono',monospace; font-size:11.5px;
+    color:var(--teal); margin-top:6px; word-break:break-word;
+  }
+
+  /* ---------- structure / flow ---------- */
+  .flow{display:flex; gap:0; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--panel);}
+  @media(max-width:900px){ .flow{flex-direction:column;} }
+  .flow-step{
+    flex:1; padding:26px 20px; border-right:1px solid var(--line); position:relative;
+  }
+  @media(max-width:900px){ .flow-step{border-right:none; border-bottom:1px solid var(--line);} }
+  .flow-step:last-child{border-right:none; border-bottom:none;}
+  .flow-step .fn{font-family:'JetBrains Mono',monospace; color:var(--amber); font-size:12px; margin-bottom:10px;}
+  .flow-step h4{font-family:'Space Grotesk',sans-serif; font-size:15.5px; margin-bottom:8px;}
+  .flow-step p{font-size:13px; color:var(--muted);}
+
+  /* ---------- light content band (download) ---------- */
+  .band-light{
+    background:var(--paper); color:var(--ink); border-radius:14px; margin:0 8vw;
+    padding:56px 48px;
+  }
+  @media(max-width:720px){ .band-light{padding:36px 24px; margin:0 5vw;} }
+  .band-light .kicker{color:#B87A18;}
+  .band-light h2{color:var(--ink);}
+  .band-light .sect-sub{color:#5A6577;}
+
+  .file-card{
+    display:flex; align-items:center; gap:18px; background:#fff; border:1px solid #DDE4EF;
+    border-radius:10px; padding:20px 22px; max-width:560px; box-shadow:0 12px 30px -18px rgba(20,30,50,.25);
+  }
+  .file-card .ico{
+    width:46px; height:46px; border-radius:8px; background:linear-gradient(140deg,#1D6F42,#2FB380);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; color:#fff; font-size:13px;
+  }
+  .file-card .meta strong{font-family:'Space Grotesk',sans-serif; font-size:15px; display:block;}
+  .file-card .meta span{font-size:12.5px; color:#6B7A8F; font-family:'JetBrains Mono',monospace;}
+
+  .legend{display:flex; gap:22px; margin-top:26px; flex-wrap:wrap;}
+  .legend .lg{display:flex; align-items:center; gap:8px; font-size:12.5px; color:#5A6577;}
+  .legend .sw{width:14px; height:14px; border-radius:3px; border:1px solid #ccd5e2;}
+
+  footer{
+    padding:36px 8vw 44px; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px;
+    font-size:12px; color:var(--muted-dark); font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav>
+  <div class="brand"><span class="dot"></span> DDBSF <span style="color:var(--muted); font-weight:400;">/ Data-Driven Business Skills</span></div>
+  <div class="tag">12 MODUL · 24 RUMUS · v1.0</div>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="eyebrow">● INSTRUMENTASI KEPUTUSAN BISNIS</div>
+    <h1>Ubah <em>12 fungsi bisnis</em> jadi panel instrumen yang bisa dihitung.</h1>
+    <p class="lede">Satu framework yang menerjemahkan Sales, Ads, Finance, Product, hingga Growth ke dalam teori, rumus aktif, tutorial, contoh soal, dan studi kasus — disusun seperti seorang data scientist membaca dashboard mesin: terukur, bisa diverifikasi, bisa diulang.</p>
+    <div class="hero-stats">
+      <div><div class="num">12</div><div class="lbl">Modul Bisnis</div></div>
+      <div><div class="num">24</div><div class="lbl">Rumus Aktif</div></div>
+      <div><div class="num">12</div><div class="lbl">Studi Kasus Terhitung</div></div>
+      <div><div class="num">1</div><div class="lbl">Dashboard Live</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="title">// LIVE READOUT — CONTOH SOAL</div>
+      <div class="status"><span class="led"></span> CALCULATING</div>
+    </div>
+    <div class="gauges">
+      <div class="gauge-card">
+        <svg viewBox="0 0 96 60">
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#22344C" stroke-width="7"/>
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#E8A33D" stroke-width="7" stroke-dasharray="126" stroke-dashoffset="20"/>
+          <line class="needle" x1="48" y1="52" x2="48" y2="18" stroke="#F3F6FB" stroke-width="2.5" transform="rotate(38 48 52)"/>
+          <circle cx="48" cy="52" r="4" fill="#F3F6FB"/>
+        </svg>
+        <div class="glabel">ROAS</div>
+        <div class="gval">4.5x</div>
+      </div>
+      <div class="gauge-card">
+        <svg viewBox="0 0 96 60">
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#22344C" stroke-width="7"/>
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#2FB380" stroke-width="7" stroke-dasharray="126" stroke-dashoffset="34"/>
+          <line class="needle" x1="48" y1="52" x2="48" y2="18" stroke="#F3F6FB" stroke-width="2.5" transform="rotate(10 48 52)"/>
+          <circle cx="48" cy="52" r="4" fill="#F3F6FB"/>
+        </svg>
+        <div class="glabel">NPS</div>
+        <div class="gval">45</div>
+      </div>
+      <div class="gauge-card">
+        <svg viewBox="0 0 96 60">
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#22344C" stroke-width="7"/>
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#E8A33D" stroke-width="7" stroke-dasharray="126" stroke-dashoffset="10"/>
+          <line class="needle" x1="48" y1="52" x2="48" y2="18" stroke="#F3F6FB" stroke-width="2.5" transform="rotate(55 48 52)"/>
+          <circle cx="48" cy="52" r="4" fill="#F3F6FB"/>
+        </svg>
+        <div class="glabel">LTV:CAC</div>
+        <div class="gval">7.5x</div>
+      </div>
+      <div class="gauge-card">
+        <svg viewBox="0 0 96 60">
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#22344C" stroke-width="7"/>
+          <path d="M8 52 A40 40 0 0 1 88 52" fill="none" stroke="#2FB380" stroke-width="7" stroke-dasharray="126" stroke-dashoffset="45"/>
+          <line class="needle" x1="48" y1="52" x2="48" y2="18" stroke="#F3F6FB" stroke-width="2.5" transform="rotate(-5 48 52)"/>
+          <circle cx="48" cy="52" r="4" fill="#F3F6FB"/>
+        </svg>
+        <div class="glabel">RICE Score</div>
+        <div class="gval">3.200</div>
+      </div>
+    </div>
+    <div class="ticker">
+      <span>CLV = APV×F×L×M</span><span class="sep">//</span><span>Cpk = MIN[(USL-μ)/3σ,(μ-LSL)/3σ]</span><span class="sep">//</span><span>K = undangan×konversi</span>
+    </div>
+  </div>
+</section>
+
+<section id="modul">
+  <div class="kicker">12 Modul</div>
+  <h2 class="sect">Setiap kategori bisnis, dipasangi rumus data science-nya sendiri.</h2>
+  <p class="sect-sub">Bukan daftar tips — tiap modul punya alat ukur yang konkret, supaya keputusan bisa dipertanggungjawabkan dengan angka.</p>
+
+  <div class="modgrid">
+    <div class="modcard" data-num="01"><div class="mcat">Sales & Marketing</div><h3>Customer Lifetime Value & RFM</h3><div class="readout">CLV = APV × F × L × M</div></div>
+    <div class="modcard" data-num="02"><div class="mcat">Ads & Performance</div><h3>ROAS & Uji Signifikansi A/B</h3><div class="readout">Z = (p1-p2)/√(p̄(1-p̄)(1/n1+1/n2))</div></div>
+    <div class="modcard" data-num="03"><div class="mcat">Content Creation</div><h3>Engagement Rate & Scorecard</h3><div class="readout">ER = (Like+Komentar+Share)/Reach</div></div>
+    <div class="modcard" data-num="04"><div class="mcat">Business Operations</div><h3>Process Capability & DPMO</h3><div class="readout">Cp = (USL-LSL)/6σ</div></div>
+    <div class="modcard" data-num="05"><div class="mcat">Finance & Pricing</div><h3>Elastisitas Harga & BEP</h3><div class="readout">BEP = FC/(P-VC)</div></div>
+    <div class="modcard" data-num="06"><div class="mcat">Customer Experience</div><h3>NPS & Analisis Churn</h3><div class="readout">NPS = %Promoter - %Detractor</div></div>
+    <div class="modcard" data-num="07"><div class="mcat">Product Development</div><h3>RICE Score Prioritization</h3><div class="readout">RICE = (R×I×C)/Effort</div></div>
+    <div class="modcard" data-num="08"><div class="mcat">Education & Training</div><h3>Item Analysis Kuis</h3><div class="readout">D = (Atas-Bawah)/n</div></div>
+    <div class="modcard" data-num="09"><div class="mcat">Design & Creative</div><h3>A/B Test & Confidence Interval</h3><div class="readout">CI = CR ± 1.96√(CR(1-CR)/n)</div></div>
+    <div class="modcard" data-num="10"><div class="mcat">Research & Analysis</div><h3>Trend Forecast & SWOT Terbobot</h3><div class="readout">Ŷ = INTERCEPT + SLOPE×X</div></div>
+    <div class="modcard" data-num="11"><div class="mcat">Personal Productivity</div><h3>Analisis Pareto 80/20</h3><div class="readout">%Kumulatif = Σ % (terurut)</div></div>
+    <div class="modcard" data-num="12"><div class="mcat">Growth & Scaling</div><h3>LTV:CAC & Viral Coefficient</h3><div class="readout">K = undangan/user × konversi</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="kicker">Struktur Tiap Modul</div>
+  <h2 class="sect">Alurnya selalu sama — supaya Anda cepat familiar.</h2>
+  <p class="sect-sub">Dari konsep sampai keputusan, lima langkah yang konsisten di seluruh 12 modul.</p>
+  <div class="flow">
+    <div class="flow-step"><div class="fn">01 · TEORI</div><h4>Konsep inti</h4><p>Kenapa metrik ini penting & masalah apa yang ia selesaikan.</p></div>
+    <div class="flow-step"><div class="fn">02 · RUMUS</div><h4>Formula siap pakai</h4><p>Ditulis matematis + versi Excel aktif di sheet.</p></div>
+    <div class="flow-step"><div class="fn">03 · TUTORIAL</div><h4>Langkah eksekusi</h4><p>5–6 langkah menerapkan ke data Anda sendiri.</p></div>
+    <div class="flow-step"><div class="fn">04 · CONTOH SOAL</div><h4>Latihan terhitung</h4><p>Satu kasus sederhana, input biru → hasil otomatis.</p></div>
+    <div class="flow-step"><div class="fn">05 · STUDI KASUS</div><h4>Skenario nyata</h4><p>Tabel data lebih kompleks + insight & rekomendasi.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="band-light">
+    <div class="kicker">Unduh</div>
+    <h2 class="sect">Workbook Excel — teori, rumus aktif, dan dashboard interaktif.</h2>
+    <p class="sect-sub">15 sheet: cover, dashboard live, 12 modul lengkap, dan kamus rumus. Semua formula bisa dihitung ulang — ganti angka biru, hasil di sel hitam otomatis berubah.</p>
+    <div class="file-card">
+      <div class="ico">XLS</div>
+      <div class="meta">
+        <strong>Data-Driven-Business-Skills-Framework.xlsx</strong>
+        <span>15 sheet · 150+ formula aktif · Dashboard live</span>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="lg"><span class="sw" style="background:#FFF7E6; border-color:#E8A33D;"></span> Sel biru = input (boleh diubah)</div>
+      <div class="lg"><span class="sw" style="background:#EAF3EC; border-color:#2FB380;"></span> Sel hijau muda = formula otomatis</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>DATA-DRIVEN BUSINESS SKILLS FRAMEWORK — DISUSUN UNTUK PEMBELAJARAN & PENGAMBILAN KEPUTUSAN INTERNAL</div>
+  <div>12 MODUL · TEORI + RUMUS + TUTORIAL + CONTOH SOAL + STUDI KASUS</div>
+</footer>
+
+</body>
+</html>

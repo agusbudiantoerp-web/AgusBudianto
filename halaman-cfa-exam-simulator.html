@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CFA Exam Simulator — Level I · II · III</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1220;
+    --bg-2:#0E1729;
+    --panel:#121B2E;
+    --panel-2:#182238;
+    --panel-3:#1D2A44;
+    --text:#E8ECF3;
+    --muted:#8A94A6;
+    --muted-2:#5E6B82;
+    --gold:#C9A227;
+    --gold-soft:#E8C766;
+    --good:#2FB88B;
+    --good-soft:#173229;
+    --bad:#E1584B;
+    --bad-soft:#331A18;
+    --border:#24304A;
+    --border-soft:#1A2540;
+    --radius:10px;
+    --serif:'Source Serif 4', Georgia, serif;
+    --sans:'Inter', -apple-system, sans-serif;
+    --mono:'IBM Plex Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 15% 0%, #101c33 0%, var(--bg) 45%), var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold); color:#161200;}
+  a{color:inherit;}
+  button{font-family:var(--sans); cursor:pointer;}
+  .hidden{display:none !important;}
+
+  /* ============ LANDING ============ */
+  #landing{max-width:1180px; margin:0 auto; padding:64px 28px 100px;}
+  .top-eyebrow{
+    display:flex; align-items:center; gap:10px; color:var(--gold-soft);
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  .top-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+  .hero{display:grid; grid-template-columns:1.15fr .85fr; gap:56px; align-items:end; margin-bottom:64px;}
+  .hero h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(38px,5vw,60px);
+    line-height:1.05; margin:0 0 22px; letter-spacing:-0.01em;
+  }
+  .hero h1 em{font-style:italic; color:var(--gold-soft); font-weight:600;}
+  .hero p{color:var(--muted); font-size:16.5px; line-height:1.65; max-width:520px; margin:0 0 26px;}
+  .hero-actions{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn{
+    border:none; border-radius:7px; padding:13px 22px; font-size:14.5px; font-weight:600;
+    display:inline-flex; align-items:center; gap:9px; transition:transform .15s ease, opacity .15s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-gold{background:var(--gold); color:#191400;}
+  .btn-gold:hover{background:var(--gold-soft);}
+  .btn-ghost{background:transparent; border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--muted-2);}
+  .stat-card{
+    background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:22px 24px;
+  }
+  .stat-card .num{font-family:var(--mono); font-size:34px; font-weight:600; color:var(--gold-soft);}
+  .stat-card .lbl{color:var(--muted); font-size:13px; margin-top:6px; line-height:1.5;}
+  .stat-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+
+  .section-label{
+    font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--muted-2); margin:0 0 18px; display:flex; align-items:center; gap:10px;
+  }
+  .section-label::after{content:''; flex:1; height:1px; background:var(--border-soft);}
+
+  /* Admission ticket cards — signature element */
+  .tickets{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-bottom:60px;}
+  .ticket{
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--border); border-radius:14px; overflow:hidden;
+    position:relative; display:flex; flex-direction:column;
+  }
+  .ticket-top{padding:24px 24px 18px;}
+  .ticket-code{font-family:var(--mono); font-size:12px; color:var(--gold-soft); letter-spacing:.08em; margin-bottom:10px;}
+  .ticket-title{font-family:var(--serif); font-size:26px; font-weight:600; margin:0 0 6px;}
+  .ticket-sub{color:var(--muted); font-size:13.5px; line-height:1.5; margin:0;}
+  .perf{
+    position:relative; height:0; border-top:1.5px dashed var(--border);
+    margin:4px 0;
+  }
+  .perf::before,.perf::after{
+    content:''; position:absolute; top:-9px; width:18px; height:18px; border-radius:50%;
+    background:var(--bg);
+  }
+  .perf::before{left:-9px;} .perf::after{right:-9px;}
+  .ticket-bottom{padding:18px 24px 24px; display:flex; flex-direction:column; gap:10px; flex:1;}
+  .ticket-row{display:flex; justify-content:space-between; font-size:13px; color:var(--muted);}
+  .ticket-row b{color:var(--text); font-family:var(--mono); font-weight:500;}
+  .ticket-topics{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 4px;}
+  .chip{
+    font-size:11px; padding:4px 9px; border-radius:20px; background:var(--panel-3);
+    color:var(--muted); border:1px solid var(--border-soft);
+  }
+  .ticket-barcode{
+    height:26px; margin-top:auto;
+    background:repeating-linear-gradient(90deg, var(--muted-2) 0 2px, transparent 2px 5px);
+    opacity:.35; border-radius:3px;
+  }
+  .ticket-start{
+    margin-top:14px; width:100%; padding:12px; border-radius:7px; background:var(--gold);
+    color:#191400; font-weight:700; font-size:14px; border:none;
+  }
+  .ticket-start:hover{background:var(--gold-soft);}
+  .ticket.l2{border-color:#2a3a52;}
+  .ticket.l3{border-color:#2a3a52;}
+
+  .info-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:20px;}
+  .info-box{background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:20px 22px;}
+  .info-box h3{font-family:var(--serif); font-size:17px; margin:0 0 8px; font-weight:600;}
+  .info-box p{color:var(--muted); font-size:13.5px; line-height:1.6; margin:0;}
+  .disclaimer{
+    font-size:12.5px; color:var(--muted-2); border-left:2px solid var(--gold); padding:10px 16px;
+    background:var(--panel); border-radius:0 8px 8px 0; line-height:1.6; margin-top:30px;
+  }
+  footer.landing-footer{text-align:center; color:var(--muted-2); font-size:12px; margin-top:60px; font-family:var(--mono);}
+
+  @media(max-width:860px){
+    .hero{grid-template-columns:1fr;}
+    .tickets{grid-template-columns:1fr;}
+    .info-grid{grid-template-columns:1fr;}
+  }
+
+  /* ============ EXAM SCREEN ============ */
+  #exam{display:flex; flex-direction:column; height:100vh;}
+  .exam-topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    background:var(--panel); border-bottom:1px solid var(--border); padding:12px 22px;
+    flex-wrap:wrap;
+  }
+  .exam-brand{display:flex; align-items:center; gap:12px;}
+  .exam-brand .badge{
+    font-family:var(--mono); font-size:11px; background:var(--panel-3); color:var(--gold-soft);
+    padding:5px 10px; border-radius:5px; letter-spacing:.06em;
+  }
+  .exam-brand .lvl-name{font-weight:700; font-size:14.5px;}
+  .exam-mid{display:flex; align-items:center; gap:22px; font-size:13px; color:var(--muted);}
+  .timer-box{
+    font-family:var(--mono); font-size:20px; font-weight:600; background:var(--panel-2);
+    border:1px solid var(--border); padding:7px 16px; border-radius:7px; letter-spacing:.03em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .timer-box.low{color:var(--bad); border-color:var(--bad);}
+  .timer-box .rec{width:8px;height:8px;border-radius:50%; background:var(--good); animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .exam-actions{display:flex; gap:10px;}
+  .btn-sm{padding:8px 14px; font-size:13px; border-radius:6px;}
+
+  .exam-body{flex:1; display:flex; overflow:hidden;}
+  .qmain{flex:1; overflow-y:auto; padding:40px 48px;}
+  .qmeta{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;}
+  .qnum{font-family:var(--mono); color:var(--gold-soft); font-size:14px;}
+  .qtopic{font-size:12px; color:var(--muted); background:var(--panel-2); padding:5px 12px; border-radius:20px; border:1px solid var(--border-soft);}
+  .qstem{font-size:19px; line-height:1.6; margin:0 0 30px; max-width:760px; font-weight:500;}
+  .qoptions{display:flex; flex-direction:column; gap:12px; max-width:760px;}
+  .opt{
+    display:flex; align-items:flex-start; gap:14px; padding:16px 18px; border-radius:9px;
+    border:1px solid var(--border); background:var(--panel); transition:border-color .12s, background .12s;
+  }
+  .opt:hover{border-color:var(--muted-2);}
+  .opt.selected{border-color:var(--gold); background:var(--panel-2);}
+  .opt .letter{
+    font-family:var(--mono); font-weight:600; width:26px; height:26px; border-radius:50%;
+    background:var(--panel-3); display:flex; align-items:center; justify-content:center; font-size:13px;
+    flex-shrink:0; border:1px solid var(--border-soft);
+  }
+  .opt.selected .letter{background:var(--gold); color:#191400; border-color:var(--gold);}
+  .opt .otext{font-size:15px; line-height:1.55; padding-top:2px;}
+  .qfoot{display:flex; gap:12px; margin-top:34px; align-items:center;}
+  .flagbtn{
+    display:flex; align-items:center; gap:8px; background:transparent; border:1px solid var(--border);
+    color:var(--muted); padding:9px 16px; border-radius:7px; font-size:13px;
+  }
+  .flagbtn.flagged{border-color:var(--bad); color:var(--bad); background:var(--bad-soft);}
+
+  .sidebar{
+    width:290px; background:var(--panel); border-left:1px solid var(--border); padding:22px;
+    overflow-y:auto; flex-shrink:0;
+  }
+  .sidebar h4{margin:0 0 4px; font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted-2); font-family:var(--mono);}
+  .sidebar .sess-label{font-size:13px; color:var(--muted); margin-bottom:14px;}
+  .legend{display:flex; flex-wrap:wrap; gap:10px; font-size:11px; color:var(--muted); margin-bottom:16px;}
+  .legend span{display:flex; align-items:center; gap:5px;}
+  .lg-dot{width:9px;height:9px;border-radius:3px; display:inline-block;}
+  .palette{display:grid; grid-template-columns:repeat(6,1fr); gap:6px;}
+  .pbtn{
+    aspect-ratio:1; border-radius:5px; border:1px solid var(--border); background:var(--panel-2);
+    color:var(--muted); font-family:var(--mono); font-size:11.5px; display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .pbtn.answered{background:var(--panel-3); color:var(--text); border-color:var(--muted-2);}
+  .pbtn.current{border-color:var(--gold); box-shadow:0 0 0 2px rgba(201,162,39,.25);}
+  .pbtn.flagged::after{
+    content:''; position:absolute; top:-2px; right:-2px; width:7px; height:7px; border-radius:50%;
+    background:var(--bad);
+  }
+  .sidebar-submit{width:100%; margin-top:18px;}
+
+  /* review / break / results */
+  .center-screen{max-width:640px; margin:80px auto; text-align:center; padding:0 20px;}
+  .center-screen h2{font-family:var(--serif); font-size:32px; margin-bottom:14px;}
+  .center-screen p{color:var(--muted); line-height:1.6; font-size:15px;}
+  .break-timer{font-family:var(--mono); font-size:52px; color:var(--gold-soft); margin:26px 0;}
+
+  #results{max-width:900px; margin:0 auto; padding:60px 28px 100px;}
+  .score-hero{
+    background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:44px;
+    display:flex; align-items:center; gap:44px; margin-bottom:36px; flex-wrap:wrap;
+  }
+  .score-ring{
+    width:150px; height:150px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; position:relative;
+  }
+  .score-ring .pct{font-family:var(--mono); font-size:34px; font-weight:700;}
+  .score-ring .sub{position:absolute; bottom:26px; font-size:11px; color:var(--muted);}
+  .score-info h2{font-family:var(--serif); font-size:26px; margin:0 0 8px;}
+  .score-info p{color:var(--muted); font-size:14px; line-height:1.6; max-width:420px;}
+  .badge-status{display:inline-block; padding:5px 14px; border-radius:20px; font-size:12px; font-weight:700; margin-top:10px;}
+  .badge-status.pass{background:var(--good-soft); color:var(--good);}
+  .badge-status.fail{background:var(--bad-soft); color:var(--bad);}
+  .topic-breakdown{display:flex; flex-direction:column; gap:14px; margin-bottom:36px;}
+  .tb-row{display:grid; grid-template-columns:200px 1fr 60px; align-items:center; gap:14px; font-size:13.5px;}
+  .tb-bar{height:9px; border-radius:5px; background:var(--panel-3); overflow:hidden;}
+  .tb-fill{height:100%; background:var(--gold);}
+  .review-list{display:flex; flex-direction:column; gap:14px;}
+  .review-item{background:var(--panel); border:1px solid var(--border-soft); border-radius:10px; padding:18px 20px;}
+  .review-item .ri-top{display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px;}
+  .ri-correct{color:var(--good);} .ri-wrong{color:var(--bad);}
+  .review-item p{margin:0 0 8px; font-size:14.5px; line-height:1.55;}
+  .review-item .exp{font-size:13px; color:var(--muted); border-top:1px dashed var(--border-soft); padding-top:10px; margin-top:8px;}
+  .tabs{display:flex; gap:8px; margin-bottom:22px;}
+  .tab{padding:8px 16px; border-radius:20px; border:1px solid var(--border); font-size:13px; background:transparent; color:var(--muted);}
+  .tab.active{background:var(--panel-3); color:var(--text); border-color:var(--muted-2);}
+</style>
+</head>
+<body>
+
+<!-- ===================== LANDING ===================== -->
+<div id="landing">
+  <div class="top-eyebrow"><span class="dot"></span> CFA EXAM SIMULATOR — LATIHAN TIDAK RESMI</div>
+  <div class="hero">
+    <div>
+      <h1>Berlatih seperti hari-H, <em>bukan sekadar membaca soal.</em></h1>
+      <p>Simulasi ujian interaktif untuk CFA Level I, II, dan III — masing-masing 180 soal, dua sesi 135 menit dengan penanda waktu berjalan, panel navigasi soal, tanda "flag for review", dan skor akhir per topik, meniru alur ujian sesungguhnya di pusat ujian.</p>
+      <div class="hero-actions">
+        <button class="btn btn-gold" onclick="document.getElementById('tickets').scrollIntoView({behavior:'smooth'})">Pilih Level &amp; Mulai →</button>
+        <button class="btn btn-ghost" onclick="downloadFile()">⤓ Unduh Halaman Ini (.html)</button>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="num">180</div><div class="lbl">Soal pilihan ganda per level, dibagi 2 sesi × 90 soal</div></div>
+      <div class="stat-card"><div class="num">4:30</div><div class="lbl">Total durasi ujian (2 sesi × 2 jam 15 menit)</div></div>
+      <div class="stat-card"><div class="num">10</div><div class="lbl">Topik kurikulum dengan bobot berbeda tiap level</div></div>
+      <div class="stat-card"><div class="num">3</div><div class="lbl">Tingkat kesulitan — Level I fondasi hingga Level III strategi portofolio</div></div>
+    </div>
+  </div>
+
+  <div id="tickets">
+    <div class="section-label">Pilih Tiket Ujian Anda</div>
+    <div class="tickets">
+      <div class="ticket l1">
+        <div class="ticket-top">
+          <div class="ticket-code">TIKET UJIAN · CFA-L1</div>
+          <div class="ticket-title">Level I</div>
+          <p class="ticket-sub">Fondasi: alat kuantitatif, laporan keuangan, dan pengenalan seluruh kelas aset.</p>
+        </div>
+        <div class="perf"></div>
+        <div class="ticket-bottom">
+          <div class="ticket-row"><span>Jumlah Soal</span><b>180</b></div>
+          <div class="ticket-row"><span>Sesi</span><b>2 × 90 soal</b></div>
+          <div class="ticket-row"><span>Durasi / sesi</span><b>135 menit</b></div>
+          <div class="ticket-topics">
+            <span class="chip">Ethics</span><span class="chip">Quant</span><span class="chip">FSA</span><span class="chip">+7 lainnya</span>
+          </div>
+          <div class="ticket-barcode"></div>
+          <button class="ticket-start" onclick="startExam('l1')">Mulai Ujian Level I</button>
+        </div>
+      </div>
+
+      <div class="ticket l2">
+        <div class="ticket-top">
+          <div class="ticket-code">TIKET UJIAN · CFA-L2</div>
+          <div class="ticket-title">Level II</div>
+          <p class="ticket-sub">Penerapan &amp; analisis: valuasi aset, penalaran berbasis studi kasus singkat.</p>
+        </div>
+        <div class="perf"></div>
+        <div class="ticket-bottom">
+          <div class="ticket-row"><span>Jumlah Soal</span><b>180</b></div>
+          <div class="ticket-row"><span>Sesi</span><b>2 × 90 soal</b></div>
+          <div class="ticket-row"><span>Durasi / sesi</span><b>135 menit</b></div>
+          <div class="ticket-topics">
+            <span class="chip">Valuasi</span><span class="chip">FSA lanjutan</span><span class="chip">+8 lainnya</span>
+          </div>
+          <div class="ticket-barcode"></div>
+          <button class="ticket-start" onclick="startExam('l2')">Mulai Ujian Level II</button>
+        </div>
+      </div>
+
+      <div class="ticket l3">
+        <div class="ticket-top">
+          <div class="ticket-code">TIKET UJIAN · CFA-L3</div>
+          <div class="ticket-title">Level III</div>
+          <p class="ticket-sub">Sintesis: manajemen portofolio, perencanaan kekayaan, dan penyusunan IPS.</p>
+        </div>
+        <div class="perf"></div>
+        <div class="ticket-bottom">
+          <div class="ticket-row"><span>Jumlah Soal</span><b>180</b></div>
+          <div class="ticket-row"><span>Sesi</span><b>2 × 90 soal</b></div>
+          <div class="ticket-row"><span>Durasi / sesi</span><b>135 menit</b></div>
+          <div class="ticket-topics">
+            <span class="chip">Portfolio Mgmt</span><span class="chip">Wealth Planning</span><span class="chip">+8 lainnya</span>
+          </div>
+          <div class="ticket-barcode"></div>
+          <button class="ticket-start" onclick="startExam('l3')">Mulai Ujian Level III</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Cara Kerja Simulator</div>
+  <div class="info-grid">
+    <div class="info-box"><h3>1. Timer sungguhan</h3><p>Setiap sesi memakai hitung mundur 135 menit yang berjalan otomatis, lengkap dengan indikator warna saat waktu menipis — persis suasana tekanan waktu di ujian asli.</p></div>
+    <div class="info-box"><h3>2. Panel navigasi soal</h3><p>Grid nomor soal di sisi kanan menunjukkan status terjawab, belum dijawab, dan ditandai (flag for review), sehingga Anda bisa berpindah bebas seperti software ujian Pearson VUE.</p></div>
+    <div class="info-box"><h3>3. Skor &amp; analisis topik</h3><p>Setelah submit, dapatkan skor keseluruhan, breakdown per topik kurikulum, dan pembahasan lengkap tiap soal yang salah.</p></div>
+  </div>
+
+  <div class="disclaimer">
+    <b>Catatan penting:</b> Ini adalah alat latihan tidak resmi yang dibuat secara independen dan <b>bukan produk CFA Institute</b>. Soal dalam simulator ini adalah materi latihan orisinal yang meniru gaya dan cakupan topik kurikulum CFA — bukan soal ujian resmi (yang dilindungi hak cipta CFA Institute dan tidak pernah dipublikasikan). CFA Institute tidak mempublikasikan nilai kelulusan (minimum passing score) resmi; ambang skor pada hasil akhir hanya estimasi indikatif untuk latihan mandiri. "CFA®" dan "Chartered Financial Analyst®" adalah merek dagang milik CFA Institute.
+  </div>
+  <footer class="landing-footer">CFA EXAM SIMULATOR — DOKUMEN HTML MANDIRI, DAPAT DIUNDUH &amp; DIJALANKAN OFFLINE</footer>
+</div>
+
+<!-- ===================== EXAM ===================== -->
+<div id="exam" class="hidden">
+  <div class="exam-topbar">
+    <div class="exam-brand">
+      <span class="badge" id="examBadge">CFA-L1</span>
+      <span class="lvl-name" id="examLevelName">CFA Level I</span>
+    </div>
+    <div class="exam-mid">
+      <span id="sessionLabel">Sesi 1 dari 2</span>
+      <span id="answeredCount">0 / 90 terjawab</span>
+    </div>
+    <div class="exam-actions">
+      <div class="timer-box" id="timerBox"><span class="rec"></span><span id="timerText">135:00</span></div>
+      <button class="btn btn-ghost btn-sm" onclick="openReview()">Tinjau &amp; Submit Sesi</button>
+    </div>
+  </div>
+  <div class="exam-body">
+    <div class="qmain">
+      <div class="qmeta">
+        <span class="qnum" id="qNumLabel">Soal 1 / 90</span>
+        <span class="qtopic" id="qTopicLabel">Ethics</span>
+      </div>
+      <p class="qstem" id="qStem">...</p>
+      <div class="qoptions" id="qOptions"></div>
+      <div class="qfoot">
+        <button class="btn btn-ghost btn-sm" onclick="prevQuestion()">← Sebelumnya</button>
+        <button class="btn btn-ghost btn-sm" onclick="nextQuestion()">Berikutnya →</button>
+        <button class="flagbtn" id="flagBtn" onclick="toggleFlag()">🚩 Tandai untuk ditinjau</button>
+      </div>
+    </div>
+    <div class="sidebar">
+      <h4>Navigasi Soal</h4>
+      <div class="sess-label" id="sess-label-side">Sesi 1 · 90 soal</div>
+      <div class="legend">
+        <span><i class="lg-dot" style="background:var(--panel-2); border:1px solid var(--border)"></i>Belum dijawab</span>
+        <span><i class="lg-dot" style="background:var(--panel-3)"></i>Terjawab</span>
+        <span><i class="lg-dot" style="background:var(--bad)"></i>Ditandai</span>
+      </div>
+      <div class="palette" id="palette"></div>
+      <button class="btn btn-gold btn-sm sidebar-submit" onclick="openReview()">Tinjau &amp; Submit Sesi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== REVIEW MODAL SCREEN ===================== -->
+<div id="reviewScreen" class="hidden">
+  <div class="center-screen">
+    <h2>Tinjauan Sesi</h2>
+    <p id="reviewSummary">...</p>
+    <div class="hero-actions" style="justify-content:center; margin-top:26px;">
+      <button class="btn btn-ghost" onclick="closeReview()">Kembali ke Soal</button>
+      <button class="btn btn-gold" onclick="submitSession()">Submit Sesi Ini</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== BREAK SCREEN ===================== -->
+<div id="breakScreen" class="hidden">
+  <div class="center-screen">
+    <h2>Istirahat Opsional</h2>
+    <p>Sesi 1 selesai. Di ujian asli, Anda mendapat jeda opsional hingga 30 menit sebelum Sesi 2 dimulai. Anda bisa melanjutkan kapan saja.</p>
+    <div class="break-timer" id="breakTimer">30:00</div>
+    <button class="btn btn-gold" onclick="startSession2()">Lanjutkan ke Sesi 2 Sekarang →</button>
+  </div>
+</div>
+
+<!-- ===================== RESULTS ===================== -->
+<div id="results" class="hidden"></div>
+
+<script>
+// ===================== DATA =====================
+const TOPICS = [
+  "Ethics & Professional Standards","Quantitative Methods","Economics",
+  "Financial Statement Analysis","Corporate Issuers","Equity Investments",
+  "Fixed Income","Derivatives","Alternative Investments","Portfolio Management"
+];
+
+const WEIGHTS = {
+  l1: {"Ethics & Professional Standards":16,"Quantitative Methods":8,"Economics":8,
+       "Financial Statement Analysis":12,"Corporate Issuers":8,"Equity Investments":11,
+       "Fixed Income":11,"Derivatives":6,"Alternative Investments":8,"Portfolio Management":12},
+  l2: {"Ethics & Professional Standards":11,"Quantitative Methods":9,"Economics":9,
+       "Financial Statement Analysis":14,"Corporate Issuers":9,"Equity Investments":11,
+       "Fixed Income":11,"Derivatives":6,"Alternative Investments":8,"Portfolio Management":12},
+  l3: {"Ethics & Professional Standards":11,"Quantitative Methods":5,"Economics":6,
+       "Financial Statement Analysis":6,"Corporate Issuers":6,"Equity Investments":9,
+       "Fixed Income":11,"Derivatives":6,"Alternative Investments":8,"Portfolio Management":32}
+};
+
+const CURATED = {
+  l1: [
+    {topic:"Ethics & Professional Standards", stem:"Seorang analis riset menerima tiket konser mahal dari perusahaan yang sedang ia analisis, tanpa memberi tahu atasannya. Standar CFA Institute mana yang paling relevan dilanggar?",
+     options:["Standard I(B) – Independence and Objectivity","Standard V(A) – Diligence and Reasonable Basis","Standard VII(A) – Conduct as Members and Candidates"], correct:0,
+     explain:"Menerima hadiah bernilai besar dari pihak yang dianalisis dapat memengaruhi objektivitas, sehingga melanggar Standard I(B) – Independence and Objectivity."},
+    {topic:"Ethics & Professional Standards", stem:"Manajer portofolio menggunakan komisi transaksi klien (soft dollars) untuk membayar riset yang benar-benar dipakai untuk kepentingan investasi klien. Tindakan ini paling konsisten dengan standar apa?",
+     options:["Standard III(A) – Loyalty, Prudence, and Care","Standard IV(B) – Additional Compensation Arrangements","Standard VI(B) – Priority of Transactions"], correct:0,
+     explain:"Penggunaan soft dollar untuk riset yang bermanfaat bagi klien selaras dengan kewajiban loyalitas dan kehati-hatian terhadap klien pada Standard III(A)."},
+    {topic:"Quantitative Methods", stem:"Ukuran tendensi sentral mana yang paling tidak sensitif terhadap nilai ekstrem (outlier) dalam suatu distribusi data?",
+     options:["Mean (rata-rata)","Median","Mode dengan bobot tertinggi"], correct:1,
+     explain:"Median hanya bergantung pada posisi data yang diurutkan, sehingga tidak terpengaruh besar oleh outlier, berbeda dengan mean."},
+    {topic:"Quantitative Methods", stem:"Dua peristiwa dikatakan independen secara statistik apabila...",
+     options:["Keduanya tidak mungkin terjadi bersamaan","Terjadinya satu peristiwa tidak memengaruhi probabilitas peristiwa lainnya","Probabilitas gabungannya sama dengan penjumlahan probabilitas masing-masing"], correct:1,
+     explain:"Independensi berarti P(A|B) = P(A); terjadinya B tidak mengubah probabilitas A. Ini berbeda dengan konsep mutually exclusive."},
+    {topic:"Economics", stem:"Kenaikan pendapatan konsumen menyebabkan permintaan terhadap suatu barang normal meningkat pada setiap tingkat harga. Ini digambarkan sebagai...",
+     options:["Pergerakan sepanjang kurva permintaan","Pergeseran kurva permintaan ke kanan","Pergeseran kurva penawaran ke kiri"], correct:1,
+     explain:"Perubahan faktor non-harga seperti pendapatan menggeser seluruh kurva permintaan, bukan sekadar bergerak di sepanjang kurva yang sama."},
+    {topic:"Economics", stem:"Ketika bank sentral menaikkan suku bunga kebijakan, dampak yang paling mungkin terhadap permintaan agregat dalam jangka pendek adalah...",
+     options:["Meningkat karena biaya pinjaman turun","Menurun karena biaya pinjaman dan investasi naik","Tidak berubah karena kebijakan moneter bersifat netral"], correct:1,
+     explain:"Suku bunga yang lebih tinggi menaikkan biaya modal, menekan konsumsi dan investasi, sehingga permintaan agregat cenderung menurun."},
+    {topic:"Financial Statement Analysis", stem:"Laporan keuangan mana yang menggambarkan posisi aset, liabilitas, dan ekuitas perusahaan pada satu titik waktu tertentu?",
+     options:["Laporan Laba Rugi","Laporan Posisi Keuangan (Neraca)","Laporan Arus Kas"], correct:1,
+     explain:"Neraca (balance sheet) adalah snapshot posisi keuangan pada tanggal tertentu, berbeda dengan laporan laba rugi dan arus kas yang mencakup suatu periode."},
+    {topic:"Financial Statement Analysis", stem:"Dibandingkan metode garis lurus, metode penyusutan dipercepat (accelerated depreciation) pada tahun-tahun awal aset akan menghasilkan...",
+     options:["Beban penyusutan lebih rendah dan laba bersih lebih tinggi","Beban penyusutan lebih tinggi dan laba bersih lebih rendah","Tidak ada perbedaan terhadap laba bersih"], correct:1,
+     explain:"Metode dipercepat membebankan penyusutan lebih besar di awal umur aset, sehingga menekan laba bersih pada tahun-tahun awal."},
+    {topic:"Corporate Issuers", stem:"Biaya yang timbul akibat perbedaan kepentingan antara manajer dan pemegang saham disebut...",
+     options:["Biaya modal (cost of capital)","Biaya agensi (agency cost)","Biaya kebangkrutan (bankruptcy cost)"], correct:1,
+     explain:"Agency cost muncul dari agency problem, yaitu ketika manajer tidak selalu bertindak untuk memaksimalkan kepentingan pemegang saham."},
+    {topic:"Equity Investments", stem:"Penjualan saham baru oleh perusahaan langsung kepada investor untuk pertama kalinya terjadi di...",
+     options:["Pasar sekunder","Pasar primer","Pasar derivatif over-the-counter"], correct:1,
+     explain:"Pasar primer adalah tempat efek baru diterbitkan dan dijual pertama kali oleh emiten, sedangkan pasar sekunder memperdagangkan efek yang sudah beredar."},
+    {topic:"Fixed Income", stem:"Hubungan antara harga obligasi dan yield pasar pada umumnya bersifat...",
+     options:["Berbanding lurus (positif)","Berbanding terbalik (negatif)","Tidak berkorelasi"], correct:1,
+     explain:"Ketika yield pasar naik, nilai sekarang dari arus kas obligasi turun sehingga harga obligasi turun, dan sebaliknya."},
+    {topic:"Derivatives", stem:"Perbedaan mendasar antara kontrak forward dan kontrak opsi adalah...",
+     options:["Forward memberi hak, opsi memberi kewajiban","Forward mewajibkan transaksi, opsi memberi hak (bukan kewajiban) untuk bertransaksi","Keduanya sama-sama memberi hak tanpa kewajiban"], correct:1,
+     explain:"Pemegang kontrak forward wajib menyelesaikan transaksi pada jatuh tempo, sedangkan pemegang opsi memiliki hak namun tidak wajib melaksanakannya."},
+    {topic:"Alternative Investments", stem:"Karakteristik yang paling umum diasosiasikan dengan investasi private equity dibandingkan saham publik adalah...",
+     options:["Likuiditas tinggi harian","Premi ilikuiditas akibat horizon investasi panjang dan pasar sekunder terbatas","Tidak ada risiko investasi"], correct:1,
+     explain:"Private equity umumnya mengunci modal investor dalam jangka panjang dengan pasar sekunder terbatas, sehingga investor mengharapkan premi ilikuiditas."},
+    {topic:"Portfolio Management", stem:"Manfaat diversifikasi dalam mengurangi risiko portofolio akan semakin besar apabila koefisien korelasi antar aset...",
+     options:["Mendekati +1","Mendekati -1 atau di bawah +1","Tidak relevan terhadap diversifikasi"], correct:1,
+     explain:"Semakin rendah (mendekati -1) korelasi antar aset, semakin besar potensi pengurangan risiko portofolio melalui diversifikasi."}
+  ],
+  l2: [
+    {topic:"Ethics & Professional Standards", stem:"Seorang analis menggunakan ide riset independen yang dikembangkan menggunakan sumber daya perusahaan untuk keuntungan pribadinya tanpa izin, sebelum mengungkapkannya ke pemberi kerja. Ini paling mendekati pelanggaran...",
+     options:["Standard IV(A) – Loyalty to Employer","Standard II(A) – Material Nonpublic Information","Standard I(D) – Misconduct"], correct:0,
+     explain:"Menggunakan sumber daya dan waktu pemberi kerja untuk kepentingan pribadi tanpa izin melanggar kewajiban loyalitas kepada pemberi kerja."},
+    {topic:"Quantitative Methods", stem:"Dalam model regresi berganda, koefisien determinasi (R²) yang tinggi menunjukkan...",
+     options:["Semua variabel independen signifikan secara statistik","Proporsi variasi variabel dependen yang dijelaskan oleh model relatif besar","Tidak ada multikolinearitas dalam model"], correct:1,
+     explain:"R² mengukur proporsi variasi total variabel dependen yang dapat dijelaskan oleh variabel independen dalam model, bukan signifikansi individual maupun multikolinearitas."},
+    {topic:"Economics", stem:"Berdasarkan teori Purchasing Power Parity (PPP), jika inflasi domestik lebih tinggi dari inflasi mitra dagang, maka mata uang domestik diperkirakan akan...",
+     options:["Terapresiasi terhadap mata uang mitra dagang","Terdepresiasi terhadap mata uang mitra dagang","Tetap tidak berubah dalam jangka panjang"], correct:1,
+     explain:"PPP memperkirakan mata uang negara dengan inflasi lebih tinggi akan terdepresiasi agar daya beli relatif tetap seimbang."},
+    {topic:"Financial Statement Analysis", stem:"Perbedaan antara penyusutan dipercepat untuk tujuan pajak dan garis lurus untuk tujuan pelaporan keuangan umumnya menimbulkan...",
+     options:["Aset pajak tangguhan (deferred tax asset)","Liabilitas pajak tangguhan (deferred tax liability)","Tidak ada dampak pajak tangguhan"], correct:1,
+     explain:"Jika beban pajak lebih kecil dari beban buku akibat penyusutan dipercepat untuk pajak, timbul liabilitas pajak tangguhan yang akan dibalik di masa depan."},
+    {topic:"Financial Statement Analysis", stem:"Pada periode harga input yang terus naik, penggunaan metode LIFO dibandingkan FIFO akan menghasilkan...",
+     options:["COGS lebih rendah dan laba kotor lebih tinggi","COGS lebih tinggi dan laba kotor lebih rendah","Nilai persediaan akhir lebih tinggi dari FIFO"], correct:1,
+     explain:"LIFO membebankan biaya persediaan termahal (terbaru) lebih dulu ke COGS saat harga naik, sehingga COGS lebih tinggi dan laba kotor lebih rendah dibanding FIFO."},
+    {topic:"Corporate Issuers", stem:"Ketika NPV dan IRR memberikan peringkat berbeda untuk dua proyek mutually exclusive dengan skala berbeda, keputusan yang lebih diandalkan secara teori adalah...",
+     options:["IRR, karena mengasumsikan reinvestasi pada tingkat IRR","NPV, karena mengasumsikan reinvestasi pada biaya modal yang lebih realistis","Payback period, karena lebih sederhana"], correct:1,
+     explain:"Konflik NPV-IRR pada proyek mutually exclusive umumnya diselesaikan dengan memilih NPV karena asumsi reinvestasi pada biaya modal dianggap lebih realistis."},
+    {topic:"Equity Investments", stem:"Model Free Cash Flow to Equity (FCFE) lebih sesuai digunakan dibanding Dividend Discount Model ketika...",
+     options:["Perusahaan membayar dividen yang stabil dan dapat diprediksi","Perusahaan tidak membayar dividen atau kebijakan dividennya tidak mencerminkan kapasitas membayar","Perusahaan berada dalam industri yang sangat teregulasi"], correct:1,
+     explain:"FCFE mengukur kas yang tersedia bagi pemegang saham terlepas dari kebijakan dividen aktual, sehingga lebih relevan saat dividen tidak mencerminkan kemampuan bayar perusahaan."},
+    {topic:"Fixed Income", stem:"Obligasi callable cenderung menunjukkan convexity negatif ketika yield pasar turun signifikan karena...",
+     options:["Kenaikan harga menjadi tidak terbatas seperti obligasi option-free","Potensi pelunasan dipercepat oleh emiten membatasi kenaikan harga obligasi","Duration obligasi menjadi nol"], correct:1,
+     explain:"Saat yield turun, kemungkinan emiten menarik (call) obligasi meningkat, sehingga potensi kenaikan harga menjadi terbatas — inilah sumber convexity negatif."},
+    {topic:"Derivatives", stem:"Hubungan put-call parity untuk opsi Eropa pada saham tanpa dividen menyatakan bahwa...",
+     options:["Harga call minus put sama dengan harga saham dikurangi nilai kini harga strike","Harga call selalu sama dengan harga put","Nilai opsi tidak bergantung pada harga strike"], correct:0,
+     explain:"Put-call parity: C - P = S0 - PV(X), yang menghubungkan harga call, put, harga saham, dan nilai kini strike price."},
+    {topic:"Alternative Investments", stem:"Dalam pendekatan pendapatan (income approach) untuk valuasi properti komersial, nilai properti diestimasi dengan...",
+     options:["Membagi Net Operating Income dengan capitalization rate","Mengalikan luas bangunan dengan harga pasar per meter persegi","Menjumlahkan seluruh biaya konstruksi historis"], correct:0,
+     explain:"Income approach mengestimasi nilai properti sebagai NOI dibagi cap rate, mencerminkan kapitalisasi pendapatan yang dihasilkan aset."},
+    {topic:"Portfolio Management", stem:"Asumsi inti Capital Asset Pricing Model (CAPM) menyatakan bahwa hanya risiko yang diberi harga (priced) di pasar adalah...",
+     options:["Risiko total (total risk)","Risiko sistematis (systematic risk) yang tidak dapat didiversifikasi","Risiko spesifik perusahaan (unsystematic risk)"], correct:1,
+     explain:"CAPM berasumsi investor rasional telah mendiversifikasi risiko spesifik, sehingga hanya risiko sistematis (beta) yang relevan diberi kompensasi return."},
+    {topic:"Portfolio Management", stem:"Sebuah portofolio yang berada di bawah (di dalam) efficient frontier menunjukkan bahwa portofolio tersebut...",
+     options:["Optimal karena risiko dan return seimbang","Didominasi oleh portofolio lain dengan return lebih tinggi pada risiko sama, atau risiko lebih rendah pada return sama","Tidak dapat dibandingkan dengan portofolio lain"], correct:1,
+     explain:"Portofolio di bawah efficient frontier bersifat dominated — selalu ada portofolio pada frontier dengan profil risiko-return yang lebih baik."}
+  ],
+  l3: [
+    {topic:"Ethics & Professional Standards", stem:"Dalam mengelola portofolio klien, kewajiban fidusia manajer investasi terutama mengharuskan tindakan investasi selaras dengan...",
+     options:["Preferensi pribadi manajer terhadap suatu sektor","Tujuan dan batasan yang tercantum dalam Investment Policy Statement (IPS) klien","Rata-rata alokasi aset industri"], correct:1,
+     explain:"Kewajiban fidusia mengharuskan manajer bertindak untuk kepentingan terbaik klien sesuai IPS, bukan preferensi pribadi atau norma industri semata."},
+    {topic:"Portfolio Management", stem:"Dalam sebuah Investment Policy Statement (IPS), 'kemampuan menanggung risiko finansial' paling tepat termasuk dalam komponen...",
+     options:["Return objective","Risk objective (ability to take risk)","Time horizon constraint"], correct:1,
+     explain:"Ability to take risk merupakan bagian dari risk objective, terpisah dari willingness to take risk (aspek psikologis) maupun return objective."},
+    {topic:"Portfolio Management", stem:"Perbedaan utama antara strategic asset allocation dan tactical asset allocation adalah...",
+     options:["Strategic bersifat jangka panjang mengikuti IPS, tactical menyesuaikan sementara berdasarkan pandangan pasar jangka pendek","Strategic hanya untuk investor institusi, tactical hanya untuk individu","Keduanya identik dan dapat dipertukarkan"], correct:0,
+     explain:"Strategic asset allocation adalah bobot aset jangka panjang yang selaras dengan tujuan dan toleransi risiko, sementara tactical allocation adalah penyimpangan sementara untuk memanfaatkan pandangan pasar."},
+    {topic:"Portfolio Management", stem:"Investor muda dengan penghasilan kerja yang stabil dan diperkirakan tumbuh dianggap memiliki human capital yang menyerupai karakteristik...",
+     options:["Aset bebas risiko jangka pendek","Aset mirip obligasi (bond-like), sehingga porsi aset finansial dapat dialokasikan lebih besar ke saham","Aset komoditas dengan volatilitas tinggi"], correct:1,
+     explain:"Human capital pekerja dengan penghasilan stabil sering dipandang bersifat seperti obligasi, sehingga secara keseluruhan mendukung alokasi lebih agresif pada portofolio finansial."},
+    {topic:"Fixed Income", stem:"Strategi liability-driven investing yang menyamakan durasi aset dengan durasi liabilitas untuk melindungi nilai kini kewajiban dari perubahan suku bunga disebut...",
+     options:["Cash flow matching murni","Immunization","Barbell strategy"], correct:1,
+     explain:"Immunization mencocokkan duration (dan idealnya konveksitas) portofolio aset dengan liabilitas agar nilai bersih relatif terlindungi dari pergerakan suku bunga paralel."},
+    {topic:"Equity Investments", stem:"Dalam manajemen kekayaan (private wealth), strategi merealisasikan kerugian investasi untuk mengimbangi keuntungan kena pajak disebut...",
+     options:["Dollar-cost averaging","Tax-loss harvesting","Dividend reinvestment"], correct:1,
+     explain:"Tax-loss harvesting merealisasikan kerugian modal untuk mengurangi pajak atas keuntungan modal, sekaligus tetap mempertahankan eksposur pasar yang diinginkan."},
+    {topic:"Derivatives", stem:"Seorang investor memiliki posisi saham tunggal yang sangat terkonsentrasi dan ingin membatasi risiko penurunan tanpa langsung menjual sahamnya. Strategi opsi yang paling sesuai adalah...",
+     options:["Menjual covered call jauh di luar uang","Membeli protective put","Menjual naked put"], correct:1,
+     explain:"Protective put memberi hak menjual saham pada harga strike tertentu, membatasi potensi kerugian akibat penurunan harga tanpa harus melepas kepemilikan saham."},
+    {topic:"Alternative Investments", stem:"Model investasi endowment ditandai oleh alokasi signifikan ke aset ilikuid seperti private equity dan hedge fund terutama karena...",
+     options:["Horizon investasi yang sangat panjang dan kebutuhan likuiditas jangka pendek yang relatif rendah","Regulasi yang mewajibkan alokasi tersebut","Biaya modal yang lebih rendah pada aset ilikuid"], correct:0,
+     explain:"Endowment umumnya memiliki horizon investasi sangat panjang dan kebutuhan pencairan tahunan yang relatif kecil, sehingga mampu menanggung premi ilikuiditas aset alternatif."},
+    {topic:"Economics", stem:"Bias perilaku di mana klien merasakan sakit akibat kerugian secara psikologis lebih besar dibanding kepuasan dari keuntungan senilai sama disebut...",
+     options:["Overconfidence bias","Loss aversion","Mental accounting"], correct:1,
+     explain:"Loss aversion menjelaskan kecenderungan investor merasakan kerugian secara emosional lebih berat dibanding keuntungan dengan besaran nominal yang sama."},
+    {topic:"Corporate Issuers", stem:"Pendekatan ESG yang secara eksplisit mengecualikan sektor atau perusahaan tertentu dari semesta investasi (misalnya tembakau atau batu bara) disebut...",
+     options:["ESG integration","Negative screening","Impact investing"], correct:1,
+     explain:"Negative screening mengecualikan industri atau perusahaan tertentu berdasarkan kriteria ESG, berbeda dengan integration yang memasukkan faktor ESG ke dalam analisis fundamental secara menyeluruh."},
+    {topic:"Portfolio Management", stem:"Dibandingkan rebalancing berbasis kalender (calendar rebalancing), pendekatan percentage-of-portfolio (corridor) rebalancing memiliki kelebihan utama berupa...",
+     options:["Biaya transaksi yang pasti lebih rendah setiap saat","Penyesuaian dipicu oleh besarnya penyimpangan alokasi aktual sehingga lebih responsif terhadap volatilitas pasar","Tidak memerlukan pemantauan portofolio sama sekali"], correct:1,
+     explain:"Corridor rebalancing memicu transaksi berdasarkan seberapa jauh alokasi menyimpang dari target, sehingga lebih responsif terhadap pergerakan pasar dibanding jadwal tetap kalender."},
+    {topic:"Portfolio Management", stem:"Keterbatasan utama penggunaan Sharpe ratio untuk mengevaluasi kinerja portofolio dengan distribusi return yang sangat tidak normal (skewed) adalah...",
+     options:["Sharpe ratio hanya dapat dihitung untuk aset bebas risiko","Standar deviasi sebagai ukuran risiko total kurang tepat menangkap risiko downside pada distribusi yang skewed","Sharpe ratio tidak dapat dihitung sama sekali untuk hedge fund"], correct:1,
+     explain:"Sharpe ratio menggunakan standar deviasi sebagai proksi risiko total, yang kurang mencerminkan risiko sebenarnya ketika distribusi return memiliki skewness atau ekor (tail risk) yang signifikan."}
+  ]
+};
+
+// ===================== GENERATORS (quantitative, randomized but always correct) =====================
+function rnd(min,max,dec=0){const v=Math.random()*(max-min)+min;return +v.toFixed(dec);}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function shuffleOptions(options, correctIdx){
+  const idx=[0,1,2];
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const newOptions=idx.map(i=>options[i]);
+  const newCorrect=idx.indexOf(correctIdx);
+  return {options:newOptions, correct:newCorrect};
+}
+
+const GENERATORS = [
+  function tvmFV(){
+    const pv=rnd(1000,50000,0), r=rnd(3,12,1), n=rnd(2,10,0);
+    const fv=pv*Math.pow(1+r/100,n);
+    const wrong1=pv*(1+(r/100)*n); // simple interest distractor
+    const wrong2=pv*Math.pow(1+r/100,n-1);
+    const {options,correct}=shuffleOptions([fv,wrong1,wrong2].map(v=>"Rp "+Math.round(v).toLocaleString('id-ID')),0);
+    return {topic:"Quantitative Methods",
+      stem:`Investasi awal sebesar Rp ${pv.toLocaleString('id-ID')} tumbuh pada tingkat bunga majemuk tahunan ${r}% selama ${n} tahun. Berapa nilai masa depan (future value) investasi tersebut?`,
+      options, correct,
+      explain:`FV = PV × (1+r)^n = ${pv.toLocaleString('id-ID')} × (1+${r}%)^${n} ≈ Rp ${Math.round(fv).toLocaleString('id-ID')}.`};
+  },
+  function epsCalc(){
+    const ni=rnd(5,80,1)*1000000, pref=rnd(0,5,1)*1000000, shares=rnd(2,20,1)*1000000;
+    const eps=(ni-pref)/shares;
+    const wrong1=ni/shares;
+    const wrong2=(ni-pref)/(shares*1.1);
+    const {options,correct}=shuffleOptions([eps,wrong1,wrong2].map(v=>"Rp "+v.toFixed(2)),0);
+    return {topic:"Financial Statement Analysis",
+      stem:`Sebuah perusahaan mencatat laba bersih Rp ${(ni/1e6).toFixed(1)} juta dan dividen preferen Rp ${(pref/1e6).toFixed(1)} juta. Rata-rata tertimbang saham biasa beredar adalah ${(shares/1e6).toFixed(1)} juta lembar. Berapa basic EPS?`,
+      options, correct,
+      explain:`Basic EPS = (Laba bersih − Dividen preferen) / Rata-rata tertimbang saham = (${(ni/1e6).toFixed(1)}jt − ${(pref/1e6).toFixed(1)}jt) / ${(shares/1e6).toFixed(1)}jt ≈ Rp ${eps.toFixed(2)}.`};
+  },
+  function currentRatio(){
+    const ca=rnd(50,500,0)*1000000, cl=rnd(30,400,0)*1000000;
+    const ratio=ca/cl;
+    const wrong1=(ca-rnd(10,50,0)*1000000)/cl;
+    const wrong2=cl/ca;
+    const {options,correct}=shuffleOptions([ratio,wrong1,wrong2].map(v=>v.toFixed(2)+"x"),0);
+    return {topic:"Financial Statement Analysis",
+      stem:`Total aset lancar perusahaan adalah Rp ${(ca/1e6).toFixed(0)} juta dan total liabilitas lancar Rp ${(cl/1e6).toFixed(0)} juta. Berapa current ratio perusahaan tersebut?`,
+      options, correct,
+      explain:`Current ratio = Aset lancar / Liabilitas lancar = ${(ca/1e6).toFixed(0)} / ${(cl/1e6).toFixed(0)} ≈ ${ratio.toFixed(2)}x.`};
+  },
+  function hpr(){
+    const p0=rnd(1000,10000,0), p1=p0*rnd(0.85,1.3,2), div=rnd(0,300,0);
+    const r=((p1-p0+div)/p0)*100;
+    const wrong1=((p1-p0)/p0)*100;
+    const wrong2=((p1-p0+div)/p1)*100;
+    const {options,correct}=shuffleOptions([r,wrong1,wrong2].map(v=>v.toFixed(2)+"%"),0);
+    return {topic:"Equity Investments",
+      stem:`Sebuah saham dibeli seharga Rp ${p0.toLocaleString('id-ID')}, dijual satu tahun kemudian seharga Rp ${Math.round(p1).toLocaleString('id-ID')}, dan membagikan dividen Rp ${div} per lembar selama periode tersebut. Berapa holding period return (HPR)?`,
+      options, correct,
+      explain:`HPR = (P1 − P0 + Dividen) / P0 = (${Math.round(p1).toLocaleString('id-ID')} − ${p0.toLocaleString('id-ID')} + ${div}) / ${p0.toLocaleString('id-ID')} ≈ ${r.toFixed(2)}%.`};
+  },
+  function fisherReal(){
+    const nom=rnd(4,14,1), inf=rnd(1,8,1);
+    const real=((1+nom/100)/(1+inf/100)-1)*100;
+    const wrong1=nom-inf;
+    const wrong2=nom+inf;
+    const {options,correct}=shuffleOptions([real,wrong1,wrong2].map(v=>v.toFixed(2)+"%"),0);
+    return {topic:"Economics",
+      stem:`Suku bunga nominal saat ini adalah ${nom}% dan tingkat inflasi ${inf}%. Berdasarkan persamaan Fisher yang tepat, berapa perkiraan suku bunga riil?`,
+      options, correct,
+      explain:`(1+r_nominal) = (1+r_riil)(1+inflasi) → r_riil = (1+${nom}%)/(1+${inf}%) − 1 ≈ ${real.toFixed(2)}%.`};
+  },
+  function durationEffect(){
+    const dur=rnd(2,12,1), dy=rnd(0.25,2,2);
+    const dir=pick(["naik","turun"]);
+    const sign=dir==="naik"?-1:1;
+    const pctChange=sign*dur*dy;
+    const wrong1=-pctChange;
+    const wrong2=sign*dur*dy*0.5;
+    const {options,correct}=shuffleOptions([pctChange,wrong1,wrong2].map(v=>v.toFixed(2)+"%"),0);
+    return {topic:"Fixed Income",
+      stem:`Sebuah obligasi memiliki modified duration ${dur}. Jika yield pasar ${dir} sebesar ${dy}%, berapa perkiraan perubahan persentase harga obligasi tersebut?`,
+      options, correct,
+      explain:`%ΔHarga ≈ −Modified Duration × Δyield = −${dur} × ${dir==="naik"?"+":"-"}${dy}% ≈ ${pctChange.toFixed(2)}%.`};
+  },
+  function wacc(){
+    const wd=rnd(0.2,0.6,2), we=+(1-wd).toFixed(2), rd=rnd(4,10,1), tax=rnd(15,30,0), re=rnd(9,18,1);
+    const waccVal=wd*rd*(1-tax/100)+we*re;
+    const wrong1=wd*rd+we*re;
+    const wrong2=wd*rd*(1-tax/100)+we*re*(1-tax/100);
+    const {options,correct}=shuffleOptions([waccVal,wrong1,wrong2].map(v=>v.toFixed(2)+"%"),0);
+    return {topic:"Corporate Issuers",
+      stem:`Struktur modal perusahaan terdiri dari ${(wd*100).toFixed(0)}% utang dengan biaya utang ${rd}% (tarif pajak ${tax}%) dan ${(we*100).toFixed(0)}% ekuitas dengan biaya ekuitas ${re}%. Berapa WACC perusahaan?`,
+      options, correct,
+      explain:`WACC = (Wd × Rd × (1−tax)) + (We × Re) = (${(wd*100).toFixed(0)}% × ${rd}% × (1−${tax}%)) + (${(we*100).toFixed(0)}% × ${re}%) ≈ ${waccVal.toFixed(2)}%.`};
+  },
+  function stdDev(){
+    const r1=rnd(-10,25,1), r2=rnd(-10,25,1), p1=rnd(0.3,0.7,2), p2=+(1-p1).toFixed(2);
+    const mean=r1*p1+r2*p2;
+    const variance=p1*Math.pow(r1-mean,2)+p2*Math.pow(r2-mean,2);
+    const sd=Math.sqrt(variance);
+    const wrong1=variance;
+    const wrong2=sd*1.3;
+    const {options,correct}=shuffleOptions([sd,wrong1,wrong2].map(v=>v.toFixed(2)+"%"),0);
+    return {topic:"Portfolio Management",
+      stem:`Suatu aset memiliki dua skenario return: ${r1}% dengan probabilitas ${(p1*100).toFixed(0)}%, dan ${r2}% dengan probabilitas ${(p2*100).toFixed(0)}%. Berapa standar deviasi return aset tersebut?`,
+      options, correct,
+      explain:`E(R) = ${mean.toFixed(2)}%. Varians = Σp×(R−E(R))² ≈ ${variance.toFixed(2)}. Std Dev = √varians ≈ ${sd.toFixed(2)}%.`};
+  }
+];
+
+// ===================== EXAM BUILDER =====================
+function buildExam(levelKey){
+  const curated = [...CURATED[levelKey]];
+  // shuffle curated
+  for(let i=curated.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[curated[i],curated[j]]=[curated[j],curated[i]];}
+  const questions = curated.map((q,i)=>({...q, id:'c'+i}));
+  let genId=0;
+  while(questions.length<180){
+    const gen = pick(GENERATORS);
+    const q = gen();
+    q.id='g'+(genId++);
+    questions.push(q);
+  }
+  // final shuffle of overall order (keep length 180)
+  for(let i=questions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[questions[i],questions[j]]=[questions[j],questions[i]];}
+  return questions.slice(0,180);
+}
+
+// ===================== UI STATE =====================
+const LEVEL_META = {
+  l1:{name:'CFA Level I', badge:'CFA-L1'},
+  l2:{name:'CFA Level II', badge:'CFA-L2'},
+  l3:{name:'CFA Level III', badge:'CFA-L3'}
+};
+const SESSION_SECONDS = 135*60;
+const BREAK_SECONDS = 30*60;
+
+let state = null;
+let timerHandle = null;
+let breakHandle = null;
+
+function startExam(levelKey){
+  state = {
+    level: levelKey,
+    questions: buildExam(levelKey),
+    answers: {},
+    flags: {},
+    session: 1,
+    currentIndex: 0,
+    timeLeft: SESSION_SECONDS
+  };
+  document.getElementById('examBadge').textContent = LEVEL_META[levelKey].badge;
+  document.getElementById('examLevelName').textContent = LEVEL_META[levelKey].name;
+  show('exam');
+  renderPalette();
+  renderQuestion();
+  startTimer();
+}
+
+function sessionQuestions(){
+  const start = (state.session-1)*90;
+  return state.questions.slice(start, start+90);
+}
+
+function globalIndex(){ return (state.session-1)*90 + state.currentIndex; }
+
+function renderQuestion(){
+  const qs = sessionQuestions();
+  const q = qs[state.currentIndex];
+  document.getElementById('qNumLabel').textContent = `Soal ${state.currentIndex+1} / 90`;
+  document.getElementById('sessionLabel').textContent = `Sesi ${state.session} dari 2`;
+  document.getElementById('qTopicLabel').textContent = q.topic;
+  document.getElementById('qStem').textContent = q.stem;
+  const answeredN = Object.keys(state.answers).filter(id=>qs.some(qq=>qq.id===id)).length;
+  document.getElementById('answeredCount').textContent = `${answeredN} / 90 terjawab`;
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  const letters = ['A','B','C'];
+  q.options.forEach((opt,i)=>{
+    const div = document.createElement('div');
+    div.className = 'opt' + (state.answers[q.id]===i ? ' selected':'');
+    div.onclick = ()=>selectOption(q.id,i);
+    div.innerHTML = `<div class="letter">${letters[i]}</div><div class="otext">${opt}</div>`;
+    optWrap.appendChild(div);
+  });
+
+  const flagBtn = document.getElementById('flagBtn');
+  flagBtn.classList.toggle('flagged', !!state.flags[q.id]);
+  flagBtn.textContent = state.flags[q.id] ? '🚩 Ditandai — klik untuk batal' : '🚩 Tandai untuk ditinjau';
+
+  document.getElementById('sess-label-side').textContent = `Sesi ${state.session} · 90 soal`;
+  highlightPalette();
+}
+
+function selectOption(qid, idx){
+  state.answers[qid] = idx;
+  renderQuestion();
+}
+
+function toggleFlag(){
+  const q = sessionQuestions()[state.currentIndex];
+  state.flags[q.id] = !state.flags[q.id];
+  renderQuestion();
+}
+
+function nextQuestion(){
+  if(state.currentIndex < 89){ state.currentIndex++; renderQuestion(); }
+}
+function prevQuestion(){
+  if(state.currentIndex > 0){ state.currentIndex--; renderQuestion(); }
+}
+
+function renderPalette(){
+  const wrap = document.getElementById('palette');
+  wrap.innerHTML = '';
+  for(let i=0;i<90;i++){
+    const btn = document.createElement('button');
+    btn.className = 'pbtn';
+    btn.textContent = i+1;
+    btn.onclick = ()=>{ state.currentIndex=i; renderQuestion(); };
+    wrap.appendChild(btn);
+  }
+}
+function highlightPalette(){
+  const qs = sessionQuestions();
+  const btns = document.querySelectorAll('#palette .pbtn');
+  btns.forEach((btn,i)=>{
+    const q = qs[i];
+    btn.classList.toggle('answered', state.answers[q.id]!==undefined);
+    btn.classList.toggle('flagged', !!state.flags[q.id]);
+    btn.classList.toggle('current', i===state.currentIndex);
+  });
+}
+
+function startTimer(){
+  clearInterval(timerHandle);
+  updateTimerDisplay();
+  timerHandle = setInterval(()=>{
+    state.timeLeft--;
+    updateTimerDisplay();
+    if(state.timeLeft<=0){
+      clearInterval(timerHandle);
+      submitSession(true);
+    }
+  },1000);
+}
+function updateTimerDisplay(){
+  const m = Math.floor(state.timeLeft/60);
+  const s = state.timeLeft%60;
+  const txt = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  document.getElementById('timerText').textContent = txt;
+  document.getElementById('timerBox').classList.toggle('low', state.timeLeft<=300);
+}
+
+function openReview(){
+  const qs = sessionQuestions();
+  const answered = qs.filter(q=>state.answers[q.id]!==undefined).length;
+  const flagged = qs.filter(q=>state.flags[q.id]).length;
+  document.getElementById('reviewSummary').textContent =
+    `Anda telah menjawab ${answered} dari 90 soal pada Sesi ${state.session}, dengan ${flagged} soal ditandai untuk ditinjau. Setelah submit, Anda tidak dapat kembali ke sesi ini.`;
+  show('reviewScreen');
+}
+function closeReview(){ show('exam'); }
+
+function submitSession(auto){
+  clearInterval(timerHandle);
+  if(state.session===1){
+    show('breakScreen');
+    startBreakTimer();
+  } else {
+    finishExam();
+  }
+}
+
+function startBreakTimer(){
+  let t = BREAK_SECONDS;
+  clearInterval(breakHandle);
+  document.getElementById('breakTimer').textContent = '30:00';
+  breakHandle = setInterval(()=>{
+    t--;
+    const m=Math.floor(t/60), s=t%60;
+    document.getElementById('breakTimer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(t<=0){ clearInterval(breakHandle); startSession2(); }
+  },1000);
+}
+
+function startSession2(){
+  clearInterval(breakHandle);
+  state.session = 2;
+  state.currentIndex = 0;
+  state.timeLeft = SESSION_SECONDS;
+  show('exam');
+  renderPalette();
+  renderQuestion();
+  startTimer();
+}
+
+function finishExam(){
+  show('results');
+  renderResults();
+}
+
+function renderResults(){
+  const qs = state.questions;
+  let correct = 0;
+  const byTopic = {};
+  const wrongList = [];
+  qs.forEach(q=>{
+    const given = state.answers[q.id];
+    const isCorrect = given === q.correct;
+    if(isCorrect) correct++;
+    if(!byTopic[q.topic]) byTopic[q.topic]={correct:0,total:0};
+    byTopic[q.topic].total++;
+    if(isCorrect) byTopic[q.topic].correct++;
+    if(!isCorrect) wrongList.push({q, given});
+  });
+  const pct = (correct/qs.length*100);
+  const passIndicative = pct >= 65;
+
+  const ringColor = passIndicative ? 'var(--good)' : 'var(--bad)';
+  let html = `
+    <div class="score-hero">
+      <div class="score-ring" style="background:conic-gradient(${ringColor} ${pct*3.6}deg, var(--panel-3) 0deg);">
+        <div style="width:118px;height:118px;border-radius:50%;background:var(--panel); display:flex; align-items:center; justify-content:center; flex-direction:column;">
+          <div class="pct">${pct.toFixed(1)}%</div>
+        </div>
+      </div>
+      <div class="score-info">
+        <h2>${LEVEL_META[state.level].name} — Hasil Latihan</h2>
+        <p>${correct} dari ${qs.length} soal terjawab benar. Estimasi ambang latihan 65% digunakan hanya sebagai acuan indikatif, karena CFA Institute tidak mempublikasikan minimum passing score resmi.</p>
+        <span class="badge-status ${passIndicative?'pass':'fail'}">${passIndicative? 'DI ATAS AMBANG INDIKATIF':'DI BAWAH AMBANG INDIKATIF'}</span>
+      </div>
+    </div>
+    <div class="section-label">Rincian per Topik</div>
+    <div class="topic-breakdown">`;
+  Object.keys(byTopic).sort((a,b)=>byTopic[b].total-byTopic[a].total).forEach(topic=>{
+    const t = byTopic[topic];
+    const p = (t.correct/t.total*100);
+    html += `<div class="tb-row">
+        <span>${topic}</span>
+        <div class="tb-bar"><div class="tb-fill" style="width:${p}%"></div></div>
+        <span style="text-align:right; color:var(--muted); font-family:var(--mono);">${t.correct}/${t.total}</span>
+      </div>`;
+  });
+  html += `</div>
+    <div class="section-label">Pembahasan Soal yang Salah (${wrongList.length})</div>
+    <div class="review-list">`;
+  if(wrongList.length===0){
+    html += `<p style="color:var(--muted)">Tidak ada — semua soal terjawab benar.</p>`;
+  } else {
+    wrongList.slice(0,60).forEach(({q,given})=>{
+      const givenText = given!==undefined ? q.options[given] : '(tidak dijawab)';
+      html += `<div class="review-item">
+        <div class="ri-top"><span class="qtopic">${q.topic}</span><span class="ri-wrong">Jawaban Anda salah</span></div>
+        <p>${q.stem}</p>
+        <p style="color:var(--bad); font-size:13.5px;">Jawaban Anda: ${givenText}</p>
+        <p style="color:var(--good); font-size:13.5px;">Jawaban benar: ${q.options[q.correct]}</p>
+        <div class="exp">${q.explain}</div>
+      </div>`;
+    });
+    if(wrongList.length>60){
+      html += `<p style="color:var(--muted-2); font-size:12.5px;">Menampilkan 60 dari ${wrongList.length} pembahasan.</p>`;
+    }
+  }
+  html += `</div>
+    <div class="hero-actions" style="margin-top:36px;">
+      <button class="btn btn-gold" onclick="location.reload()">Coba Lagi dari Awal</button>
+    </div>`;
+  document.getElementById('results').innerHTML = html;
+}
+
+function show(id){
+  ['landing','exam','reviewScreen','breakScreen','results'].forEach(s=>{
+    document.getElementById(s).classList.toggle('hidden', s!==id);
+  });
+  window.scrollTo(0,0);
+}
+
+function downloadFile(){
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'CFA-Exam-Simulator.html';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script></body></html>

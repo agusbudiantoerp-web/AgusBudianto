@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persoalan Lapangan & Skill Komunikasi — Project Control</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0E2A44; --navy-2:#163a5c;
+    --paper:#F6F3EC; --paper-2:#EFEAE0;
+    --gold:#C08A28; --gold-2:#E3B04B;
+    --ink:#1B2733; --muted:#5C6B79;
+    --line: rgba(14,42,68,0.14);
+    --red:#B23A3A; --red-bg:#FBEAEA;
+    --amber-bg:#FDF3DC; --amber-ink:#8a651a;
+    --blue-bg:#E7F0F6; --blue-ink:#2A6A8C;
+    --green-bg:#E7F3EC; --green-ink:#1B7F5A;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif;
+    background-image:linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:42px 42px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px;}
+  h1,h2,h3{font-family:'Source Serif 4', serif; margin:0; color:var(--navy);}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  header.top{position:sticky; top:0; z-index:50; background:rgba(246,243,236,0.92); backdrop-filter: blur(6px); border-bottom:1px solid var(--line);}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1080px; margin:0 auto; gap:16px; flex-wrap:wrap;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Source Serif 4',serif; font-weight:700; font-size:1.02rem; color:var(--navy);}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--gold);}
+  .tabswitch{display:flex; gap:4px; background:var(--paper-2); padding:4px; border-radius:8px; border:1px solid var(--line);}
+  .tabswitch button{border:none; background:transparent; padding:8px 16px; border-radius:6px; font-size:0.86rem; font-weight:600; color:var(--muted); cursor:pointer; font-family:'Inter',sans-serif;}
+  .tabswitch button.active{background:var(--navy); color:#fff;}
+  .btn-download-small{background:var(--navy); color:#fff; padding:9px 16px; border-radius:3px; text-decoration:none; font-size:0.85rem; font-weight:600; border:1px solid var(--navy); white-space:nowrap;}
+  .btn-download-small:hover{background:var(--navy-2);}
+
+  .hero{padding:56px 0 36px;}
+  .kicker{color:var(--gold); font-weight:600; font-size:0.85rem; margin-bottom:14px;}
+  .hero h1{font-size:2.5rem; line-height:1.12; font-weight:700;}
+  .hero h1 em{font-style:normal; color:var(--gold);}
+  .hero p.lead{margin-top:18px; font-size:1.04rem; line-height:1.6; color:var(--muted); max-width:62ch;}
+  .stat-row{display:flex; gap:28px; margin-top:26px; flex-wrap:wrap;}
+  .stat{}
+  .stat .num{font-family:'Source Serif 4',serif; font-size:2rem; font-weight:700; color:var(--navy);}
+  .stat .lbl{font-size:0.82rem; color:var(--muted);}
+
+  section{padding:40px 0;}
+  .section-head{max-width:680px; margin-bottom:32px;}
+  .section-head p{color:var(--muted); margin-top:10px; font-size:1rem; line-height:1.6;}
+
+  /* filter pills */
+  .filters{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;}
+  .filter-pill{background:#fff; border:1px solid var(--line); color:var(--navy-2); font-size:0.83rem; padding:8px 15px; border-radius:20px; cursor:pointer; font-weight:500;}
+  .filter-pill:hover{border-color:var(--gold-2);}
+  .filter-pill.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+
+  /* problem card */
+  .problem-grid{display:flex; flex-direction:column; gap:12px;}
+  .problem{background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .problem-head{display:flex; align-items:center; gap:14px; padding:16px 18px; cursor:pointer;}
+  .problem-id{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--gold); font-weight:700; flex-shrink:0; width:28px;}
+  .problem-title{font-family:'Source Serif 4',serif; font-weight:600; font-size:1.02rem; color:var(--navy); flex:1;}
+  .cat-tag{font-size:0.7rem; font-weight:700; padding:3px 9px; border-radius:12px; white-space:nowrap;}
+  .chevron{width:18px; height:18px; flex-shrink:0; transition:transform .2s ease; color:var(--muted);}
+  .problem.open .chevron{transform:rotate(180deg); color:var(--gold);}
+  .problem-body{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .problem-body-inner{padding:0 18px 18px;}
+  .pb-row{display:grid; grid-template-columns:130px 1fr; gap:0; border-top:1px solid var(--line); padding:12px 0;}
+  .pb-row:first-child{border-top:1px solid var(--line); margin-top:4px;}
+  .pb-label{font-size:0.78rem; font-weight:700; color:var(--navy-2); display:flex; align-items:flex-start; gap:6px;}
+  .pb-text{font-size:0.9rem; line-height:1.55; color:var(--ink);}
+  @media(max-width:640px){ .pb-row{grid-template-columns:1fr;} .pb-label{margin-bottom:4px;} }
+
+  /* skill cards */
+  .skill-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media(max-width:760px){.skill-grid{grid-template-columns:1fr;}}
+  .skill{background:#fff; border:1px solid var(--line); border-radius:8px; padding:20px 20px 6px; display:flex; flex-direction:column;}
+  .skill-num{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--gold); font-weight:700;}
+  .skill h3{font-size:1.05rem; margin:6px 0 12px;}
+  .skill-block{margin-bottom:12px;}
+  .skill-block .lbl{font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; margin-bottom:5px; display:flex; align-items:center; gap:5px;}
+  .skill-block.konsep .lbl{color:var(--navy-2);}
+  .skill-block.tips .lbl{color:var(--amber-ink);}
+  .skill-block.skrip .lbl{color:var(--green-ink);}
+  .skill-block.salah .lbl{color:var(--red);}
+  .skill-block p{margin:0; font-size:0.87rem; line-height:1.55; color:var(--ink);}
+  .skill-block.skrip{background:var(--green-bg); padding:10px 12px; border-radius:6px;}
+  .skill-block.skrip p{font-style:italic;}
+  .skill-block.salah{background:var(--red-bg); padding:10px 12px; border-radius:6px;}
+
+  .insight-box{background:var(--navy); border-radius:10px; padding:30px 34px; color:#fff; margin-top:32px;}
+  .insight-box h3{color:var(--gold-2); font-size:1.1rem; margin-bottom:10px;}
+  .insight-box p{color:#D7E1EA; margin:0; line-height:1.6; font-size:0.95rem;}
+
+  .final-cta{background:var(--navy); border-radius:10px; padding:52px 44px; text-align:center;
+    background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:32px 32px;}
+  .final-cta h2{color:#fff; font-size:1.8rem;}
+  .final-cta p{color:#C7D3DD; max-width:56ch; margin:14px auto 26px; line-height:1.6;}
+  .btn-primary{background:var(--gold); color:var(--navy); padding:13px 24px; text-decoration:none; font-weight:700; border-radius:3px; font-size:0.92rem; display:inline-flex; align-items:center; gap:8px;}
+  .btn-primary:hover{background:var(--gold-2);}
+
+  footer{padding:28px; text-align:center; color:var(--muted); font-size:0.82rem; border-top:1px solid var(--line);}
+  .view{display:none;}
+  .view.active{display:block;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span>Project Control — Praktik Lapangan</div>
+    <div class="tabswitch">
+      <button data-view="problems" class="active">🚩 Persoalan Lapangan</button>
+      <button data-view="skills">🗣️ Skill Komunikasi</button>
+    </div>
+    <a class="btn-download-small" href="Panduan_Persoalan_Lapangan_dan_Skill_Komunikasi_Proyek.docx" download>Unduh Panduan (.docx)</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">PENDAMPING MODUL PROJECT CONTROL</div>
+    <h1>Dari teori ke <em>lapangan sungguhan</em>.</h1>
+    <p class="lead">22 persoalan yang paling sering dihadapi Project Control Engineer di lapangan — lengkap dengan gejala, penyebab, mitigasi, dan pencegahannya. Plus 12 skill komunikasi yang membedakan "penghitung angka" dari profesional yang dipercaya manajemen.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="num">22</div><div class="lbl">Persoalan Lapangan</div></div>
+      <div class="stat"><div class="num">7</div><div class="lbl">Kategori Masalah</div></div>
+      <div class="stat"><div class="num">12</div><div class="lbl">Skill Komunikasi</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl">Sudut Analisis / Kasus</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW: PROBLEMS ============ -->
+<section id="view-problems" class="view active">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>🚩 Persoalan Lapangan & Mitigasi</h2>
+      <p>Klik salah satu persoalan untuk membuka rincian Gejala, Penyebab, Mitigasi, dan Pencegahannya. Gunakan filter kategori untuk mempersempit pencarian.</p>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="problem-grid" id="problemGrid"></div>
+
+    <div class="insight-box">
+      <h3>💡 Pola yang berulang</h3>
+      <p>Hampir semua mitigasi efektif dari 22 persoalan di atas berakar pada tiga kebiasaan: dokumentasi yang konsisten sejak awal, komunikasi/notifikasi yang tepat waktu, dan verifikasi independen terhadap data lapangan. Tiga kebiasaan kecil ini mencegah kerugian besar di kemudian hari.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW: SKILLS ============ -->
+<section id="view-skills" class="view">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>🗣️ Skill Komunikasi di Dunia Proyek</h2>
+      <p>Dua belas skill yang paling sering dipakai Project Control Engineer/PM sehari-hari — lengkap dengan konsep, tips praktis, contoh skrip kalimat siap pakai, dan kesalahan umum yang harus dihindari.</p>
+    </div>
+    <div class="skill-grid" id="skillGrid"></div>
+
+    <div class="insight-box">
+      <h3>💡 Benang merah</h3>
+      <p>Seorang Project Control Engineer yang baik selalu memimpin dengan KESIMPULAN dan REKOMENDASI terlebih dahulu, baru diikuti data pendukung — bukan sebaliknya. Latih pola pikir "so what, now what" ini di setiap bentuk komunikasi, baik lisan maupun tertulis.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="final-cta">
+      <h2>Panduan lengkap 15 halaman siap diunduh.</h2>
+      <p>Semua 22 persoalan lapangan dan 12 skill komunikasi di atas, dalam satu dokumen Word yang bisa dicetak dan dibawa sebagai referensi cepat di lapangan.</p>
+      <a class="btn-primary" href="Panduan_Persoalan_Lapangan_dan_Skill_Komunikasi_Proyek.docx" download>Unduh Panduan (.docx)</a>
+    </div>
+  </div>
+</section>
+
+<footer>Persoalan Lapangan Project Control & Skill Komunikasi Proyek · Pendamping Modul Project Control · Edisi 2026</footer>
+
+<script>
+/* =========================== DATA: PROBLEMS =========================== */
+const catStyle = {
+  "Data & Pelaporan": {bg:"var(--blue-bg)", ink:"var(--blue-ink)"},
+  "Jadwal": {bg:"var(--amber-bg)", ink:"var(--amber-ink)"},
+  "Biaya": {bg:"var(--red-bg)", ink:"var(--red)"},
+  "Resource": {bg:"var(--green-bg)", ink:"var(--green-ink)"},
+  "Koordinasi": {bg:"#EFE7F6", ink:"#5B3F94"},
+  "Risiko": {bg:"#F6E7EF", ink:"#94406B"},
+  "Kontrak & Klaim": {bg:"#E7EDF6", ink:"#3F5E94"},
+};
+
+const problems = [
+{n:1, title:"Progress lapangan di-overclaim oleh mandor/subkontraktor", cat:"Data & Pelaporan",
+ gejala:"Laporan mandor selalu menyebut progress 'sesuai target', padahal secara visual pekerjaan masih jauh dari klaim tersebut.",
+ penyebab:"Insentif mandor terkait pencapaian target, rasa takut ditegur atasan, atau ketidaktahuan cara mengukur volume pekerjaan secara benar.",
+ mitigasi:"Verifikasi independen oleh QS/surveyor sebelum progress disahkan; cross-check dengan foto berstempel waktu dan lokasi; wajibkan progress didukung bukti pengukuran.",
+ pencegahan:"Edukasi mandor cara mengukur volume; terapkan SOP verifikasi progress berjenjang (mandor → supervisor → QS → project control)."},
+{n:2, title:"Data mentah tidak konsisten antar sumber (site, gudang, finance)", cat:"Data & Pelaporan",
+ gejala:"Angka material terpakai versi laporan gudang berbeda dengan versi laporan progress site.",
+ penyebab:"Tidak ada single source of truth; data diupdate manual di banyak file Excel terpisah oleh orang berbeda.",
+ mitigasi:"Bangun satu database terpusat (Excel dengan link antar-sheet atau Power BI) sebagai sumber data tunggal; tetapkan otoritas update data.",
+ pencegahan:"Susun SOP data governance: siapa input data apa, kapan cut-off, siapa yang harus approve."},
+{n:3, title:"Laporan mingguan terlambat atau formatnya tidak konsisten", cat:"Data & Pelaporan",
+ gejala:"Laporan mingguan kadang terlambat 2–3 hari dan formatnya berubah-ubah setiap minggu.",
+ penyebab:"Tidak ada template baku; proses pengumpulan data masih manual dan tersebar di banyak pihak.",
+ mitigasi:"Gunakan template standar terkunci (locked template); tetapkan deadline cut-off tegas disertai pengingat otomatis.",
+ pencegahan:"Otomatisasi sebagian proses (macro Excel/refresh Power BI) agar laporan tidak bergantung pada satu orang."},
+{n:4, title:"Keterlambatan pengiriman material/alat kritis (long-lead item)", cat:"Jadwal",
+ gejala:"Item lead time panjang (trafo, baja fabrikasi, mesin impor) belum tiba mendekati tanggal dibutuhkan.",
+ penyebab:"Proses pengadaan dimulai terlambat; tidak ada expediting aktif ke vendor.",
+ mitigasi:"Identifikasi long-lead item sejak perencanaan; buat procurement schedule terpisah terintegrasi dengan master schedule; expediting mingguan.",
+ pencegahan:"Susun dan review 'critical material list' rutin di setiap rapat koordinasi."},
+{n:5, title:"Cuaca ekstrem mengganggu aktivitas outdoor", cat:"Jadwal",
+ gejala:"Hujan deras berturut-turut menghentikan pengecoran/pengaspalan selama beberapa hari.",
+ penyebab:"Aktivitas sensitif cuaca dijadwalkan tanpa mempertimbangkan pola musim di lokasi proyek.",
+ mitigasi:"Jadwalkan aktivitas sensitif cuaca di luar puncak musim hujan; siapkan pekerjaan alternatif indoor; alokasikan float tambahan.",
+ pencegahan:"Gunakan data historis cuaca (BMKG) untuk membangun 'weather contingency' ke durasi rencana sejak awal."},
+{n:6, title:"Resource conflict antar aktivitas paralel", cat:"Jadwal",
+ gejala:"Dua aktivitas berbeda sama-sama membutuhkan crane yang sama pada waktu bersamaan.",
+ penyebab:"Penyusunan jadwal tidak mempertimbangkan keterbatasan shared resource antar disiplin.",
+ mitigasi:"Lakukan resource leveling pada jadwal; buat resource calendar bersama yang bisa diakses semua discipline lead.",
+ pencegahan:"Review resource histogram setiap kali jadwal diupdate (bulanan)."},
+{n:7, title:"Baseline schedule tidak realistis sejak awal (over-optimistic)", cat:"Jadwal",
+ gejala:"Proyek baru berjalan 2 bulan sudah delay signifikan, padahal belum ada gangguan besar.",
+ penyebab:"Baseline disusun untuk memenangkan tender/menyenangkan klien, bukan realistis.",
+ mitigasi:"Lakukan schedule risk review independen sebelum baseline disetujui; gunakan data produktivitas historis, bukan asumsi optimis.",
+ pencegahan:"Libatkan tim eksekusi lapangan dalam penyusunan estimasi durasi, bukan hanya tim tender."},
+{n:8, title:"Change order/variation tidak terdokumentasi sebelum pekerjaan dimulai", cat:"Biaya",
+ gejala:"Pekerjaan tambah di luar kontrak sudah selesai dikerjakan, baru diajukan variation order-nya.",
+ penyebab:"Tekanan waktu lapangan dan budaya 'kerjakan dulu, urus dokumen belakangan'.",
+ mitigasi:"Terapkan aturan 'no PO/VO approved, no work start'; sediakan jalur fast-track approval untuk situasi mendesak.",
+ pencegahan:"Edukasi tim lapangan tentang risiko hilangnya hak klaim akibat VO tak terdokumentasi."},
+{n:9, title:"Cost overrun akibat kenaikan harga material yang tak terduga", cat:"Biaya",
+ gejala:"Unit rate aktual jauh di atas rencana karena harga baja/semen naik drastis.",
+ penyebab:"Kontrak tidak punya klausul price escalation; tidak ada pemantauan harga komoditas berkala.",
+ mitigasi:"Pantau tren harga komoditas kunci rutin; update forecast EAC lebih awal; ajukan klaim eskalasi bila kontrak mengizinkan.",
+ pencegahan:"Negosiasikan klausul price adjustment untuk item volatile sejak negosiasi kontrak."},
+{n:10, title:"Cash flow negatif karena termin pembayaran klien tidak selaras", cat:"Biaya",
+ gejala:"Proyek harus membayar subkontraktor sebelum termin dari klien cair.",
+ penyebab:"Milestone pembayaran di kontrak tidak selaras dengan kebutuhan cash-out riil.",
+ mitigasi:"Bangun cash flow forecast detail sejak awal; negosiasikan milestone payment yang lebih align; gunakan bridging financing bila perlu.",
+ pencegahan:"Review payment terms saat negosiasi kontrak, bukan setelah proyek berjalan."},
+{n:11, title:"Klaim dari subkontraktor akibat keterlambatan pihak lain", cat:"Biaya",
+ gejala:"Subkontraktor mengajukan claim for delay, menyalahkan keterlambatan approval gambar.",
+ penyebab:"Dokumentasi delay tidak lengkap; tidak ada notifikasi tepat waktu.",
+ mitigasi:"Dokumentasikan seluruh delay event secara real-time; lakukan delay analysis untuk menentukan porsi tanggung jawab yang adil.",
+ pencegahan:"SOP notifikasi delay wajib dalam batas waktu tertentu (misal 7 hari) sesuai kontrak."},
+{n:12, title:"Kekurangan tenaga kerja skilled di musim puncak proyek", cat:"Resource",
+ gejala:"Tukang las berpengalaman langka karena banyak proyek berjalan bersamaan di daerah yang sama.",
+ penyebab:"Perencanaan resource tidak mengantisipasi kompetisi tenaga kerja regional.",
+ mitigasi:"Mobilisasi tenaga kerja dari daerah lain lebih awal; program training percepatan; insentif retensi.",
+ pencegahan:"Market survey ketersediaan tenaga kerja saat perencanaan resource."},
+{n:13, title:"Turnover tenaga kerja tinggi di tengah proyek", cat:"Resource",
+ gejala:"Banyak pekerja resign di pertengahan proyek, produktivitas tim baru rendah karena learning curve.",
+ penyebab:"Kondisi kerja kurang baik, upah terlambat, lokasi proyek jauh dari pemukiman.",
+ mitigasi:"Perbaiki fasilitas dan sistem pembayaran upah tepat waktu; program retensi; cross-training tim.",
+ pencegahan:"Exit interview konsisten untuk memahami akar masalah turnover."},
+{n:14, title:"Alat berat sering breakdown mendekati target produksi kritis", cat:"Resource",
+ gejala:"Unit utama down tepat saat dibutuhkan untuk mengejar target bulanan.",
+ penyebab:"Preventive maintenance tidak konsisten; alat sudah tua/over-usia ekonomis.",
+ mitigasi:"Audit jadwal PM; siapkan unit cadangan (standby unit) untuk periode kritis; evaluasi kelayakan alat tua.",
+ pencegahan:"Monitoring MTBF/MTTR berkala sebagai early warning."},
+{n:15, title:"Miskomunikasi antar disiplin (sipil vs MEP vs arsitek)", cat:"Koordinasi",
+ gejala:"Instalasi pipa MEP bentrok dengan posisi balok struktur yang sudah dicor.",
+ penyebab:"Koordinasi gambar (clash detection) tidak dilakukan sebelum eksekusi.",
+ mitigasi:"Coordination meeting rutin lintas disiplin; gunakan BIM/clash detection; freeze shop drawing sebelum eksekusi kritis.",
+ pencegahan:"Tetapkan milestone 'design freeze' untuk area kritis."},
+{n:16, title:"Approval dari klien/konsultan berjalan lambat", cat:"Koordinasi",
+ gejala:"Shop drawing menunggu approval 3 minggu, padahal SLA kontrak 7 hari.",
+ penyebab:"Proses review berlapis di sisi klien; tidak ada mekanisme eskalasi.",
+ mitigasi:"Kirim reminder formal terdokumentasi; submit lebih awal dari kebutuhan aktual; eskalasi bila SLA dilanggar berulang.",
+ pencegahan:"Sepakati SLA approval tertulis di awal proyek dan pantau kepatuhannya sebagai KPI."},
+{n:17, title:"Klien sering mengubah keputusan / revisi berulang", cat:"Koordinasi",
+ gejala:"Desain interior direvisi 4 kali dalam sebulan, menghambat pekerjaan finishing.",
+ penyebab:"Keputusan klien tidak difinalisasi formal; banyak pihak klien punya otoritas berbeda.",
+ mitigasi:"Minta satu single point of contact dari sisi klien; dokumentasikan setiap keputusan dan dampaknya secara formal.",
+ pencegahan:"Klausul kontrak mengenai batas jumlah revisi gratis dan biaya revisi tambahan."},
+{n:18, title:"Subkontraktor tidak kooperatif / kinerja buruk", cat:"Koordinasi",
+ gejala:"Subkontraktor MEP sering absen rapat koordinasi dan progress selalu di bawah target.",
+ penyebab:"Kontrak tidak punya klausul kinerja mengikat; tidak ada sistem penalti/reward.",
+ mitigasi:"Performance monitoring rutin dengan KPI jelas; surat peringatan formal; siapkan subkontraktor pengganti.",
+ pencegahan:"Due diligence lebih ketat saat seleksi subkontraktor."},
+{n:19, title:"Bencana alam/force majeure menghentikan proyek total", cat:"Risiko",
+ gejala:"Banjir besar merendam site selama 2 minggu penuh.",
+ penyebab:"Risiko force majeure tidak dianggarkan/direncanakan sejak awal.",
+ mitigasi:"Aktifkan klausul force majeure; dokumentasikan dampak untuk klaim perpanjangan waktu; evaluasi ulang jadwal pasca kejadian.",
+ pencegahan:"Siapkan emergency response plan dan asuransi proyek (CAR/EAR) yang memadai."},
+{n:20, title:"Perubahan regulasi pemerintah di tengah proyek", cat:"Risiko",
+ gejala:"Standar K3/lingkungan baru mewajibkan modifikasi desain/metode kerja yang sudah berjalan.",
+ penyebab:"Monitoring regulasi tidak dilakukan berkala.",
+ mitigasi:"Tunjuk PIC pemantau regulasi; lakukan gap analysis dampak terhadap scope/cost/schedule; ajukan VO bila perlu.",
+ pencegahan:"Berlangganan update regulasi dari asosiasi industri terkait."},
+{n:21, title:"Ambiguitas scope dalam kontrak menimbulkan dispute", cat:"Kontrak & Klaim",
+ gejala:"Klien dan kontraktor berbeda pendapat apakah waterproofing termasuk lingkup awal.",
+ penyebab:"BOQ/spesifikasi kontrak tidak detail; asumsi tidak dituliskan eksplisit.",
+ mitigasi:"Contract review sejak awal untuk area abu-abu; klarifikasi tertulis sebelum eksekusi; dokumentasikan semua asumsi.",
+ pencegahan:"Gunakan template BOQ/spesifikasi teruji dan clarification register saat tender."},
+{n:22, title:"Dokumentasi klaim tidak lengkap saat dispute terjadi", cat:"Kontrak & Klaim",
+ gejala:"Saat klaim diajukan ke arbitrase, banyak bukti korespondensi hilang/tidak terorganisir.",
+ penyebab:"Tidak ada sistem dokumentasi terpusat sejak awal proyek.",
+ mitigasi:"Bangun document control system sejak hari pertama; libatkan tim legal/kontrak sejak ada indikasi dispute.",
+ pencegahan:"Audit kelengkapan dokumentasi proyek berkala, misalnya tiap kuartal."},
+];
+
+/* =========================== DATA: SKILLS =========================== */
+const skills = [
+{n:1, title:"Melaporkan Status Proyek", konsep:"Laporan status efektif mengikuti struktur 'kesimpulan dulu, detail belakangan' — bukan urutan kronologis.", tips:"Mulai dengan headline/kesimpulan, baru detail pendukung; gunakan data visual (S-Curve) alih-alih narasi panjang.", skrip:"\"Proyek saat ini SPI 0,85 dan CPI 0,92 — di bawah target. Penyebab utama keterlambatan pengiriman baja. Kami usulkan resequencing pekerjaan finishing.\"", salah:"Melaporkan data mentah tanpa insight atau rekomendasi tindak lanjut."},
+{n:2, title:"Menyampaikan Kabar Buruk", konsep:"Kabar buruk yang disampaikan lebih awal dengan solusi jauh lebih baik diterima dibanding ditutup-tutupi.", tips:"Gabungkan kabar buruk + data pendukung + rencana mitigasi dalam satu penyampaian; hindari menyalahkan pihak lain.", skrip:"\"Milestone pengecoran akan mundur 5 hari akibat cuaca. Berikut data curah hujan pendukung dan rencana percepatan kami.\"", salah:"Menunda penyampaian masalah dengan harapan bisa 'diselesaikan diam-diam'."},
+{n:3, title:"Memimpin Rapat Koordinasi", konsep:"Rapat efektif punya agenda jelas, notulen actionable (PIC + due date), dan disiplin waktu.", tips:"Mulai dengan review action item minggu lalu; tutup dengan ringkasan next steps.", skrip:"\"Sebelum agenda baru, mari review 3 action item minggu lalu — mana yang selesai, mana yang tertunda.\"", salah:"Rapat tanpa notulen tertulis, atau notulen tidak pernah ditindaklanjuti."},
+{n:4, title:"Negosiasi dengan Subkontraktor/Vendor", konsep:"Fokus pada kepentingan (interest) kedua pihak, bukan posisi awal — mencari solusi win-win.", tips:"Siapkan BATNA sebelum negosiasi; gunakan data pasar sebagai basis argumen, bukan emosi.", skrip:"\"Kami paham kenaikan harga besi memengaruhi margin Bapak. Berdasarkan data pasar, rate wajar adalah sekian. Bagaimana jika selisihnya dibagi sesuai klausul eskalasi?\"", salah:"Langsung menolak tanpa data pembanding."},
+{n:5, title:"Komunikasi Asertif", konsep:"Menyampaikan kebutuhan/pendapat jelas dan jujur, tanpa menyerang atau mengalah berlebihan.", tips:"Gunakan kalimat 'saya' (I-statement) untuk menyampaikan kekhawatiran.", skrip:"\"Saya khawatir jadwal ini terlalu ketat karena keterbatasan tenaga skilled\" — bukan \"Jadwal ini pasti gagal, tim tidak becus.\"", salah:"Diam saat tidak setuju, lalu menyalahkan pihak lain belakangan (pasif-agresif)."},
+{n:6, title:"Mendengar Aktif", konsep:"Memahami maksud lawan bicara sebelum merespons, bukan menunggu giliran bicara.", tips:"Gunakan parafrase ('Jadi maksud Bapak adalah...') sebelum merespons; ajukan pertanyaan terbuka.", skrip:"\"Jadi kalau saya pahami, kendala utama ada di ketersediaan crane, bukan jumlah tenaga kerja — benar begitu?\"", salah:"Memotong pembicaraan sebelum lawan bicara selesai menjelaskan."},
+{n:7, title:"Menulis Email/Laporan Formal", konsep:"Struktur piramida terbalik — kesimpulan/permintaan di awal, detail menyusul.", tips:"Subject email spesifik dan actionable; gunakan bullet point untuk item tindak lanjut.", skrip:"Subject: \"Perlu Approval: VO-015 Sebelum 15 September\" — bukan \"Update Proyek\".", salah:"Email panjang tanpa struktur, permintaan tersembunyi di paragraf kelima."},
+{n:8, title:"Manajemen Stakeholder", konsep:"Sesuaikan gaya & detail komunikasi dengan level interest & influence stakeholder.", tips:"Direksi butuh ringkasan+angka kunci; tim teknis butuh detail; lapangan butuh instruksi konkret.", skrip:"Untuk direksi: \"Proyek berpotensi mundur 3 minggu, dampak Rp200 juta, rekomendasi: setujui percepatan.\"", salah:"Menyamaratakan gaya komunikasi ke semua pihak."},
+{n:9, title:"Komunikasi Lintas Disiplin", konsep:"Setiap fungsi (finance, teknik, lapangan) punya 'bahasa' dan prioritas berbeda.", tips:"Terjemahkan istilah teknis ke dampak bisnis untuk audiens non-teknis.", skrip:"Bukan \"SPI kita 0,8\", melainkan \"Proyek berpotensi mundur satu bulan dari jadwal serah terima.\"", salah:"Menggunakan jargon teknis (SPI, CPI, EAC) tanpa penjelasan."},
+{n:10, title:"Resolusi Konflik", konsep:"Fokus pada masalah, bukan menyerang pribadi; cari akar masalah bersama.", tips:"Gunakan pendekatan interest-based; libatkan mediator bila deadlock.", skrip:"\"Mari fokus dulu pada cara menyelesaikan keterlambatan ini — soal tanggung jawab bisa dibahas setelahnya.\"", salah:"Membiarkan konflik pribadi dibahas terbuka dalam rapat besar."},
+{n:11, title:"Presentasi ke Manajemen", konsep:"Storytelling with data — mulai dari 'so what', bukan proses detail.", tips:"Maksimal 3 poin utama per presentasi; gunakan visual, bukan tabel data mentah.", skrip:"\"Tiga hal yang perlu diketahui: status keseluruhan, risiko utama, dan keputusan yang kami butuhkan.\"", salah:"Slide penuh teks/tabel tanpa rekomendasi jelas di akhir."},
+{n:12, title:"Memberi Feedback ke Tim Junior", konsep:"Feedback spesifik pada perilaku yang teramati, bukan menilai karakter.", tips:"Gunakan format SBI (Situation–Behavior–Impact).", skrip:"\"Saat rapat kemarin, laporan progress tidak disertai data pendukung, sehingga klien meragukan kredibilitas kita.\"", salah:"Feedback umum ('kerjamu kurang bagus') tanpa contoh spesifik."},
+];
+
+/* =========================== RENDER: PROBLEMS =========================== */
+const filtersEl = document.getElementById('filters');
+const grid = document.getElementById('problemGrid');
+const categories = ["Semua", ...Object.keys(catStyle)];
+let activeCat = "Semua";
+
+categories.forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'filter-pill' + (c === "Semua" ? ' active' : '');
+  b.textContent = c;
+  b.addEventListener('click', () => {
+    activeCat = c;
+    Array.from(filtersEl.children).forEach(el => el.classList.toggle('active', el.textContent === c));
+    renderProblems();
+  });
+  filtersEl.appendChild(b);
+});
+
+function renderProblems(){
+  grid.innerHTML = '';
+  problems.filter(p => activeCat === "Semua" || p.cat === activeCat).forEach(p => {
+    const style = catStyle[p.cat];
+    const card = document.createElement('div');
+    card.className = 'problem';
+    card.innerHTML = `
+      <div class="problem-head">
+        <div class="problem-id">#${p.n}</div>
+        <div class="problem-title">${p.title}</div>
+        <div class="cat-tag" style="background:${style.bg}; color:${style.ink};">${p.cat}</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="problem-body">
+        <div class="problem-body-inner">
+          <div class="pb-row"><div class="pb-label">🚩 Gejala</div><div class="pb-text">${p.gejala}</div></div>
+          <div class="pb-row"><div class="pb-label">🔍 Penyebab</div><div class="pb-text">${p.penyebab}</div></div>
+          <div class="pb-row"><div class="pb-label">🛠️ Mitigasi</div><div class="pb-text">${p.mitigasi}</div></div>
+          <div class="pb-row"><div class="pb-label">🛡️ Pencegahan</div><div class="pb-text">${p.pencegahan}</div></div>
+        </div>
+      </div>
+    `;
+    const head = card.querySelector('.problem-head');
+    const body = card.querySelector('.problem-body');
+    head.addEventListener('click', () => {
+      const isOpen = card.classList.contains('open');
+      card.classList.toggle('open');
+      body.style.maxHeight = isOpen ? '0px' : body.scrollHeight + 'px';
+    });
+    grid.appendChild(card);
+  });
+}
+renderProblems();
+
+/* =========================== RENDER: SKILLS =========================== */
+const skillGrid = document.getElementById('skillGrid');
+skills.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'skill';
+  card.innerHTML = `
+    <div class="skill-num">SKILL ${String(s.n).padStart(2,'0')}</div>
+    <h3>${s.title}</h3>
+    <div class="skill-block konsep"><div class="lbl">💡 Konsep</div><p>${s.konsep}</p></div>
+    <div class="skill-block tips"><div class="lbl">✅ Tips Praktis</div><p>${s.tips}</p></div>
+    <div class="skill-block skrip"><div class="lbl">🗣️ Contoh Skrip</div><p>${s.skrip}</p></div>
+    <div class="skill-block salah"><div class="lbl">⚠️ Kesalahan Umum</div><p>${s.salah}</p></div>
+  `;
+  skillGrid.appendChild(card);
+});
+
+/* =========================== TAB SWITCH =========================== */
+const tabBtns = document.querySelectorAll('.tabswitch button');
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+
+// open first problem by default
+setTimeout(() => { const first = grid.querySelector('.problem-head'); if(first) first.click(); }, 150);
+</script>
+
+</body>
+</html>

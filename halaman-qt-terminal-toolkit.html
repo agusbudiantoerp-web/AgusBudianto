@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QT-TERMINAL — Institutional Quant Trading Toolkit</title>
+<style>
+:root{
+  --bg:#08090c; --panel:#0f1218; --panel2:#141822; --border:#232833;
+  --text:#D8DEE6; --muted:#6C7686; --dim:#454e5c;
+  --green:#31D19C; --amber:#F5A623; --red:#FF5C63; --blue:#4C9AFF; --violet:#A78BFA;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  --sans:"Inter",-apple-system,sans-serif;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;}
+a{color:inherit;}
+button{font-family:var(--mono);cursor:pointer;}
+input, select, textarea{font-family:var(--mono);}
+::-webkit-scrollbar{width:9px;height:9px;}
+::-webkit-scrollbar-thumb{background:#262b36;border-radius:0;}
+::-webkit-scrollbar-track{background:var(--bg);}
+
+/* ---------- Top bar ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:#0a0c10;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;height:52px;gap:22px;}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--sans);font-weight:800;letter-spacing:0.02em;font-size:14.5px;}
+.logo .dot{width:9px;height:9px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+.clock{color:var(--muted);font-size:11.5px;}
+.tabs{display:flex;gap:2px;margin-left:auto;height:52px;}
+.tabbtn{background:transparent;border:none;color:var(--muted);padding:0 16px;font-size:11.5px;font-weight:600;
+  letter-spacing:.03em;border-bottom:2px solid transparent;height:52px;transition:.15s;}
+.tabbtn:hover{color:var(--text);}
+.tabbtn.active{color:var(--green);border-bottom-color:var(--green);background:rgba(49,209,156,0.05);}
+.status-pill{font-size:10px;color:var(--green);border:1px solid rgba(49,209,156,0.4);background:rgba(49,209,156,0.08);
+  padding:3px 8px;border-radius:2px;}
+
+main{max-width:1400px;margin:0 auto;padding:22px 20px 80px;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;animation:fade .2s;}
+@keyframes fade{from{opacity:0;} to{opacity:1;}}
+
+.page-head{margin-bottom:20px;}
+.page-head h1{font-family:var(--sans);font-size:19px;font-weight:700;margin:0 0 4px;color:#fff;}
+.page-head p{color:var(--muted);font-size:12px;margin:0;max-width:80ch;}
+
+.grid{display:grid;gap:14px;}
+.grid-2{grid-template-columns:1fr 1fr;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-12{grid-template-columns:repeat(12,1fr);}
+.col-4{grid-column:span 4;}
+.col-5{grid-column:span 5;}
+.col-6{grid-column:span 6;}
+.col-7{grid-column:span 7;}
+.col-8{grid-column:span 8;}
+.col-12{grid-column:span 12;}
+@media(max-width:980px){.grid-2,.grid-3{grid-template-columns:1fr;} .grid-12>*{grid-column:span 12 !important;}}
+
+.panel{background:var(--panel);border:1px solid var(--border);padding:16px 18px;}
+.panel-title{font-family:var(--sans);font-size:11.5px;font-weight:700;color:var(--text);letter-spacing:.04em;
+  text-transform:uppercase;margin:0 0 3px;display:flex;align-items:center;justify-content:space-between;}
+.panel-sub{color:var(--muted);font-size:11px;margin:0 0 14px;}
+
+.btn{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:8px 14px;font-size:11.5px;
+  font-weight:600;letter-spacing:.02em;transition:.12s;}
+.btn:hover{border-color:var(--green);color:var(--green);}
+.btn.primary{background:var(--green);color:#04140f;border-color:var(--green);}
+.btn.primary:hover{filter:brightness(1.08);color:#04140f;}
+.btn.small{padding:5px 10px;font-size:10.5px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+
+textarea{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:10px;
+  font-size:11.5px;resize:vertical;min-height:120px;}
+input[type=text],input[type=number]{background:var(--panel2);border:1px solid var(--border);color:var(--text);
+  padding:6px 8px;font-size:12px;width:100%;}
+input[type=range]{width:100%;accent-color:var(--green);}
+select{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:6px 8px;font-size:11.5px;}
+label.field-label{display:block;font-size:10.5px;color:var(--muted);margin:0 0 5px;text-transform:uppercase;letter-spacing:.03em;}
+
+table{width:100%;border-collapse:collapse;font-size:11.5px;}
+th{text-align:right;color:var(--muted);font-weight:600;padding:7px 8px;border-bottom:1px solid var(--border);
+  font-size:10px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;}
+th:first-child, td:first-child{text-align:left;}
+td{padding:6px 8px;border-bottom:1px solid #171b23;text-align:right;white-space:nowrap;}
+tr:hover td{background:#12161f;}
+.pos{color:var(--green);} .neg{color:var(--red);}
+.editable{background:rgba(76,154,255,0.06);outline:1px solid rgba(76,154,255,0.25);cursor:text;}
+.editable:focus{outline:1px solid var(--blue);background:rgba(76,154,255,0.12);}
+
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.metric-box{background:var(--panel2);border:1px solid var(--border);padding:11px 12px;}
+.metric-box .lab{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+.metric-box .val{font-family:var(--mono);font-size:19px;font-weight:600;color:var(--text);}
+.metric-box .val.pos{color:var(--green);} .metric-box .val.neg{color:var(--red);}
+@media(max-width:700px){.metric-grid{grid-template-columns:repeat(2,1fr);}}
+
+svg.chart{width:100%;height:auto;display:block;}
+.chart-wrap{background:var(--panel2);border:1px solid var(--border);padding:10px;}
+.legend{display:flex;gap:14px;font-size:10.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap;}
+.legend span{display:inline-flex;align-items:center;gap:5px;}
+.legend i{width:9px;height:9px;display:inline-block;}
+
+.tag{display:inline-block;font-size:9.5px;padding:2px 7px;border:1px solid var(--border);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.03em;}
+.tag.on{border-color:var(--green);color:var(--green);}
+.note{font-size:10.8px;color:var(--muted);line-height:1.55;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);}
+.warn{color:var(--amber);}
+hr.sep{border:none;border-top:1px solid var(--border);margin:18px 0;}
+
+.checklist{display:flex;flex-wrap:wrap;gap:6px;}
+.chk{display:flex;align-items:center;gap:6px;background:var(--panel2);border:1px solid var(--border);padding:5px 9px;font-size:11px;}
+.chk input{accent-color:var(--green);}
+
+.corr-cell{width:52px;text-align:center;}
+footer.foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);color:var(--dim);font-size:10.5px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><span class="dot"></span>QT-TERMINAL <span style="color:var(--muted);font-weight:400">/ institutional toolkit</span></div>
+  <div class="clock" id="clock">--:--:--</div>
+  <div class="tabs" id="tabs">
+    <button class="tabbtn active" data-tab="data">01 · DATA</button>
+    <button class="tabbtn" data-tab="research">02 · FACTOR &amp; BACKTEST</button>
+    <button class="tabbtn" data-tab="optimizer">03 · PORTFOLIO OPT.</button>
+    <button class="tabbtn" data-tab="risk">04 · RISK SIZING</button>
+    <button class="tabbtn" data-tab="exec">05 · EXECUTION</button>
+  </div>
+</div>
+
+<main>
+
+<!-- ================= TAB 1: DATA ================= -->
+<section class="tabpanel active" id="tab-data">
+  <div class="page-head">
+    <h1>Market Data & Universe</h1>
+    <p>Muat data harga (paste CSV wide-format: Date,Asset1,Asset2,...) atau generate universe sintetis multi-asset-class untuk menguji seluruh toolkit. Semua modul di bawah (Factor Engine, Optimizer, Risk Sizing, Execution) menghitung ulang otomatis dari data yang dimuat di sini.</p>
+  </div>
+
+  <div class="grid grid-12">
+    <div class="panel col-6">
+      <div class="panel-title">Muat Data <span class="tag" id="dataStatusTag">Belum ada data</span></div>
+      <p class="panel-sub">Format CSV: baris pertama header (Date,Asset1,Asset2,...), baris berikutnya harga penutupan harian. Minimal ~60 baris untuk hasil statistik yang stabil.</p>
+      <div class="btn-row">
+        <button class="btn primary" id="btnLoadSample">⚡ Generate Universe Sintetis (8 aset, 504 hari)</button>
+        <button class="btn" id="btnParseCsv">Parse CSV di bawah</button>
+        <button class="btn" id="btnClear">Bersihkan</button>
+      </div>
+      <textarea id="csvInput" placeholder="Date,EQ-A,EQ-B,FI-A,CMD-A
+2024-01-02,100.0,50.2,102.1,30.4
+2024-01-03,101.2,50.0,102.0,30.9
+..."></textarea>
+      <div class="note" id="dataMsg">Belum ada data dimuat. Klik "Generate Universe Sintetis" untuk mulai, atau paste CSV harga riil Anda sendiri.</div>
+    </div>
+
+    <div class="panel col-6">
+      <div class="panel-title">Ringkasan Universe</div>
+      <p class="panel-sub">Return & volatilitas tahunan dihitung dari seluruh sampel data yang dimuat.</p>
+      <div style="overflow-x:auto;"><table id="assetStatsTable"><thead><tr>
+        <th>Aset</th><th>Ann. Return</th><th>Ann. Vol</th><th>Skew</th><th>Sharpe (rf=5.5%)</th>
+      </tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="panel col-12">
+      <div class="panel-title">Price Chart (normalized = 100)</div>
+      <div class="chart-wrap"><svg class="chart" id="priceChart" viewBox="0 0 1200 320" preserveAspectRatio="none"></svg></div>
+      <div class="legend" id="priceLegend"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 2: FACTOR & BACKTEST ================= -->
+<section class="tabpanel" id="tab-research">
+  <div class="page-head">
+    <h1>Factor Engine & Quantile Backtest</h1>
+    <p>Hitung skor faktor cross-sectional pada setiap tanggal rebalance, bentuk portofolio long top-tertile / short bottom-tertile, lalu evaluasi performa & Information Coefficient (IC) secara out-of-sample rolling.</p>
+  </div>
+
+  <div class="grid grid-12">
+    <div class="panel col-4">
+      <div class="panel-title">Konfigurasi</div>
+      <label class="field-label">Faktor</label>
+      <select id="factorSelect" style="width:100%;margin-bottom:12px;">
+        <option value="momentum">Momentum (12m − 1m)</option>
+        <option value="lowvol">Low-Volatility (inverse realized vol 63d)</option>
+        <option value="reversal">Short-term Reversal (−return 5d)</option>
+      </select>
+      <label class="field-label">Rebalance (hari bursa)</label>
+      <select id="rebalSelect" style="width:100%;margin-bottom:12px;">
+        <option value="21">Bulanan (21 hari)</option>
+        <option value="63" selected>Kuartalan (63 hari)</option>
+        <option value="5">Mingguan (5 hari)</option>
+      </select>
+      <label class="field-label">Lookback momentum (hari, dilewati 1 bulan terakhir)</label>
+      <input type="number" id="momLookback" value="252" style="margin-bottom:14px;">
+      <button class="btn primary" id="btnRunBacktest" style="width:100%;">▶ Jalankan Backtest</button>
+      <div class="note">Karena universe berjumlah kecil (≤10 aset), portofolio dibagi tertile (1/3 teratas vs 1/3 terbawah) alih-alih kuintil standar industri.</div>
+    </div>
+
+    <div class="panel col-8">
+      <div class="panel-title">Ringkasan Performa Strategi (Long-Short)</div>
+      <div class="metric-grid" id="btMetrics">
+        <div class="metric-box"><div class="lab">CAGR</div><div class="val" id="mCagr">—</div></div>
+        <div class="metric-box"><div class="lab">Ann. Volatility</div><div class="val" id="mVol">—</div></div>
+        <div class="metric-box"><div class="lab">Sharpe</div><div class="val" id="mSharpe">—</div></div>
+        <div class="metric-box"><div class="lab">Sortino</div><div class="val" id="mSortino">—</div></div>
+        <div class="metric-box"><div class="lab">Max Drawdown</div><div class="val" id="mMaxDD">—</div></div>
+        <div class="metric-box"><div class="lab">Calmar</div><div class="val" id="mCalmar">—</div></div>
+        <div class="metric-box"><div class="lab">Avg. IC</div><div class="val" id="mIC">—</div></div>
+        <div class="metric-box"><div class="lab">Hit Rate (periode)</div><div class="val" id="mHit">—</div></div>
+      </div>
+    </div>
+
+    <div class="panel col-8">
+      <div class="panel-title">Equity Curve — Long Top-Tertile / Short Bottom-Tertile</div>
+      <div class="chart-wrap"><svg class="chart" id="equityChart" viewBox="0 0 900 260" preserveAspectRatio="none"></svg></div>
+      <div class="panel-title" style="margin-top:16px;">Underwater Drawdown</div>
+      <div class="chart-wrap"><svg class="chart" id="ddChart" viewBox="0 0 900 140" preserveAspectRatio="none"></svg></div>
+    </div>
+
+    <div class="panel col-4">
+      <div class="panel-title">Rata-rata Return per Tertile</div>
+      <div class="chart-wrap"><svg class="chart" id="tertileChart" viewBox="0 0 320 220" preserveAspectRatio="none"></svg></div>
+      <div class="note">Pola monoton (tertile atas &gt; tengah &gt; bawah) mengindikasikan faktor punya daya prediksi cross-sectional yang konsisten.</div>
+    </div>
+
+    <div class="panel col-12">
+      <div class="panel-title">Skor Faktor Terkini (tanggal rebalance terakhir)</div>
+      <div style="overflow-x:auto;"><table id="factorTable"><thead><tr><th>Aset</th><th>Skor Faktor</th><th>Rank</th><th>Tertile</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 3: PORTFOLIO OPTIMIZER ================= -->
+<section class="tabpanel" id="tab-optimizer">
+  <div class="page-head">
+    <h1>Markowitz Portfolio Optimizer</h1>
+    <p>Solusi analitik exact (bukan grid-search): matriks kovarian dibalik langsung (Gauss-Jordan) untuk menghasilkan Global Minimum Variance portfolio, Tangency (max-Sharpe) portfolio, dan efficient frontier penuh — dengan opsi shrinkage regularization ala Ledoit-Wolf.</p>
+  </div>
+
+  <div class="grid grid-12">
+    <div class="panel col-12">
+      <div class="panel-title">Pilih Aset untuk Dioptimasi (maks. 8)</div>
+      <div class="checklist" id="assetChecklist"></div>
+    </div>
+
+    <div class="panel col-5">
+      <div class="panel-title">Expected Return & Volatilitas (bisa diedit)</div>
+      <p class="panel-sub">Terisi otomatis dari statistik historis di tab Data — silakan override sesuai pandangan/forecast Anda.</p>
+      <div style="overflow-x:auto;"><table id="optInputTable"><thead><tr><th>Aset</th><th>E[Return]</th><th>Volatilitas</th></tr></thead><tbody></tbody></table></div>
+      <label class="field-label" style="margin-top:14px;">Shrinkage intensity λ (menarik korelasi → 0): <span id="lamVal" style="color:var(--text)">30%</span></label>
+      <input type="range" id="shrinkSlider" min="0" max="100" value="30">
+      <label class="field-label" style="margin-top:12px;">Risk-free rate tahunan</label>
+      <input type="number" id="rfInput" value="5.5" step="0.1" style="width:100px;">
+      <button class="btn primary" id="btnOptimize" style="width:100%;margin-top:14px;">▶ Hitung Efficient Frontier</button>
+      <div class="note" id="optNote">Matriks kovarian diregularisasi dengan ridge kecil (1e-6) otomatis untuk stabilitas numerik saat inversi.</div>
+    </div>
+
+    <div class="panel col-7">
+      <div class="panel-title">Efficient Frontier</div>
+      <div class="chart-wrap"><svg class="chart" id="frontierChart" viewBox="0 0 620 320" preserveAspectRatio="none"></svg></div>
+      <div class="legend">
+        <span><i style="background:var(--green)"></i>Efficient frontier</span>
+        <span><i style="background:var(--blue)"></i>Aset individual</span>
+        <span><i style="background:var(--amber)"></i>Tangency (max Sharpe)</span>
+        <span><i style="background:var(--violet)"></i>Global Min Variance</span>
+      </div>
+    </div>
+
+    <div class="panel col-6">
+      <div class="panel-title">Bobot Optimal — Tangency Portfolio (Max Sharpe)</div>
+      <div style="overflow-x:auto;"><table id="tangencyTable"><thead><tr><th>Aset</th><th>Bobot</th></tr></thead><tbody></tbody></table></div>
+      <div class="metric-grid" style="margin-top:12px;grid-template-columns:repeat(3,1fr);">
+        <div class="metric-box"><div class="lab">E[Return]</div><div class="val" id="tanRet">—</div></div>
+        <div class="metric-box"><div class="lab">Volatilitas</div><div class="val" id="tanVol">—</div></div>
+        <div class="metric-box"><div class="lab">Sharpe</div><div class="val" id="tanSharpe">—</div></div>
+      </div>
+    </div>
+    <div class="panel col-6">
+      <div class="panel-title">Bobot Optimal — Global Minimum Variance</div>
+      <div style="overflow-x:auto;"><table id="gmvTable"><thead><tr><th>Aset</th><th>Bobot</th></tr></thead><tbody></tbody></table></div>
+      <div class="metric-grid" style="margin-top:12px;grid-template-columns:repeat(3,1fr);">
+        <div class="metric-box"><div class="lab">E[Return]</div><div class="val" id="gmvRet">—</div></div>
+        <div class="metric-box"><div class="lab">Volatilitas</div><div class="val" id="gmvVol">—</div></div>
+        <div class="metric-box"><div class="lab">Sharpe</div><div class="val" id="gmvSharpe">—</div></div>
+      </div>
+    </div>
+
+    <div class="panel col-12">
+      <div class="panel-title">Matriks Korelasi (terhitung dari data historis, editable)</div>
+      <div style="overflow-x:auto;"><table id="corrTable"></table></div>
+      <div class="note">Ubah sel korelasi lalu klik "Hitung Efficient Frontier" lagi untuk melihat efeknya. Nilai diagonal selalu 1 dan tidak bisa diubah.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 4: RISK SIZING ================= -->
+<section class="tabpanel" id="tab-risk">
+  <div class="page-head">
+    <h1>Position Sizing — Kelly Criterion & Leverage</h1>
+    <p>Tentukan ukuran posisi optimal berbasis edge (expected return) terhadap risiko (varians). Bisa dihubungkan langsung ke hasil Tangency Portfolio dari tab Optimizer.</p>
+  </div>
+
+  <div class="grid grid-12">
+    <div class="panel col-5">
+      <div class="panel-title">Input Strategi</div>
+      <div class="btn-row"><button class="btn small" id="btnPullTangency">⤓ Tarik dari Tangency Portfolio</button></div>
+      <label class="field-label">Expected excess return tahunan (μ): <span id="rMuVal" style="color:var(--text)">12.0%</span></label>
+      <input type="range" id="rMu" min="1" max="60" step="0.5" value="12">
+      <label class="field-label" style="margin-top:10px;">Volatilitas tahunan (σ): <span id="rSigVal" style="color:var(--text)">20.0%</span></label>
+      <input type="range" id="rSig" min="2" max="90" step="0.5" value="20">
+      <div class="note warn" id="kellyWarn" style="display:none;"></div>
+      <hr class="sep">
+      <label class="field-label">Modal trading (opsional, untuk nominal posisi)</label>
+      <input type="number" id="capitalInput" value="1000000000" style="margin-bottom:6px;">
+      <div class="note">Contoh: Rp 1.000.000.000 modal.</div>
+    </div>
+
+    <div class="panel col-7">
+      <div class="panel-title">Output Sizing</div>
+      <div class="metric-grid">
+        <div class="metric-box"><div class="lab">Full Kelly f*</div><div class="val" id="outFStar">—</div></div>
+        <div class="metric-box"><div class="lab">Half-Kelly (rekomendasi)</div><div class="val pos" id="outHalf">—</div></div>
+        <div class="metric-box"><div class="lab">Quarter-Kelly (konservatif)</div><div class="val" id="outQuarter">—</div></div>
+        <div class="metric-box"><div class="lab">Growth rate @ f*</div><div class="val" id="outGrowth">—</div></div>
+      </div>
+      <div class="metric-grid" style="margin-top:10px;">
+        <div class="metric-box"><div class="lab">Est. Max DD @ f*</div><div class="val neg" id="outDDFull">—</div></div>
+        <div class="metric-box"><div class="lab">Est. Max DD @ Half-Kelly</div><div class="val" id="outDDHalf">—</div></div>
+        <div class="metric-box"><div class="lab">Notional @ Half-Kelly</div><div class="val" id="outNotionalHalf">—</div></div>
+        <div class="metric-box"><div class="lab">Notional @ Full Kelly</div><div class="val" id="outNotionalFull">—</div></div>
+      </div>
+      <div class="panel-title" style="margin-top:18px;">Growth Rate g(f) vs Leverage</div>
+      <div class="chart-wrap"><svg class="chart" id="kellyChart" viewBox="0 0 560 180" preserveAspectRatio="none"></svg></div>
+    </div>
+
+    <div class="panel col-12">
+      <div class="panel-title">Leverage Ladder</div>
+      <div style="overflow-x:auto;"><table id="leverageTable"><thead><tr>
+        <th>Leverage (f)</th><th>Growth Rate</th><th>Vol Portofolio</th><th>Est. Max DD (heuristik)</th>
+      </tr></thead><tbody></tbody></table></div>
+      <div class="note">Estimasi drawdown memakai heuristik edukasi DD ≈ f·σ·√(2·ln2), bukan rumus presisi — gunakan sebagai perbandingan relatif antar level leverage, bukan angka absolut untuk risk limit produksi.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TAB 5: EXECUTION ================= -->
+<section class="tabpanel" id="tab-exec">
+  <div class="page-head">
+    <h1>Execution Simulator — TWAP vs VWAP & Market Impact</h1>
+    <p>Simulasikan biaya eksekusi order besar terhadap kurva volume intraday (pola U-shape khas bursa) memakai model dampak pasar square-root.</p>
+  </div>
+
+  <div class="grid grid-12">
+    <div class="panel col-4">
+      <div class="panel-title">Parameter Order</div>
+      <label class="field-label">Ukuran order (lembar/kontrak)</label>
+      <input type="number" id="orderSize" value="500000" style="margin-bottom:10px;">
+      <label class="field-label">Average Daily Volume (ADV)</label>
+      <input type="number" id="advInput" value="8000000" style="margin-bottom:10px;">
+      <label class="field-label">Volatilitas harian (%)</label>
+      <input type="number" id="dailyVolInput" value="1.8" step="0.1" style="margin-bottom:10px;">
+      <label class="field-label">Harga acuan (mid price saat keputusan)</label>
+      <input type="number" id="decisionPrice" value="4700" style="margin-bottom:10px;">
+      <label class="field-label">Konstanta impact model (k)</label>
+      <input type="number" id="impactK" value="0.6" step="0.1" style="margin-bottom:14px;">
+      <button class="btn primary" id="btnSimulate" style="width:100%;">▶ Simulasikan Eksekusi</button>
+      <div class="note">Model dampak pasar: Impact (bps) = k × σ_harian × √(participation rate). Participation rate = ukuran order / ADV.</div>
+    </div>
+
+    <div class="panel col-8">
+      <div class="panel-title">Hasil Simulasi</div>
+      <div class="metric-grid">
+        <div class="metric-box"><div class="lab">Participation Rate</div><div class="val" id="eParticipation">—</div></div>
+        <div class="metric-box"><div class="lab">Est. Market Impact</div><div class="val warn" id="eImpactBps">—</div></div>
+        <div class="metric-box"><div class="lab">VWAP Benchmark</div><div class="val" id="eVwap">—</div></div>
+        <div class="metric-box"><div class="lab">TWAP Benchmark</div><div class="val" id="eTwap">—</div></div>
+      </div>
+      <div class="metric-grid" style="margin-top:10px;">
+        <div class="metric-box"><div class="lab">Est. Harga Eksekusi (ikuti VWAP)</div><div class="val" id="eExecVwap">—</div></div>
+        <div class="metric-box"><div class="lab">Est. Harga Eksekusi (TWAP merata)</div><div class="val" id="eExecTwap">—</div></div>
+        <div class="metric-box"><div class="lab">Implementation Shortfall (VWAP strat.)</div><div class="val" id="eIsVwap">—</div></div>
+        <div class="metric-box"><div class="lab">Implementation Shortfall (TWAP strat.)</div><div class="val" id="eIsTwap">—</div></div>
+      </div>
+      <div class="panel-title" style="margin-top:16px;">Kurva Volume Intraday (U-shape) & Alokasi Order</div>
+      <div class="chart-wrap"><svg class="chart" id="execChart" viewBox="0 0 900 220" preserveAspectRatio="none"></svg></div>
+      <div class="legend">
+        <span><i style="background:var(--blue)"></i>% volume pasar per interval</span>
+        <span><i style="background:var(--amber)"></i>Alokasi order — strategi VWAP</span>
+        <span><i style="background:var(--green)"></i>Alokasi order — strategi TWAP</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">QT-Terminal — seluruh komputasi berjalan lokal di browser Anda (tidak ada data yang dikirim ke server). Angka & data ilustratif/sintetis kecuali Anda memuat data riil sendiri. Bukan rekomendasi investasi — untuk keperluan riset & edukasi.</footer>
+</main>
+
+<script>
+/* =====================================================================
+   STATE
+===================================================================== */
+const state = {
+  dates: [], assets: [], prices: {}, returns: {},
+  factorScores: null, backtestResult: null,
+  optimizer: { selected: [], mu: {}, sigma: {}, corr: {} }
+};
+
+/* =====================================================================
+   MATH UTILS
+===================================================================== */
+function mean(a){return a.reduce((s,x)=>s+x,0)/a.length;}
+function stdev(a){const m=mean(a);return Math.sqrt(mean(a.map(x=>(x-m)*(x-m))));}
+function skewness(a){const m=mean(a), s=stdev(a); if(s===0) return 0; return mean(a.map(x=>Math.pow((x-m)/s,3)));}
+function corr(a,b){
+  const n=Math.min(a.length,b.length); a=a.slice(-n); b=b.slice(-n);
+  const ma=mean(a), mb=mean(b);
+  let num=0, da=0, db=0;
+  for(let i=0;i<n;i++){num+=(a[i]-ma)*(b[i]-mb); da+=(a[i]-ma)**2; db+=(b[i]-mb)**2;}
+  if(da===0||db===0) return 0;
+  return num/Math.sqrt(da*db);
+}
+function fmtPct(x,d=1){ if(x===null||x===undefined||isNaN(x)) return "—"; return (x*100).toFixed(d)+"%";}
+function fmtNum(x,d=2){ if(x===null||x===undefined||isNaN(x)) return "—"; return x.toFixed(d);}
+function fmtMoney(x){ if(x===null||isNaN(x)) return "—"; return "Rp "+Math.round(x).toLocaleString("id-ID");}
+
+// Gauss-Jordan matrix inverse (NxN array of arrays)
+function invertMatrix(M){
+  const n = M.length;
+  const A = M.map((row,i)=>row.concat(row.map((_,j)=>i===j?1:0)));
+  for(let col=0; col<n; col++){
+    // partial pivot
+    let pivot = col;
+    for(let r=col+1;r<n;r++){ if(Math.abs(A[r][col])>Math.abs(A[pivot][col])) pivot=r; }
+    [A[col],A[pivot]] = [A[pivot],A[col]];
+    let pv = A[col][col];
+    if(Math.abs(pv) < 1e-12) pv = 1e-12;
+    for(let j=0;j<2*n;j++) A[col][j] /= pv;
+    for(let r=0;r<n;r++){
+      if(r===col) continue;
+      const factor = A[r][col];
+      for(let j=0;j<2*n;j++) A[r][j] -= factor*A[col][j];
+    }
+  }
+  return A.map(row=>row.slice(n));
+}
+function matVec(M,v){ return M.map(row=>row.reduce((s,x,j)=>s+x*v[j],0)); }
+function dotv(a,b){ return a.reduce((s,x,i)=>s+x*b[i],0); }
+
+function svgLine(pts, opts={}){
+  const {x0=0,y0=0,x1=100,y1=100,color="#31D19C",width=2,fill=false} = opts;
+  return `<path d="M ${pts.map(p=>p.x.toFixed(2)+" "+p.y.toFixed(2)).join(" L ")}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linejoin="round" stroke-linecap="round"/>`;
+}
+
+/* =====================================================================
+   DATA GENERATION / PARSING
+===================================================================== */
+function seededRandom(seed){
+  let s = seed;
+  return function(){ s = (s*9301+49297)%233280; return s/233280; };
+}
+function gaussian(rng){
+  let u=0,v=0; while(u===0) u=rng(); while(v===0) v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+function generateSyntheticData(){
+  const rng = seededRandom(42);
+  const T = 504;
+  const assetsDef = [
+    {name:"EQ-A", drift:0.14, vol:0.24, beta:1.1},
+    {name:"EQ-B", drift:0.09, vol:0.19, beta:0.9},
+    {name:"EQ-C", drift:0.19, vol:0.32, beta:1.35},
+    {name:"EQ-D", drift:0.06, vol:0.16, beta:0.6},
+    {name:"FI-A", drift:0.055, vol:0.06, beta:0.05},
+    {name:"FI-B", drift:0.07, vol:0.09, beta:0.12},
+    {name:"CMD-A", drift:0.08, vol:0.28, beta:0.25},
+    {name:"FX-A", drift:0.03, vol:0.11, beta:-0.1},
+  ];
+  const dates = [];
+  const start = new Date(2023,0,2);
+  let d = new Date(start);
+  while(dates.length < T){
+    if(d.getDay()!==0 && d.getDay()!==6) dates.push(new Date(d).toISOString().slice(0,10));
+    d.setDate(d.getDate()+1);
+  }
+  const marketShock = [];
+  for(let t=0;t<T;t++) marketShock.push(gaussian(rng)*0.010);
+
+  const prices = {}; const assets = assetsDef.map(a=>a.name);
+  assetsDef.forEach(a=>{
+    const series=[100];
+    for(let t=0;t<T-1;t++){
+      const idio = gaussian(rng)*(a.vol/Math.sqrt(252));
+      const dailyDrift = a.drift/252;
+      const r = dailyDrift + a.beta*marketShock[t] + idio;
+      series.push(series[series.length-1]*(1+r));
+    }
+    prices[a.name]=series;
+  });
+  loadData(dates, assets, prices, "Universe sintetis 8 aset (equities, fixed income, commodity, FX) — 504 hari bursa.");
+}
+
+function parseCsvText(text){
+  const lines = text.trim().split(/\r?\n/).filter(l=>l.trim().length>0);
+  if(lines.length<3){ setMsg("CSV terlalu pendek. Minimal header + beberapa baris data.", true); return; }
+  const header = lines[0].split(",").map(s=>s.trim());
+  const assets = header.slice(1);
+  const dates=[]; const prices={}; assets.forEach(a=>prices[a]=[]);
+  for(let i=1;i<lines.length;i++){
+    const cols = lines[i].split(",").map(s=>s.trim());
+    if(cols.length < assets.length+1) continue;
+    dates.push(cols[0]);
+    assets.forEach((a,j)=>{ prices[a].push(parseFloat(cols[j+1])); });
+  }
+  loadData(dates, assets, prices, `Data ter-parse dari CSV: ${assets.length} aset, ${dates.length} observasi.`);
+}
+
+function loadData(dates, assets, prices, msg){
+  state.dates = dates; state.assets = assets; state.prices = prices;
+  state.returns = {};
+  assets.forEach(a=>{
+    const p = prices[a]; const r=[];
+    for(let i=1;i<p.length;i++) r.push(p[i]/p[i-1]-1);
+    state.returns[a]=r;
+  });
+  document.getElementById("dataStatusTag").textContent = assets.length+" aset · "+dates.length+" hari";
+  document.getElementById("dataStatusTag").classList.add("on");
+  setMsg(msg, false);
+  renderAssetStats();
+  renderPriceChart();
+  buildAssetChecklist();
+  autoFillOptimizerInputs();
+  renderCorrTable();
+}
+function setMsg(msg, isWarn){
+  const el = document.getElementById("dataMsg");
+  el.textContent = msg; el.className = isWarn? "note warn":"note";
+}
+
+/* =====================================================================
+   TAB 1: DATA RENDER
+===================================================================== */
+function annualStats(assetReturns){
+  const m = mean(assetReturns)*252;
+  const v = stdev(assetReturns)*Math.sqrt(252);
+  const sk = skewness(assetReturns);
+  return {ret:m, vol:v, skew:sk};
+}
+function renderAssetStats(){
+  const tbody = document.querySelector("#assetStatsTable tbody");
+  tbody.innerHTML="";
+  state.assets.forEach(a=>{
+    const st = annualStats(state.returns[a]);
+    const sharpe = (st.ret-0.055)/st.vol;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${a}</td><td class="${st.ret>=0?'pos':'neg'}">${fmtPct(st.ret)}</td><td>${fmtPct(st.vol)}</td><td>${fmtNum(st.skew)}</td><td class="${sharpe>=0?'pos':'neg'}">${fmtNum(sharpe)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function renderPriceChart(){
+  const svg = document.getElementById("priceChart");
+  const W=1200,H=320,pad=36;
+  const colors = ["#31D19C","#4C9AFF","#F5A623","#A78BFA","#FF5C63","#5EEAD4","#F472B6","#FDE047"];
+  let allNorm = {};
+  state.assets.forEach(a=>{ const p=state.prices[a]; allNorm[a]=p.map(x=>x/p[0]*100); });
+  let lo=Infinity, hi=-Infinity;
+  Object.values(allNorm).forEach(arr=>{ lo=Math.min(lo,Math.min(...arr)); hi=Math.max(hi,Math.max(...arr)); });
+  const n = state.dates.length;
+  const px = i => pad + i*(W-2*pad)/(n-1);
+  const py = v => H-pad - (v-lo)/(hi-lo)*(H-2*pad);
+  let out = `<line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#232833"/>`;
+  out += `<line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="#232833"/>`;
+  let legend = "";
+  state.assets.forEach((a,idx)=>{
+    const c = colors[idx%colors.length];
+    const pts = allNorm[a].map((v,i)=>({x:px(i), y:py(v)}));
+    out += svgLine(pts, {color:c, width:1.8});
+    legend += `<span><i style="background:${c}"></i>${a}</span>`;
+  });
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.innerHTML = out;
+  document.getElementById("priceLegend").innerHTML = legend;
+}
+
+/* =====================================================================
+   TAB 2: FACTOR ENGINE + BACKTEST
+===================================================================== */
+function computeFactorScoreAt(asset, idx, factorType, momLookback){
+  const p = state.prices[asset];
+  if(factorType==="momentum"){
+    const tMinus1 = idx-21, tMinus12 = idx-momLookback;
+    if(tMinus12<0 || tMinus1<0) return null;
+    return p[tMinus1]/p[tMinus12]-1;
+  } else if(factorType==="lowvol"){
+    const start = idx-63; if(start<0) return null;
+    const r = [];
+    for(let i=start+1;i<=idx;i++) r.push(p[i]/p[i-1]-1);
+    const vol = stdev(r)*Math.sqrt(252);
+    return -vol; // low vol => higher score
+  } else if(factorType==="reversal"){
+    const start = idx-5; if(start<0) return null;
+    return -(p[idx]/p[start]-1);
+  }
+  return null;
+}
+
+function runBacktest(){
+  const factorType = document.getElementById("factorSelect").value;
+  const rebal = parseInt(document.getElementById("rebalSelect").value);
+  const momLookback = parseInt(document.getElementById("momLookback").value)||252;
+  const n = state.dates.length;
+  const assets = state.assets;
+  if(n < momLookback+rebal+5){ setBtWarning("Data historis terlalu pendek untuk parameter ini. Kurangi lookback atau tambah data."); return; }
+
+  const nTertile = Math.max(1, Math.floor(assets.length/3));
+  const equity = [1]; const eqDates=[state.dates[momLookback]];
+  const periodReturns = []; const icList=[]; let lastFactorTable=[];
+  const ddSeries=[];
+
+  for(let t=momLookback; t+rebal < n; t+=rebal){
+    const scores = assets.map(a=>({a, s: computeFactorScoreAt(a, t, factorType, momLookback)}))
+                          .filter(x=>x.s!==null);
+    if(scores.length < 3) continue;
+    scores.sort((x,y)=>y.s-x.s);
+    const top = scores.slice(0, nTertile).map(x=>x.a);
+    const bottom = scores.slice(scores.length-nTertile).map(x=>x.a);
+
+    const fwdReturn = a => state.prices[a][t+rebal]/state.prices[a][t]-1;
+    const topRet = mean(top.map(fwdReturn));
+    const botRet = mean(bottom.map(fwdReturn));
+    const stratRet = topRet - botRet;
+    periodReturns.push(stratRet);
+    equity.push(equity[equity.length-1]*(1+stratRet));
+    eqDates.push(state.dates[Math.min(t+rebal, n-1)]);
+
+    // IC: correlation between score and forward return across ALL scored assets
+    const allFwd = scores.map(x=>fwdReturn(x.a));
+    const allScore = scores.map(x=>x.s);
+    icList.push(corr(allScore, allFwd));
+
+    lastFactorTable = scores.map((x,i)=>({asset:x.a, score:x.s, rank:i+1,
+      tertile: i<nTertile?"Top":(i>=scores.length-nTertile?"Bottom":"Mid")}));
+  }
+  if(periodReturns.length<2){ setBtWarning("Tidak cukup periode rebalance untuk menghasilkan backtest. Coba rebalance lebih pendek."); return; }
+
+  // running max / drawdown
+  let runMax = equity[0];
+  equity.forEach(v=>{ runMax=Math.max(runMax,v); ddSeries.push(v/runMax-1); });
+
+  const periodsPerYear = 252/rebal;
+  const avgPeriodRet = mean(periodReturns);
+  const periodVol = stdev(periodReturns);
+  const cagr = Math.pow(equity[equity.length-1], periodsPerYear/periodReturns.length)-1;
+  const annVol = periodVol*Math.sqrt(periodsPerYear);
+  const downside = periodReturns.filter(r=>r<0);
+  const downsideDev = downside.length? Math.sqrt(mean(downside.map(r=>r*r)))*Math.sqrt(periodsPerYear) : 0.0001;
+  const sharpe = (avgPeriodRet*periodsPerYear - 0.055)/annVol;
+  const sortino = (avgPeriodRet*periodsPerYear - 0.055)/downsideDev;
+  const maxDD = Math.min(...ddSeries);
+  const calmar = cagr/Math.abs(maxDD||0.0001);
+  const hitRate = periodReturns.filter(r=>r>0).length/periodReturns.length;
+  const avgIC = mean(icList);
+
+  document.getElementById("mCagr").textContent = fmtPct(cagr);
+  document.getElementById("mCagr").className = "val "+(cagr>=0?"pos":"neg");
+  document.getElementById("mVol").textContent = fmtPct(annVol);
+  document.getElementById("mSharpe").textContent = fmtNum(sharpe);
+  document.getElementById("mSharpe").className = "val "+(sharpe>=0?"pos":"neg");
+  document.getElementById("mSortino").textContent = fmtNum(sortino);
+  document.getElementById("mMaxDD").textContent = fmtPct(maxDD);
+  document.getElementById("mMaxDD").className = "val neg";
+  document.getElementById("mCalmar").textContent = fmtNum(calmar);
+  document.getElementById("mIC").textContent = fmtNum(avgIC,3);
+  document.getElementById("mIC").className = "val "+(avgIC>=0?"pos":"neg");
+  document.getElementById("mHit").textContent = fmtPct(hitRate,0);
+
+  renderEquityChart(equity);
+  renderDDChart(ddSeries);
+  renderTertileChart(lastFactorTable, factorType, rebal, momLookback, nTertile);
+  renderFactorTable(lastFactorTable);
+}
+function setBtWarning(msg){
+  ["mCagr","mVol","mSharpe","mSortino","mMaxDD","mCalmar","mIC","mHit"].forEach(id=>document.getElementById(id).textContent="—");
+  alert(msg);
+}
+
+function renderEquityChart(equity){
+  const svg=document.getElementById("equityChart"); const W=900,H=260,pad=34;
+  const lo=Math.min(...equity), hi=Math.max(...equity);
+  const n=equity.length;
+  const px=i=>pad+i*(W-2*pad)/(n-1); const py=v=>H-pad-(v-lo)/(hi-lo+1e-9)*(H-2*pad);
+  const pts = equity.map((v,i)=>({x:px(i),y:py(v)}));
+  const base = py(1);
+  let out = `<line x1="${pad}" y1="${base}" x2="${W-pad}" y2="${base}" stroke="#2A3242" stroke-dasharray="3 3"/>`;
+  out += `<path d="M ${pts.map(p=>p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' L ')} L ${pts[n-1].x.toFixed(1)} ${base} L ${pts[0].x.toFixed(1)} ${base} Z" fill="#31D19C" opacity="0.10"/>`;
+  out += svgLine(pts,{color:"#31D19C",width:2.2});
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML=out;
+}
+function renderDDChart(dd){
+  const svg=document.getElementById("ddChart"); const W=900,H=140,pad=24;
+  const lo=Math.min(...dd,0);
+  const n=dd.length; const px=i=>pad+i*(W-2*pad)/(n-1); const py=v=>H-pad-(v-lo)/(0-lo+1e-9)*(H-2*pad);
+  const pts=dd.map((v,i)=>({x:px(i),y:py(v)}));
+  const zero=py(0);
+  let out=`<line x1="${pad}" y1="${zero}" x2="${W-pad}" y2="${zero}" stroke="#2A3242"/>`;
+  out+=`<path d="M ${pts.map(p=>p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' L ')} L ${pts[n-1].x.toFixed(1)} ${zero} L ${pts[0].x.toFixed(1)} ${zero} Z" fill="#FF5C63" opacity="0.20"/>`;
+  out+=svgLine(pts,{color:"#FF5C63",width:1.8});
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML=out;
+}
+function renderTertileChart(table, factorType, rebal, momLookback, nTertile){
+  const svg = document.getElementById("tertileChart"); const W=320,H=220,pad=30;
+  // recompute avg forward return per tertile bucket across the whole backtest for robustness -> reuse last snapshot categories with overall mean returns approx via table only (simplified: use annualized asset return by tertile membership as proxy)
+  const groups = {Top:[], Mid:[], Bottom:[]};
+  table.forEach(r=>{ const st=annualStats(state.returns[r.asset]); groups[r.tertile].push(st.ret); });
+  const labels=["Top","Mid","Bottom"]; const vals=labels.map(l=>groups[l].length?mean(groups[l]):0);
+  const hi=Math.max(...vals.map(Math.abs),0.01);
+  const bw=(W-2*pad)/labels.length*0.5; const gap=(W-2*pad)/labels.length;
+  const mid=H/2;
+  let out=`<line x1="${pad}" y1="${mid}" x2="${W-pad}" y2="${mid}" stroke="#2A3242"/>`;
+  labels.forEach((l,i)=>{
+    const v=vals[i]; const bh=Math.abs(v)/hi*(H/2-30);
+    const x=pad+i*gap+(gap-bw)/2; const y=v>=0?mid-bh:mid;
+    const c = l==="Top"?"#31D19C":(l==="Bottom"?"#FF5C63":"#4C9AFF");
+    out+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" fill="${c}" opacity="0.85"/>`;
+    out+=`<text x="${(x+bw/2).toFixed(1)}" y="${H-8}" fill="#6C7686" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">${l}</text>`;
+    out+=`<text x="${(x+bw/2).toFixed(1)}" y="${(v>=0?y-6:y+bh+14).toFixed(1)}" fill="#D8DEE6" font-size="10" text-anchor="middle" font-family="IBM Plex Mono">${(v*100).toFixed(1)}%</text>`;
+  });
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML=out;
+}
+function renderFactorTable(table){
+  const tbody=document.querySelector("#factorTable tbody"); tbody.innerHTML="";
+  table.forEach(r=>{
+    const tr=document.createElement("tr");
+    const cls = r.tertile==="Top"?"pos":(r.tertile==="Bottom"?"neg":"");
+    tr.innerHTML=`<td>${r.asset}</td><td>${fmtNum(r.score,4)}</td><td>${r.rank}</td><td class="${cls}">${r.tertile}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* =====================================================================
+   TAB 3: PORTFOLIO OPTIMIZER
+===================================================================== */
+function buildAssetChecklist(){
+  const wrap = document.getElementById("assetChecklist"); wrap.innerHTML="";
+  state.assets.forEach((a,i)=>{
+    const div = document.createElement("label"); div.className="chk";
+    div.innerHTML = `<input type="checkbox" value="${a}" ${i<8?"checked":""}> ${a}`;
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll("input").forEach(inp=>inp.addEventListener("change", ()=>{ autoFillOptimizerInputs(); renderCorrTable(); }));
+}
+function getSelectedAssets(){
+  return Array.from(document.querySelectorAll("#assetChecklist input:checked")).map(i=>i.value);
+}
+function autoFillOptimizerInputs(){
+  const sel = getSelectedAssets();
+  const tbody = document.querySelector("#optInputTable tbody"); tbody.innerHTML="";
+  sel.forEach(a=>{
+    const st = annualStats(state.returns[a]);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${a}</td>
+      <td><input type="text" class="editable" data-asset="${a}" data-field="mu" value="${(st.ret*100).toFixed(2)}" style="width:70px;text-align:right;"> %</td>
+      <td><input type="text" class="editable" data-asset="${a}" data-field="sigma" value="${(st.vol*100).toFixed(2)}" style="width:70px;text-align:right;"> %</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function renderCorrTable(){
+  const sel = getSelectedAssets();
+  const table = document.getElementById("corrTable");
+  let html = "<thead><tr><th></th>"+sel.map(a=>`<th>${a}</th>`).join("")+"</tr></thead><tbody>";
+  sel.forEach((a,i)=>{
+    html += `<tr><th>${a}</th>`;
+    sel.forEach((b,j)=>{
+      if(i===j){ html+=`<td class="corr-cell">1.00</td>`; }
+      else{
+        const c = corr(state.returns[a], state.returns[b]);
+        html += `<td class="corr-cell"><input type="text" class="editable corr-input" data-i="${i}" data-j="${j}" value="${c.toFixed(2)}" style="width:44px;text-align:center;"></td>`;
+      }
+    });
+    html += "</tr>";
+  });
+  html += "</tbody>";
+  table.innerHTML = html;
+}
+
+function runOptimizer(){
+  const sel = getSelectedAssets();
+  if(sel.length<2){ alert("Pilih minimal 2 aset."); return; }
+  if(sel.length>8){ alert("Maksimal 8 aset untuk optimizer ini."); return; }
+  const n = sel.length;
+  const mu = sel.map(a=>parseFloat(document.querySelector(`input[data-asset="${a}"][data-field="mu"]`).value)/100);
+  const sigma = sel.map(a=>parseFloat(document.querySelector(`input[data-asset="${a}"][data-field="sigma"]`).value)/100);
+  const rf = parseFloat(document.getElementById("rfInput").value)/100;
+  const lam = parseFloat(document.getElementById("shrinkSlider").value)/100;
+
+  // read correlation matrix (with shrinkage toward identity)
+  const C = Array.from({length:n},()=>Array(n).fill(0));
+  for(let i=0;i<n;i++) C[i][i]=1;
+  document.querySelectorAll(".corr-input").forEach(inp=>{
+    const i=parseInt(inp.dataset.i), j=parseInt(inp.dataset.j);
+    let v = parseFloat(inp.value); if(isNaN(v)) v=0;
+    C[i][j]=v;
+  });
+  const Cshrunk = C.map((row,i)=>row.map((v,j)=> i===j? 1 : (1-lam)*v));
+
+  // covariance
+  const Sigma = Cshrunk.map((row,i)=>row.map((c,j)=> c*sigma[i]*sigma[j] + (i===j?1e-6:0)));
+  const invSigma = invertMatrix(Sigma);
+  const ones = Array(n).fill(1);
+
+  const invS_ones = matVec(invSigma, ones);
+  const invS_mu = matVec(invSigma, mu);
+  const A = dotv(ones, invS_ones);
+  const B = dotv(ones, invS_mu);
+  const Cc = dotv(mu, invS_mu);
+  const D = A*Cc - B*B;
+
+  // GMV
+  const wGmv = invS_ones.map(x=>x/A);
+  // Tangency
+  const muExcess = mu.map(m=>m-rf);
+  const invS_muExcess = matVec(invSigma, muExcess);
+  const sumInvSmuExcess = dotv(ones, invS_muExcess);
+  const wTan = invS_muExcess.map(x=>x/sumInvSmuExcess);
+
+  function portStats(w){
+    const ret = dotv(w, mu);
+    const variance = dotv(w, matVec(Sigma, w));
+    return {ret, vol: Math.sqrt(Math.max(variance,0))};
+  }
+  const gmvStats = portStats(wGmv);
+  const tanStats = portStats(wTan);
+
+  renderWeightTable("gmvTable", sel, wGmv);
+  renderWeightTable("tangencyTable", sel, wTan);
+  document.getElementById("gmvRet").textContent = fmtPct(gmvStats.ret);
+  document.getElementById("gmvVol").textContent = fmtPct(gmvStats.vol);
+  document.getElementById("gmvSharpe").textContent = fmtNum((gmvStats.ret-rf)/gmvStats.vol);
+  document.getElementById("tanRet").textContent = fmtPct(tanStats.ret);
+  document.getElementById("tanVol").textContent = fmtPct(tanStats.vol);
+  document.getElementById("tanSharpe").textContent = fmtNum((tanStats.ret-rf)/tanStats.vol);
+
+  // frontier: r range
+  const rMin = Math.min(...mu)*0.8, rMax = Math.max(...mu)*1.25;
+  const steps=50; const frontierPts=[];
+  for(let i=0;i<=steps;i++){
+    const r = rMin + (rMax-rMin)*i/steps;
+    const variance = (A*r*r - 2*B*r + Cc)/D;
+    if(variance<0) continue;
+    frontierPts.push({ret:r, vol:Math.sqrt(variance)});
+  }
+  state.optimizer.lastFrontier = {frontierPts, assetPts: sel.map((a,i)=>({name:a, ret:mu[i], vol:sigma[i]})), tanStats, gmvStats};
+  renderFrontierChart(state.optimizer.lastFrontier);
+  state.optimizer.tangency = {sel, weights:wTan, ret:tanStats.ret, vol:tanStats.vol};
+}
+function renderWeightTable(tableId, sel, weights){
+  const tbody = document.querySelector(`#${tableId} tbody`); tbody.innerHTML="";
+  sel.forEach((a,i)=>{
+    const tr=document.createElement("tr");
+    const w = weights[i];
+    tr.innerHTML = `<td>${a}</td><td class="${w>=0?'pos':'neg'}">${fmtPct(w)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function renderFrontierChart(data){
+  const svg=document.getElementById("frontierChart"); const W=620,H=320,pad=44;
+  const allVols = data.frontierPts.map(p=>p.vol).concat(data.assetPts.map(p=>p.vol), [data.tanStats.vol, data.gmvStats.vol]);
+  const allRets = data.frontierPts.map(p=>p.ret).concat(data.assetPts.map(p=>p.ret), [data.tanStats.ret, data.gmvStats.ret]);
+  const xlo=Math.min(...allVols)*0.85, xhi=Math.max(...allVols)*1.1;
+  const ylo=Math.min(...allRets)*0.85, yhi=Math.max(...allRets)*1.15;
+  const px=v=>pad+(v-xlo)/(xhi-xlo)*(W-pad-16); const py=v=>H-pad-(v-ylo)/(yhi-ylo)*(H-pad-16);
+  let out = `<line x1="${pad}" y1="${H-pad}" x2="${W-16}" y2="${H-pad}" stroke="#232833"/><line x1="${pad}" y1="16" x2="${pad}" y2="${H-pad}" stroke="#232833"/>`;
+  out += `<text x="${pad}" y="12" fill="#6C7686" font-size="9" font-family="IBM Plex Mono">Return</text>`;
+  out += `<text x="${W-70}" y="${H-pad+14}" fill="#6C7686" font-size="9" font-family="IBM Plex Mono">Volatilitas →</text>`;
+  const fpts = data.frontierPts.map(p=>({x:px(p.vol),y:py(p.ret)}));
+  out += svgLine(fpts,{color:"#31D19C",width:2.4});
+  data.assetPts.forEach(p=>{
+    out += `<circle cx="${px(p.vol).toFixed(1)}" cy="${py(p.ret).toFixed(1)}" r="4" fill="#4C9AFF"/>`;
+    out += `<text x="${(px(p.vol)+6).toFixed(1)}" y="${(py(p.ret)-6).toFixed(1)}" fill="#93A2BE" font-size="9.5" font-family="IBM Plex Mono">${p.name}</text>`;
+  });
+  out += `<circle cx="${px(data.tanStats.vol).toFixed(1)}" cy="${py(data.tanStats.ret).toFixed(1)}" r="5.5" fill="#F5A623" stroke="#08090c" stroke-width="1.5"/>`;
+  out += `<circle cx="${px(data.gmvStats.vol).toFixed(1)}" cy="${py(data.gmvStats.ret).toFixed(1)}" r="5.5" fill="#A78BFA" stroke="#08090c" stroke-width="1.5"/>`;
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML=out;
+}
+
+/* =====================================================================
+   TAB 4: RISK SIZING (KELLY)
+===================================================================== */
+function updateKelly(){
+  const mu = parseFloat(document.getElementById("rMu").value)/100;
+  const sig = parseFloat(document.getElementById("rSig").value)/100;
+  document.getElementById("rMuVal").textContent = (mu*100).toFixed(1)+"%";
+  document.getElementById("rSigVal").textContent = (sig*100).toFixed(1)+"%";
+  const fStar = mu/(sig*sig);
+  const half = fStar/2; const quarter = fStar/4;
+  const growth = f => f*mu - 0.5*f*f*sig*sig;
+  const ddEst = f => f*sig*Math.sqrt(2*Math.log(2));
+  const capital = parseFloat(document.getElementById("capitalInput").value)||0;
+
+  document.getElementById("outFStar").textContent = fStar.toFixed(2)+"x";
+  document.getElementById("outHalf").textContent = half.toFixed(2)+"x";
+  document.getElementById("outQuarter").textContent = quarter.toFixed(2)+"x";
+  document.getElementById("outGrowth").textContent = fmtPct(growth(fStar));
+  document.getElementById("outDDFull").textContent = "-"+fmtPct(ddEst(fStar));
+  document.getElementById("outDDHalf").textContent = "-"+fmtPct(ddEst(half));
+  document.getElementById("outNotionalHalf").textContent = fmtMoney(capital*half);
+  document.getElementById("outNotionalFull").textContent = fmtMoney(capital*fStar);
+
+  const warnEl = document.getElementById("kellyWarn");
+  if(fStar > 5){
+    warnEl.style.display = "block";
+    warnEl.textContent = "⚠ f* = "+fStar.toFixed(1)+"x tergolong ekstrem — biasanya menandakan volatilitas input terlalu rendah relatif terhadap edge (umum terjadi pada portofolio unconstrained Markowitz yang memakai short/leverage internal besar-besaran, lihat tab 03). Di dunia nyata, batas margin broker & risk limit internal akan membatasi jauh di bawah angka ini.";
+  } else {
+    warnEl.style.display = "none";
+  }
+
+  // chart
+  const svg=document.getElementById("kellyChart"); const W=560,H=180,pad=20;
+  const n=60; const pts=[]; let maxG=-1e9;
+  for(let i=0;i<=n;i++){ const f=i*(fStar*2.2)/n; const g=growth(f); pts.push({f,g}); if(g>maxG) maxG=g; }
+  const xlo=0, xhi=Math.max(...pts.map(p=>p.f));
+  const ylo=Math.min(...pts.map(p=>p.g)), yhi=Math.max(...pts.map(p=>p.g),0.001);
+  const px=v=>pad+(v-xlo)/(xhi-xlo)*(W-2*pad); const py=v=>H-pad-(v-ylo)/(yhi-ylo)*(H-2*pad);
+  const zero=py(0);
+  let out=`<line x1="${pad}" y1="${zero}" x2="${W-pad}" y2="${zero}" stroke="#2A3242"/>`;
+  out+=`<line x1="${px(fStar).toFixed(1)}" y1="10" x2="${px(fStar).toFixed(1)}" y2="${H-pad}" stroke="#F5A623" stroke-dasharray="4 3"/>`;
+  out+=svgLine(pts.map(p=>({x:px(p.f),y:py(p.g)})), {color:"#31D19C",width:2.4});
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML = out;
+
+  // leverage ladder table
+  const tbody=document.querySelector("#leverageTable tbody"); tbody.innerHTML="";
+  [0.25,0.5,0.75,1,1.25,1.5,2].forEach(mult=>{
+    const f = fStar*mult;
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td>${f.toFixed(2)}x ${mult===1?'<span class="tag on">Full Kelly</span>':(mult===0.5?'<span class="tag on">Half</span>':'')}</td>
+      <td class="${growth(f)>=0?'pos':'neg'}">${fmtPct(growth(f))}</td>
+      <td>${fmtPct(f*sig)}</td>
+      <td class="neg">-${fmtPct(ddEst(f))}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+document.getElementById("btnPullTangency").addEventListener("click", ()=>{
+  const tan = state.optimizer.tangency;
+  if(!tan){ alert("Jalankan Portfolio Optimizer terlebih dahulu di tab 03."); return; }
+  const rf = parseFloat(document.getElementById("rfInput").value)/100 || 0.055;
+  document.getElementById("rMu").value = ((tan.ret-rf)*100).toFixed(1);
+  document.getElementById("rSig").value = (tan.vol*100).toFixed(1);
+  updateKelly();
+});
+
+/* =====================================================================
+   TAB 5: EXECUTION SIMULATOR
+===================================================================== */
+function uShapeVolume(nBins){
+  // classic U-shape intraday volume curve, normalized to sum=1
+  const raw = [];
+  for(let i=0;i<nBins;i++){
+    const x = i/(nBins-1); // 0..1
+    const v = 1.6*Math.pow(x-0.5,2) + 0.35; // parabola min at midday
+    raw.push(v);
+  }
+  const s = raw.reduce((a,b)=>a+b,0);
+  return raw.map(v=>v/s);
+}
+function runExecSim(){
+  const orderSize = parseFloat(document.getElementById("orderSize").value);
+  const adv = parseFloat(document.getElementById("advInput").value);
+  const dailyVol = parseFloat(document.getElementById("dailyVolInput").value)/100;
+  const decisionPrice = parseFloat(document.getElementById("decisionPrice").value);
+  const k = parseFloat(document.getElementById("impactK").value);
+  const nBins = 13; // e.g., half-hour bins in a 6.5h session
+
+  const participation = orderSize/adv;
+  const impactBps = k*dailyVol*Math.sqrt(participation)*10000;
+  const impactFrac = impactBps/10000;
+
+  const volCurve = uShapeVolume(nBins);
+  // simulate intraday price path: random walk seeded, drifting slightly with impact as order executes
+  const rng = seededRandom(7);
+  let price = decisionPrice;
+  const priceCurve = [price];
+  for(let i=1;i<nBins;i++){
+    price = price*(1+gaussian(rng)*dailyVol/Math.sqrt(nBins));
+    priceCurve.push(price);
+  }
+  // VWAP benchmark = volume-weighted avg of priceCurve using market volCurve
+  const vwap = priceCurve.reduce((s,p,i)=>s+p*volCurve[i],0);
+  const twap = mean(priceCurve);
+
+  // Execution schedules
+  const twapAlloc = Array(nBins).fill(1/nBins);
+  const vwapAlloc = volCurve; // follow market volume proportionally
+
+  function execPrice(alloc){
+    // each bin execution suffers a fraction of total impact proportional to sqrt(participation in that bin)
+    let totalCost = 0;
+    alloc.forEach((frac,i)=>{
+      const binImpact = impactFrac * Math.sqrt(frac*nBins); // higher share in a bin -> more impact that bin
+      const execP = priceCurve[i]*(1+binImpact*0.5); // buy-side: pay up
+      totalCost += execP*frac;
+    });
+    return totalCost;
+  }
+  const execVwap = execPrice(vwapAlloc);
+  const execTwap = execPrice(twapAlloc);
+  const isVwap = (execVwap-decisionPrice)/decisionPrice;
+  const isTwap = (execTwap-decisionPrice)/decisionPrice;
+
+  document.getElementById("eParticipation").textContent = fmtPct(participation);
+  document.getElementById("eImpactBps").textContent = impactBps.toFixed(1)+" bps";
+  document.getElementById("eVwap").textContent = vwap.toFixed(2);
+  document.getElementById("eTwap").textContent = twap.toFixed(2);
+  document.getElementById("eExecVwap").textContent = execVwap.toFixed(2);
+  document.getElementById("eExecTwap").textContent = execTwap.toFixed(2);
+  document.getElementById("eIsVwap").textContent = fmtPct(isVwap,2);
+  document.getElementById("eIsVwap").className = "val "+(isVwap<=0?"pos":"warn");
+  document.getElementById("eIsTwap").textContent = fmtPct(isTwap,2);
+  document.getElementById("eIsTwap").className = "val "+(isTwap<=0?"pos":"warn");
+
+  renderExecChart(volCurve, vwapAlloc, twapAlloc);
+}
+function renderExecChart(volCurve, vwapAlloc, twapAlloc){
+  const svg=document.getElementById("execChart"); const W=900,H=220,pad=30;
+  const n=volCurve.length;
+  const hi = Math.max(...volCurve, ...vwapAlloc, ...twapAlloc)*1.15;
+  const gap=(W-2*pad)/n; const bw=gap*0.22;
+  let out = `<line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#232833"/>`;
+  for(let i=0;i<n;i++){
+    const x0 = pad+i*gap;
+    const h1 = volCurve[i]/hi*(H-2*pad); const h2 = vwapAlloc[i]/hi*(H-2*pad); const h3 = twapAlloc[i]/hi*(H-2*pad);
+    out += `<rect x="${(x0).toFixed(1)}" y="${(H-pad-h1).toFixed(1)}" width="${bw.toFixed(1)}" height="${h1.toFixed(1)}" fill="#4C9AFF" opacity="0.85"/>`;
+    out += `<rect x="${(x0+bw).toFixed(1)}" y="${(H-pad-h2).toFixed(1)}" width="${bw.toFixed(1)}" height="${h2.toFixed(1)}" fill="#F5A623" opacity="0.85"/>`;
+    out += `<rect x="${(x0+2*bw).toFixed(1)}" y="${(H-pad-h3).toFixed(1)}" width="${bw.toFixed(1)}" height="${h3.toFixed(1)}" fill="#31D19C" opacity="0.85"/>`;
+  }
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML=out;
+}
+
+/* =====================================================================
+   WIRE UP UI
+===================================================================== */
+document.querySelectorAll(".tabbtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tabbtn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tabpanel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+  });
+});
+document.getElementById("btnLoadSample").addEventListener("click", generateSyntheticData);
+document.getElementById("btnParseCsv").addEventListener("click", ()=>parseCsvText(document.getElementById("csvInput").value));
+document.getElementById("btnClear").addEventListener("click", ()=>{ document.getElementById("csvInput").value=""; });
+document.getElementById("btnRunBacktest").addEventListener("click", ()=>{
+  if(state.assets.length===0){ alert("Muat data terlebih dahulu di tab 01."); return; }
+  runBacktest();
+});
+document.getElementById("btnOptimize").addEventListener("click", ()=>{
+  if(state.assets.length===0){ alert("Muat data terlebih dahulu di tab 01."); return; }
+  runOptimizer();
+});
+document.getElementById("shrinkSlider").addEventListener("input", (e)=>{
+  document.getElementById("lamVal").textContent = e.target.value+"%";
+});
+document.getElementById("rMu").addEventListener("input", updateKelly);
+document.getElementById("rSig").addEventListener("input", updateKelly);
+document.getElementById("capitalInput").addEventListener("input", updateKelly);
+document.getElementById("btnSimulate").addEventListener("click", runExecSim);
+
+// clock
+function tickClock(){
+  const d = new Date();
+  document.getElementById("clock").textContent = d.toLocaleTimeString("id-ID", {hour12:false}) + " WIB · " + d.toLocaleDateString("id-ID");
+}
+setInterval(tickClock, 1000); tickClock();
+
+// init
+updateKelly();
+generateSyntheticData();
+</script>
+</body>
+</html>

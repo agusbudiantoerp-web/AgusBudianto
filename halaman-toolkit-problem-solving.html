@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problem Solving &amp; Decision Making Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16223A;
+    --ink-soft: #33425E;
+    --paper: #F5F2EA;
+    --card: #FFFFFF;
+    --gold: #C08A28;
+    --gold-deep: #8F6416;
+    --gold-bg: #F6EAD2;
+    --line: #DCD5C3;
+    --slate: #5B6472;
+    --k1: #2F6F5E;
+    --k1-bg: #E8F1EE;
+    --k2: #8F4B2E;
+    --k2-bg: #F5E9E1;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; line-height: 1.55; }
+  h1, h2, h3, h4, .display { font-family: 'Fraunces', serif; color: var(--ink); margin: 0; }
+  a { color: inherit; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 28px; }
+
+  .topbar { border-bottom: 1px solid var(--line); padding: 16px 0; background: rgba(245,242,234,.92);
+    position: sticky; top: 0; z-index: 30; backdrop-filter: blur(6px); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: 0.01em; font-size: 14.5px; }
+  .brand .mark { width: 30px; height: 30px; border: 1.5px solid var(--ink); border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 15px; color: var(--ink); flex: none; }
+  nav.top-links { display: flex; gap: 22px; font-size: 13.5px; color: var(--ink-soft); }
+  nav.top-links a { text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 2px; cursor: pointer; }
+  nav.top-links a:hover { border-color: var(--gold); color: var(--ink); }
+  .btn-dl-small { background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 4px; font-size: 13px;
+    font-weight: 600; text-decoration: none; white-space: nowrap; flex: none; }
+
+  .hero { padding: 64px 0 0; border-bottom: 1px solid var(--line); overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; }
+  .hero .kicker { font-size: 12.5px; color: var(--gold-deep); font-weight: 700; letter-spacing: 0.04em; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(30px, 4vw, 46px); font-weight: 600; line-height: 1.1; }
+  .hero .lede { margin-top: 20px; font-size: 16px; color: var(--ink-soft); max-width: 520px; }
+  .hero-actions { margin-top: 30px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .btn-primary { background: var(--ink); color: #fff; padding: 14px 24px; border-radius: 4px; font-weight: 600;
+    font-size: 14.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--ink); cursor: pointer; }
+  .btn-primary:hover { background: #0e1728; }
+  .btn-primary svg { flex: none; }
+  .btn-ghost { background: transparent; color: var(--ink); padding: 13px 20px; border-radius: 4px; font-weight: 600;
+    font-size: 14.5px; border: 1px solid var(--ink); cursor: pointer; text-decoration: none; }
+  .hero-note { font-size: 13px; color: var(--slate); }
+
+  .hero-art { position: relative; display: flex; align-items: center; justify-content: center; }
+  .hero-art svg { width: 100%; max-width: 420px; height: auto; }
+  .float-tag { position: absolute; background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+    padding: 7px 12px; font-size: 12px; font-weight: 600; color: var(--ink-soft); box-shadow: 0 6px 18px rgba(22,34,58,.08);
+    animation: floaty 5s ease-in-out infinite; }
+  .float-tag.a { top: 6%; left: -4%; animation-delay: 0s; color: var(--k1); }
+  .float-tag.b { bottom: 12%; right: -6%; animation-delay: 1.4s; color: var(--k2); }
+  .float-tag.c { top: 46%; right: -2%; animation-delay: .8s; color: var(--gold-deep); }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @media (prefers-reduced-motion: reduce) { .float-tag { animation: none; } }
+
+  .stat-row { margin-top: 50px; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+  .stat { padding: 20px 24px 26px; border-left: 1px solid var(--line); }
+  .stat:first-child { border-left: none; padding-left: 0; }
+  .stat .num { font-family: 'Fraunces', serif; font-size: 32px; color: var(--ink); }
+  .stat .lbl { font-size: 12.5px; color: var(--slate); margin-top: 4px; }
+
+  .iconmap { padding: 40px 0 56px; }
+  .iconmap-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+  .iconmap-head h3 { font-size: 15px; font-weight: 700; color: var(--slate); }
+  .iconmap-head span { font-size: 12.5px; color: var(--slate); }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 20px; padding: 7px 12px 7px 8px; cursor: pointer; font-family: 'Inter'; font-size: 12px;
+    color: var(--ink-soft); transition: border-color .15s ease, transform .15s ease; }
+  .chip:hover { border-color: var(--gold); transform: translateY(-1px); }
+  .chip[data-kelas="k1"] .chip-ic { color: var(--k1); }
+  .chip[data-kelas="k2"] .chip-ic { color: var(--k2); }
+  .chip-ic svg { width: 15px; height: 15px; display: block; }
+  .chip-no { font-weight: 700; }
+
+  section { padding: 58px 0; border-bottom: 1px solid var(--line); }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 30px; flex-wrap: wrap; }
+  .section-head h2 { font-size: 27px; font-weight: 600; }
+  .section-head p { color: var(--slate); font-size: 14.5px; max-width: 420px; margin-top: 8px; }
+  .pill { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+  .pill.k1 { background: var(--k1-bg); color: var(--k1); }
+  .pill.k2 { background: var(--k2-bg); color: var(--k2); }
+
+  .controls { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-bottom: 26px;
+    position: sticky; top: 63px; z-index: 20; background: var(--paper); padding: 10px 0; }
+  .tabs { display: flex; gap: 6px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 4px; }
+  .tab-btn { border: none; background: transparent; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
+    color: var(--slate); cursor: pointer; font-family: 'Inter'; }
+  .tab-btn.active { background: var(--ink); color: #fff; }
+  .search-wrap { flex: 1; min-width: 220px; position: relative; }
+  .search-wrap input { width: 100%; padding: 10px 14px 10px 36px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--card); font-family: 'Inter'; font-size: 13.5px; color: var(--ink); outline: none; }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--slate); }
+  .result-count { font-size: 12.5px; color: var(--slate); white-space: nowrap; }
+  .empty-state { display: none; text-align: center; padding: 40px 0; color: var(--slate); font-size: 14px; }
+
+  .tool-list { display: flex; flex-direction: column; gap: 10px; }
+  .tool-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; scroll-margin-top: 130px; }
+  .tool-card.flash { animation: flash 1.4s ease; }
+  @keyframes flash { 0%,100% { border-color: var(--line); } 30% { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-bg); } }
+  .tool-card summary { list-style: none; cursor: pointer; padding: 15px 20px; display: flex; align-items: center; gap: 14px; }
+  .tool-card summary::-webkit-details-marker { display: none; }
+  .tool-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--paper); display: flex; align-items: center;
+    justify-content: center; flex: none; color: var(--gold-deep); }
+  .tool-icon svg { width: 18px; height: 18px; }
+  [data-kelas="k1"] .tool-icon { color: var(--k1); }
+  [data-kelas="k2"] .tool-icon { color: var(--k2); }
+  .tool-no { font-family: 'Fraunces', serif; font-size: 13px; color: var(--gold-deep); font-weight: 600; width: 22px; flex: none; }
+  .tool-name { font-weight: 600; font-size: 15px; flex: 1; }
+  .tool-chev { width: 9px; height: 9px; border-right: 1.6px solid var(--slate); border-bottom: 1.6px solid var(--slate);
+    transform: rotate(45deg); transition: transform .2s ease; flex: none; }
+  details[open] .tool-chev { transform: rotate(-135deg); }
+  .tool-body { padding: 0 20px 22px 68px; display: grid; gap: 14px; }
+  .tool-block h4 { font-family: 'Inter', sans-serif; font-size: 11.5px; color: var(--gold-deep); font-weight: 700; margin-bottom: 4px; }
+  .tool-block p { font-size: 13.8px; color: var(--ink-soft); margin: 0; }
+  .tool-block.soal { background: var(--paper); border-left: 3px solid var(--k1); padding: 10px 14px; border-radius: 3px; }
+  .tool-block.pembahasan { background: var(--paper); border-left: 3px solid var(--gold); padding: 10px 14px; border-radius: 3px; }
+
+  table.tpl { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); }
+  table.tpl th { text-align: left; font-size: 12px; letter-spacing: 0.02em; color: var(--slate); font-weight: 700;
+    padding: 12px 16px; border-bottom: 1px solid var(--line); background: #FBFAF6; }
+  table.tpl td { padding: 15px 16px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 13.5px; }
+  table.tpl tr:last-child td { border-bottom: none; }
+  table.tpl tbody tr { transition: background .15s ease; }
+  table.tpl tbody tr:hover { background: var(--gold-bg); }
+  .tno { font-family: 'Fraunces', serif; color: var(--gold-deep); font-weight: 600; width: 30px; }
+  .tname { font-weight: 600; width: 190px; }
+  .tlink { color: var(--k2); font-size: 12.8px; width: 190px; }
+  .tdesc { color: var(--ink-soft); }
+
+  .cta { background: var(--ink); border-radius: 10px; padding: 46px 44px; color: #fff; display: flex; justify-content: space-between;
+    align-items: center; gap: 32px; flex-wrap: wrap; position: relative; overflow: hidden; }
+  .cta::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,138,40,.35), transparent 70%); }
+  .cta h2 { color: #fff; font-size: 25px; font-weight: 600; max-width: 460px; position: relative; }
+  .cta p { color: #C7CDDA; font-size: 14px; margin-top: 10px; max-width: 460px; position: relative; }
+  .cta .btn-primary { background: var(--gold); border-color: var(--gold); color: #241703; position: relative; }
+  .cta .btn-primary:hover { background: #D6A03C; }
+  .cta-list { margin-top: 16px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; position: relative; }
+  .cta-list li { font-size: 13px; color: #C7CDDA; display: flex; gap: 8px; }
+  .cta-list li::before { content: "—"; color: var(--gold); }
+
+  footer { padding: 30px 0 56px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  footer p { font-size: 12.5px; color: var(--slate); margin: 0; }
+
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-art { order: -1; margin-bottom: 10px; }
+    .hero-art svg { max-width: 300px; }
+    .float-tag { display: none; }
+  }
+  @media (max-width: 720px) {
+    nav.top-links { display: none; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); row-gap: 20px; }
+    .stat:nth-child(3) { border-left: none; padding-left: 0; }
+    .tool-body { padding-left: 20px; }
+    .controls { top: 0; }
+    table.tpl, table.tpl thead, table.tpl tbody, table.tpl th, table.tpl td, table.tpl tr { display: block; }
+    table.tpl thead { display: none; }
+    table.tpl tr { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+    table.tpl td { border: none; padding: 4px 0; }
+    .tname::before { content: "Template: "; color: var(--slate); font-weight: 400; }
+    .tlink::before { content: "Terkait: "; color: var(--slate); }
+    .cta { padding: 32px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="mark">PS</span> Problem Solving &amp; Decision Making Toolkit</div>
+    <nav class="top-links">
+      <a data-scroll="peta">Peta Metode</a>
+      <a data-scroll="kelas1">Kelas 1</a>
+      <a data-scroll="kelas2">Kelas 2</a>
+      <a data-scroll="template">Template</a>
+    </nav>
+    <a class="btn-dl-small" href="Toolkit_Problem_Solving_Decision_Making.xlsx" download>Unduh Excel</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">MODUL PELATIHAN MANAJEMEN — TEORI, CONTOH SOAL &amp; PEMBAHASAN</div>
+        <h1>29 metode berpikir sistematis untuk menyelesaikan masalah dan mengambil keputusan yang lebih baik.</h1>
+        <p class="lede">Kelas 1 melatih Anda merumuskan dan membedah masalah. Kelas 2 melatih Anda menimbang dan memutuskan pilihan terbaik. Klik ikon di kanan, atau cari langsung di tiap kelas untuk membuka metodenya.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="Toolkit_Problem_Solving_Decision_Making.xlsx" download>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1V11M8 11L4 7M8 11L12 7" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5H14" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+            Unduh Workbook Excel
+          </a>
+          <button class="btn-ghost" data-scroll="peta">Jelajahi 29 metode</button>
+        </div>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 380 340" fill="none">
+          <circle cx="190" cy="170" r="150" fill="#EFE9D8"/>
+          <g stroke="#C9C0A4" stroke-width="1.4">
+            <line x1="190" y1="170" x2="95" y2="95"/>
+            <line x1="190" y1="170" x2="290" y2="90"/>
+            <line x1="190" y1="170" x2="300" y2="200"/>
+            <line x1="190" y1="170" x2="230" y2="270"/>
+            <line x1="190" y1="170" x2="110" y2="255"/>
+            <line x1="190" y1="170" x2="80" y2="175"/>
+          </g>
+          <circle cx="190" cy="170" r="30" fill="#16223A"/>
+          <path d="M182 170a8 8 0 1 1 11 7.4c-2.6 1.1-3.4 2.7-3.4 5.1" stroke="#F5F2EA" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <circle cx="190" cy="187.5" r="1.4" fill="#F5F2EA"/>
+          <circle cx="95" cy="95" r="20" fill="#2F6F5E"/>
+          <path d="M87 96h16M87 91h16" stroke="#E8F1EE" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="290" cy="90" r="20" fill="#8F4B2E"/>
+          <path d="M282 96l16-12M282 84l16 12" stroke="#F5E9E1" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="300" cy="200" r="18" fill="#C08A28"/>
+          <rect x="292" y="192" width="16" height="16" rx="2" stroke="#FBF3DF" stroke-width="1.8" fill="none"/>
+          <circle cx="230" cy="270" r="18" fill="#2F6F5E"/>
+          <path d="M222 274l6-9 6 9" stroke="#E8F1EE" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="110" cy="255" r="18" fill="#8F4B2E"/>
+          <path d="M103 259l7-9 7 9" stroke="#F5E9E1" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="80" cy="175" r="16" fill="#16223A"/>
+          <circle cx="80" cy="175" r="5" fill="none" stroke="#F5F2EA" stroke-width="1.8"/>
+        </svg>
+        <div class="float-tag a">Fishbone · Pareto · MECE</div>
+        <div class="float-tag b">Risk Matrix · RACI</div>
+        <div class="float-tag c">PDCA</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="num">29</div><div class="lbl">Metode problem solving &amp; decision making</div></div>
+      <div class="stat"><div class="num">9</div><div class="lbl">Template kerja siap isi, lengkap dengan formula</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl">Kelas — dari merumuskan masalah hingga memutuskan</div></div>
+      <div class="stat"><div class="num">1</div><div class="lbl">Workbook Excel untuk dipelajari &amp; dilacak progresnya</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="peta" class="iconmap">
+  <div class="wrap">
+    <div class="iconmap-head">
+      <h3>PETA 29 METODE — KLIK UNTUK LANGSUNG MEMBUKA</h3>
+      <span>Kelas 1 (hijau) · Kelas 2 (cokelat)</span>
+    </div>
+    <div class="chip-row" id="chipRow">
+<button class="chip" data-target="tool-1" data-kelas="k1" title="Five Why (5 Whys)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.4a2.7 2.7 0 1 1 3.8 2.5c-.9.4-1.1 1-1.1 1.9"/><circle cx="12" cy="16.6" r=".35" fill="currentColor"/></svg></span><span class="chip-no">01</span></button>
+<button class="chip" data-target="tool-2" data-kelas="k1" title="Fishbone Diagram (Diagram Tulang Ikan / Ishikawa)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 7c-3.2 0-5.5 2.1-5.5 5.3M12 7c3.2 0 5.5 2.1 5.5 5.3M6.5 12.3v4.7M17.5 12.3v4.7M12 7v14"/></svg></span><span class="chip-no">02</span></button>
+<button class="chip" data-target="tool-3" data-kelas="k1" title="Problem Statement Canvas"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.4"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span class="chip-no">03</span></button>
+<button class="chip" data-target="tool-4" data-kelas="k1" title="Analisis CATWOE"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6.6 5.3 12 5.3 21.5 12 21.5 12 17.4 18.7 12 18.7 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="chip-no">04</span></button>
+<button class="chip" data-target="tool-5" data-kelas="k1" title="Prinsip Pareto (80/20)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h17"/><rect x="6.5" y="12" width="3" height="8"/><rect x="11.5" y="7" width="3" height="13"/><rect x="16.5" y="14" width="3" height="6"/></svg></span><span class="chip-no">05</span></button>
+<button class="chip" data-target="tool-6" data-kelas="k1" title="System Thinking (Berpikir Sistem)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 12.3-5.7l2.2-.3M19.5 12a7.5 7.5 0 0 1-12.3 5.7l-2.2.3"/><path d="M18.6 4.9l.4 3-3 .3M5.4 19.1l-.4-3 3-.3"/></svg></span><span class="chip-no">06</span></button>
+<button class="chip" data-target="tool-7" data-kelas="k1" title="Prinsip MECE (Mutually Exclusive, Collectively Exhaustive)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span><span class="chip-no">07</span></button>
+<button class="chip" data-target="tool-8" data-kelas="k1" title="Mind &amp; Concept Mapping"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="17" r="2"/><path d="M7.8 6.9l8.4 1.5M6.9 7.9l.2 8.2M9 17.3l7-8.6"/></svg></span><span class="chip-no">08</span></button>
+<button class="chip" data-target="tool-9" data-kelas="k1" title="Six Thinking Hats"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.5c0-4.7 3.6-8.3 8-8.3s8 3.6 8 8.3"/><path d="M2.8 14.5h18.4"/><path d="M8.2 17.6c1 1 2.2 1.6 3.8 1.6s2.8-.6 3.8-1.6"/></svg></span><span class="chip-no">09</span></button>
+<button class="chip" data-target="tool-10" data-kelas="k1" title="Socratic Questioning"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.4a2.7 2.7 0 1 1 3.8 2.5c-.9.4-1.1 1-1.1 1.9"/><circle cx="12" cy="16.6" r=".35" fill="currentColor"/></svg></span><span class="chip-no">10</span></button>
+<button class="chip" data-target="tool-11" data-kelas="k2" title="Brainwriting"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><span class="chip-no">11</span></button>
+<button class="chip" data-target="tool-12" data-kelas="k2" title="SCAMPER"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.3 18.2h5.4M10.1 21h3.8"/><path d="M12 3.2a6 6 0 0 0-3.4 10.9c.7.5 1 1.2 1 2.1h4.8c0-.9.3-1.6 1-2.1A6 6 0 0 0 12 3.2Z"/></svg></span><span class="chip-no">12</span></button>
+<button class="chip" data-target="tool-13" data-kelas="k2" title="Design Thinking"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.3 18.2h5.4M10.1 21h3.8"/><path d="M12 3.2a6 6 0 0 0-3.4 10.9c.7.5 1 1.2 1 2.1h4.8c0-.9.3-1.6 1-2.1A6 6 0 0 0 12 3.2Z"/></svg></span><span class="chip-no">13</span></button>
+<button class="chip" data-target="tool-14" data-kelas="k2" title="Reverse Engineering (Rekayasa Balik)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.4 7.7l1.9 1.1M17.7 15.2l1.9 1.1M3 12h2.2M18.8 12H21M4.4 16.3l1.9-1.1M17.7 8.8l1.9-1.1"/></svg></span><span class="chip-no">14</span></button>
+<button class="chip" data-target="tool-15" data-kelas="k2" title="Metode TRIZ"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.4 7.7l1.9 1.1M17.7 15.2l1.9 1.1M3 12h2.2M18.8 12H21M4.4 16.3l1.9-1.1M17.7 8.8l1.9-1.1"/></svg></span><span class="chip-no">15</span></button>
+<button class="chip" data-target="tool-16" data-kelas="k2" title="Diagram Afinitas (Affinity Diagram)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span><span class="chip-no">16</span></button>
+<button class="chip" data-target="tool-17" data-kelas="k2" title="Tree Diagram (Diagram Pohon)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 7c-3.2 0-5.5 2.1-5.5 5.3M12 7c3.2 0 5.5 2.1 5.5 5.3M6.5 12.3v4.7M17.5 12.3v4.7M12 7v14"/></svg></span><span class="chip-no">17</span></button>
+<button class="chip" data-target="tool-18" data-kelas="k2" title="Flowchart &amp; Process Map"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="4.2" rx="1"/><rect x="15" y="3" width="6" height="4.2" rx="1"/><rect x="9" y="16.8" width="6" height="4.2" rx="1"/><path d="M6 7.2v5.8h6m6-5.8v5.8h-6m0 0v3.8"/></svg></span><span class="chip-no">18</span></button>
+<button class="chip" data-target="tool-19" data-kelas="k2" title="Metode KJ (KJ Method)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="17" r="2"/><path d="M7.8 6.9l8.4 1.5M6.9 7.9l.2 8.2M9 17.3l7-8.6"/></svg></span><span class="chip-no">19</span></button>
+<button class="chip" data-target="tool-20" data-kelas="k2" title="Diagram Keterkaitan (Interrelationship Digraph)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="17" r="2"/><path d="M7.8 6.9l8.4 1.5M6.9 7.9l.2 8.2M9 17.3l7-8.6"/></svg></span><span class="chip-no">20</span></button>
+<button class="chip" data-target="tool-21" data-kelas="k2" title="Matriks Prioritas Tindakan (Prioritization Matrix)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span><span class="chip-no">21</span></button>
+<button class="chip" data-target="tool-22" data-kelas="k2" title="Metode MoSCoW"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 8l9.5 5 9.5-5L12 3Z"/><path d="M2.5 13l9.5 5 9.5-5"/></svg></span><span class="chip-no">22</span></button>
+<button class="chip" data-target="tool-23" data-kelas="k2" title="Model KANO"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5h17M3.5 20.5V3.5"/><path d="M4.5 17.3c3-1 4.7-6 7.6-8s5.8 1 7.9-3.2"/></svg></span><span class="chip-no">23</span></button>
+<button class="chip" data-target="tool-24" data-kelas="k2" title="Cost-Benefit Analysis (Kualitatif)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7.2 21h9.6"/><path d="M4.3 8h6M13.7 8h6"/><path d="M4.3 8 2 13a2.6 2.6 0 0 0 4.9 0L4.3 8ZM19.7 8 17.4 13a2.6 2.6 0 0 0 4.9 0L19.7 8Z"/></svg></span><span class="chip-no">24</span></button>
+<button class="chip" data-target="tool-25" data-kelas="k2" title="Penilaian Situasi (Situation Appraisal)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.2 8.8l-1.8 5.6-5.6 1.8 1.8-5.6 5.6-1.8Z"/></svg></span><span class="chip-no">25</span></button>
+<button class="chip" data-target="tool-26" data-kelas="k2" title="Matriks Analisis Keputusan (Weighted Decision Matrix)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span><span class="chip-no">26</span></button>
+<button class="chip" data-target="tool-27" data-kelas="k2" title="Risk Matrix"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.2 20h19.6L12 3Z"/><path d="M12 9.8v4.2M12 17h.01"/></svg></span><span class="chip-no">27</span></button>
+<button class="chip" data-target="tool-28" data-kelas="k2" title="RACI Matrix"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.2" cy="7.8" r="3"/><circle cx="16.2" cy="7.8" r="3"/><path d="M2.2 20c0-3 2.6-5.1 6-5.1s6 2.1 6 5.1M14.6 20c0-2.6 1.9-4.4 4.3-4.9"/></svg></span><span class="chip-no">28</span></button>
+<button class="chip" data-target="tool-29" data-kelas="k2" title="PDCA (Plan-Do-Check-Act)"><span class="chip-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 12.3-5.7l2.2-.3M19.5 12a7.5 7.5 0 0 1-12.3 5.7l-2.2.3"/><path d="M18.6 4.9l.4 3-3 .3M5.4 19.1l-.4-3 3-.3"/></svg></span><span class="chip-no">29</span></button>
+    </div>
+  </div>
+</section>
+
+<section id="kelas1">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="pill k1">KELAS 1 · PROBLEM SOLVING</span>
+        <h2 style="margin-top:12px;">Merumuskan dan membedah akar masalah</h2>
+        <p>Sepuluh metode untuk memastikan Anda menyelesaikan masalah yang benar — bukan sekadar gejalanya.</p>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchK1" placeholder="Cari metode di Kelas 1 (mis. pareto, fishbone)…">
+      </div>
+      <span class="result-count" id="countK1"></span>
+    </div>
+    <div class="tool-list" id="listK1">
+
+      <details class="tool-card" id="tool-1" data-kelas="k1" data-name="five why (5 whys)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.4a2.7 2.7 0 1 1 3.8 2.5c-.9.4-1.1 1-1.1 1.9"/><circle cx="12" cy="16.6" r=".35" fill="currentColor"/></svg></span>
+          <span class="tool-no">01</span>
+          <span class="tool-name">Five Why (5 Whys)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Teknik akar masalah dengan bertanya &#x27;Mengapa?&#x27; secara berulang (biasanya 5 kali) sampai ditemukan penyebab dasar (root cause), bukan sekadar gejala. Dikembangkan Sakichi Toyoda, dipakai luas dalam Toyota Production System.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Masalah operasional yang tampak sederhana namun berulang; saat tim butuh cara cepat &amp; murah menelusuri akar masalah tanpa data statistik rumit.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Tuliskan pernyataan masalah sejelas mungkin. 2) Tanyakan &#x27;Mengapa?&#x27; dan catat jawabannya. 3) Ulangi hingga 5x atau sampai akar masalah ditemukan. 4) Validasi jawaban terakhir dengan data/bukti. 5) Susun rencana tindakan pada akar masalah, bukan gejalanya.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Mesin produksi berhenti mendadak setiap 2 minggu sekali, menyebabkan target harian tidak tercapai. Telusuri akar masalahnya dengan 5 Why.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>1) Mengapa mesin berhenti? -&gt; Sekring putus. 2) Mengapa sekring putus? -&gt; Motor overload. 3) Mengapa motor overload? -&gt; Pelumasan bearing kurang. 4) Mengapa pelumasan kurang? -&gt; Pompa pelumas tidak bekerja optimal. 5) Mengapa pompa tidak optimal? -&gt; Filter pompa tidak pernah dibersihkan sesuai jadwal preventive maintenance. Akar masalah: jadwal preventive maintenance tidak dijalankan konsisten. Solusi: buat checklist PM mingguan dan PIC yang jelas.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-2" data-kelas="k1" data-name="fishbone diagram (diagram tulang ikan / ishikawa)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 7c-3.2 0-5.5 2.1-5.5 5.3M12 7c3.2 0 5.5 2.1 5.5 5.3M6.5 12.3v4.7M17.5 12.3v4.7M12 7v14"/></svg></span>
+          <span class="tool-no">02</span>
+          <span class="tool-name">Fishbone Diagram (Diagram Tulang Ikan / Ishikawa)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat visual untuk memetakan kemungkinan penyebab suatu masalah (effect) ke dalam kategori utama seperti Man, Machine, Method, Material, Environment, Measurement (6M). Dikembangkan Kaoru Ishikawa.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat penyebab masalah kemungkinan berasal dari banyak faktor berbeda dan tim perlu brainstorming terstruktur sebelum melakukan validasi data.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Tulis masalah di &#x27;kepala ikan&#x27;. 2) Tentukan kategori &#x27;tulang&#x27; (6M: Man, Machine, Method, Material, Environment, Measurement). 3) Brainstorming penyebab di tiap kategori. 4) Tandai penyebab paling mungkin. 5) Validasi dengan data sebelum menentukan tindakan.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tingkat cacat produk (defect rate) di lini produksi meningkat dari 2% menjadi 8% dalam sebulan. Petakan kemungkinan penyebab menggunakan Fishbone 6M.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Man: operator baru belum terlatih penuh, shift malam kelelahan. Machine: mesin cetak sudah lewat jadwal kalibrasi. Method: SOP inspeksi belum diperbarui. Material: supplier baru mengirim bahan baku dengan kualitas tidak konsisten. Environment: suhu ruangan produksi naik karena AC rusak. Measurement: alat ukur ketebalan tidak dikalibrasi 3 bulan terakhir. Langkah lanjut: validasi tiap cabang dengan data (Pareto) untuk menentukan penyebab dominan sebelum action plan.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-3" data-kelas="k1" data-name="problem statement canvas">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.4"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+          <span class="tool-no">03</span>
+          <span class="tool-name">Problem Statement Canvas</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Kerangka satu halaman untuk merumuskan masalah secara jelas dan terukur, biasanya berisi: apa masalahnya, siapa yang terdampak, di mana/kapan terjadi, seberapa besar dampaknya, dan mengapa masalah ini penting diselesaikan sekarang.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Di awal proyek/inisiatif problem-solving, agar tim tidak salah fokus menyelesaikan masalah yang salah (solving the wrong problem).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Deskripsikan apa, siapa, kapan, dan di mana masalah terjadi. 2) Kuantifikasi besar dampaknya. 3) Jelaskan mengapa masalah ini penting diselesaikan sekarang. 4) Rumuskan pernyataan masalah final dalam satu kalimat yang terukur.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Divisi customer service menerima keluhan &#x27;pelanggan sering komplain&#x27;. Susun Problem Statement Canvas agar masalah lebih jelas.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Apa: rata-rata waktu respons komplain 3 hari, melebihi SLA 24 jam. Siapa: pelanggan segmen retail online. Kapan/di mana: terjadi terutama saat weekend &amp; jam sibuk (19.00-21.00). Dampak: churn rate naik 12% dan rating aplikasi turun dari 4.5 ke 3.8. Mengapa penting: menyangkut retensi pelanggan &amp; pendapatan berulang. Problem statement final: &#x27;Waktu respons komplain pelanggan retail online melebihi SLA terutama di jam sibuk weekend, menyebabkan penurunan retensi dan rating aplikasi dalam 2 bulan terakhir.&#x27;</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-4" data-kelas="k1" data-name="analisis catwoe">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6.6 5.3 12 5.3 21.5 12 21.5 12 17.4 18.7 12 18.7 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg></span>
+          <span class="tool-no">04</span>
+          <span class="tool-name">Analisis CATWOE</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Bagian dari Soft Systems Methodology untuk memahami masalah dari berbagai sudut pandang: Customers (penerima dampak), Actors (pelaku), Transformation (proses perubahan input-output), Worldview (asumsi/perspektif yang melandasi), Owner (pemilik keputusan), Environment (batasan eksternal).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Masalah kompleks yang melibatkan banyak pemangku kepentingan dengan kepentingan berbeda, sebelum merancang solusi sistemik.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Identifikasi Customers &amp; Actors yang terlibat/terdampak. 2) Definisikan Transformation (proses perubahan input jadi output). 3) Gali Worldview/asumsi yang melandasi. 4) Tentukan Owner pengambil keputusan. 5) Petakan Environment/batasan eksternal.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Perusahaan ingin mengubah sistem absensi manual menjadi digital berbasis wajah (face recognition). Lakukan analisis CATWOE.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Customers: karyawan &amp; HR. Actors: tim IT, vendor sistem, HR. Transformation: data kehadiran manual (kertas) menjadi data digital real-time. Worldview: efisiensi &amp; akurasi data lebih penting daripada kenyamanan lama karyawan. Owner: Direktur HR yang menyetujui anggaran. Environment: regulasi privasi data biometrik, keterbatasan anggaran IT, dan kesiapan infrastruktur jaringan kantor cabang. Insight: perlu sosialisasi ke karyawan (customer) dan kepatuhan regulasi data pribadi sebelum implementasi.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-5" data-kelas="k1" data-name="prinsip pareto (80/20)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V4M4 20h17"/><rect x="6.5" y="12" width="3" height="8"/><rect x="11.5" y="7" width="3" height="13"/><rect x="16.5" y="14" width="3" height="6"/></svg></span>
+          <span class="tool-no">05</span>
+          <span class="tool-name">Prinsip Pareto (80/20)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Prinsip yang menyatakan sekitar 80% akibat berasal dari 20% penyebab. Digunakan untuk memprioritaskan penyebab/masalah mana yang paling berdampak agar sumber daya difokuskan secara efektif.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat ada banyak kategori penyebab/keluhan dan tim perlu memprioritaskan mana yang ditangani lebih dulu berdasarkan dampak terbesar.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Kumpulkan data frekuensi per kategori penyebab. 2) Urutkan dari yang terbesar ke terkecil. 3) Hitung persentase kumulatif. 4) Tentukan kategori mana yang menyumbang sekitar 80% dampak. 5) Prioritaskan sumber daya perbaikan di sana.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Data keluhan pelanggan selama sebulan: Keterlambatan pengiriman 120, Produk rusak 40, Salah kirim 25, Kemasan jelek 10, Lainnya 5. Total 200 keluhan. Tentukan prioritas perbaikan dengan Pareto.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Urutkan dari terbesar: Keterlambatan 120 (60%), Produk rusak 40 (20%, kumulatif 80%), Salah kirim 25 (12.5%, kumulatif 92.5%), Kemasan jelek 10 (5%, kum 97.5%), Lainnya 5 (2.5%, kum 100%). Dua kategori teratas (Keterlambatan &amp; Produk rusak) menyumbang 80% keluhan. Rekomendasi: fokuskan sumber daya perbaikan pada proses pengiriman (SLA kurir, rute) dan quality control produk sebelum menangani kategori lain.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-6" data-kelas="k1" data-name="system thinking (berpikir sistem)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 12.3-5.7l2.2-.3M19.5 12a7.5 7.5 0 0 1-12.3 5.7l-2.2.3"/><path d="M18.6 4.9l.4 3-3 .3M5.4 19.1l-.4-3 3-.3"/></svg></span>
+          <span class="tool-no">06</span>
+          <span class="tool-name">System Thinking (Berpikir Sistem)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Cara berpikir holistik yang melihat masalah sebagai bagian dari sistem yang saling terhubung (input-proses-output-feedback loop), bukan kejadian terisolasi, untuk menghindari solusi yang hanya memindahkan masalah ke bagian lain.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Masalah berulang meski sudah &#x27;diselesaikan&#x27; berkali-kali, atau saat solusi di satu departemen justru menimbulkan masalah baru di departemen lain.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Petakan elemen-elemen sistem dan hubungannya. 2) Identifikasi feedback loop (siklus sebab-akibat). 3) Cari titik intervensi (leverage point) paling efektif. 4) Uji dampak solusi ke seluruh sistem sebelum dieksekusi penuh.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Target penjualan tim sales dinaikkan drastis, penjualan jangka pendek naik, tetapi 3 bulan kemudian retur produk &amp; komplain pelanggan meningkat tajam. Analisis dengan System Thinking.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Feedback loop: target agresif -&gt; sales overselling ke pelanggan yang belum siap/sesuai kebutuhan -&gt; penjualan naik (efek jangka pendek) -&gt; pelanggan kecewa karena ekspektasi tidak sesuai -&gt; retur &amp; komplain naik -&gt; biaya after-sales naik &amp; reputasi turun -&gt; penjualan jangka panjang justru terancam. Ini adalah &#x27;fixes that fail&#x27; archetype. Rekomendasi: ubah KPI sales dari volume murni menjadi kombinasi volume + retention/kualitas penjualan, dan lihat sistem end-to-end bukan hanya satu titik ukur.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-7" data-kelas="k1" data-name="prinsip mece (mutually exclusive, collectively exhaustive)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span>
+          <span class="tool-no">07</span>
+          <span class="tool-name">Prinsip MECE (Mutually Exclusive, Collectively Exhaustive)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Prinsip pengelompokan informasi agar setiap kategori tidak tumpang tindih (mutually exclusive) namun bila digabung mencakup keseluruhan (collectively exhaustive). Populer dalam konsultasi manajemen (McKinsey) untuk menyusun struktur analisis/masalah.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat menyusun struktur masalah besar menjadi sub-masalah, membuat kerangka laporan, atau memastikan tidak ada faktor penting yang terlewat/berulang.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Kumpulkan seluruh faktor/isu terkait masalah. 2) Kelompokkan berdasarkan kesamaan sifat. 3) Periksa tidak ada kategori yang tumpang tindih (mutually exclusive). 4) Periksa tidak ada faktor penting yang terlewat (collectively exhaustive). 5) Finalisasi struktur kategori.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Segmentasi penyebab turunnya penjualan toko retail: &#x27;Harga terlalu mahal&#x27;, &#x27;Promosi kurang&#x27;, &#x27;Kompetitor baru buka&#x27;, &#x27;Lokasi kurang strategis&#x27;, &#x27;Harga produk kompetitor lebih murah&#x27;. Periksa apakah kategori ini sudah MECE.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Belum MECE: &#x27;Harga terlalu mahal&#x27; dan &#x27;Harga produk kompetitor lebih murah&#x27; saling tumpang tindih (overlap) karena sama-sama soal harga relatif. Perbaikan MECE: kelompokkan ke faktor Internal (Harga, Promosi, Layanan, Lokasi) vs Eksternal (Kompetitor, Tren pasar, Kondisi ekonomi). Dengan struktur ini setiap penyebab masuk satu kategori jelas dan seluruh kemungkinan faktor tercakup, memudahkan analisis lanjutan per kategori.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-8" data-kelas="k1" data-name="mind &amp; concept mapping">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="17" r="2"/><path d="M7.8 6.9l8.4 1.5M6.9 7.9l.2 8.2M9 17.3l7-8.6"/></svg></span>
+          <span class="tool-no">08</span>
+          <span class="tool-name">Mind &amp; Concept Mapping</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Mind mapping memetakan ide dari satu topik sentral yang bercabang bebas (asosiatif); concept mapping memetakan hubungan antar-konsep dengan label penghubung yang menjelaskan relasi (lebih terstruktur/hirarkis). Keduanya membantu memvisualkan &amp; menghubungkan ide.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Brainstorming ide awal (mind map) atau memetakan hubungan sebab-akibat antar konsep yang kompleks agar mudah dipahami tim (concept map).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Tulis topik sentral di tengah. 2) Kembangkan cabang-cabang utama. 3) Tambahkan sub-cabang yang lebih detail. 4) Beri label relasi antar konsep bila memakai concept map. 5) Review dan pilih cabang prioritas untuk ditindaklanjuti.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Buat mind map untuk topik sentral &#x27;Meningkatkan Employee Engagement&#x27; di perusahaan.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Topik sentral: Employee Engagement. Cabang utama: 1) Kompensasi (gaji kompetitif, bonus kinerja, benefit kesehatan); 2) Pengembangan Karir (pelatihan, mentoring, jenjang karir jelas); 3) Lingkungan Kerja (budaya kolaboratif, work-life balance, fasilitas); 4) Kepemimpinan (komunikasi terbuka, pengakuan/recognition, feedback rutin); 5) Makna Kerja (keterkaitan tugas dengan visi perusahaan). Dari mind map ini, tim HR bisa memilih 2-3 cabang prioritas untuk dijadikan program konkret berdasarkan hasil survei engagement.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-9" data-kelas="k1" data-name="six thinking hats">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.5c0-4.7 3.6-8.3 8-8.3s8 3.6 8 8.3"/><path d="M2.8 14.5h18.4"/><path d="M8.2 17.6c1 1 2.2 1.6 3.8 1.6s2.8-.6 3.8-1.6"/></svg></span>
+          <span class="tool-no">09</span>
+          <span class="tool-name">Six Thinking Hats</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Metode Edward de Bono untuk melihat masalah dari 6 perspektif berbeda secara bergiliran: Putih (fakta/data), Merah (emosi/intuisi), Hitam (risiko/kritik), Kuning (manfaat/optimisme), Hijau (kreativitas/alternatif), Biru (proses/kesimpulan) — supaya diskusi tidak terjebak debat berkepanjangan.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Rapat pengambilan keputusan yang butuh sudut pandang menyeluruh dan cepat, atau saat diskusi tim sering terjebak konflik pendapat.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Sepakati topik bahasan dan durasi tiap topi. 2) Bergiliran memakai topi Putih -&gt; Merah -&gt; Hitam -&gt; Kuning -&gt; Hijau -&gt; Biru. 3) Catat insight yang muncul di tiap sesi topi. 4) Simpulkan keputusan akhir di sesi topi Biru.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tim mempertimbangkan meluncurkan fitur baru aplikasi dalam 1 bulan. Bahas dengan Six Thinking Hats.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Putih (fakta): waktu pengembangan tersisa 4 minggu, tim QA hanya 2 orang. Merah (emosi): tim bersemangat tapi juga cemas soal kualitas. Hitam (risiko): rilis terburu-buru berisiko bug tinggi dan reputasi turun. Kuning (manfaat): jika berhasil, fitur ini bisa jadi pembeda dari kompetitor lebih dulu. Hijau (kreatif): alternatif merilis versi beta terbatas (soft launch) ke sebagian pengguna dulu. Biru (kesimpulan): tim sepakat melakukan soft launch minggu ke-4 ke 10% pengguna, full launch menyusul setelah evaluasi bug 1 minggu.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-10" data-kelas="k1" data-name="socratic questioning">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.4a2.7 2.7 0 1 1 3.8 2.5c-.9.4-1.1 1-1.1 1.9"/><circle cx="12" cy="16.6" r=".35" fill="currentColor"/></svg></span>
+          <span class="tool-no">10</span>
+          <span class="tool-name">Socratic Questioning</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Teknik bertanya sistematis untuk menguji asumsi, logika, dan bukti di balik suatu pernyataan/keputusan, dengan pertanyaan seperti &#x27;Apa buktinya?&#x27;, &#x27;Bagaimana jika sebaliknya?&#x27;, &#x27;Apa implikasinya?&#x27; untuk mendorong berpikir kritis mendalam.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat menguji validitas suatu asumsi strategis, keputusan penting, atau argumen sebelum disepakati bersama.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Klarifikasi pernyataan/klaim awal. 2) Uji bukti dan asumsi di baliknya. 3) Eksplorasi sudut pandang lain. 4) Telaah implikasi bila pernyataan itu benar/salah. 5) Simpulkan dan uji ulang bila perlu.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Manajer menyatakan &#x27;Kita harus menutup toko cabang B karena tidak menguntungkan.&#x27; Uji pernyataan ini dengan Socratic Questioning.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Klarifikasi: &#x27;Tidak menguntungkan&#x27; diukur dari periode berapa lama? Bukti: Apa data laba-rugi 12 bulan terakhir cabang B, dan apakah sudah dibandingkan dengan biaya tetap vs variabel? Asumsi: Apakah kita berasumsi kondisi pasar di area itu tidak akan membaik? Perspektif lain: Bagaimana jika penurunan disebabkan faktor sementara (renovasi jalan di depan toko)? Implikasi: Jika ditutup, apa dampak ke karyawan dan brand image di area tersebut? Alternatif: Sudahkah opsi lain seperti reposisi produk atau efisiensi biaya operasional dipertimbangkan sebelum keputusan tutup?</p>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="empty-state" id="emptyK1">Tidak ada metode yang cocok dengan pencarianmu.</div>
+  </div>
+</section>
+
+<section id="kelas2">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="pill k2">KELAS 2 · DECISION MAKING</span>
+        <h2 style="margin-top:12px;">Menimbang opsi dan memutuskan dengan percaya diri</h2>
+        <p>Sembilan belas metode untuk membangkitkan ide, memprioritaskan, dan memilih opsi terbaik secara terstruktur.</p>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchK2" placeholder="Cari metode di Kelas 2 (mis. moscow, risk matrix)…">
+      </div>
+      <span class="result-count" id="countK2"></span>
+    </div>
+    <div class="tool-list" id="listK2">
+
+      <details class="tool-card" id="tool-11" data-kelas="k2" data-name="brainwriting">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span>
+          <span class="tool-no">11</span>
+          <span class="tool-name">Brainwriting</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Variasi brainstorming secara tertulis dan senyap: setiap peserta menulis idenya di kertas/kartu, lalu kertas diputar/dikumpulkan agar peserta lain menambahkan atau mengembangkan ide tersebut (mis. teknik 6-3-5: 6 orang, 3 ide, 5 menit per putaran).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat brainstorming verbal didominasi suara paling vokal (groupthink/HIPPO) dan tim butuh partisipasi merata dari semua anggota, termasuk yang introvert.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Bentuk kelompok kecil (idealnya 5-6 orang). 2) Tiap peserta menulis ide secara individual dan senyap. 3) Putar lembar antar peserta untuk dikembangkan lebih lanjut. 4) Kumpulkan seluruh lembar dan kelompokkan hasil akhirnya.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tim marketing perlu 20+ ide kampanye promosi Ramadan dalam 30 menit tanpa didominasi 1-2 orang. Rancang sesi Brainwriting.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Gunakan format 6-3-5: 6 peserta, masing-masing menulis 3 ide di lembar terpisah dalam 5 menit, lalu lembar diputar searah jarum jam ke peserta berikutnya yang menambah/mengembangkan ide tadi (bukan menulis ulang ide baru dari nol), berlangsung 6 putaran. Hasil: 6 orang x 3 ide x 6 putaran berpotensi 108 ide mentah (dengan pengembangan berlapis). Setelah itu, fasilitator mengumpulkan semua lembar dan tim melakukan affinity grouping untuk memilih 20 ide terbaik yang layak dikembangkan menjadi kampanye.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-12" data-kelas="k2" data-name="scamper">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.3 18.2h5.4M10.1 21h3.8"/><path d="M12 3.2a6 6 0 0 0-3.4 10.9c.7.5 1 1.2 1 2.1h4.8c0-.9.3-1.6 1-2.1A6 6 0 0 0 12 3.2Z"/></svg></span>
+          <span class="tool-no">12</span>
+          <span class="tool-name">SCAMPER</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Teknik kreativitas untuk memodifikasi produk/proses lewat 7 lensa: Substitute (ganti), Combine (gabungkan), Adapt (sesuaikan), Modify (ubah), Put to another use (kegunaan lain), Eliminate (hilangkan), Reverse/Rearrange (balik/susun ulang).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat ingin berinovasi dari produk/layanan yang sudah ada, bukan menciptakan dari nol, misalnya untuk perbaikan produk atau proses bisnis.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Pilih produk/proses yang ingin dikembangkan. 2) Ajukan pertanyaan pemicu untuk tiap huruf SCAMPER. 3) Catat semua ide yang muncul tanpa menyaring dulu. 4) Pilih ide paling potensial untuk ditindaklanjuti.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Gunakan SCAMPER untuk mengembangkan ide inovasi dari produk &#x27;kopi kemasan botol&#x27;.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Substitute: ganti gula dengan pemanis rendah kalori. Combine: gabungkan kopi dengan susu oat untuk segmen plant-based. Adapt: sesuaikan kemasan agar bisa dibawa saat olahraga (botol sport cap). Modify: perbesar ukuran menjadi versi &#x27;sharing size&#x27; untuk keluarga. Put to another use: jadikan kopi dingin ini juga sebagai bahan campuran dessert/mocktail di kafe. Eliminate: hilangkan kemasan plastik sekali pakai, ganti botol kaca isi ulang untuk isu keberlanjutan. Reverse: alih-alih dijual di ritel, jual lewat model subscription bulanan langsung ke rumah pelanggan.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-13" data-kelas="k2" data-name="design thinking">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9.3 18.2h5.4M10.1 21h3.8"/><path d="M12 3.2a6 6 0 0 0-3.4 10.9c.7.5 1 1.2 1 2.1h4.8c0-.9.3-1.6 1-2.1A6 6 0 0 0 12 3.2Z"/></svg></span>
+          <span class="tool-no">13</span>
+          <span class="tool-name">Design Thinking</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Pendekatan inovasi berpusat pada manusia dengan 5 tahap: Empathize (memahami user), Define (merumuskan masalah inti), Ideate (brainstorming solusi), Prototype (membuat model cepat), Test (uji ke pengguna), dilakukan iteratif.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Merancang produk/layanan baru yang solusinya belum jelas dan perlu divalidasi langsung dengan pengguna sebelum investasi besar.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Empathize: riset &amp; pahami pengguna. 2) Define: rumuskan masalah inti. 3) Ideate: brainstorming solusi sebanyak mungkin. 4) Prototype: buat model/purwarupa cepat. 5) Test: uji ke pengguna nyata dan iterasi.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Terapkan 5 tahap Design Thinking untuk merancang ulang pengalaman antrean di klinik kesehatan yang sering dikeluhkan pasien.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Empathize: wawancara &amp; observasi pasien, ditemukan keluhan utama adalah ketidakpastian waktu tunggu. Define: &#x27;Pasien membutuhkan kepastian estimasi waktu tunggu agar bisa mengatur aktivitas lain.&#x27; Ideate: opsi solusi -&gt; aplikasi nomor antrean online, SMS notifikasi giliran, layar estimasi waktu real-time. Prototype: buat mockup sederhana aplikasi cek antrean berbasis web tanpa perlu install. Test: uji coba ke 20 pasien selama seminggu, ukur kepuasan &amp; keakuratan estimasi, lalu iterasi berdasarkan feedback sebelum diluncurkan penuh.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-14" data-kelas="k2" data-name="reverse engineering (rekayasa balik)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.4 7.7l1.9 1.1M17.7 15.2l1.9 1.1M3 12h2.2M18.8 12H21M4.4 16.3l1.9-1.1M17.7 8.8l1.9-1.1"/></svg></span>
+          <span class="tool-no">14</span>
+          <span class="tool-name">Reverse Engineering (Rekayasa Balik)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Proses membedah produk, proses, atau hasil (output) yang sudah ada untuk memahami cara kerja atau struktur di baliknya, lalu mereplikasi/mengadaptasi prinsipnya untuk konteks sendiri.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Mempelajari strategi kompetitor yang sukses, memahami mengapa suatu proses/produk berhasil, atau merancang mundur dari target akhir ke langkah-langkah yang dibutuhkan.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Amati hasil akhir/output yang ingin dipelajari. 2) Telusuri mundur proses yang menghasilkannya. 3) Identifikasi elemen kunci penyebab keberhasilan. 4) Adaptasi elemen tersebut dan uji dalam konteks sendiri.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Kompetitor berhasil menaikkan retensi pelanggan aplikasi hingga 40% dalam 6 bulan. Lakukan reverse engineering untuk memahami dan mengadaptasi strateginya.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Amati output akhir: retensi naik 40%. Telusuri mundur: fitur apa yang diluncurkan sebelum kenaikan itu (mis. program loyalitas poin), bagaimana onboarding pengguna baru mereka, apa pola komunikasi push notification mereka. Identifikasi elemen inti yang mungkin jadi penyebab (loyalty program + onboarding personalisasi). Adaptasi: rancang program loyalitas serupa namun disesuaikan dengan segmen pelanggan sendiri, lalu uji dalam skala kecil (A/B test) sebelum rollout penuh, karena reverse engineering memberi hipotesis awal, bukan kepastian mutlak.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-15" data-kelas="k2" data-name="metode triz">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.4 7.7l1.9 1.1M17.7 15.2l1.9 1.1M3 12h2.2M18.8 12H21M4.4 16.3l1.9-1.1M17.7 8.8l1.9-1.1"/></svg></span>
+          <span class="tool-no">15</span>
+          <span class="tool-name">Metode TRIZ</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Theory of Inventive Problem Solving — metode pemecahan masalah inovatif berbasis pola solusi dari ribuan paten, terutama untuk menyelesaikan &#x27;kontradiksi teknis&#x27; (saat memperbaiki satu parameter memperburuk parameter lain) menggunakan 40 prinsip inventif.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Masalah teknis/rekayasa yang mengandung trade-off/kontradiksi yang sulit dipecahkan dengan cara konvensional (misal: kecepatan vs kekuatan, biaya vs kualitas).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Definisikan kontradiksi teknis (parameter A vs parameter B). 2) Cari prinsip inventif TRIZ yang relevan dari 40 prinsip. 3) Terjemahkan prinsip tersebut menjadi solusi konkret. 4) Uji solusi dalam skala kecil sebelum diterapkan penuh.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Perusahaan ingin kemasan produk lebih kuat/tahan banting, tetapi menambah ketebalan bahan membuat biaya produksi naik. Selesaikan kontradiksi ini dengan prinsip TRIZ.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Kontradiksi: Kekuatan naik vs Biaya naik. Terapkan prinsip TRIZ relevan: Prinsip &#x27;Segmentation&#x27; (bagi struktur jadi berlapis/bergelombang, misal kardus corrugated, sehingga kuat tanpa menambah banyak material), dan Prinsip &#x27;Local Quality&#x27; (perkuat hanya di titik-titik rawan benturan seperti sudut, bukan seluruh permukaan). Solusi konkret: desain kemasan dengan penguatan sudut (corner protector) dan struktur bergelombang di sisi rawan, sehingga kekuatan naik signifikan tanpa menambah ketebalan/biaya material secara keseluruhan.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-16" data-kelas="k2" data-name="diagram afinitas (affinity diagram)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg></span>
+          <span class="tool-no">16</span>
+          <span class="tool-name">Diagram Afinitas (Affinity Diagram)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat untuk mengorganisir sejumlah besar ide/data kualitatif (hasil brainstorming, wawancara) ke dalam kelompok-kelompok berdasarkan kesamaan tema secara alami (bottom-up), tanpa kategori yang ditentukan lebih dulu.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Setelah sesi brainstorming besar menghasilkan banyak ide/masukan acak yang perlu disederhanakan menjadi tema-tema utama.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Tulis tiap ide/data di kartu terpisah. 2) Kelompokkan kartu bertema mirip tanpa diskusi panjang (silent sorting). 3) Beri judul naratif tiap klaster. 4) Prioritaskan klaster berdasarkan jumlah item &amp; urgensi.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Hasil survei kepuasan karyawan menghasilkan 30 komentar bebas. Kelompokkan menjadi tema menggunakan Affinity Diagram.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Tuliskan tiap komentar di kartu terpisah, lalu tim mengelompokkan kartu yang temanya mirip tanpa diskusi panjang di awal (silent sorting). Hasil pengelompokan misalnya menghasilkan 4 klaster: &#x27;Kompensasi &amp; Benefit&#x27; (10 komentar), &#x27;Beban Kerja &amp; Work-life Balance&#x27; (8 komentar), &#x27;Komunikasi Atasan&#x27; (7 komentar), &#x27;Fasilitas Kantor&#x27; (5 komentar). Beri judul tiap klaster, lalu tim memprioritaskan klaster dengan jumlah komentar &amp; tingkat urgensi tertinggi (Beban Kerja &amp; Kompensasi) sebagai fokus program HR berikutnya.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-17" data-kelas="k2" data-name="tree diagram (diagram pohon)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 7c-3.2 0-5.5 2.1-5.5 5.3M12 7c3.2 0 5.5 2.1 5.5 5.3M6.5 12.3v4.7M17.5 12.3v4.7M12 7v14"/></svg></span>
+          <span class="tool-no">17</span>
+          <span class="tool-name">Tree Diagram (Diagram Pohon)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat untuk menguraikan suatu tujuan/masalah besar menjadi komponen-komponen yang lebih kecil dan detail secara hierarkis/bercabang, memastikan semua langkah/faktor yang dibutuhkan untuk mencapai tujuan teridentifikasi.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Menerjemahkan tujuan strategis tingkat tinggi menjadi rencana aksi/tugas konkret, atau memecah masalah kompleks menjadi sub-komponen yang bisa dikerjakan.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Tulis tujuan utama di puncak pohon. 2) Pecah menjadi sub-tujuan/cabang utama. 3) Pecah lagi tiap cabang menjadi task konkret. 4) Tetapkan target angka dan PIC untuk tiap task di ranting terakhir.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tujuan utama: &#x27;Meningkatkan penjualan online 30% dalam 1 tahun.&#x27; Uraikan dengan Tree Diagram.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Cabang 1 - Akuisisi pelanggan baru: iklan digital, kerja sama influencer, program referral. Cabang 2 - Retensi pelanggan lama: program loyalitas, email/WA remarketing, layanan purna jual. Cabang 3 - Peningkatan nilai transaksi (AOV): bundling produk, cross-selling di checkout, free shipping minimum belanja. Cabang 4 - Optimasi konversi: perbaikan UX website, kecepatan loading, metode pembayaran lebih banyak. Setiap cabang lalu dipecah lagi menjadi task konkret dengan target angka dan PIC masing-masing, sehingga tujuan besar menjadi rencana kerja yang terukur.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-18" data-kelas="k2" data-name="flowchart &amp; process map">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="4.2" rx="1"/><rect x="15" y="3" width="6" height="4.2" rx="1"/><rect x="9" y="16.8" width="6" height="4.2" rx="1"/><path d="M6 7.2v5.8h6m6-5.8v5.8h-6m0 0v3.8"/></svg></span>
+          <span class="tool-no">18</span>
+          <span class="tool-name">Flowchart &amp; Process Map</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Representasi visual langkah-langkah suatu proses secara berurutan menggunakan simbol standar (oval=mulai/selesai, kotak=aktivitas, belah ketupat=keputusan, panah=alur) untuk memahami, menganalisis, dan memperbaiki alur kerja.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Mendokumentasikan SOP, menganalisis proses yang lambat/bottleneck, atau menstandardisasi cara kerja lintas tim.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Tentukan titik mulai dan selesai proses. 2) Petakan tiap langkah, pelaku, input, dan output. 3) Tandai titik-titik keputusan. 4) Identifikasi bottleneck/langkah paling lambat. 5) Rancang perbaikan alur berdasarkan temuan.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Buat process map untuk proses persetujuan cuti karyawan yang saat ini memakan waktu rata-rata 5 hari kerja.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Alur saat ini: Karyawan ajukan form cuti (manual/kertas) -&gt; Atasan langsung tanda tangan -&gt; dikirim ke HR -&gt; HR verifikasi sisa cuti -&gt; HR minta approval Direktur -&gt; Direktur tanda tangan -&gt; dikembalikan ke HR -&gt; HR informasikan ke karyawan. Analisis bottleneck: proses fisik antar lantai/departemen dan menunggu approval Direktur untuk semua level cuti adalah titik paling lambat. Perbaikan: gunakan sistem approval digital, delegasikan approval cuti &lt;3 hari cukup ke atasan langsung tanpa perlu Direktur, sehingga proses bisa dipangkas dari 5 hari menjadi 1 hari kerja.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-19" data-kelas="k2" data-name="metode kj (kj method)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="17" r="2"/><path d="M7.8 6.9l8.4 1.5M6.9 7.9l.2 8.2M9 17.3l7-8.6"/></svg></span>
+          <span class="tool-no">19</span>
+          <span class="tool-name">Metode KJ (KJ Method)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Dikembangkan antropolog Jiro Kawakita, metode ini serupa dengan affinity diagram namun lebih terstruktur: mencatat fakta/observasi di kartu individual, mengelompokkannya secara induktif, memberi label naratif tiap kelompok, lalu menyusun hubungan antar kelompok menjadi narasi/insight baru.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Mengolah data kualitatif hasil riset lapangan/observasi (bukan sekadar ide brainstorming) menjadi insight terstruktur, umum dipakai dalam riset pengguna (UX research).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Catat observasi/fakta mentah di kartu individual. 2) Kelompokkan secara induktif tanpa kategori yang ditentukan lebih dulu. 3) Beri label naratif tiap klaster berdasarkan esensinya. 4) Susun hubungan antar klaster menjadi insight/narasi baru.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tim UX melakukan observasi lapangan ke 15 pengguna aplikasi perbankan dan mencatat puluhan observasi mentah. Olah dengan Metode KJ.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Tulis tiap observasi mentah di kartu (mis. &#x27;pengguna bingung mencari menu transfer&#x27;, &#x27;pengguna ragu memasukkan PIN di tempat umum&#x27;). Kelompokkan kartu secara induktif tanpa kategori awal -&gt; muncul klaster &#x27;Navigasi membingungkan&#x27; dan &#x27;Kekhawatiran keamanan&#x27;. Beri label naratif tiap klaster berdasarkan esensi isi kartunya, bukan sekadar nama generik. Susun hubungan antar klaster: kekhawatiran keamanan memperkuat keengganan eksplorasi menu baru sehingga navigasi terasa makin membingungkan. Insight ini lalu menjadi dasar rekomendasi desain: sederhanakan navigasi utama sekaligus perkuat indikator keamanan visual saat transaksi.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-20" data-kelas="k2" data-name="diagram keterkaitan (interrelationship digraph)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="17" r="2"/><path d="M7.8 6.9l8.4 1.5M6.9 7.9l.2 8.2M9 17.3l7-8.6"/></svg></span>
+          <span class="tool-no">20</span>
+          <span class="tool-name">Diagram Keterkaitan (Interrelationship Digraph)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat untuk memetakan hubungan sebab-akibat antar berbagai isu/faktor yang saling terkait dalam masalah kompleks, dengan panah menunjukkan arah pengaruh, sehingga terlihat faktor mana yang jadi &#x27;akar penggerak&#x27; (banyak panah keluar) dan mana yang jadi &#x27;hasil akhir&#x27; (banyak panah masuk).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Masalah dengan banyak faktor yang saling memengaruhi dan sulit ditentukan mana penyebab utama vs mana yang sekadar gejala/akibat.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Daftar semua faktor/isu yang berkaitan dengan masalah. 2) Gambar panah sebab-akibat antar faktor. 3) Hitung jumlah panah masuk &amp; keluar tiap faktor. 4) Identifikasi &#x27;akar penggerak&#x27; (banyak panah keluar) dan &#x27;hasil akhir&#x27; (banyak panah masuk).</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Faktor-faktor: (A) Turnover karyawan tinggi, (B) Beban kerja berlebih, (C) Kurangnya rekrutmen tepat waktu, (D) Kualitas layanan pelanggan menurun, (E) Karyawan burnout. Petakan keterkaitannya.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Panah: C (kurang rekrutmen tepat waktu) -&gt; B (beban kerja berlebih); B -&gt; E (burnout); E -&gt; A (turnover tinggi); A -&gt; C (turnover tinggi membuat rekrutmen makin tertinggal, loop); B &amp; E -&gt; D (layanan menurun). Analisis panah keluar-masuk: C dan B punya banyak panah keluar sehingga menjadi &#x27;akar penggerak&#x27; utama, sedangkan D adalah &#x27;hasil akhir&#x27; (banyak panah masuk, sedikit keluar). Kesimpulan: intervensi paling efektif adalah memperbaiki proses rekrutmen (C) agar memutus siklus beban kerja-burnout-turnover, bukan hanya fokus memperbaiki layanan pelanggan (D) yang merupakan gejala.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-21" data-kelas="k2" data-name="matriks prioritas tindakan (prioritization matrix)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span>
+          <span class="tool-no">21</span>
+          <span class="tool-name">Matriks Prioritas Tindakan (Prioritization Matrix)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat untuk memprioritaskan banyak opsi tindakan berdasarkan dua atau lebih kriteria, umumnya digambarkan sebagai matriks 2x2: sumbu Dampak/Impact vs sumbu Usaha/Effort (atau Urgency vs Importance), menghasilkan 4 kuadran prioritas.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat ada banyak inisiatif/ide potensial namun sumber daya (waktu, biaya, tim) terbatas, sehingga perlu dipilih mana yang dikerjakan lebih dulu.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Daftar semua opsi tindakan yang mungkin. 2) Nilai tiap opsi pada sumbu Impact dan Effort. 3) Petakan ke 4 kuadran (Quick Win, Major Project, Fill-in, Thankless Task). 4) Eksekusi sesuai urutan prioritas kuadran.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tim punya 5 inisiatif: (1) Perbaikan bug kritikal, (2) Redesign landing page, (3) Fitur AI chatbot, (4) Optimasi SEO, (5) Migrasi server. Prioritaskan dengan matriks Impact vs Effort.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Kuadran Quick Win (Impact tinggi, Effort rendah): Perbaikan bug kritikal (1) dan Optimasi SEO (4) -&gt; kerjakan segera. Kuadran Major Project (Impact tinggi, Effort tinggi): Fitur AI chatbot (3) dan Migrasi server (5) -&gt; rencanakan dengan roadmap jangka menengah dan alokasi tim khusus. Kuadran Fill-in (Impact rendah, Effort rendah): Redesign landing page (2) -&gt; kerjakan bila ada waktu luang tim desain, bukan prioritas utama. Tidak ada item di kuadran Thankless Task (Impact rendah, Effort tinggi) pada kasus ini. Urutan eksekusi: 1 &amp; 4 dulu, lalu paralel rencanakan 3 &amp; 5, dan 2 mengikuti kapasitas tersisa.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-22" data-kelas="k2" data-name="metode moscow">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 8l9.5 5 9.5-5L12 3Z"/><path d="M2.5 13l9.5 5 9.5-5"/></svg></span>
+          <span class="tool-no">22</span>
+          <span class="tool-name">Metode MoSCoW</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Teknik prioritisasi kebutuhan/requirement ke dalam 4 kategori: Must have (wajib ada), Should have (penting tapi tidak mutlak), Could have (bagus jika ada, nice-to-have), Won&#x27;t have (disepakati tidak dikerjakan saat ini) — umum dipakai dalam manajemen proyek/produk Agile.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Merencanakan scope rilis produk/proyek dengan waktu &amp; sumber daya terbatas, agar tim fokus pada fitur yang benar-benar krusial dulu.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Kumpulkan seluruh requirement/fitur yang diusulkan. 2) Diskusikan dan kategorikan menjadi Must/Should/Could/Won&#x27;t have. 3) Fokuskan scope pengerjaan pada Must have terlebih dulu. 4) Tinjau ulang kategori di tiap iterasi/rilis berikutnya.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tim produk merencanakan MVP (Minimum Viable Product) aplikasi pemesanan makanan online dengan waktu 2 bulan. Kategorikan fitur berikut dengan MoSCoW: login, pembayaran digital, ulasan pengguna, chat dengan kurir real-time, notifikasi status pesanan, filter makanan vegetarian, program loyalitas poin.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Must have: login &amp; registrasi, pembayaran digital, notifikasi status pesanan (fitur inti tanpa ini aplikasi tidak bisa berfungsi). Should have: ulasan pengguna (penting untuk kepercayaan tapi aplikasi tetap jalan tanpanya di awal). Could have: filter makanan vegetarian, chat dengan kurir real-time (nilai tambah, bisa ditunda). Won&#x27;t have (untuk versi ini): program loyalitas poin (dikerjakan di fase berikutnya setelah traksi pengguna terbentuk). Dengan pembagian ini, tim fokus menyelesaikan Must have dulu dalam 2 bulan agar MVP bisa diluncurkan tepat waktu.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-23" data-kelas="k2" data-name="model kano">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5h17M3.5 20.5V3.5"/><path d="M4.5 17.3c3-1 4.7-6 7.6-8s5.8 1 7.9-3.2"/></svg></span>
+          <span class="tool-no">23</span>
+          <span class="tool-name">Model KANO</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Model untuk mengklasifikasikan fitur produk berdasarkan hubungan antara tingkat pemenuhan fitur dan kepuasan pelanggan, ke dalam kategori: Basic/Must-be (wajib ada, ketidakadaannya bikin kecewa tapi keberadaannya dianggap biasa saja), Performance (makin baik makin puas, linear), Attractive/Delighter (tidak diharapkan tapi jika ada sangat menyenangkan), dan Indifferent (tidak berpengaruh ke kepuasan).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Menentukan fitur produk mana yang benar-benar bernilai bagi pelanggan sebelum alokasi resource pengembangan, agar tidak over-invest di fitur yang dianggap &#x27;biasa saja&#x27;.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Susun pertanyaan survei fungsional &amp; disfungsional untuk tiap fitur. 2) Klasifikasikan tiap fitur ke Basic/Performance/Attractive/Indifferent. 3) Prioritaskan alokasi sumber daya sesuai kategori dan nilai kepuasannya.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Klasifikasikan fitur aplikasi e-wallet berikut dengan Model KANO: (a) transaksi tidak pernah gagal/error, (b) kecepatan transfer, (c) fitur split bill otomatis dengan AI, (d) pilihan tema warna aplikasi.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>(a) Transaksi tidak pernah error = Basic/Must-be: pelanggan menganggap ini wajib, bila gagal kepuasan anjlok drastis, tapi bila berjalan normal tidak menambah &#x27;wow factor&#x27;. (b) Kecepatan transfer = Performance: makin cepat, makin puas pelanggan secara linear, cocok jadi selling point marketing (&#x27;transfer &lt; 3 detik&#x27;). (c) Split bill otomatis AI = Attractive/Delighter: pelanggan tidak menuntutnya, tapi jika ada akan sangat menyenangkan dan bisa jadi pembeda kompetitif. (d) Pilihan tema warna = Indifferent: sebagian besar pelanggan tidak terlalu peduli, sebaiknya bukan prioritas resource. Rekomendasi alokasi: pastikan (a) sempurna, investasi besar di (b), eksplorasi (c) sebagai diferensiasi, dan (d) diprioritaskan paling akhir.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-24" data-kelas="k2" data-name="cost-benefit analysis (kualitatif)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7.2 21h9.6"/><path d="M4.3 8h6M13.7 8h6"/><path d="M4.3 8 2 13a2.6 2.6 0 0 0 4.9 0L4.3 8ZM19.7 8 17.4 13a2.6 2.6 0 0 0 4.9 0L19.7 8Z"/></svg></span>
+          <span class="tool-no">24</span>
+          <span class="tool-name">Cost-Benefit Analysis (Kualitatif)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Analisis untuk membandingkan seluruh biaya (cost) yang dikeluarkan dengan manfaat (benefit) yang diperoleh dari suatu keputusan/inisiatif, secara kualitatif mencakup faktor yang sulit diukur uang (reputasi, moral tim, risiko) selain faktor finansial langsung.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Mengevaluasi kelayakan suatu inisiatif/investasi sebelum keputusan final, terutama saat sebagian dampaknya tidak sepenuhnya bisa dikuantifikasi dalam angka.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Daftar seluruh biaya, baik langsung maupun tidak langsung. 2) Daftar seluruh manfaat, baik kuantitatif maupun kualitatif. 3) Bandingkan dan timbang keduanya secara menyeluruh. 4) Ambil kesimpulan kelayakan beserta mitigasi risikonya.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Perusahaan mempertimbangkan pindah ke sistem kerja hybrid penuh. Lakukan Cost-Benefit Analysis kualitatif.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Cost: biaya setup infrastruktur remote (laptop, VPN, tools kolaborasi), potensi kesulitan koordinasi tim lintas waktu, risiko menurunnya budaya kolaboratif tatap muka, tantangan manajemen kinerja jarak jauh. Benefit: penghematan biaya sewa kantor besar, peningkatan kepuasan &amp; retensi karyawan (fleksibilitas), akses talent pool lebih luas tanpa batas lokasi, jejak karbon lebih rendah (citra keberlanjutan). Kesimpulan kualitatif: jika budaya perusahaan sudah cukup mandiri dan pekerjaan tidak sangat bergantung kolaborasi fisik intensif, manfaat cenderung lebih besar dari biaya; namun perlu mitigasi khusus untuk aspek budaya &amp; manajemen kinerja agar tidak menjadi risiko tersembunyi.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-25" data-kelas="k2" data-name="penilaian situasi (situation appraisal)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.2 8.8l-1.8 5.6-5.6 1.8 1.8-5.6 5.6-1.8Z"/></svg></span>
+          <span class="tool-no">25</span>
+          <span class="tool-name">Penilaian Situasi (Situation Appraisal)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Langkah awal dalam proses manajemen (mis. dalam Kepner-Tregoe) untuk mengidentifikasi, mengklarifikasi, dan memprioritaskan berbagai isu/masalah yang muncul bersamaan, sebelum memutuskan isu mana yang ditangani lebih dulu dan dengan pendekatan apa (problem solving, decision making, atau planning).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Saat menghadapi banyak isu sekaligus dan perlu langkah sistematis menentukan mana yang paling mendesak/penting untuk ditangani lebih dulu, sebelum masuk ke analisis mendalam.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Daftar semua isu yang muncul bersamaan. 2) Nilai tiap isu dari sisi Urgency, Impact/Seriousness, dan Growth Trend. 3) Urutkan prioritas penanganan berdasarkan penilaian tersebut. 4) Delegasikan atau tindak lanjuti sesuai urutan prioritas.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Seorang manajer operasional menghadapi 4 isu bersamaan di pagi hari: (1) server down 2 jam, (2) 1 staf kunci resign mendadak, (3) komplain pelanggan besar via media sosial, (4) audit internal terjadwal minggu depan. Lakukan penilaian situasi.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Pisahkan tiap isu &amp; nilai berdasarkan Urgency (seberapa mendesak), Impact/Seriousness (seberapa besar dampak bila tidak ditangani), dan Growth Trend (apakah akan makin buruk jika dibiarkan). Server down: urgency sangat tinggi, impact tinggi (operasional berhenti), trend memburuk cepat -&gt; tangani pertama. Komplain di medsos: urgency tinggi (reputasi publik), impact sedang-tinggi, trend bisa viral cepat -&gt; tangani kedua, delegasikan ke tim PR/CS. Staf resign: urgency sedang, impact tinggi jangka menengah -&gt; jadwalkan hari ini tapi bukan prioritas jam pertama. Audit internal: urgency rendah (minggu depan), impact tinggi tapi masih ada waktu persiapan -&gt; delegasikan ke tim terkait dengan checklist, manajer memantau progresnya saja. Hasil: urutan penanganan hari itu adalah server -&gt; komplain medsos -&gt; percakapan dengan staf resign -&gt; delegasi persiapan audit.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-26" data-kelas="k2" data-name="matriks analisis keputusan (weighted decision matrix)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span>
+          <span class="tool-no">26</span>
+          <span class="tool-name">Matriks Analisis Keputusan (Weighted Decision Matrix)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat kuantitatif untuk memilih opsi terbaik dari beberapa alternatif dengan menilai tiap opsi terhadap beberapa kriteria yang diberi bobot (weight) sesuai kepentingannya, lalu dijumlahkan menjadi skor total untuk perbandingan objektif.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Memilih di antara beberapa alternatif (vendor, kandidat, lokasi, strategi) berdasarkan banyak kriteria berbeda secara lebih objektif dibanding hanya diskusi kualitatif.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Daftar alternatif pilihan dan kriteria keputusan. 2) Tetapkan bobot (%) tiap kriteria sesuai kepentingannya. 3) Beri skor tiap alternatif untuk setiap kriteria. 4) Hitung skor tertimbang dan bandingkan total skor akhir tiap alternatif.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Perusahaan memilih 1 dari 3 vendor katering kantor: A, B, C. Kriteria: Harga (bobot 40%), Kualitas rasa (bobot 35%), Ketepatan waktu (bobot 25%). Skor 1-5 (5=terbaik): Vendor A (Harga 5, Kualitas 3, Waktu 3); Vendor B (Harga 3, Kualitas 5, Waktu 4); Vendor C (Harga 4, Kualitas 4, Waktu 5).</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Skor A = (5x0.4)+(3x0.35)+(3x0.25) = 2.0+1.05+0.75 = 3.80. Skor B = (3x0.4)+(5x0.35)+(4x0.25) = 1.2+1.75+1.0 = 3.95. Skor C = (4x0.4)+(4x0.35)+(5x0.25) = 1.6+1.4+1.25 = 4.25. Vendor C memiliki skor tertinggi (4.25), sehingga menjadi pilihan terbaik karena unggul secara seimbang di ketiga kriteria, terutama ketepatan waktu yang dinilai penting meski bobotnya bukan yang tertinggi.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-27" data-kelas="k2" data-name="risk matrix">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.2 20h19.6L12 3Z"/><path d="M12 9.8v4.2M12 17h.01"/></svg></span>
+          <span class="tool-no">27</span>
+          <span class="tool-name">Risk Matrix</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat visual untuk memetakan risiko berdasarkan dua dimensi: Likelihood/Probabilitas (seberapa mungkin terjadi) dan Impact/Dampak (seberapa besar akibatnya bila terjadi), biasanya dalam skala Rendah-Sedang-Tinggi, menghasilkan tingkat prioritas mitigasi (rendah/sedang/tinggi/ekstrem).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Manajemen risiko proyek atau operasional, untuk memutuskan risiko mana yang perlu mitigasi segera vs cukup dipantau.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Identifikasi seluruh risiko potensial. 2) Nilai Probabilitas dan Dampak tiap risiko. 3) Petakan ke grid risiko (heatmap). 4) Susun rencana mitigasi sesuai level risikonya, mulai dari yang tertinggi.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Petakan risiko berikut ke Risk Matrix (Probabilitas x Dampak, skala Rendah/Sedang/Tinggi): (1) Kegagalan server saat peak season (Probabilitas Sedang, Dampak Tinggi), (2) Karyawan lupa password (Probabilitas Tinggi, Dampak Rendah), (3) Kebocoran data pelanggan (Probabilitas Rendah, Dampak Tinggi), (4) Keterlambatan minor pengiriman barang (Probabilitas Tinggi, Dampak Sedang).</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>(1) Sedang x Tinggi = Risiko Tinggi -&gt; perlu rencana mitigasi konkret (load testing, server cadangan/failover) sebelum peak season. (3) Rendah x Tinggi = Risiko Sedang-Tinggi (High Impact meski jarang) -&gt; tetap wajib punya contingency plan (enkripsi data, protokol keamanan, rencana komunikasi krisis) karena dampaknya bisa sangat merusak reputasi &amp; legal meski jarang terjadi. (4) Tinggi x Sedang = Risiko Sedang -&gt; perlu perbaikan proses rutin (SOP logistik) namun tidak seurgent risiko tinggi. (2) Tinggi x Rendah = Risiko Rendah -&gt; cukup mitigasi sederhana (fitur reset password mandiri), tidak perlu banyak sumber daya. Prioritas mitigasi: (1) lalu (3), baru (4), dan (2) terakhir.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-28" data-kelas="k2" data-name="raci matrix">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.2" cy="7.8" r="3"/><circle cx="16.2" cy="7.8" r="3"/><path d="M2.2 20c0-3 2.6-5.1 6-5.1s6 2.1 6 5.1M14.6 20c0-2.6 1.9-4.4 4.3-4.9"/></svg></span>
+          <span class="tool-no">28</span>
+          <span class="tool-name">RACI Matrix</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Alat untuk memperjelas peran &amp; tanggung jawab dalam suatu tugas/proyek: Responsible (yang mengerjakan), Accountable (yang bertanggung jawab penuh atas hasil &amp; keputusan akhir, idealnya hanya 1 orang per tugas), Consulted (dimintai masukan sebelum keputusan), Informed (diberi tahu setelah keputusan/hasil).</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Proyek lintas-fungsi/departemen di mana sering terjadi kebingungan siapa mengerjakan apa, siapa yang memutuskan, dan siapa cukup diberi informasi — untuk menghindari tumpang tindih atau tugas yang tidak dikerjakan siapa pun.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Daftar seluruh aktivitas/tugas proyek. 2) Daftar seluruh peran/anggota tim yang terlibat. 3) Tetapkan kode R/A/C/I pada tiap sel. 4) Pastikan setiap tugas hanya memiliki tepat satu Accountable.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Proyek peluncuran produk baru melibatkan: Tim Produk, Tim Marketing, Tim Legal, dan Direktur. Tugas: &#x27;Menyusun &amp; menyetujui materi klaim iklan produk&#x27;. Buat RACI-nya.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Responsible: Tim Marketing (menyusun draft materi klaim iklan). Accountable: Direktur Marketing (bertanggung jawab penuh atas persetujuan akhir materi sebelum tayang). Consulted: Tim Legal (dimintai masukan untuk memastikan klaim tidak melanggar regulasi/etika iklan) dan Tim Produk (dimintai masukan soal akurasi spesifikasi produk). Informed: Direktur Utama &amp; tim Sales (diberi tahu setelah materi final disetujui, agar bisa menyiapkan strategi penjualan/distribusi terkait). Dengan RACI ini, tidak ada kebingungan siapa yang harus menyetujui materi (hanya Direktur Marketing) meski banyak pihak terlibat memberi masukan.</p>
+          </div>
+        </div>
+      </details>
+
+      <details class="tool-card" id="tool-29" data-kelas="k2" data-name="pdca (plan-do-check-act)">
+        <summary>
+          <span class="tool-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 12.3-5.7l2.2-.3M19.5 12a7.5 7.5 0 0 1-12.3 5.7l-2.2.3"/><path d="M18.6 4.9l.4 3-3 .3M5.4 19.1l-.4-3 3-.3"/></svg></span>
+          <span class="tool-no">29</span>
+          <span class="tool-name">PDCA (Plan-Do-Check-Act)</span>
+          <span class="tool-chev" aria-hidden="true"></span>
+        </summary>
+        <div class="tool-body">
+          <div class="tool-block">
+            <h4>Teori</h4>
+            <p>Siklus perbaikan berkelanjutan (continuous improvement) 4 tahap: Plan (rencanakan perubahan &amp; target), Do (uji coba dalam skala kecil), Check (evaluasi hasil dibanding target), Act (standardisasi bila berhasil, atau revisi rencana bila belum), lalu siklus berulang. Dipopulerkan W. Edwards Deming.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Kapan digunakan</h4>
+            <p>Perbaikan proses/kualitas yang bersifat iteratif dan berkelanjutan, bukan proyek sekali jadi, cocok untuk budaya kaizen/continuous improvement.</p>
+          </div>
+          <div class="tool-block">
+            <h4>Langkah penerapan</h4>
+            <p>1) Plan: tetapkan target terukur dan rencana aksi. 2) Do: uji coba rencana dalam skala kecil. 3) Check: evaluasi hasil dibanding target. 4) Act: standardisasi bila berhasil, atau revisi rencana dan ulangi siklus bila belum.</p>
+          </div>
+          <div class="tool-block soal">
+            <h4>Contoh soal</h4>
+            <p>Tim customer service ingin menurunkan rata-rata waktu tunggu telepon dari 5 menit menjadi 2 menit. Rancang siklus PDCA.</p>
+          </div>
+          <div class="tool-block pembahasan">
+            <h4>Pembahasan</h4>
+            <p>Plan: targetkan waktu tunggu turun ke 2 menit dalam 2 bulan, hipotesis penyebab utama adalah kurangnya agen di jam sibuk 10.00-12.00, rencana: tambah 2 agen shift khusus jam sibuk selama 2 minggu percobaan. Do: implementasikan penambahan agen shift khusus tersebut selama 2 minggu, catat data waktu tunggu harian. Check: evaluasi data -&gt; waktu tunggu turun jadi rata-rata 3 menit (belum capai target 2 menit), namun ditemukan penyebab tambahan yaitu banyak panggilan berulang untuk pertanyaan sama yang sebenarnya bisa dijawab FAQ otomatis. Act: karena hasil belum capai target, revisi rencana (bukan hanya standardisasi) dengan menambahkan IVR/FAQ otomatis untuk pertanyaan umum di luar penambahan agen, lalu siklus PDCA diulang dengan rencana baru ini.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+    <div class="empty-state" id="emptyK2">Tidak ada metode yang cocok dengan pencarianmu.</div>
+  </div>
+</section>
+
+<section id="template">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2>Dokumen template</h2>
+        <p>Sembilan template kerja yang langsung terhubung ke metode di atas — dan sudah tersedia siap isi (dengan formula) di dalam workbook Excel.</p>
+      </div>
+    </div>
+    <div class="controls" style="position:static;">
+      <div class="search-wrap" style="max-width:360px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchTpl" placeholder="Cari template…">
+      </div>
+    </div>
+    <table class="tpl" id="tplTable">
+      <thead>
+        <tr><th style="width:30px;">No</th><th>Template</th><th>Metode terkait</th><th>Isi / Struktur</th></tr>
+      </thead>
+      <tbody>
+
+        <tr data-name="template 5 why">
+          <td class="tno">01</td>
+          <td class="tname">Template 5 Why</td>
+          <td class="tlink">Five Why (No. 1)</td>
+          <td class="tdesc">Kolom: Masalah Awal (statement) -&gt; Why 1 -&gt; Why 2 -&gt; Why 3 -&gt; Why 4 -&gt; Why 5 -&gt; Akar Masalah -&gt; Rencana Tindakan (Corrective Action) -&gt; PIC -&gt; Tenggat Waktu. Baris tambahan untuk validasi bukti/data di tiap level &#x27;Why&#x27; agar tidak berhenti pada asumsi.</td>
+        </tr>
+
+        <tr data-name="template process mapping">
+          <td class="tno">02</td>
+          <td class="tname">Template Process Mapping</td>
+          <td class="tlink">Flowchart &amp; Process Map (No. 18)</td>
+          <td class="tdesc">Kolom: No. Langkah -&gt; Aktivitas -&gt; Pelaksana (siapa) -&gt; Input -&gt; Output -&gt; Estimasi Waktu -&gt; Titik Keputusan (Ya/Tidak) -&gt; Catatan Bottleneck. Dilengkapi area menggambar flowchart (simbol mulai/proses/keputusan/selesai) dan ringkasan total lead time proses.</td>
+        </tr>
+
+        <tr data-name="template scamper">
+          <td class="tno">03</td>
+          <td class="tname">Template SCAMPER</td>
+          <td class="tlink">SCAMPER (No. 12)</td>
+          <td class="tdesc">Tabel 7 baris (Substitute, Combine, Adapt, Modify, Put to Another Use, Eliminate, Reverse) dengan 2 kolom: &#x27;Pertanyaan Pemicu&#x27; (contoh pertanyaan standar tiap huruf) dan &#x27;Ide yang Muncul&#x27;. Ditutup kolom &#x27;Ide Terpilih untuk Ditindaklanjuti&#x27; dan alasan pemilihannya.</td>
+        </tr>
+
+        <tr data-name="template affinity diagram">
+          <td class="tno">04</td>
+          <td class="tname">Template Affinity Diagram</td>
+          <td class="tlink">Diagram Afinitas (No. 16)</td>
+          <td class="tdesc">Area kartu ide/catatan (sticky notes) yang bisa dikelompokkan bebas, kolom &#x27;Nama Klaster/Tema&#x27;, &#x27;Jumlah Item per Klaster&#x27;, dan &#x27;Prioritas Klaster&#x27; berdasarkan jumlah/urgensi, untuk memudahkan dokumentasi hasil sesi affinity secara digital.</td>
+        </tr>
+
+        <tr data-name="template moscow">
+          <td class="tno">05</td>
+          <td class="tname">Template MoSCoW</td>
+          <td class="tlink">Metode MoSCoW (No. 22)</td>
+          <td class="tdesc">Tabel 4 kolom sejajar: Must Have | Should Have | Could Have | Won&#x27;t Have (this time), tiap kolom diisi daftar fitur/requirement, dilengkapi kolom tambahan &#x27;Alasan Kategori&#x27; dan &#x27;Estimasi Effort&#x27; untuk membantu diskusi prioritisasi tim.</td>
+        </tr>
+
+        <tr data-name="template decision matrix">
+          <td class="tno">06</td>
+          <td class="tname">Template Decision Matrix</td>
+          <td class="tlink">Matriks Analisis Keputusan (No. 26)</td>
+          <td class="tdesc">Tabel dengan baris = opsi/alternatif, kolom = kriteria keputusan beserta bobot (%) di header, sel = skor 1-5 per kriteria, kolom otomatis &#x27;Skor Tertimbang&#x27; (skor x bobot) dan &#x27;Total Skor&#x27; per opsi, serta baris ranking hasil akhir.</td>
+        </tr>
+
+        <tr data-name="template risk matrix">
+          <td class="tno">07</td>
+          <td class="tname">Template Risk Matrix</td>
+          <td class="tlink">Risk Matrix (No. 27)</td>
+          <td class="tdesc">Grid 3x3 atau 5x5 (Probabilitas x Dampak) berwarna heatmap (hijau-kuning-merah), tabel daftar risiko dengan kolom: Deskripsi Risiko -&gt; Probabilitas -&gt; Dampak -&gt; Skor Risiko -&gt; Level (Rendah/Sedang/Tinggi/Ekstrem) -&gt; Rencana Mitigasi -&gt; Pemilik Risiko (Risk Owner).</td>
+        </tr>
+
+        <tr data-name="template raci matrix">
+          <td class="tno">08</td>
+          <td class="tname">Template RACI Matrix</td>
+          <td class="tlink">RACI Matrix (No. 28)</td>
+          <td class="tdesc">Tabel dengan baris = daftar aktivitas/tugas proyek, kolom = nama peran/anggota tim, sel diisi kode R/A/C/I per tugas, dilengkapi catatan validasi otomatis bahwa setiap baris hanya boleh memiliki tepat satu &#x27;A&#x27; (Accountable).</td>
+        </tr>
+
+        <tr data-name="template pdca">
+          <td class="tno">09</td>
+          <td class="tname">Template PDCA</td>
+          <td class="tlink">PDCA (No. 29)</td>
+          <td class="tdesc">4 kuadran/tabel berurutan: Plan (Tujuan, Target Terukur, Hipotesis, Rencana Aksi), Do (Pelaksanaan, Tanggal, Catatan Lapangan), Check (Data Hasil vs Target, Gap Analysis), Act (Keputusan Standardisasi/Revisi, Rencana Siklus Berikutnya), dengan kolom tanggal &amp; PIC di tiap tahap.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="unduh" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="cta">
+      <div>
+        <h2>Bawa seluruh materi ini ke dalam satu workbook.</h2>
+        <p>File Excel berisi teori, langkah penerapan, contoh soal, dan pembahasan lengkap untuk seluruh 29 metode, plus 9 sheet template kerja siap isi dengan formula otomatis.</p>
+        <ul class="cta-list">
+          <li>Sheet Kelas 1 &amp; Kelas 2 — teori, kapan digunakan, langkah penerapan, contoh soal, pembahasan</li>
+          <li>9 sheet Template kerja (5 Why, Process Map, SCAMPER, Affinity, MoSCoW, Decision Matrix, Risk Matrix, RACI, PDCA)</li>
+          <li>Sheet Rekap Progress — otomatis menghitung status belajar tim</li>
+        </ul>
+      </div>
+      <a class="btn-primary" href="Toolkit_Problem_Solving_Decision_Making.xlsx" download>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1V11M8 11L4 7M8 11L12 7" stroke="#241703" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5H14" stroke="#241703" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Unduh Workbook Excel (.xlsx)
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Disusun untuk kebutuhan pelatihan manajemen internal — Problem Solving &amp; Decision Making Toolkit.</p>
+    <p>Kelas 1: Problem Solving · Kelas 2: Decision Making · Dokumen Template</p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  document.querySelectorAll('[data-scroll]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var target = document.getElementById(el.getAttribute('data-scroll'));
+      if (target) target.scrollIntoView({behavior: 'smooth', block: 'start'});
+    });
+  });
+
+  document.querySelectorAll('.chip').forEach(function(ch) {
+    ch.addEventListener('click', function() {
+      var id = ch.getAttribute('data-target');
+      var card = document.getElementById(id);
+      if (!card) return;
+      document.querySelectorAll('details.tool-card[open]').forEach(function(d) { if (d !== card) d.open = false; });
+      card.open = true;
+      card.scrollIntoView({behavior: 'smooth', block: 'center'});
+      card.classList.remove('flash');
+      void card.offsetWidth;
+      card.classList.add('flash');
+    });
+  });
+
+  function setupSection(searchId, listId, emptyId, countId) {
+    var input = document.getElementById(searchId);
+    var list = document.getElementById(listId);
+    var empty = document.getElementById(emptyId);
+    var countEl = document.getElementById(countId);
+    var cards = Array.prototype.slice.call(list.querySelectorAll('.tool-card'));
+
+    function apply() {
+      var q = (input.value || '').toLowerCase().trim();
+      var visible = 0;
+      cards.forEach(function(card) {
+        var name = card.getAttribute('data-name') || '';
+        var matches = name.indexOf(q) !== -1;
+        card.style.display = matches ? '' : 'none';
+        if (matches) visible++;
+      });
+      empty.style.display = visible === 0 ? 'block' : 'none';
+      countEl.textContent = visible + ' dari ' + cards.length + ' metode';
+    }
+
+    input.addEventListener('input', apply);
+    apply();
+  }
+
+  setupSection('searchK1', 'listK1', 'emptyK1', 'countK1');
+  setupSection('searchK2', 'listK2', 'emptyK2', 'countK2');
+
+  var tplInput = document.getElementById('searchTpl');
+  var tplRows = Array.prototype.slice.call(document.querySelectorAll('#tplTable tbody tr'));
+  tplInput.addEventListener('input', function() {
+    var q = tplInput.value.toLowerCase().trim();
+    tplRows.forEach(function(row) {
+      var name = row.getAttribute('data-name') || '';
+      row.style.display = name.indexOf(q) !== -1 ? '' : 'none';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

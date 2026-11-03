@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mining Financial Risk App | Stochastic Risk Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mining: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            800: '#92400e',
+                            900: '#451a03',
+                        },
+                        tech: {
+                            bg: '#0B0F17',
+                            card: '#131A29',
+                            border: '#1E293B',
+                            accent: '#10B981',
+                            amber: '#F59E0B',
+                            danger: '#EF4444'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #070A10;
+            color: #E2E8F0;
+            font-family: 'Inter', sans-serif;
+        }
+        .glow-gold {
+            box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.3);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        /* Custom input style for direct typing */
+        .input-num {
+            background: #0F172A;
+            border: 1px solid #334155;
+            color: #F8FAFC;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.375rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .input-num:focus {
+            border-color: #F59E0B;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; color: #000 !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-amber-500 selection:text-black">
+
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-tech-bg/80 border-b border-tech-border no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid font-bold fa-mountain-city"></i>
+                </div>
+                <div>
+                    <span class="font-heading font-bold text-lg tracking-tight text-white block leading-none">MINE<span class="text-amber-400">RISK</span> PRO</span>
+                    <span class="text-[10px] text-slate-400 tracking-wider font-mono">FINANCIAL RISK SIMULATION ENGINE</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+                <a href="#architecture" class="hover:text-amber-400 transition-colors">Arsitektur Workflow</a>
+                <a href="#inputs-section" class="hover:text-amber-400 transition-colors">Input Parameter</a>
+                <a href="#simulation" class="hover:text-amber-400 transition-colors">Monte Carlo Engine</a>
+                <a href="#dashboard" class="hover:text-amber-400 transition-colors">Hasil Risk Analytics</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <button onclick="downloadReportHTML()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-sm transition-all shadow-md shadow-amber-500/20 active:scale-95">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Download App (.html)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <section class="relative rounded-3xl bg-gradient-to-b from-tech-card via-tech-card/60 to-transparent p-8 md:p-12 border border-tech-border overflow-hidden">
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-3xl space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    Quantitative Mining Risk & Financial Optimization Engine (Rupiah Edition)
+                </div>
+                <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                    Mining Financial Risk Analysis & Simulation App
+                </h1>
+                <p class="text-slate-400 text-base sm:text-lg leading-relaxed">
+                    Evaluasi risiko finansial pertambangan secara otomatis dalam mata uang **Rupiah (IDR)**. Masukkan parameter utama (<span class="text-amber-300 font-medium">Volume Produksi, Rate Harga Jual/Ton, Biaya Variabel/Ton, dan Fixed Cost/Bulan</span>) serta detail teknis operasional tambang untuk menjalankan simulasi **Monte Carlo Stochastic Engine (10k - 50k Iterasi)**.
+                </p>
+
+                <div class="flex flex-wrap gap-4 pt-2 no-print">
+                    <a href="#inputs-section" class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/25 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square"></i> Input Parameter Tambang
+                    </a>
+                    <a href="#architecture" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-diagram-project"></i> Lihat Workflow System
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="scroll-mt-24">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="font-heading text-2xl sm:text-3xl font-bold text-white flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-diagram-next text-amber-400"></i>
+                    Arsitektur Workflow Risk App
+                </h2>
+                <p class="text-slate-400 text-sm mt-2"> Visualisasi alur sistem dari User Interface, Variabel Input, Financial Model, Monte Carlo Engine hingga Output Dashboard. </p>
+            </div>
+
+            <!-- Architecture Diagram Container -->
+            <div class="bg-tech-card/80 border border-tech-border rounded-2xl p-6 md:p-10 shadow-2xl relative">
+
+                <!-- Level 1: App Header Node -->
+                <div class="flex justify-center mb-6">
+                    <div class="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-heading font-black text-lg sm:text-xl shadow-lg glow-gold text-center tracking-wide">
+                        <i class="fa-solid fa-cube mr-2"></i> MINING FINANCIAL RISK APP
+                    </div>
+                </div>
+
+                <!-- Vertical Down Arrow -->
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-8 bg-amber-500/60 relative">
+                        <i class="fa-solid fa-chevron-down absolute -bottom-2 -left-1.5 text-amber-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Level 2: User Interface Node -->
+                <div class="flex justify-center mb-8">
+                    <div class="px-6 py-2.5 rounded-lg bg-slate-800 border border-amber-500/40 text-amber-300 font-mono font-bold text-sm sm:text-base flex items-center gap-2">
+                        <i class="fa-solid fa-desktop"></i> USER INTERFACE LAYER
+                    </div>
+                </div>
+
+                <!-- Split connector to 3 parameter tracks -->
+                <div class="relative mb-6">
+                    <div class="h-0.5 bg-slate-700 w-3/4 mx-auto hidden md:block"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+
+                        <!-- Column 1: Production Track -->
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col items-center gap-3 relative hover:border-amber-500/50 transition-colors">
+                            <span class="text-[11px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">TRACK A - VOLUME</span>
+                            <div class="w-full text-center py-2 bg-slate-800 rounded-lg text-white font-semibold text-sm border border-amber-500/40">
+                                <i class="fa-solid fa-boxes-stacked text-amber-400 mr-2"></i>Production (Volume)
+                            </div>
+                            <i class="fa-solid fa-arrow-down text-slate-600 text-xs"></i>
+                            <div class="w-full text-center py-2 bg-slate-800/80 rounded-lg text-slate-200 text-sm font-medium">
+                                <i class="fa-solid fa-clock text-blue-400 mr-2"></i>Cycle Time
+                            </div>
+                            <i class="fa-solid fa-arrow-down text-slate-600 text-xs"></i>
+                            <div class="w-full text-center py-2 bg-slate-800/80 rounded-lg text-slate-200 text-sm font-medium">
+                                <i class="fa-solid fa-gears text-emerald-400 mr-2"></i>Availability
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Rate Track -->
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col items-center gap-3 relative hover:border-amber-500/50 transition-colors">
+                            <span class="text-[11px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">TRACK B - REVENUE</span>
+                            <div class="w-full text-center py-2 bg-slate-800 rounded-lg text-white font-semibold text-sm border border-emerald-500/40">
+                                <i class="fa-solid fa-chart-line text-emerald-400 mr-2"></i>Rate (Selling Price)
+                            </div>
+                            <i class="fa-solid fa-arrow-down text-slate-600 text-xs"></i>
+                            <div class="w-full text-center py-2 bg-slate-800/80 rounded-lg text-slate-200 text-sm font-medium">
+                                <i class="fa-solid fa-gas-pump text-amber-400 mr-2"></i>Fuel Price
+                            </div>
+                            <i class="fa-solid fa-arrow-down text-slate-600 text-xs"></i>
+                            <div class="w-full text-center py-2 bg-slate-800/80 rounded-lg text-slate-200 text-sm font-medium">
+                                <i class="fa-solid fa-truck-ramp-box text-cyan-400 mr-2"></i>Payload
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Variable & Fixed Cost Track -->
+                        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col items-center gap-3 relative hover:border-amber-500/50 transition-colors">
+                            <span class="text-[11px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">TRACK C - COST STRUCTURE</span>
+                            <div class="w-full text-center py-2 bg-slate-800 rounded-lg text-white font-semibold text-sm border border-red-500/40">
+                                <i class="fa-solid fa-wallet text-red-400 mr-2"></i>Variable & Fixed Cost
+                            </div>
+                            <i class="fa-solid fa-arrow-down text-slate-600 text-xs"></i>
+                            <div class="w-full text-center py-2 bg-slate-800/80 rounded-lg text-slate-200 text-sm font-medium">
+                                <i class="fa-solid fa-wrench text-orange-400 mr-2"></i>Maintenance
+                            </div>
+                            <i class="fa-solid fa-arrow-down text-slate-600 text-xs"></i>
+                            <div class="w-full text-center py-2 bg-slate-800/80 rounded-lg text-slate-200 text-sm font-medium">
+                                <i class="fa-solid fa-circle-dot text-purple-400 mr-2"></i>Tyre Life
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Convergence Connector -->
+                <div class="flex justify-center my-4">
+                    <div class="w-0.5 h-10 bg-gradient-to-b from-slate-700 to-emerald-500 relative">
+                        <i class="fa-solid fa-chevron-down absolute -bottom-2 -left-1.5 text-emerald-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Level 3: Financial Model Core -->
+                <div class="flex justify-center mb-4">
+                    <div class="px-8 py-3 rounded-xl bg-slate-800 border border-emerald-500/60 text-emerald-400 font-heading font-bold text-base sm:text-lg flex items-center gap-3 glow-emerald">
+                        <i class="fa-solid fa-calculator"></i> FINANCIAL MODEL
+                    </div>
+                </div>
+
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-6 bg-emerald-500 relative">
+                        <i class="fa-solid fa-chevron-down absolute -bottom-2 -left-1.5 text-emerald-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Level 4: Monte Carlo Engine -->
+                <div class="flex flex-col items-center gap-2 mb-6">
+                    <div class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-heading font-bold text-base sm:text-lg flex items-center gap-3 shadow-lg">
+                        <i class="fa-solid fa-microchip animate-pulse"></i> MONTE CARLO ENGINE
+                    </div>
+                    <div class="px-4 py-1 rounded-full bg-slate-900 border border-emerald-500/40 text-emerald-300 font-mono text-xs">
+                        <i class="fa-solid fa-arrows-spin mr-1"></i> 10,000 / 50,000 TRIALS SIMULATION
+                    </div>
+                </div>
+
+                <!-- Connector to Outputs -->
+                <div class="flex justify-center my-4">
+                    <div class="w-0.5 h-8 bg-cyan-500 relative">
+                        <i class="fa-solid fa-chevron-down absolute -bottom-2 -left-1.5 text-cyan-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Level 5: Risk & Financial Outputs (3 Streams) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+                    <!-- Downside Risk Stream -->
+                    <div class="bg-red-950/30 border border-red-800/50 rounded-xl p-4 flex flex-col items-center gap-3">
+                        <div class="w-full text-center py-2 bg-red-900/40 border border-red-700/50 rounded-lg text-red-300 font-bold text-sm">
+                            <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Profit P5 (Downside Risk)
+                        </div>
+                        <i class="fa-solid fa-arrow-down text-red-500/60 text-xs"></i>
+                        <div class="w-full text-center py-2 bg-slate-900 rounded-lg text-red-400 font-semibold text-xs border border-red-900/50">
+                            Probability of Loss (%)
+                        </div>
+                    </div>
+
+                    <!-- Expected Return Stream -->
+                    <div class="bg-amber-950/30 border border-amber-800/50 rounded-xl p-4 flex flex-col items-center gap-3">
+                        <div class="w-full text-center py-2 bg-amber-900/40 border border-amber-700/50 rounded-lg text-amber-300 font-bold text-sm">
+                            <i class="fa-solid fa-bullseye mr-1.5"></i>Profit P50 (Base Case)
+                        </div>
+                        <i class="fa-solid fa-arrow-down text-amber-500/60 text-xs"></i>
+                        <div class="w-full text-center py-2 bg-slate-900 rounded-lg text-amber-400 font-semibold text-xs border border-amber-900/50">
+                            Expected Profit (Rp)
+                        </div>
+                    </div>
+
+                    <!-- Upside Stream -->
+                    <div class="bg-emerald-950/30 border border-emerald-800/50 rounded-xl p-4 flex flex-col items-center gap-3">
+                        <div class="w-full text-center py-2 bg-emerald-900/40 border border-emerald-700/50 rounded-lg text-emerald-300 font-bold text-sm">
+                            <i class="fa-solid fa-arrow-trend-up mr-1.5"></i>Profit P95 (Upside Target)
+                        </div>
+                        <i class="fa-solid fa-arrow-down text-emerald-500/60 text-xs"></i>
+                        <div class="w-full text-center py-2 bg-slate-900 rounded-lg text-emerald-400 font-semibold text-xs border border-emerald-900/50">
+                            Risk Analysis Rating
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Final Convergence to Dashboard -->
+                <div class="flex justify-center my-2">
+                    <div class="w-0.5 h-8 bg-amber-500 relative">
+                        <i class="fa-solid fa-chevron-down absolute -bottom-2 -left-1.5 text-amber-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <div class="px-10 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 font-heading font-extrabold text-lg sm:text-xl shadow-xl glow-gold flex items-center gap-3">
+                        <i class="fa-solid fa-chart-pie text-xl"></i> DASHBOARD EXECUTIVE
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="inputs-section" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                <div>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-500/20 text-amber-300 font-mono text-xs font-semibold mb-2">
+                        <i class="fa-solid fa-sliders"></i> FORM INPUT PARAMETER
+                    </div>
+                    <h2 class="font-heading text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                        Input Parameter Tambang & Keuangan
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1"> Anda dapat mengetikkan nilai langsung pada kolom angka atau menggeser slider di bawah ini. </p>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center gap-3 bg-slate-900 p-1.5 rounded-xl border border-slate-800 no-print">
+                    <span class="text-xs font-mono text-slate-400 pl-2">Jumlah Trials:</span>
+                    <button id="btn10k" onclick="setTrials(10000)" class="px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all bg-amber-500 text-slate-950 shadow">10,000</button>
+                    <button id="btn50k" onclick="setTrials(50000)" class="px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all bg-slate-800 text-slate-300 hover:text-white">50,000</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <!-- Input Controls Panel -->
+                <div class="lg:col-span-6 bg-tech-card border border-tech-border rounded-2xl p-6 space-y-6 no-print">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="font-heading font-bold text-white text-base flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-amber-400"></i> Form Parameter Pengujian
+                        </h3>
+                        <button onclick="resetInputs()" class="text-xs text-amber-400 hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Parameter Default
+                        </button>
+                    </div>
+
+                    <!-- SECTION 1: MAIN FINANCIAL PARAMETERS -->
+                    <div class="space-y-4 bg-slate-900/60 p-4 rounded-xl border border-amber-500/30">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold font-heading text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-star"></i> 1. Parameter Utama Finansial (Rupiah)
+                            </span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2 py-0.5 rounded">Prioritas</span>
+                        </div>
+
+                        <!-- 1. Target Volume / Production -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label for="numProduction" class="text-slate-200 font-semibold flex items-center gap-1.5">
+                                    <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Production Volume (Ton / Bulan)
+                                </label>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="numProduction" value="500000" min="100000" max="3000000" step="25000" class="input-num w-32 text-right" onchange="syncFromNum('Production', this.value)">
+                                    <span class="text-slate-400 text-xs font-mono">Ton</span>
+                                </div>
+                            </div>
+                            <input type="range" id="inputProduction" min="100000" max="3000000" step="25000" value="500000" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('Production', this.value)">
+                        </div>
+
+                        <!-- 2. Rate Price / Selling Price -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label for="numRate" class="text-slate-200 font-semibold flex items-center gap-1.5">
+                                    <i class="fa-solid fa-tag text-emerald-400"></i> Rate Harga Jual (Rp / Ton)
+                                </label>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-emerald-400 font-mono text-xs">Rp</span>
+                                    <input type="number" id="numRate" value="1350000" min="300000" max="5000000" step="10000" class="input-num w-36 text-right" onchange="syncFromNum('Rate', this.value)">
+                                </div>
+                            </div>
+                            <input type="range" id="inputRate" min="300000" max="5000000" step="25000" value="1350000" class="w-full accent-emerald-500 cursor-pointer" oninput="syncFromRange('Rate', this.value)">
+                        </div>
+
+                        <!-- 3. Variable Cost Base -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label for="numVarCost" class="text-slate-200 font-semibold flex items-center gap-1.5">
+                                    <i class="fa-solid fa-wallet text-red-400"></i> Biaya Variabel Dasar (Rp / Ton)
+                                </label>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-red-400 font-mono text-xs">Rp</span>
+                                    <input type="number" id="numVarCost" value="680000" min="100000" max="3000000" step="10000" class="input-num w-36 text-right" onchange="syncFromNum('VarCost', this.value)">
+                                </div>
+                            </div>
+                            <input type="range" id="inputVarCost" min="100000" max="3000000" step="10000" value="680000" class="w-full accent-red-500 cursor-pointer" oninput="syncFromRange('VarCost', this.value)">
+                        </div>
+
+                        <!-- 4. Fixed Cost -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <label for="numFixedCost" class="text-slate-200 font-semibold flex items-center gap-1.5">
+                                    <i class="fa-solid fa-building-columns text-purple-400"></i> Biaya Tetap / Fixed Cost (Rp / Bulan)
+                                </label>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-purple-400 font-mono text-xs">Rp</span>
+                                    <input type="number" id="numFixedCost" value="25000000000" min="1000000000" max="200000000000" step="500000000" class="input-num w-40 text-right" onchange="syncFromNum('FixedCost', this.value)">
+                                </div>
+                            </div>
+                            <input type="range" id="inputFixedCost" min="1000000000" max="200000000000" step="1000000000" value="25000000000" class="w-full accent-purple-500 cursor-pointer" oninput="syncFromRange('FixedCost', this.value)">
+                        </div>
+
+                    </div>
+
+                    <!-- SECTION 2: OPERATIONAL TECHNICAL PARAMETERS -->
+                    <div class="space-y-4 bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold font-heading text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                                <i class="fa-solid fa-gears"></i> 2. Parameter Teknis Operasional Tambang
+                            </span>
+                        </div>
+
+                        <!-- Fuel Price -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Harga Fuel / Solar (Rp / Liter)</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-amber-400 font-mono">Rp</span>
+                                    <input type="number" id="numFuelPrice" value="18500" min="8000" max="40000" step="500" class="input-num w-28 text-right" onchange="syncFromNum('FuelPrice', this.value)">
+                                </div>
+                            </div>
+                            <input type="range" id="inputFuelPrice" min="8000" max="40000" step="500" value="18500" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('FuelPrice', this.value)">
+                        </div>
+
+                        <!-- Fleet Availability -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Mechanical Availability (%)</span>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="numAvailability" value="85" min="50" max="99" step="1" class="input-num w-16 text-right" onchange="syncFromNum('Availability', this.value)">
+                                    <span class="text-slate-400 font-mono">%</span>
+                                </div>
+                            </div>
+                            <input type="range" id="inputAvailability" min="50" max="99" step="1" value="85" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('Availability', this.value)">
+                        </div>
+
+                        <!-- Cycle Time -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Haulage Cycle Time (Menit)</span>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="numCycleTime" value="24.0" min="10" max="60" step="0.5" class="input-num w-20 text-right" onchange="syncFromNum('CycleTime', this.value)">
+                                    <span class="text-slate-400 font-mono">Min</span>
+                                </div>
+                            </div>
+                            <input type="range" id="inputCycleTime" min="10" max="60" step="0.5" value="24" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('CycleTime', this.value)">
+                        </div>
+
+                        <!-- Truck Payload -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Truck Payload Capacity (Ton)</span>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="numPayload" value="100" min="30" max="350" step="5" class="input-num w-20 text-right" onchange="syncFromNum('Payload', this.value)">
+                                    <span class="text-slate-400 font-mono">Ton</span>
+                                </div>
+                            </div>
+                            <input type="range" id="inputPayload" min="30" max="350" step="5" value="100" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('Payload', this.value)">
+                        </div>
+
+                        <!-- Maintenance Cost -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Maintenance (Rp / Jam Operasi)</span>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-amber-400 font-mono">Rp</span>
+                                    <input type="number" id="numMaintenance" value="2200000" min="500000" max="10000000" step="100000" class="input-num w-32 text-right" onchange="syncFromNum('Maintenance', this.value)">
+                                </div>
+                            </div>
+                            <input type="range" id="inputMaintenance" min="500000" max="10000000" step="100000" value="2200000" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('Maintenance', this.value)">
+                        </div>
+
+                        <!-- Tyre Life -->
+                        <div class="space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="text-slate-300">Tyre Life Expectancy (Jam)</span>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" id="numTyreLife" value="4000" min="1000" max="9000" step="250" class="input-num w-24 text-right" onchange="syncFromNum('TyreLife', this.value)">
+                                    <span class="text-slate-400 font-mono">Jam</span>
+                                </div>
+                            </div>
+                            <input type="range" id="inputTyreLife" min="1000" max="9000" step="250" value="4000" class="w-full accent-amber-500 cursor-pointer" oninput="syncFromRange('TyreLife', this.value)">
+                        </div>
+
+                    </div>
+
+                    <button onclick="runMonteCarlo()" id="runBtn" class="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-heading font-extrabold text-base tracking-wide transition-all shadow-lg shadow-amber-500/25 active:scale-[0.99] flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-bolt text-xl"></i> JALANKAN MONTE CARLO SIMULASI
+                    </button>
+                </div>
+
+                <div class="lg:col-span-6 space-y-6">
+
+                    <!-- Results Cards Header -->
+                    <div id="dashboard" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        
+                        <!-- P5 Card (Downside) -->
+                        <div class="bg-tech-card border border-red-900/40 rounded-xl p-4 relative overflow-hidden">
+                            <div class="text-[11px] font-mono text-red-400 uppercase tracking-wider mb-1">PROFIT P5 (DOWNSIDE)</div>
+                            <div class="text-xl sm:text-2xl font-mono font-bold text-red-400" id="statP5">Rp 0 Miliar</div>
+                            <p class="text-[11px] text-slate-400 mt-1">95% Kemungkinan Laba > Angka ini</p>
+                            <div class="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Loss Probability:</span>
+                                <span class="font-mono font-bold text-red-400" id="statLossProb">0.0%</span>
+                            </div>
+                        </div>
+
+                        <!-- P50 Card (Base / Expected) -->
+                        <div class="bg-tech-card border border-amber-500/40 rounded-xl p-4 relative overflow-hidden glow-gold">
+                            <div class="text-[11px] font-mono text-amber-400 uppercase tracking-wider mb-1">PROFIT P50 (EXPECTED)</div>
+                            <div class="text-xl sm:text-2xl font-mono font-bold text-amber-300" id="statP50">Rp 0 Miliar</div>
+                            <p class="text-[11px] text-slate-400 mt-1">Median Hasil Ekspektasi Keuntungan</p>
+                            <div class="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Expected Profit:</span>
+                                <span class="font-mono font-bold text-amber-400" id="statMeanProfit">Rp 0 Miliar</span>
+                            </div>
+                        </div>
+
+                        <!-- P95 Card (Upside) -->
+                        <div class="bg-tech-card border border-emerald-900/40 rounded-xl p-4 relative overflow-hidden">
+                            <div class="text-[11px] font-mono text-emerald-400 uppercase tracking-wider mb-1">PROFIT P95 (UPSIDE)</div>
+                            <div class="text-xl sm:text-2xl font-mono font-bold text-emerald-400" id="statP95">Rp 0 Miliar</div>
+                            <p class="text-[11px] text-slate-400 mt-1">Scenario Keberuntungan 5% Teratas</p>
+                            <div class="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
+                                <span class="text-slate-400">Risk Profile:</span>
+                                <span class="font-mono font-bold text-emerald-400" id="statRiskRating">OPTIMAL</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="bg-tech-card border border-tech-border rounded-2xl p-6 relative">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-heading font-bold text-white text-base">Distribusi Probability Monte Carlo (Histogram Laba Net)</h3>
+                                <p class="text-xs text-slate-400">Frekuensi Hasil Simulasi & Posisi Threshold P5, P50, P95 dalam Rupiah</p>
+                            </div>
+                            <span class="text-xs font-mono px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-amber-400" id="simTrialsLabel">10,000 Iterasi</span>
+                        </div>
+
+                        <div class="h-80 relative">
+                            <canvas id="monteCarloChart"></canvas>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-800 text-center text-xs">
+                            <div class="bg-red-950/20 p-2 rounded border border-red-900/30">
+                                <span class="block text-red-400 font-semibold">P5 Threshold</span>
+                                <span id="labelP5" class="font-mono text-slate-300">Rp 0 Miliar</span>
+                            </div>
+                            <div class="bg-amber-950/20 p-2 rounded border border-amber-900/30">
+                                <span class="block text-amber-400 font-semibold">P50 Base Case</span>
+                                <span id="labelP50" class="font-mono text-slate-300">Rp 0 Miliar</span>
+                            </div>
+                            <div class="bg-emerald-950/20 p-2 rounded border border-emerald-900/30">
+                                <span class="block text-emerald-400 font-semibold">P95 High Target</span>
+                                <span id="labelP95" class="font-mono text-slate-300">Rp 0 Miliar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NEW SECTION: EXPLANATION OF MONTE CARLO CHART -->
+                    <div class="bg-tech-card/90 border border-amber-500/30 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center gap-2 text-amber-400 font-heading font-bold text-base border-b border-slate-800 pb-3">
+                            <i class="fa-solid fa-circle-info text-lg"></i>
+                            <span>Panduan & Cara Membaca Grafik Distribusi Risiko Monte Carlo</span>
+                        </div>
+
+                        <div class="text-xs text-slate-300 space-y-3 leading-relaxed">
+                            <p>
+                                Grafik histogram di atas memperlihatkan <strong>sebaran probabilitas (distribusi laba bersih)</strong> hasil dari <span id="chartGuideTrialsText" class="text-amber-300 font-mono font-semibold">10,000 skenario simulasi</span> acak yang memperhitungkan risiko operasional dan pasar.
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                    <span class="font-bold text-white block mb-1">📊 Sumbu Horizontal (Sumbu X)</span>
+                                    <p class="text-slate-400 text-[11px]">Menunjukkan nilai **Estimasi Net Profit / Keuntungan Bersih** (dalam Rupiah) per bulan. Angka sebelah kiri merepresentasikan laba rendah/rugi, sedangkan semakin ke kanan merepresentasikan laba yang semakin tinggi.</p>
+                                </div>
+                                <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                                    <span class="font-bold text-white block mb-1">📈 Sumbu Vertikal (Sumbu Y)</span>
+                                    <p class="text-slate-400 text-[11px]">Menunjukkan **Frekuensi (Kemunculan Skenario)**. Semakin tinggi batang histogram, semakin besar kemungkinan proyek tambang menghasilkan keuntungan di kisaran nominal tersebut.</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 pt-2">
+                                <span class="font-bold text-amber-300 block">Arti Warna Batang Grafik & Indikator Risiko:</span>
+                                
+                                <div class="flex items-start gap-2 bg-red-950/20 p-2.5 rounded-lg border border-red-900/40">
+                                    <div class="w-3 h-3 rounded-full bg-red-500 mt-0.5 shrink-0"></div>
+                                    <div>
+                                        <strong class="text-red-400">Batang Merah (&le; P5 / Downside Risk):</strong>
+                                        <p class="text-[11px] text-slate-300">Merupakan 5% skenario terburuk (Downside). Angka <strong>P5</strong> menunjukkan batas minimal laba bersih yang 95% diyakini dapat dicapai tambang. Jika area merah ini bernilai di bawah Rp 0, maka proyek memiliki risiko rugi.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-2 bg-amber-950/20 p-2.5 rounded-lg border border-amber-900/40">
+                                    <div class="w-3 h-3 rounded-full bg-amber-500 mt-0.5 shrink-0"></div>
+                                    <div>
+                                        <strong class="text-amber-300">Batang Kuning/Amber (P5 sampai P95 / Area Base Case):</strong>
+                                        <p class="text-[11px] text-slate-300">Mencakup 90% skenario paling realistis. Nilai <strong>P50 (Median)</strong> di tengah area ini adalah proyeksi Laba Ekspektasi paling tepat untuk dijadikan acuan Budgeting / RKAB tambang.</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-2 bg-emerald-950/20 p-2.5 rounded-lg border border-emerald-900/40">
+                                    <div class="w-3 h-3 rounded-full bg-emerald-500 mt-0.5 shrink-0"></div>
+                                    <div>
+                                        <strong class="text-emerald-400">Batang Hijau (&ge; P95 / Upside Scenario):</strong>
+                                        <p class="text-[11px] text-slate-300">Merupakan 5% skenario terbaik saat kondisi pasokan harga jual batubara/mineral tinggi dan efisiensi unit optimal. Angka <strong>P95</strong> dijadikan target batas atas (stretch target).</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start gap-2 bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                                    <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5 shrink-0"></i>
+                                    <div>
+                                        <strong class="text-white">Probability of Loss (% Probabilitas Kerugian):</strong>
+                                        <p class="text-[11px] text-slate-400">Persentase dari total simulasi di mana proyek menghasilkan laba negatif (&lt; Rp 0). Jika &gt;15% dianggap <span class="text-red-400 font-semibold">HIGH RISK</span>, 5-15% <span class="text-amber-400 font-semibold">MODERATE</span>, dan &lt;5% <span class="text-emerald-400 font-semibold">OPTIMAL</span>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <section id="features" class="scroll-mt-24 border-t border-slate-800/80 pt-16">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="font-heading text-2xl sm:text-3xl font-bold text-white">Fitur & Kapabilitas Sistem Mining Risk App</h2>
+                <p class="text-slate-400 text-sm mt-2">Didesain khusus untuk Mine Financial Analyst, Planning Engineer, dan C-Level Mining Executive.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <div class="bg-tech-card border border-tech-border rounded-2xl p-6 space-y-3 hover:border-amber-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xl font-bold">
+                        <i class="fa-solid fa-dice-d20"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-white text-lg">Stochastic Monte Carlo Engine</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Menyimulasikan hingga 50,000 skenario simultan berdasar distribusi probabilitas variabel (Normal/Triangular distribution) untuk akurasi tinggi.
+                    </p>
+                </div>
+
+                <div class="bg-tech-card border border-tech-border rounded-2xl p-6 space-y-3 hover:border-amber-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-xl font-bold">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-white text-lg">Integrasi Finansial & Tambang</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Menghubungkan Volume Produksi, Rate Harga Jual, Biaya Variabel, Fixed Cost, dan detail teknis (Cycle time, Availability, Tyre life, Payload) langsung ke Laba/Rugi.
+                    </p>
+                </div>
+
+                <div class="bg-tech-card border border-tech-border rounded-2xl p-6 space-y-3 hover:border-amber-500/40 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-xl font-bold">
+                        <i class="fa-solid fa-file-export"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-white text-lg">Export Offline Ready</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Dukungan unduh langsung aplikasi mandiri 1 file HTML, laporan ringkasan risiko finansial, dan visualisasi siap presentasi.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="bg-gradient-to-r from-amber-500/10 via-tech-card to-emerald-500/10 border border-amber-500/30 rounded-3xl p-8 text-center space-y-6">
+            <h2 class="font-heading text-2xl sm:text-3xl font-extrabold text-white">Siap Menggunakan Mining Financial Risk App?</h2>
+            <p class="text-slate-300 max-w-2xl mx-auto text-sm sm:text-base">
+                Anda dapat mengunduh seluruh aplikasi landing page beserta kalkulator Monte Carlo ini dalam 1 file HTML mandiri yang dapat dijalankan offline kapan saja.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button onclick="downloadReportHTML()" class="px-8 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-heading font-bold text-sm shadow-xl shadow-amber-500/20 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-arrow-down text-lg"></i> Unduh File Landing Page (.html)
+                </button>
+                <button onclick="window.print()" class="px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Cetak Ringkasan Risk
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-800 bg-tech-bg py-8 mt-16 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
+            <p>© 2026 Mining Financial Risk Analytics App. Built for High-Precision Financial Simulation.</p>
+            <p class="font-mono text-slate-600">Production Volume • Rate • Variable Cost • Fixed Cost • Cycle Time • Fuel Price • Maintenance • Availability • Payload • Tyre Life</p>
+        </div>
+    </footer>
+
+    <script>
+        let currentTrials = 10000;
+        let chartInstance = null;
+
+        // Box-Muller transformation for normal random distribution
+        function randomNormal(mean, stdDev) {
+            let u1 = Math.random();
+            let u2 = Math.random();
+            while (u1 === 0) u1 = Math.random();
+            while (u2 === 0) u2 = Math.random();
+            let z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+            return mean + z0 * stdDev;
+        }
+
+        // Helper function to format numbers cleanly in Indonesian Rupiah
+        function formatCurrency(val) {
+            let absVal = Math.abs(val);
+            let prefix = val < 0 ? '-Rp ' : 'Rp ';
+            
+            if (absVal >= 1e12) {
+                return prefix + (absVal / 1e12).toFixed(2) + ' Triliun';
+            } else if (absVal >= 1e9) {
+                return prefix + (absVal / 1e9).toFixed(2) + ' Miliar';
+            } else if (absVal >= 1e6) {
+                return prefix + (absVal / 1e6).toFixed(2) + ' Juta';
+            } else {
+                return prefix + Math.round(absVal).toLocaleString('id-ID');
+            }
+        }
+
+        // Two-way synchronization: From Range Slider -> Direct Numeric Input
+        function syncFromRange(key, val) {
+            const numElem = document.getElementById('num' + key);
+            if (numElem) {
+                numElem.value = val;
+            }
+            runMonteCarlo();
+        }
+
+        // Two-way synchronization: From Direct Numeric Input -> Range Slider
+        function syncFromNum(key, val) {
+            const rangeElem = document.getElementById('input' + key);
+            if (rangeElem) {
+                rangeElem.value = val;
+            }
+            runMonteCarlo();
+        }
+
+        function setTrials(num) {
+            currentTrials = num;
+            const b10 = document.getElementById('btn10k');
+            const b50 = document.getElementById('btn50k');
+            
+            if (num === 10000) {
+                b10.className = "px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all bg-amber-500 text-slate-950 shadow";
+                b50.className = "px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all bg-slate-800 text-slate-300 hover:text-white";
+            } else {
+                b50.className = "px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all bg-amber-500 text-slate-950 shadow";
+                b10.className = "px-3 py-1.5 rounded-lg font-mono text-xs font-bold transition-all bg-slate-800 text-slate-300 hover:text-white";
+            }
+            document.getElementById('simTrialsLabel').innerText = num.toLocaleString() + ' Iterasi';
+            
+            const guideText = document.getElementById('chartGuideTrialsText');
+            if (guideText) guideText.innerText = num.toLocaleString() + ' skenario simulasi';
+
+            runMonteCarlo();
+        }
+
+        function resetInputs() {
+            // Default Values in Indonesian Rupiah
+            const defaults = {
+                Production: 500000,
+                Rate: 1350000,
+                VarCost: 680000,
+                FixedCost: 25000000000,
+                FuelPrice: 18500,
+                Availability: 85,
+                CycleTime: 24,
+                Payload: 100,
+                Maintenance: 2200000,
+                TyreLife: 4000
+            };
+
+            for (let k in defaults) {
+                const numEl = document.getElementById('num' + k);
+                const rangeEl = document.getElementById('input' + k);
+                if (numEl) numEl.value = defaults[k];
+                if (rangeEl) rangeEl.value = defaults[k];
+            }
+
+            runMonteCarlo();
+        }
+
+        function runMonteCarlo() {
+            // Retrieve Inputs (Defaulted in IDR)
+            const prodTarget = parseFloat(document.getElementById('numProduction').value) || 500000;
+            const rate = parseFloat(document.getElementById('numRate').value) || 1350000;
+            const baseVarCost = parseFloat(document.getElementById('numVarCost').value) || 680000;
+            const fixedCostInput = parseFloat(document.getElementById('numFixedCost').value) || 25000000000;
+
+            const fuelPrice = parseFloat(document.getElementById('numFuelPrice').value) || 18500;
+            const availPercent = (parseFloat(document.getElementById('numAvailability').value) || 85) / 100;
+            const cycleTime = parseFloat(document.getElementById('numCycleTime').value) || 24;
+            const payload = parseFloat(document.getElementById('numPayload').value) || 100;
+            const maintHr = parseFloat(document.getElementById('numMaintenance').value) || 2200000;
+            const tyreLife = parseFloat(document.getElementById('numTyreLife').value) || 4000;
+
+            let profits = [];
+            let lossCount = 0;
+
+            // Monte Carlo Iteration Loop
+            for (let i = 0; i < currentTrials; i++) {
+                // Stochastic Variances (Normal distribution & noise)
+                let randAvail = Math.max(0.4, Math.min(0.99, randomNormal(availPercent, 0.05)));
+                let randCycle = Math.max(10, randomNormal(cycleTime, cycleTime * 0.08));
+                let randPayload = Math.max(30, randomNormal(payload, payload * 0.05));
+                let randRate = Math.max(100000, randomNormal(rate, rate * 0.12)); // Market price fluctuation
+                let randFixed = Math.max(1000000000, randomNormal(fixedCostInput, fixedCostInput * 0.05)); // Fixed cost variance
+
+                let randFuel = Math.max(5000, randomNormal(fuelPrice, fuelPrice * 0.10));
+                let randMaint = Math.max(300000, randomNormal(maintHr, maintHr * 0.09));
+                let randTyre = Math.max(1000, randomNormal(tyreLife, tyreLife * 0.12));
+
+                // Operational adjustments
+                let cycleEfficiency = (24.0 / randCycle);
+                let availabilityEfficiency = (randAvail / 0.85);
+                let actualProduction = prodTarget * cycleEfficiency * availabilityEfficiency * (randPayload / 100);
+
+                // Costs (Rp)
+                let fuelCostImpact = actualProduction * (randFuel * 0.18);
+                let maintCostImpact = actualProduction * (randMaint / 150);
+                let tyreWearCost = actualProduction * (50000000 / randTyre);
+                let totalVariableCostPerTon = baseVarCost + (fuelCostImpact / actualProduction) + (maintCostImpact / actualProduction) + (tyreWearCost / actualProduction);
+
+                let totalRevenue = actualProduction * randRate;
+                let totalVariableCost = actualProduction * totalVariableCostPerTon;
+                
+                // Net Profit Calculation: Revenue - Variable Cost - Fixed Cost
+                let netProfit = totalRevenue - totalVariableCost - randFixed;
+
+                profits.push(netProfit);
+                if (netProfit < 0) lossCount++;
+            }
+
+            // Sort profits to compute percentiles (P5, P50, P95)
+            profits.sort((a, b) => a - b);
+
+            let p5Idx = Math.floor(currentTrials * 0.05);
+            let p50Idx = Math.floor(currentTrials * 0.50);
+            let p95Idx = Math.floor(currentTrials * 0.95);
+
+            let p5Val = profits[p5Idx];
+            let p50Val = profits[p50Idx];
+            let p95Val = profits[p95Idx];
+
+            let sumProfit = profits.reduce((acc, v) => acc + v, 0);
+            let meanProfit = sumProfit / currentTrials;
+            let lossProb = (lossCount / currentTrials) * 100;
+
+            // Update Metric Displays
+            document.getElementById('statP5').innerText = formatCurrency(p5Val);
+            document.getElementById('statP50').innerText = formatCurrency(p50Val);
+            document.getElementById('statP95').innerText = formatCurrency(p95Val);
+            document.getElementById('statMeanProfit').innerText = formatCurrency(meanProfit);
+            document.getElementById('statLossProb').innerText = lossProb.toFixed(1) + '%';
+
+            document.getElementById('labelP5').innerText = formatCurrency(p5Val);
+            document.getElementById('labelP50').innerText = formatCurrency(p50Val);
+            document.getElementById('labelP95').innerText = formatCurrency(p95Val);
+
+            // Risk Rating Text & Color
+            let riskEl = document.getElementById('statRiskRating');
+            if (lossProb > 15) {
+                riskEl.innerText = "HIGH RISK";
+                riskEl.className = "font-mono font-bold text-red-400";
+            } else if (lossProb > 5) {
+                riskEl.innerText = "MODERATE";
+                riskEl.className = "font-mono font-bold text-amber-400";
+            } else {
+                riskEl.innerText = "OPTIMAL";
+                riskEl.className = "font-mono font-bold text-emerald-400";
+            }
+
+            // Render Chart
+            renderChart(profits, p5Val, p50Val, p95Val);
+        }
+
+        function renderChart(sortedProfits, p5, p50, p95) {
+            const ctx = document.getElementById('monteCarloChart').getContext('2d');
+
+            const minVal = sortedProfits[0];
+            const maxVal = sortedProfits[sortedProfits.length - 1];
+            const binCount = 30;
+            const step = (maxVal - minVal) / binCount;
+
+            let bins = new Array(binCount).fill(0);
+            let binLabels = [];
+
+            for (let i = 0; i < binCount; i++) {
+                let binStart = minVal + i * step;
+                binLabels.push(formatCurrency(binStart));
+            }
+
+            sortedProfits.forEach(val => {
+                let binIdx = Math.min(Math.floor((val - minVal) / step), binCount - 1);
+                if (binIdx >= 0) bins[binIdx]++;
+            });
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: binLabels,
+                    datasets: [{
+                        label: 'Frekuensi Iterasi',
+                        data: bins,
+                        backgroundColor: function(context) {
+                            let index = context.dataIndex;
+                            let valAtBin = minVal + index * step;
+
+                            if (valAtBin <= p5) return '#ef4444';
+                            if (valAtBin >= p95) return '#10b981';
+                            return '#f59e0b';
+                        },
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: (items) => 'Rentang Profit Net: ' + items[0].label,
+                                label: (item) => ' Frekuensi: ' + item.raw + ' trials skenario'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: '#64748B', font: { size: 10 }, maxTicksLimit: 8 }
+                        },
+                        y: {
+                            grid: { color: '#1E293B' },
+                            ticks: { color: '#64748B', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function downloadReportHTML() {
+            const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Mining_Financial_Risk_App_Rupiah.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        window.onload = function() {
+            runMonteCarlo();
+        }
+    </script>
+</body>
+</html>

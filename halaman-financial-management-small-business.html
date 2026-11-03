@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Management for Small Businesses — Panduan Interaktif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest-900:#1c2b20;
+    --forest-800:#243828;
+    --forest-700:#2f4b35;
+    --forest-500:#4c7256;
+    --copper-500:#b5642f;
+    --copper-300:#dd9c63;
+    --paper:#f6f0e2;
+    --paper-2:#efe6d0;
+    --line:#d8cba0;
+    --ink:#25291f;
+    --ink-soft:#59604c;
+    --ok:#2f6a4c;
+    --serif:"Source Serif 4", Georgia, serif;
+    --sans:"Inter", -apple-system, "Segoe UI", sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); line-height:1.62;}
+  a{color:inherit;}
+
+  /* Topbar */
+  .topbar{position:sticky; top:0; z-index:60; background:var(--forest-900); color:#f1e9d5;
+    display:flex; align-items:center; justify-content:space-between; padding:.65rem 1.1rem;
+    border-bottom:2px solid var(--copper-500); gap:1rem;}
+  .topbar-brand{display:flex; align-items:center; gap:.55rem; font-family:var(--serif); font-weight:600;}
+  .topbar-brand small{display:block; font-family:var(--mono); font-size:.6rem; letter-spacing:.12em; color:var(--copper-300); text-transform:uppercase;}
+  .progress-wrap{flex:1; max-width:260px; display:flex; align-items:center; gap:.5rem;}
+  .progress-track{flex:1; height:6px; background:rgba(255,255,255,.15); border-radius:4px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:var(--copper-300); transition:width .3s;}
+  .progress-label{font-family:var(--mono); font-size:.65rem; color:var(--copper-300); white-space:nowrap;}
+  .btn{font-family:var(--mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase;
+    background:transparent; color:var(--copper-300); border:1px solid var(--copper-500); border-radius:2px;
+    padding:.45rem .8rem; cursor:pointer;}
+  .btn:hover{background:var(--copper-500); color:var(--forest-900);}
+
+  /* Shell */
+  .shell{display:grid; grid-template-columns:280px 1fr; align-items:start;}
+  @media (max-width:960px){ .shell{grid-template-columns:1fr;} }
+  nav.toc{position:sticky; top:50px; height:calc(100vh - 50px); overflow-y:auto;
+    background:var(--forest-800); color:#e6ddc2; padding:1.2rem 1rem 2.5rem; font-family:var(--mono); font-size:.76rem;}
+  @media (max-width:960px){ nav.toc{position:relative; top:0; height:auto; max-height:340px;} }
+  nav.toc input[type=search]{width:100%; padding:.5rem .6rem; margin-bottom:1rem; border-radius:3px; border:1px solid var(--forest-500);
+    background:var(--forest-900); color:#f1e9d5; font-family:var(--mono); font-size:.72rem;}
+  nav.toc .part-label{color:var(--copper-300); text-transform:uppercase; letter-spacing:.1em; font-size:.65rem; margin:1rem 0 .3rem;}
+  nav.toc .part-label:first-of-type{margin-top:0;}
+  nav.toc ul{list-style:none; margin:0 0 .2rem; padding:0;}
+  nav.toc li a{display:block; padding:.32rem .5rem; border-radius:2px; text-decoration:none; color:#d3c9a8; border-left:2px solid transparent;}
+  nav.toc li a:hover, nav.toc li a.active{background:rgba(221,156,99,.12); border-left-color:var(--copper-500); color:#fff;}
+  nav.toc li.hidden{display:none;}
+
+  main{min-width:0;}
+
+  /* Hero */
+  .hero{background:linear-gradient(180deg, var(--forest-900), var(--forest-800)); color:#f1ead4; padding:3.4rem 2rem 2.6rem; position:relative; overflow:hidden;}
+  .hero::before{content:""; position:absolute; inset:0; background:
+    repeating-linear-gradient(90deg, rgba(213,164,99,.05) 0 1px, transparent 1px 90px);}
+  .hero-inner{max-width:1160px; margin:0 auto; position:relative; display:grid; grid-template-columns:1fr auto; gap:2.2rem; align-items:center;}
+  @media (max-width:760px){ .hero-inner{grid-template-columns:1fr;} }
+  .eyebrow{font-family:var(--mono); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--copper-300); margin:0 0 .7rem;}
+  .hero h1{font-family:var(--serif); font-weight:700; font-size:clamp(1.7rem,3.6vw,2.6rem); line-height:1.14; margin:0 0 .7rem;}
+  .hero p.lead{max-width:60ch; color:#dcd3b8;}
+  .hero .authors{margin-top:1rem; font-family:var(--mono); font-size:.78rem; color:#c9bf9e;}
+  .cc-badge{display:inline-flex; align-items:center; gap:.4rem; margin-top:1rem; font-family:var(--mono); font-size:.68rem;
+    border:1px solid var(--copper-500); border-radius:20px; padding:.35rem .8rem; color:var(--copper-300);}
+  .hero-stats{display:flex; flex-wrap:wrap; gap:1.3rem; margin-top:1.4rem;}
+  .hero-stats div{border-left:2px solid var(--copper-500); padding-left:.65rem;}
+  .hero-stats b{display:block; font-family:var(--serif); font-size:1.3rem;}
+  .hero-stats span{font-family:var(--mono); font-size:.64rem; text-transform:uppercase; letter-spacing:.08em; color:#c9bf9e;}
+  .ledger-art svg{width:180px; height:180px; display:block;}
+
+  /* Tool: PV Model Finder */
+  .tool{max-width:960px; margin:2.4rem auto; padding:0 1.4rem;}
+  .tool-card{background:#fff; border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+  .tool-head{background:var(--copper-500); color:#fff; padding:1rem 1.3rem;}
+  .tool-head h2{font-family:var(--serif); margin:0 0 .25rem; font-size:1.3rem;}
+  .tool-head p{margin:0; font-size:.88rem; color:#fbe9d8;}
+  .tool-body{padding:1.2rem 1.3rem 1.4rem;}
+  .tool-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:.6rem; margin-bottom:1rem;}
+  .tool-grid button{text-align:left; padding:.7rem .8rem; border:1px solid var(--line); background:var(--paper); border-radius:4px;
+    cursor:pointer; font-size:.85rem; color:var(--ink); font-family:var(--sans);}
+  .tool-grid button:hover{border-color:var(--copper-500); background:var(--paper-2);}
+  .tool-grid button.active{background:var(--forest-800); color:#f1e9d5; border-color:var(--forest-800);}
+  #tool-result{display:none; background:var(--paper-2); border-left:3px solid var(--ok); padding:.9rem 1.1rem; border-radius:3px;}
+  #tool-result.show{display:block;}
+  #tool-result .model-name{font-family:var(--mono); text-transform:uppercase; letter-spacing:.06em; color:var(--ok); font-size:.72rem; display:block; margin-bottom:.3rem;}
+
+  /* Part sections */
+  .part{max-width:960px; margin:0 auto; padding:2.6rem 1.4rem 1rem; scroll-margin-top:56px;}
+  .part-header{display:flex; align-items:flex-start; gap:1rem; margin-bottom:.3rem;}
+  .part-tab{flex-shrink:0; background:var(--forest-800); color:var(--copper-300); font-family:var(--mono); font-size:.72rem;
+    letter-spacing:.1em; padding:.5rem .7rem; border-radius:4px; writing-mode:horizontal-tb;}
+  .part-header h2{font-family:var(--serif); font-size:1.55rem; margin:.15rem 0 .2rem; color:var(--forest-900);}
+  .part-header .sub{color:var(--ink-soft); font-size:.9rem;}
+  hr.rule{border:none; border-top:1px solid var(--line); margin:1.2rem 0 1.5rem;}
+
+  /* Chapter accordion */
+  details.chapter{background:#fff; border:1px solid var(--line); border-radius:5px; margin-bottom:.7rem; overflow:hidden;}
+  details.chapter summary{cursor:pointer; list-style:none; padding:.85rem 1.1rem; display:flex; align-items:center; gap:.8rem;}
+  details.chapter summary::-webkit-details-marker{display:none;}
+  details.chapter summary .chnum{font-family:var(--mono); color:var(--copper-500); font-weight:600; font-size:.9rem; flex-shrink:0; width:1.6rem;}
+  details.chapter summary .chtitle{font-family:var(--serif); font-weight:600; font-size:1.02rem; flex:1;}
+  details.chapter summary .chevron{font-family:var(--mono); color:var(--ink-soft); transition:transform .2s;}
+  details.chapter[open] summary .chevron{transform:rotate(90deg);}
+  details.chapter summary input[type=checkbox]{width:17px; height:17px; accent-color:var(--ok); flex-shrink:0;}
+  .chapter-body{padding:0 1.1rem 1.1rem; border-top:1px dotted var(--line);}
+  .chapter-body p{margin:.8rem 0;}
+  .chapter-body .objectives{margin:.6rem 0 0; padding-left:1.15rem; font-size:.88rem; color:var(--ink-soft);}
+  .chapter-body .objectives li{margin-bottom:.3rem;}
+
+  /* Glossary */
+  .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:.7rem;}
+  .gterm{background:#fff; border:1px solid var(--line); border-radius:5px; padding:.8rem 1rem;}
+  .gterm b{font-family:var(--mono); color:var(--forest-800); display:block; margin-bottom:.25rem; font-size:.85rem;}
+  .gterm span{font-size:.85rem; color:var(--ink-soft);}
+
+  /* Quiz */
+  .quiz{background:#fff; border:1px solid var(--line); border-radius:5px; padding:1.1rem 1.2rem; margin-top:.8rem;}
+  .quiz-item{padding:.9rem 0; border-top:1px dotted var(--line);}
+  .quiz-item:first-child{border-top:none; padding-top:0;}
+  .quiz-item .q{font-weight:600; margin-bottom:.5rem; font-size:.94rem;}
+  .quiz-item .q span.qn{font-family:var(--mono); color:var(--copper-500); margin-right:.4rem;}
+  .options{list-style:none; margin:0 0 .55rem; padding:0; display:grid; gap:.28rem;}
+  .options li{padding:.32rem .6rem; border:1px solid var(--line); border-radius:3px; font-size:.88rem; background:var(--paper);}
+  .options li b{font-family:var(--mono); color:var(--forest-700); margin-right:.4rem;}
+  details.answer summary{cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:.4rem; font-family:var(--mono);
+    font-size:.68rem; letter-spacing:.07em; text-transform:uppercase; color:var(--forest-800); border:1px solid var(--copper-500);
+    border-radius:20px; padding:.32rem .8rem;}
+  details.answer summary::-webkit-details-marker{display:none;}
+  details.answer summary::before{content:"＋"; color:var(--copper-500); font-weight:700;}
+  details.answer[open] summary::before{content:"－";}
+  details.answer[open] summary{background:var(--forest-900); color:var(--copper-300); border-color:var(--forest-900);}
+  .answer-body{margin-top:.5rem; padding:.75rem .9rem; background:var(--paper-2); border-left:3px solid var(--ok); border-radius:3px; font-size:.88rem;}
+  .answer-body .kunci{font-family:var(--mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ok); margin-bottom:.3rem; display:block;}
+
+  .disclaimer{max-width:960px; margin:2rem auto 0; padding:1.5rem 1.4rem 3rem; color:var(--ink-soft); font-size:.85rem; border-top:2px solid var(--copper-500);}
+  footer{background:var(--forest-900); color:#c9bf9e; text-align:center; padding:1.5rem; font-family:var(--mono); font-size:.7rem; letter-spacing:.05em;}
+
+  @media print{
+    .topbar, nav.toc, .btn, .tool-grid button{display:none !important;}
+    .shell{display:block;}
+    details.chapter, details.answer{ }
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">📗 Panduan Interaktif <small>Financial Management for Small Businesses</small></div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-label" id="progressLabel">0/22 bab dibaca</span>
+  </div>
+  <button class="btn" onclick="window.print()">⬇ Simpan PDF</button>
+</div>
+
+<div class="shell">
+  <nav class="toc">
+    <input type="search" id="tocSearch" placeholder="Cari bab...">
+    <div id="tocList"></div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <p class="eyebrow">Panduan Belajar Interaktif</p>
+          <h1>Financial Management for Small Businesses<br>2nd OER Edition</h1>
+          <p class="lead">Manajemen keuangan usaha kecil-menengah: dari mission statement, laporan keuangan terkoordinasi, rasio SPELL, hingga model nilai sekarang (present value) untuk menilai investasi, pinjaman, tanah, sewa, dan sekuritas finansial.</p>
+          <div class="authors">Lindon J. Robison · Steven D. Hanson · J. Roy Black — Michigan State University</div>
+          <div class="cc-badge">⚭ Creative Commons Attribution 4.0 International (CC BY 4.0), © 2021</div>
+          <div class="hero-stats">
+            <div><b>5</b><span>Bagian (Parts)</span></div>
+            <div><b>22</b><span>Bab</span></div>
+            <div><b>15</b><span>Soal Cek Pemahaman</span></div>
+            <div><b>1</b><span>Alat Pemilih Model PV</span></div>
+          </div>
+        </div>
+        <div class="ledger-art">
+          <svg viewBox="0 0 200 200">
+            <rect x="30" y="20" width="140" height="160" rx="4" fill="none" stroke="#dd9c63" stroke-width="2"/>
+            <line x1="30" y1="46" x2="170" y2="46" stroke="#dd9c63" stroke-width="1"/>
+            <line x1="55" y1="20" x2="55" y2="180" stroke="#dd9c63" stroke-width="1" stroke-dasharray="2 4"/>
+            <polyline points="65,150 90,110 110,130 130,80 150,95 160,55" fill="none" stroke="#f1ead4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="160" cy="55" r="4" fill="#dd9c63"/>
+            <text x="100" y="35" text-anchor="middle" fill="#f1ead4" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="1">NPV · IRR · ROE</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PV MODEL FINDER TOOL ===== -->
+    <section class="tool" id="tool">
+      <div class="tool-card">
+        <div class="tool-head">
+          <h2>Alat Bantu: Pemilih Model Present Value (PV)</h2>
+          <p>Bab 9 buku ini mengelompokkan setiap model PV berdasarkan pertanyaan yang ingin dijawab. Klik pertanyaan yang paling sesuai dengan kebutuhan Anda.</p>
+        </div>
+        <div class="tool-body">
+          <div class="tool-grid" id="toolGrid"></div>
+          <div id="tool-result"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PART I ===================== -->
+    <section class="part" id="part1">
+      <div class="part-header">
+        <div class="part-tab">PART I</div>
+        <div>
+          <h2>Manajemen (Management)</h2>
+          <div class="sub">Kerangka dasar manajemen keuangan, bentuk badan usaha, sistem pajak, dan manajemen risiko</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <details class="chapter" data-title="Financial Management and the Firm">
+        <summary><span class="chnum">01</span><span class="chtitle">Financial Management and the Firm</span>
+          <input type="checkbox" class="chk" data-ch="1" title="Tandai sudah dibaca"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Bab pembuka ini menempatkan manajemen keuangan sebagai bagian dari <b>proses manajemen enam langkah</b>: menyusun mission statement, menetapkan tujuan strategis (jangka panjang) dan taktis (jangka pendek), mengidentifikasi kekuatan-kelemahan-peluang-ancaman (SWOT) firma, menyusun strategi, mengimplementasikannya, lalu mengevaluasi hasilnya. Kerangka enam langkah ini menjadi peta jalan yang dipakai di seluruh buku — bahkan penulis mengajak pembaca menerapkannya juga pada usaha pribadi mereka menempuh mata kuliah ini.</p>
+          <ul class="objectives">
+            <li>Memahami pentingnya mission statement yang ringkas dan jelas.</li>
+            <li>Membedakan tujuan strategis (jangka panjang) dari tujuan taktis (jangka pendek).</li>
+            <li>Mengidentifikasi kekuatan &amp; kelemahan internal, serta peluang &amp; ancaman eksternal firma.</li>
+            <li>Menyusun strategi yang memanfaatkan kekuatan/peluang dan meminimalkan kelemahan/ancaman.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Alternative Forms of Business Organizations">
+        <summary><span class="chnum">02</span><span class="chtitle">Alternative Forms of Business Organizations</span>
+          <input type="checkbox" class="chk" data-ch="2"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membahas bentuk-bentuk badan usaha yang umum di AS — <b>sole proprietorship, general/limited partnership, C corporation, S corporation, LLC, koperasi, dan trust</b> — beserta kelebihan dan kekurangannya ditinjau dari kendali manajemen, fleksibilitas operasi, eksposur tanggung jawab hukum (liability), akses terhadap modal, kelangsungan hidup usaha, cara pengalihan kepemilikan, dan perlakuan pajaknya. Bentuk badan usaha yang dipilih menjadi kerangka bagi seluruh keputusan manajemen keuangan berikutnya.</p>
+          <ul class="objectives">
+            <li>Kelebihan &amp; kekurangan sole proprietorship dan karakteristik usaha yang cocok dengannya.</li>
+            <li>Kelebihan &amp; kekurangan partnership, C corporation, S corporation, dan LLC.</li>
+            <li>Karakteristik koperasi dan trust sebagai bentuk badan usaha alternatif.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="The Federal Tax System">
+        <summary><span class="chnum">03</span><span class="chtitle">The Federal Tax System</span>
+          <input type="checkbox" class="chk" data-ch="3"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Karena nilai firma ditentukan oleh arus kas <i>setelah pajak</i>, bab ini menjelaskan komponen dasar sistem pajak federal AS: alur dari penghasilan kotor (gross income) → penghasilan kena pajak (taxable income) → kewajiban pajak; perbedaan <b>tarif pajak rata-rata</b> (average tax rate) versus <b>tarif pajak marjinal</b> (marginal tax rate) dalam sistem pajak progresif; serta bagaimana depresiasi, capital gain/loss, dan depreciation recapture memengaruhi jumlah pajak yang harus dibayar firma.</p>
+          <ul class="objectives">
+            <li>Menghitung kewajiban pajak dari penghasilan kotor hingga penghasilan kena pajak.</li>
+            <li>Membedakan tarif pajak rata-rata dan tarif pajak marjinal.</li>
+            <li>Memahami efek depresiasi, capital gain/loss, dan depreciation recapture terhadap pajak.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Managing Risk">
+        <summary><span class="chnum">04</span><span class="chtitle">Managing Risk</span>
+          <input type="checkbox" class="chk" data-ch="4"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Risiko didefinisikan lewat variabel acak (random variable) dan fungsi kepadatan probabilitas (probability density function/pdf), diukur dengan <b>expected value</b> dan <b>varians</b>. Bab ini menjelaskan bagaimana tingkat penghindaran risiko (risk aversion) memengaruhi alokasi sumber daya, serta lima strategi merespons risiko: berbagi risiko dengan pihak lain, membeli asuransi, diversifikasi investasi, membeli input pengurang risiko, dan memilih struktur modal (leverage) yang optimal.</p>
+          <ul class="objectives">
+            <li>Mengukur risiko lewat expected value dan varians dari sebuah pdf.</li>
+            <li>Memahami konsep risk premium sebagai biaya menanggung risiko.</li>
+            <li>Mengevaluasi strategi berbagi risiko, asuransi, diversifikasi, dan struktur modal.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <!-- ===================== PART I QUIZ ===================== -->
+    <section class="part" style="padding-top:0;">
+      <h3 style="font-family:var(--serif); font-size:1.1rem; color:var(--forest-800);">Cek Pemahaman — Bagian I</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Langkah pertama dalam proses manajemen enam langkah (Bab 1) adalah…</div>
+          <ul class="options"><li><b>A.</b> Evaluasi kinerja</li><li><b>B.</b> Menyusun mission statement</li><li><b>C.</b> Analisis SWOT</li><li><b>D.</b> Implementasi strategi</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Proses dimulai dari mission statement yang menjelaskan mengapa firma ada dan apa yang dinilainya, sebelum menetapkan tujuan, analisis SWOT, strategi, implementasi, dan evaluasi.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Bentuk badan usaha yang pemiliknya menanggung unlimited liability dan usia usahanya terikat pada usia pemilik adalah…</div>
+          <ul class="options"><li><b>A.</b> C Corporation</li><li><b>B.</b> LLC</li><li><b>C.</b> Sole Proprietorship</li><li><b>D.</b> Koperasi</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: C</span>Sole proprietorship menawarkan kendali manajemen penuh namun disertai unlimited liability dan umur usaha yang berakhir bersama meninggalnya pemilik.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Dalam sistem pajak progresif, hubungan tarif pajak marjinal terhadap tarif pajak rata-rata adalah…</div>
+          <ul class="options"><li><b>A.</b> Selalu sama</li><li><b>B.</b> Marjinal ≥ rata-rata</li><li><b>C.</b> Marjinal selalu &lt; rata-rata</li><li><b>D.</b> Tidak berhubungan</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Karena tarif meningkat seiring naiknya penghasilan kena pajak, tarif marjinal (tarif pada dolar berikutnya) selalu sama atau lebih tinggi dari tarif rata-rata.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PART II ===================== -->
+    <section class="part" id="part2">
+      <div class="part-header">
+        <div class="part-tab">PART II</div>
+        <div>
+          <h2>Strengths, Weaknesses, Opportunities, and Threats</h2>
+          <div class="sub">Menyusun laporan keuangan terkoordinasi dan membacanya lewat rasio &amp; analisis sistem</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <details class="chapter" data-title="Financial Statements">
+        <summary><span class="chnum">05</span><span class="chtitle">Financial Statements</span>
+          <input type="checkbox" class="chk" data-ch="5"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Memperkenalkan <b>Coordinated Financial Statements (CFS)</b> — neraca awal &amp; akhir periode, accrual income statement (AIS), dan statement of cash flow (SCF) — yang saling terhubung sehingga dapat dipakai saling memeriksa konsistensi data. Bab ini juga membahas cash income statement, sources and uses of funds (SAUF) statement, serta pembedaan variabel eksogen (ditentukan di luar firma) dan endogen (ditentukan di dalam firma).</p>
+          <ul class="objectives">
+            <li>Menyusun neraca, AIS, dan SCF secara konsisten sebagai satu paket CFS.</li>
+            <li>Membedakan cash income statement dari accrual income statement.</li>
+            <li>Memahami perbedaan konsistensi data dan akurasi data pada laporan keuangan.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Financial Ratios">
+        <summary><span class="chnum">06</span><span class="chtitle">Financial Ratios</span>
+          <input type="checkbox" class="chk" data-ch="6"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Memperkenalkan rasio <b>SPELL</b> — Solvency, Profitability, Efficiency, Liquidity, Leverage — sebagai kerangka menyeluruh untuk menjawab "apa kekuatan dan kelemahan finansial firma?". Mencakup Times Interest Earned (TIE), Debt-to-Service, profit margin, ROA, ROE (termasuk versi setelah pajak), berbagai rasio efisiensi turnover (inventory, asset, receivable, payable), current &amp; quick ratio, debt-to-equity, equity multiplier, hingga DuPont ratio yang menunjukkan keterkaitan antar rasio SPELL.</p>
+          <ul class="objectives">
+            <li>Membedakan rate, ratio, dan percentage serta manfaat membandingkan firma lewat rasio.</li>
+            <li>Menyusun dan menafsirkan kelima kelompok rasio SPELL.</li>
+            <li>Menghubungkan ROE dan ROA melalui identitas DuPont.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="System Analysis">
+        <summary><span class="chnum">07</span><span class="chtitle">System Analysis</span>
+          <input type="checkbox" class="chk" data-ch="7"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Memandang CFS sebagai sebuah <b>sistem</b>: rasio SPELL menjawab pertanyaan "what-is" (kondisi saat ini), sementara analisis sistem menjawab pertanyaan "what-if" (bagaimana variabel endogen berubah jika variabel eksogen berubah) dan "how-much" (seberapa besar perubahan variabel eksogen dibutuhkan agar variabel endogen mencapai nilai tertentu). Bab ini juga memperkenalkan common-size balance sheet dan income statement untuk analisis trade-off dan proyeksi (pro-forma) ke depan.</p>
+          <ul class="objectives">
+            <li>Memahami CFS sebagai sistem dengan variabel eksogen dan endogen.</li>
+            <li>Melakukan analisis skenario what-if dan how-much.</li>
+            <li>Menggunakan common-size statements untuk analisis trade-off dan peramalan pro-forma.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section class="part" style="padding-top:0;">
+      <h3 style="font-family:var(--serif); font-size:1.1rem; color:var(--forest-800);">Cek Pemahaman — Bagian II</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Rasio SPELL terdiri dari Solvency, Profitability, Efficiency, Liquidity, dan…</div>
+          <ul class="options"><li><b>A.</b> Leverage</li><li><b>B.</b> Legacy</li><li><b>C.</b> Longevity</li><li><b>D.</b> Loyalty</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: A</span>SPELL = Solvency, Profitability, Efficiency, Liquidity, Leverage — lima dimensi kekuatan/kelemahan finansial firma.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Variabel yang nilainya ditentukan oleh aktivitas di luar firma disebut variabel…</div>
+          <ul class="options"><li><b>A.</b> Endogen</li><li><b>B.</b> Eksogen</li><li><b>C.</b> Independen mutlak</li><li><b>D.</b> Stokastik</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Variabel eksogen ditentukan di luar firma (misal suku bunga pasar), sedangkan variabel endogen ditentukan oleh aktivitas internal firma dan nilai variabel eksogen.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Analisis "what-if" pada Bab 7 pada dasarnya menjawab pertanyaan tentang…</div>
+          <ul class="options"><li><b>A.</b> Kondisi finansial firma saat ini</li><li><b>B.</b> Bagaimana variabel endogen berubah jika variabel eksogen berubah</li><li><b>C.</b> Sejarah kinerja firma 5 tahun terakhir</li><li><b>D.</b> Struktur organisasi firma</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>"What-if" adalah analisis skenario: jika satu atau lebih variabel/parameter eksogen berubah, bagaimana dampaknya pada variabel endogen dan rasio SPELL.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PART III ===================== -->
+    <section class="part" id="part3">
+      <div class="part-header">
+        <div class="part-tab">PART III</div>
+        <div>
+          <h2>Present Value Models</h2>
+          <div class="sub">Memperluas laporan laba rugi akrual menjadi model penilaian investasi multi-periode</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <details class="chapter" data-title="Present Value Models & Accrual Income Statements">
+        <summary><span class="chnum">08</span><span class="chtitle">Present Value Models &amp; Accrual Income Statements</span>
+          <input type="checkbox" class="chk" data-ch="8"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Menjembatani AIS (satu periode) dengan model <b>Present Value (PV)</b> sebagai perluasan multi-periodenya. Menunjukkan bahwa ROA dan ROE (sebelum/sesudah pajak) yang dihitung dari AIS setara dengan Internal Rate of Return atas aset (IRR-A) dan ekuitas (IRR-E) yang dihitung dari model PV multi-periode, serta kondisi yang diperlukan agar ranking berdasarkan earnings dan rate-of-return konsisten satu sama lain.</p>
+          <ul class="objectives">
+            <li>Menjelaskan persamaan dan perbedaan antara AIS dan model PV.</li>
+            <li>Menunjukkan kesetaraan ROA/ROE dengan IRR multi-periode pada aset dan ekuitas.</li>
+            <li>Mengenali syarat agar ranking earnings dan rate-of-return konsisten.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Present Value Models">
+        <summary><span class="chnum">09</span><span class="chtitle">Present Value Models</span>
+          <input type="checkbox" class="chk" data-ch="9"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Mengelompokkan model PV berdasarkan <b>pertanyaan yang dijawab</b> dan variabel endogen yang dicari: Net Present Value (NPV), Internal Rate of Return (IRR), maximum bid/minimum sell, annuity equivalent (AE), loan formula, optimal term, replacement, incremental, capitalized value, break-even, dan payback. Lihat <a href="#tool">Alat Pemilih Model PV</a> di atas untuk versi interaktifnya.</p>
+          <ul class="objectives">
+            <li>Membedakan berbagai jenis model PV dan variabel tak diketahui masing-masing.</li>
+            <li>Mengenali jenis pertanyaan yang dijawab tiap model PV.</li>
+            <li>Menggunakan rumus finansial Excel untuk menyelesaikan model-model PV tersebut.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Incremental Investments">
+        <summary><span class="chnum">10</span><span class="chtitle">Incremental Investments</span>
+          <input type="checkbox" class="chk" data-ch="10"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membedakan investasi <b>stand-alone</b> dari investasi <b>incremental</b> (penambahan/penggantian pada aset yang sudah berjalan). Memperkenalkan konsep <i>fixity</i> aset — aset dikatakan "fixed" bila nilai likuidasinya lebih rendah dari nilai perolehan dan nilai penggunaannya berada di antara keduanya — serta cara menghitung kontribusi investasi tambahan lewat perubahan cash receipts, cost of goods sold, overhead expenses, dan akun aset.</p>
+          <ul class="objectives">
+            <li>Membedakan investasi incremental dari investasi stand-alone.</li>
+            <li>Memahami bagaimana nilai likuidasi dan akuisisi menentukan fixity aset.</li>
+            <li>Menghitung NPV, AE, dan IRR dari investasi incremental menggunakan template Excel.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Forecasting and Present Value Models">
+        <summary><span class="chnum">11</span><span class="chtitle">Forecasting and Present Value Models</span>
+          <input type="checkbox" class="chk" data-ch="11"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membedakan <b>forecast</b> (peramalan berbasis data, lebih kuantitatif dan sistematis) dari <b>prediction</b> (perkiraan yang lebih subjektif). Membahas peramalan deterministik vs statistik, variabel eksogen vs endogen dalam peramalan, variabel dependen vs independen dalam regresi, serta cara menyusun interval keyakinan untuk melengkapi input arus kas yang dibutuhkan model PV.</p>
+          <ul class="objectives">
+            <li>Membedakan forecast (kuantitatif) dari prediction (kualitatif).</li>
+            <li>Memahami peran variabel eksogen dan endogen dalam peramalan.</li>
+            <li>Menyusun interval keyakinan (confidence interval) untuk forecast arus kas.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section class="part" style="padding-top:0;">
+      <h3 style="font-family:var(--serif); font-size:1.1rem; color:var(--forest-800);">Cek Pemahaman — Bagian III</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Model PV yang mencari variabel tak diketahui berupa tingkat pengembalian internal disebut…</div>
+          <ul class="options"><li><b>A.</b> NPV</li><li><b>B.</b> IRR</li><li><b>C.</b> AE</li><li><b>D.</b> Payback</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>IRR (Internal Rate of Return) adalah model PV yang secara spesifik mencari tingkat diskonto yang membuat NPV arus kas sama dengan nol.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Model PV pada dasarnya adalah perluasan multi-periode dari…</div>
+          <ul class="options"><li><b>A.</b> Neraca (balance sheet)</li><li><b>B.</b> Accrual Income Statement (AIS)</li><li><b>C.</b> Laporan arus kas historis</li><li><b>D.</b> Rasio SPELL</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Bab 8 menunjukkan bahwa model PV adalah perluasan AIS satu-periode ke banyak periode di masa depan yang dinilai pada masa kini.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Perbedaan utama forecast dan prediction menurut Bab 11 adalah…</div>
+          <ul class="options"><li><b>A.</b> Forecast selalu benar, prediction selalu salah</li><li><b>B.</b> Forecast lebih kuantitatif/sistematis, prediction lebih subjektif</li><li><b>C.</b> Keduanya sama persis</li><li><b>D.</b> Forecast hanya dipakai untuk pajak</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Forecast mengandalkan data dan metode yang lebih sistematis/kuantitatif, sedangkan prediction lebih eklektik dan subjektif, memasukkan opini, firasat, atau tanda-tanda lain.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PART IV ===================== -->
+    <section class="part" id="part4">
+      <div class="part-header">
+        <div class="part-tab">PART IV</div>
+        <div>
+          <h2>Homogeneous Measures</h2>
+          <div class="sub">Syarat agar ranking investasi dengan NPV dan IRR konsisten satu sama lain</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <details class="chapter" data-title="Ranking Investments and Homogeneous Measures">
+        <summary><span class="chnum">12</span><span class="chtitle">Ranking Investments and Homogeneous Measures</span>
+          <input type="checkbox" class="chk" data-ch="12"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Menjelaskan mengapa ranking investasi yang tidak ambigu memerlukan ukuran satu dimensi, dan mengapa ranking yang konsisten antara NPV dan IRR memerlukan lima syarat homogenitas: <b>sumber dana, ukuran awal &amp; berkala, jangka waktu, tarif pajak, serta likuiditas &amp; mata uang</b> yang setara antara investasi "defender" (yang sudah berjalan) dan "challenger" (kandidat baru).</p>
+          <ul class="objectives">
+            <li>Memahami perlunya kriteria ranking satu dimensi.</li>
+            <li>Mengenali lima dimensi homogenitas yang menjamin ranking NPV &amp; IRR konsisten.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Homogeneous Sizes">
+        <summary><span class="chnum">13</span><span class="chtitle">Homogeneous Sizes</span>
+          <input type="checkbox" class="chk" data-ch="13"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Menunjukkan bagaimana NPV dan IRR dapat memberikan ranking yang saling bertentangan akibat perbedaan ukuran investasi dan asumsi tingkat reinvestasi yang berbeda. Membahas metode penyesuaian ukuran periodik dan awal (melalui penjumlahan atau scaling) untuk menghasilkan ranking yang konsisten, meski metode berbeda bisa menghasilkan ranking konsisten yang tidak selalu sama.</p>
+          <ul class="objectives">
+            <li>Mengenali potensi inkonsistensi dan instabilitas ranking NPV/IRR.</li>
+            <li>Menerapkan metode penjumlahan dan scaling untuk menyelaraskan ukuran investasi.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Homogeneous Terms">
+        <summary><span class="chnum">14</span><span class="chtitle">Homogeneous Terms</span>
+          <input type="checkbox" class="chk" data-ch="14"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membahas cara membandingkan investasi dengan jangka waktu (term) yang berbeda menggunakan <b>Annuity Equivalent (AE)</b> — rata-rata arus kas yang telah disesuaikan waktu. AE juga dipakai untuk menentukan umur optimal aset yang dapat diperbarui (repeatable investment), serta rumus kapitalisasi untuk menilai investasi berumur panjang atau berulang.</p>
+          <ul class="objectives">
+            <li>Meranking investasi satu-kali (one-time) dengan jangka waktu berbeda menggunakan IRR/NPV.</li>
+            <li>Menggunakan AE untuk menentukan umur optimal investasi yang dapat diperbarui.</li>
+            <li>Menerapkan rumus kapitalisasi untuk investasi jangka panjang/berulang.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Homogeneous Tax Rates">
+        <summary><span class="chnum">15</span><span class="chtitle">Homogeneous Tax Rates</span>
+          <input type="checkbox" class="chk" data-ch="15"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Menjelaskan cara menghitung <b>tax adjustment coefficient</b> agar tarif pajak efektif pada investasi "defender" dan "challenger" berada dalam satuan yang sama (homogen), termasuk bagaimana capital gain mengubah koefisien tersebut. Menantang kebiasaan menyesuaikan IRR sebelum pajak dengan mengalikannya (1-T) begitu saja, yang hanya tepat pada kasus-kasus khusus.</p>
+          <ul class="objectives">
+            <li>Menghitung IRR setelah pajak dari defender lewat tax adjustment coefficient.</li>
+            <li>Memahami pengaruh capital gain terhadap koefisien penyesuaian pajak.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Homogeneous Liquidity and Currency">
+        <summary><span class="chnum">16</span><span class="chtitle">Homogeneous Liquidity and Currency</span>
+          <input type="checkbox" class="chk" data-ch="16"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membedakan dua jenis imbal hasil investasi: <b>current return</b> (arus kas berjangka waktu) dan <b>capital gain/loss</b>. Memperkenalkan rasio <b>Current-to-Total Return (CTR)</b> untuk mengukur likuiditas investasi pada satu titik waktu maupun antar waktu, menghubungkannya dengan rasio Price-to-Earnings (PE) dan rasio coverage, serta cara mengevaluasi investasi dengan arus kas dalam mata uang asing.</p>
+          <ul class="objectives">
+            <li>Membedakan likuiditas firma dari likuiditas investasi individual.</li>
+            <li>Menggunakan rasio CTR dan PE untuk menyimpulkan likuiditas investasi.</li>
+            <li>Mengevaluasi investasi dengan arus kas dalam mata uang asing.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section class="part" style="padding-top:0;">
+      <h3 style="font-family:var(--serif); font-size:1.1rem; color:var(--forest-800);">Cek Pemahaman — Bagian IV</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Lima syarat homogenitas agar ranking NPV &amp; IRR konsisten meliputi sumber dana, ukuran, jangka waktu, tarif pajak, dan…</div>
+          <ul class="options"><li><b>A.</b> Likuiditas &amp; mata uang</li><li><b>B.</b> Jumlah karyawan</li><li><b>C.</b> Lokasi geografis</li><li><b>D.</b> Reputasi merek</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: A</span>Kelima dimensi homogenitas: sumber dana, ukuran awal/berkala, jangka waktu, tarif pajak, dan likuiditas/mata uang.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Alat yang dipakai membandingkan investasi dengan jangka waktu (term) berbeda adalah…</div>
+          <ul class="options"><li><b>A.</b> Annuity Equivalent (AE)</li><li><b>B.</b> Debt-to-Equity Ratio</li><li><b>C.</b> SAUF Statement</li><li><b>D.</b> Common-size Balance Sheet</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: A</span>AE mengubah arus kas dengan jangka waktu berbeda menjadi rata-rata tahunan setara yang dapat dibandingkan secara adil.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Rasio yang mengukur proporsi cash return terhadap total return sebuah investasi disebut…</div>
+          <ul class="options"><li><b>A.</b> CTR (Current-to-Total Return)</li><li><b>B.</b> DE (Debt-to-Equity)</li><li><b>C.</b> ATO (Asset Turnover)</li><li><b>D.</b> TIE (Times Interest Earned)</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: A</span>CTR mengukur likuiditas investasi berdasarkan seberapa besar imbal hasil berupa arus kas (bukan capital gain) terhadap total imbal hasilnya.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PART V ===================== -->
+    <section class="part" id="part5">
+      <div class="part-header">
+        <div class="part-tab">PART V</div>
+        <div>
+          <h2>Present Value Model Applications</h2>
+          <div class="sub">Penerapan model PV pada pinjaman, tanah, sewa, sekuritas finansial, yield curve, dan sisi manusiawi keputusan finansial</div>
+        </div>
+      </div>
+      <hr class="rule">
+
+      <details class="chapter" data-title="Loan Analysis">
+        <summary><span class="chnum">17</span><span class="chtitle">Loan Analysis</span>
+          <input type="checkbox" class="chk" data-ch="17"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membandingkan cara menghitung bunga pinjaman lewat tiga jenis suku bunga: <b>APR</b>, <b>actuarial rate</b>, dan <b>effective rate</b>. Memperkenalkan loan equality equation untuk mencari pembayaran pinjaman, suku bunga, jangka waktu, atau jumlah pinjaman awal; cara menyusun tabel amortisasi; titik impas saat refinancing; serta cara menemukan suku bunga efektif pada pinjaman "tersamar" seperti discount loan dan pinjaman dengan poin tambahan.</p>
+          <ul class="objectives">
+            <li>Menghitung dan membedakan APR, actuarial rate, dan effective rate.</li>
+            <li>Menyusun tabel amortisasi pinjaman dengan pembayaran tetap.</li>
+            <li>Menemukan titik impas refinancing dan suku bunga efektif pinjaman tersamar.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Land Investments">
+        <summary><span class="chnum">18</span><span class="chtitle">Land Investments</span>
+          <input type="checkbox" class="chk" data-ch="18"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Tanah bersifat unik: tidak dapat dipindah (immobile) dan sangat tahan lama (durable), sehingga harganya sangat dipengaruhi oleh ekspektasi pertumbuhan pendapatan masa depan yang dikapitalisasi ke harga sekarang — inilah yang membuat harga tanah cenderung volatil. Bab ini membahas real vs nominal discount rate, cara menghitung harga tawar maksimum (atau harga jual minimum) tanah, pengaruh biaya transaksi terhadap likuiditas tanah, serta dampak pajak terhadap harga tawarnya.</p>
+          <ul class="objectives">
+            <li>Memahami sifat unik tanah sebagai investasi (immobility &amp; durability).</li>
+            <li>Menghitung harga tawar maksimum/jual minimum tanah menggunakan model PV.</li>
+            <li>Memahami pengaruh biaya transaksi dan pajak terhadap keputusan investasi tanah.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Leases">
+        <summary><span class="chnum">19</span><span class="chtitle">Leases</span>
+          <input type="checkbox" class="chk" data-ch="19"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Sewa (lease) adalah cara memperoleh kendali atas aset modal tanpa memilikinya secara penuh — memisahkan penggunaan dari kepemilikan. Membahas jenis-jenis sewa: <b>sale-and-leaseback, operating lease,</b> dan <b>financial/capital lease</b>; perbedaan lease dengan perjanjian sewa biasa; perlakuan pajak atas lease; serta cara menghitung titik impas harga beli dibandingkan opsi menyewa.</p>
+          <ul class="objectives">
+            <li>Memahami leasing sebagai alternatif memperoleh akses ke aset modal.</li>
+            <li>Membedakan sale-and-leaseback, operating lease, dan financial lease.</li>
+            <li>Menghitung titik impas harga beli versus opsi sewa.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Financial Investments">
+        <summary><span class="chnum">20</span><span class="chtitle">Financial Investments</span>
+          <input type="checkbox" class="chk" data-ch="20"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Membedakan investasi riil/kapital (menghasilkan jasa fisik seperti penyimpanan atau produksi) dari <b>investasi finansial</b> (deposito, obligasi, saham) yang menukar uang masa kini dengan pembayaran uang di masa depan. Model PV yang sama dipakai untuk menilai sekuritas bebas risiko seperti deposito berjangka dan obligasi, termasuk efek bunga majemuk (compounding) — yang oleh Einstein disebut "penemuan matematika terbesar" — dan tarif pajak terhadap nilainya.</p>
+          <ul class="objectives">
+            <li>Membedakan investasi finansial dari investasi nonfinansial.</li>
+            <li>Menilai sekuritas bebas risiko dan obligasi menggunakan model PV.</li>
+            <li>Memahami efek bunga majemuk dan pajak terhadap nilai investasi finansial.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Yield Curves">
+        <summary><span class="chnum">21</span><span class="chtitle">Yield Curves</span>
+          <input type="checkbox" class="chk" data-ch="21"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Meski model PV sering mengasumsikan discount rate konstan, pada kenyataannya tingkat diskonto tiap periode dapat berbeda karena faktor pertumbuhan ekonomi, inflasi, dan kondisi pasar yang berubah-ubah. Bab ini menjelaskan cara menghitung discount rate periodik dari instrumen berjangka waktu berbeda, hubungannya dengan <b>yield curve</b>, dan cara memakai yield curve untuk memprediksi peluang serta ancaman finansial di masa depan.</p>
+          <ul class="objectives">
+            <li>Menghitung discount rate satu periode dari instrumen berjangka waktu berbeda.</li>
+            <li>Memahami hubungan yield curve dengan discount rate periodik.</li>
+            <li>Menggunakan yield curve untuk memprediksi peluang &amp; ancaman finansial.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="chapter" data-title="Econs and Humans">
+        <summary><span class="chnum">22</span><span class="chtitle">Econs and Humans</span>
+          <input type="checkbox" class="chk" data-ch="22"><span class="chevron">▸</span></summary>
+        <div class="chapter-body">
+          <p>Bab penutup ini mengingatkan bahwa kebutuhan manusia tidak melulu bisa dibeli dengan uang. Mengutip pembedaan Richard Thaler antara "<b>econs</b>" (pembuat keputusan yang sepenuhnya rasional, egois, dan berinformasi sempurna seperti dalam buku teks ekonomi) dan "<b>humans</b>" (nyata: dipengaruhi relasi sosial, informasi terbatas, dan kadang tidak konsisten). Memperkenalkan konsep <i>relational goods</i> — barang bernilai karena hubungan — yang menjelaskan mengapa manusia kadang bertukar dengan cara yang tampak "irasional" bagi seorang econ, namun masuk akal karena menjaga hubungan.</p>
+          <ul class="objectives">
+            <li>Memahami perbedaan "econs" dan "humans" dalam pengambilan keputusan.</li>
+            <li>Mengenal lima motif dasar manusia dalam mengejar tujuan.</li>
+            <li>Membedakan komoditas biasa dari relational goods.</li>
+          </ul>
+        </div>
+      </details>
+    </section>
+
+    <section class="part" style="padding-top:0;">
+      <h3 style="font-family:var(--serif); font-size:1.1rem; color:var(--forest-800);">Cek Pemahaman — Bagian V</h3>
+      <div class="quiz">
+        <div class="quiz-item">
+          <div class="q"><span class="qn">01.</span>Suku bunga yang mencerminkan biaya pinjaman sesungguhnya (termasuk seluruh biaya terkait) disebut…</div>
+          <ul class="options"><li><b>A.</b> APR nominal</li><li><b>B.</b> Effective rate</li><li><b>C.</b> Coupon rate</li><li><b>D.</b> Nilai buku</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Effective rate mencerminkan biaya pinjaman yang sesungguhnya dialami peminjam, berbeda dari APR yang dihitung secara nominal/sederhana.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">02.</span>Menurut Bab 18, harga tanah cenderung sangat volatil terutama karena harga tersebut mengapitalisasi…</div>
+          <ul class="options"><li><b>A.</b> Biaya pembangunan infrastruktur</li><li><b>B.</b> Ekspektasi pertumbuhan pendapatan tanah di masa depan</li><li><b>C.</b> Jumlah penduduk sekitar</li><li><b>D.</b> Harga bahan bakar</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>Karena tanah sangat tahan lama (durable), harganya mencerminkan nilai sekarang dari ekspektasi pertumbuhan pendapatan masa depan — sehingga sensitif terhadap perubahan ekspektasi tersebut.</div></details>
+        </div>
+        <div class="quiz-item">
+          <div class="q"><span class="qn">03.</span>Menurut Richard Thaler, pembuat keputusan yang sepenuhnya rasional, egois, dan berinformasi sempurna disebut…</div>
+          <ul class="options"><li><b>A.</b> Humans</li><li><b>B.</b> Econs</li><li><b>C.</b> Agents</li><li><b>D.</b> Stakeholders</li></ul>
+          <details class="answer"><summary>Lihat Pembahasan</summary><div class="answer-body"><span class="kunci">Kunci: B</span>"Econs" adalah istilah Thaler untuk pembuat keputusan ideal seperti dalam buku teks ekonomi — berbeda dari "humans" yang nyata dan dipengaruhi relasi sosial.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== GLOSSARY ===================== -->
+    <section class="part" id="glossary">
+      <div class="part-header">
+        <div class="part-tab">GLOSARIUM</div>
+        <div>
+          <h2>Istilah Kunci</h2>
+          <div class="sub">Ringkasan singkat singkatan &amp; istilah teknis yang sering muncul di seluruh buku</div>
+        </div>
+      </div>
+      <hr class="rule">
+      <div class="glossary-grid" id="glossaryGrid"></div>
+    </section>
+
+    <section class="disclaimer">
+      <p><b>Tentang halaman ini:</b> Konten pada halaman ini merupakan ringkasan dan parafrase dari buku <i>Financial Management for Small Businesses: Financial Statements &amp; Present Value Models, 2nd Open Edition</i> (2021) oleh Lindon J. Robison, Steven D. Hanson, dan J. Roy Black, Michigan State University — dipublikasikan di bawah lisensi <b>Creative Commons Attribution 4.0 International (CC BY 4.0)</b>. Ringkasan, terjemahan, glosarium, soal cek pemahaman, dan alat pemilih model PV di halaman ini disusun ulang untuk keperluan belajar dan bukan pengganti membaca buku aslinya secara lengkap — buku asli memuat seluruh rumus, tabel, contoh perhitungan Excel, dan referensi akademis yang tidak direproduksi di sini. Progres membaca disimpan secara lokal di peramban Anda (localStorage) dan tidak dikirim ke server mana pun.</p>
+    </section>
+  </main>
+</div>
+
+<footer>Panduan Interaktif — Financial Management for Small Businesses, 2nd OER Edition &middot; Ringkasan belajar mandiri, CC BY 4.0</footer>
+
+<script>
+  // ---- Data: chapters per part (for TOC + progress) ----
+  const parts = [
+    {id:'part1', label:'Part I — Management', chapters:[
+      {n:1, t:'Financial Management and the Firm'},
+      {n:2, t:'Alternative Forms of Business Organizations'},
+      {n:3, t:'The Federal Tax System'},
+      {n:4, t:'Managing Risk'},
+    ]},
+    {id:'part2', label:'Part II — SWOT', chapters:[
+      {n:5, t:'Financial Statements'},
+      {n:6, t:'Financial Ratios'},
+      {n:7, t:'System Analysis'},
+    ]},
+    {id:'part3', label:'Part III — Present Value Models', chapters:[
+      {n:8, t:'PV Models & Accrual Income Statements'},
+      {n:9, t:'Present Value Models'},
+      {n:10, t:'Incremental Investments'},
+      {n:11, t:'Forecasting and PV Models'},
+    ]},
+    {id:'part4', label:'Part IV — Homogeneous Measures', chapters:[
+      {n:12, t:'Ranking Investments & Homogeneous Measures'},
+      {n:13, t:'Homogeneous Sizes'},
+      {n:14, t:'Homogeneous Terms'},
+      {n:15, t:'Homogeneous Tax Rates'},
+      {n:16, t:'Homogeneous Liquidity and Currency'},
+    ]},
+    {id:'part5', label:'Part V — PV Model Applications', chapters:[
+      {n:17, t:'Loan Analysis'},
+      {n:18, t:'Land Investments'},
+      {n:19, t:'Leases'},
+      {n:20, t:'Financial Investments'},
+      {n:21, t:'Yield Curves'},
+      {n:22, t:'Econs and Humans'},
+    ]},
+  ];
+
+  // Build TOC
+  const tocList = document.getElementById('tocList');
+  parts.forEach(p=>{
+    const label = document.createElement('div');
+    label.className='part-label';
+    label.textContent = p.label;
+    tocList.appendChild(label);
+    const ul = document.createElement('ul');
+    p.chapters.forEach(c=>{
+      const li = document.createElement('li');
+      li.dataset.title = (c.n + '. ' + c.t).toLowerCase();
+      const a = document.createElement('a');
+      a.href = '#'+p.id;
+      a.textContent = c.n + '. ' + c.t;
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+    tocList.appendChild(ul);
+  });
+
+  // TOC search filter
+  document.getElementById('tocSearch').addEventListener('input', (e)=>{
+    const q = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('nav.toc li').forEach(li=>{
+      li.classList.toggle('hidden', q && !li.dataset.title.includes(q));
+    });
+  });
+
+  // ---- Progress tracking (localStorage) ----
+  const STORAGE_KEY = 'fmsb-progress';
+  function loadProgress(){
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){ return {}; }
+  }
+  function saveProgress(state){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  function updateProgressBar(){
+    const state = loadProgress();
+    const done = Object.values(state).filter(Boolean).length;
+    const total = 22;
+    document.getElementById('progressFill').style.width = (done/total*100)+'%';
+    document.getElementById('progressLabel').textContent = done+'/'+total+' bab dibaca';
+  }
+  document.querySelectorAll('.chk').forEach(chk=>{
+    const state = loadProgress();
+    const key = 'ch'+chk.dataset.ch;
+    chk.checked = !!state[key];
+    chk.addEventListener('click', (e)=> e.stopPropagation()); // don't toggle accordion
+    chk.addEventListener('change', ()=>{
+      const s = loadProgress();
+      s[key] = chk.checked;
+      saveProgress(s);
+      updateProgressBar();
+    });
+  });
+  updateProgressBar();
+
+  // ---- PV Model Finder tool ----
+  const models = [
+    {q:'Apakah proyek ini menguntungkan dalam nilai uang sekarang?', name:'Net Present Value (NPV)', desc:'Menghitung selisih nilai sekarang dari seluruh arus kas masuk dan keluar suatu investasi. Jika NPV positif, investasi menambah nilai firma.'},
+    {q:'Berapa tingkat pengembalian investasi ini?', name:'Internal Rate of Return (IRR)', desc:'Mencari tingkat diskonto yang membuat NPV arus kas investasi sama dengan nol — dipakai untuk membandingkan tingkat pengembalian antar investasi.'},
+    {q:'Berapa harga maksimum yang boleh saya tawar (atau minimum saya jual)?', name:'Maximum Bid / Minimum Sell', desc:'Mencari harga tertinggi yang masih layak dibayar pembeli (atau harga terendah yang masih layak diterima penjual) agar investasi tetap menguntungkan.'},
+    {q:'Berapa nilai tahunan setara dari arus kas yang tidak rata ini?', name:'Annuity Equivalent (AE)', desc:'Mengubah arus kas yang bervariasi antar periode menjadi rata-rata tahunan setara, berguna membandingkan investasi dengan jangka waktu berbeda.'},
+    {q:'Berapa pembayaran, suku bunga, atau jangka waktu pinjaman saya?', name:'Loan Formula', desc:'Persamaan kesetaraan pinjaman (loan equality equation) untuk mencari salah satu dari: pembayaran berkala, suku bunga efektif, jangka waktu, atau jumlah pinjaman awal.'},
+    {q:'Kapan waktu optimal saya mengganti aset yang bisa diperbarui ini?', name:'Optimal Term / Replacement', desc:'Menentukan umur pakai optimal suatu aset yang dapat diperbarui (repeatable investment) berdasarkan pola arus kas dan annuity equivalent-nya.'},
+    {q:'Apakah saya perlu menambah/mengganti bagian dari aset yang sudah berjalan?', name:'Incremental Investment', desc:'Menilai kontribusi investasi tambahan pada aset yang sudah dimiliki firma, dengan menghitung perubahan cash receipts, biaya, dan akun aset.'},
+    {q:'Berapa nilai aset yang menghasilkan pendapatan tetap dalam jangka sangat panjang?', name:'Capitalized Value', desc:'Menghitung nilai sekarang dari aliran pendapatan yang berlangsung sangat lama (mendekati tak terbatas) menggunakan rumus kapitalisasi.'},
+    {q:'Pada tingkat berapa investasi ini baru mencapai titik impas?', name:'Break-even', desc:'Mencari nilai suatu variabel (harga, biaya, volume) yang membuat investasi tepat berada pada titik tidak untung tidak rugi.'},
+    {q:'Berapa lama modal saya akan kembali?', name:'Payback', desc:'Menghitung jangka waktu yang dibutuhkan agar arus kas kumulatif investasi menutupi biaya awalnya — ukuran sederhana risiko likuiditas.'},
+  ];
+  const toolGrid = document.getElementById('toolGrid');
+  const toolResult = document.getElementById('tool-result');
+  models.forEach((m, i)=>{
+    const btn = document.createElement('button');
+    btn.textContent = m.q;
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#toolGrid button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      toolResult.innerHTML = '<span class="model-name">Model yang tepat: '+m.name+'</span>'+m.desc;
+      toolResult.classList.add('show');
+    });
+    toolGrid.appendChild(btn);
+  });
+
+  // ---- Glossary ----
+  const glossary = [
+    {t:'CFS — Coordinated Financial Statements', d:'Paket neraca awal & akhir periode, accrual income statement, dan statement of cash flow yang disusun saling konsisten.'},
+    {t:'AIS — Accrual Income Statement', d:'Laporan laba rugi berbasis akrual (bukan kas) yang mengaitkan pendapatan dan biaya pada periode terjadinya, bukan saat kas berpindah tangan.'},
+    {t:'SCF — Statement of Cash Flow', d:'Laporan yang merinci arus kas masuk dan keluar firma selama satu periode.'},
+    {t:'SAUF — Sources and Uses of Funds', d:'Laporan yang menunjukkan dari mana dana firma berasal dan untuk apa dana tersebut digunakan.'},
+    {t:'NPV — Net Present Value', d:'Nilai sekarang bersih dari seluruh arus kas suatu investasi; NPV positif berarti investasi menambah nilai.'},
+    {t:'IRR — Internal Rate of Return', d:'Tingkat diskonto yang membuat NPV suatu arus kas sama dengan nol.'},
+    {t:'AE — Annuity Equivalent', d:'Rata-rata tahunan setara dari arus kas yang tidak rata, memudahkan perbandingan antar investasi berjangka beda.'},
+    {t:'SPELL Ratios', d:'Lima kelompok rasio keuangan: Solvency, Profitability, Efficiency, Liquidity, Leverage.'},
+    {t:'ROA — Return on Assets', d:'Rasio laba terhadap total aset, mengukur efisiensi firma menghasilkan laba dari aset yang dimiliki.'},
+    {t:'ROE — Return on Equity', d:'Rasio laba terhadap ekuitas pemilik, mengukur imbal hasil bagi pemilik firma.'},
+    {t:'PV — Present Value', d:'Nilai sekarang dari sejumlah uang yang akan diterima/dibayar di masa depan, setelah didiskonto pada tingkat tertentu.'},
+    {t:'Homogeneous Measures', d:'Syarat kesetaraan (sumber dana, ukuran, jangka waktu, tarif pajak, likuiditas) agar ranking NPV & IRR antar investasi konsisten.'},
+    {t:'Fixity', d:'Sifat suatu aset yang membuatnya cenderung dipertahankan (tidak dilepas) karena nilai gunanya berada di antara nilai likuidasi dan nilai perolehannya.'},
+    {t:'Defender vs Challenger', d:'"Defender" adalah investasi yang sudah berjalan; "challenger" adalah investasi baru yang dipertimbangkan sebagai penggantinya.'},
+    {t:'Capitalized Value', d:'Nilai sekarang dari aliran pendapatan tetap yang berlangsung sangat lama, dihitung dengan membagi pendapatan tahunan dengan tingkat diskonto.'},
+    {t:'Break-even', d:'Titik di mana investasi/usaha tidak untung dan tidak rugi.'},
+    {t:'Payback Period', d:'Lama waktu yang dibutuhkan arus kas kumulatif untuk menutup biaya investasi awal.'},
+    {t:'Yield Curve', d:'Grafik yang menunjukkan hubungan antara suku bunga (yield) dan jangka waktu instrumen keuangan pada satu titik waktu.'},
+    {t:'Relational Goods', d:'Nilai/manfaat yang muncul dari hubungan antarmanusia, tidak dapat dibeli langsung dengan uang, namun memengaruhi keputusan ekonomi.'},
+  ];
+  const gGrid = document.getElementById('glossaryGrid');
+  glossary.forEach(g=>{
+    const div = document.createElement('div');
+    div.className='gterm';
+    div.innerHTML = '<b>'+g.t+'</b><span>'+g.d+'</span>';
+    gGrid.appendChild(div);
+  });
+
+  // Highlight active TOC section on scroll
+  const sections = document.querySelectorAll('.part[id]');
+  const navLinks = document.querySelectorAll('nav.toc a');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(l=>l.classList.remove('active'));
+        document.querySelectorAll('nav.toc a[href="#'+e.target.id+'"]').forEach(a=>a.classList.add('active'));
+      }
+    });
+  }, {rootMargin:'-15% 0px -70% 0px'});
+  sections.forEach(s=>obs.observe(s));
+</script>
+
+</body>
+</html>

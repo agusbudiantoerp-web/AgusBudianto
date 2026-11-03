@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplikasi Bisnis Terbaik untuk Kembangkan Usaha Anda - EQUIP</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --blue:#0066CC; --blue-dark:#004FA3; --blue-light:#E8F2FF;
+  --green:#00A651; --text:#1A1A2E; --text-muted:#5A6175;
+  --bg:#FFFFFF; --bg-gray:#F7F8FA; --border:#E2E6EF; --radius:10px;
+}
+body { font-family:'Segoe UI',system-ui,sans-serif; color:var(--text); background:var(--bg); }
+
+/* OVERLAY MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.active { display:flex; }
+.modal-box { background:#fff; border-radius:18px; padding:40px; width:100%; max-width:460px; position:relative; box-shadow:0 24px 60px rgba(0,0,80,0.18); }
+.modal-close { position:absolute; top:14px; right:18px; font-size:22px; cursor:pointer; color:var(--text-muted); background:none; border:none; }
+.modal-title { font-size:22px; font-weight:800; margin-bottom:6px; }
+.modal-subtitle { font-size:14px; color:var(--text-muted); margin-bottom:24px; }
+.modal-tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px; }
+.modal-tab { padding:10px 20px; font-size:14px; font-weight:600; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.modal-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text); }
+.form-group input, .form-group select, .form-group textarea { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:8px; font-size:14px; outline:none; transition:border 0.15s; font-family:inherit; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--blue); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-error { color:#E53935; font-size:12px; margin-top:4px; display:none; }
+.btn-full { width:100%; padding:13px; background:var(--blue); color:#fff; border:none; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:background 0.15s; }
+.btn-full:hover { background:var(--blue-dark); }
+.modal-footer { text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted); }
+.modal-footer a { color:var(--blue); font-weight:600; cursor:pointer; }
+.alert { padding:12px 16px; border-radius:8px; font-size:13px; font-weight:600; margin-bottom:16px; display:none; }
+.alert-success { background:#E6F7EE; color:#00A651; }
+.alert-error { background:#FFEBEE; color:#E53935; }
+
+/* NAV */
+nav { position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--border); padding:0 5%; }
+.nav-inner { max-width:1200px; margin:auto; display:flex; align-items:center; height:68px; gap:32px; }
+.logo { display:flex; align-items:center; gap:8px; text-decoration:none; font-size:22px; font-weight:800; color:var(--blue); }
+.logo span { color:var(--blue-dark); }
+.nav-links { display:flex; gap:4px; align-items:center; flex:1; }
+.nav-links a { text-decoration:none; color:var(--text); font-size:14px; font-weight:500; padding:8px 14px; border-radius:6px; transition:background 0.15s; }
+.nav-links a:hover { background:var(--bg-gray); }
+.nav-cta { margin-left:auto; display:flex; gap:10px; align-items:center; }
+.nav-user { display:none; align-items:center; gap:10px; }
+.nav-avatar { width:36px; height:36px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; cursor:pointer; }
+.nav-username { font-size:14px; font-weight:600; }
+.btn-outline { border:1.5px solid var(--blue); color:var(--blue); background:none; padding:8px 20px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; }
+.btn-outline:hover { background:var(--blue-light); }
+.btn-primary-nav { background:var(--blue); color:#fff; border:none; padding:9px 22px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; text-decoration:none; }
+.btn-primary-nav:hover { background:var(--blue-dark); }
+.btn-logout { background:none; border:1.5px solid var(--border); color:var(--text-muted); padding:7px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+.btn-logout:hover { border-color:#E53935; color:#E53935; }
+
+/* HERO */
+.hero { background:linear-gradient(135deg,#EBF3FF 0%,#F0F7FF 50%,#EAF9F1 100%); padding:80px 5% 60px; }
+.hero-inner { max-width:1200px; margin:auto; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--blue-light); color:var(--blue); font-size:12px; font-weight:600; padding:5px 12px; border-radius:20px; margin-bottom:20px; border:1px solid #C2D9F8; }
+.hero h1 { font-size:42px; font-weight:800; line-height:1.15; margin-bottom:18px; letter-spacing:-1px; }
+.hero h1 span { color:var(--blue); }
+.hero p { font-size:17px; color:var(--text-muted); line-height:1.7; margin-bottom:32px; max-width:480px; }
+.hero-buttons { display:flex; gap:12px; flex-wrap:wrap; }
+.btn-hero-primary { background:var(--blue); color:#fff; border:none; padding:14px 28px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+.btn-hero-primary:hover { background:var(--blue-dark); }
+.btn-hero-secondary { background:#fff; color:var(--text); border:1.5px solid var(--border); padding:14px 28px; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+.btn-hero-secondary:hover { border-color:var(--blue); color:var(--blue); }
+.hero-visual { background:#fff; border-radius:18px; box-shadow:0 20px 60px rgba(0,80,200,0.12); overflow:hidden; }
+.dashboard-mock { padding:20px; }
+.dash-header { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+.dash-dot { width:10px; height:10px; border-radius:50%; }
+.dash-title { font-size:13px; font-weight:600; color:var(--text-muted); margin-left:4px; }
+.dash-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.dash-stat { background:var(--bg-gray); border-radius:10px; padding:14px; }
+.dash-stat-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; }
+.dash-stat-value { font-size:20px; font-weight:700; }
+.dash-stat-change { font-size:11px; color:var(--green); font-weight:600; }
+.dash-bar-wrap { background:var(--bg-gray); border-radius:10px; padding:14px; }
+.dash-bar-title { font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:10px; }
+.dash-bars { display:flex; align-items:flex-end; gap:8px; height:70px; }
+.dash-bar { flex:1; border-radius:4px 4px 0 0; background:var(--blue); opacity:0.8; }
+
+/* TRUSTED */
+.trusted { background:#fff; padding:32px 5%; border-bottom:1px solid var(--border); }
+.trusted-inner { max-width:1200px; margin:auto; }
+.trusted p { font-size:13px; color:var(--text-muted); font-weight:500; text-align:center; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; }
+.logo-grid { display:flex; align-items:center; justify-content:center; gap:36px; flex-wrap:wrap; }
+.logo-item { font-size:14px; font-weight:700; color:#bbb; }
+
+/* SECTION */
+.section { padding:80px 5%; }
+.section-inner { max-width:1200px; margin:auto; }
+.section-label { font-size:13px; font-weight:700; color:var(--blue); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; }
+.section-title { font-size:34px; font-weight:800; line-height:1.2; margin-bottom:16px; letter-spacing:-0.5px; }
+.section-subtitle { font-size:17px; color:var(--text-muted); line-height:1.7; max-width:580px; }
+
+/* DASHBOARD PAGE */
+.dashboard-page { display:none; padding:32px 5%; background:var(--bg-gray); min-height:calc(100vh - 68px); }
+.dashboard-page.active { display:block; }
+.dash-page-inner { max-width:1200px; margin:auto; }
+.dash-welcome { background:linear-gradient(135deg,#0052CC,#0070E0); border-radius:16px; padding:28px 32px; color:#fff; margin-bottom:28px; display:flex; justify-content:space-between; align-items:center; }
+.dash-welcome h2 { font-size:24px; font-weight:800; margin-bottom:4px; }
+.dash-welcome p { font-size:14px; opacity:0.85; }
+.dash-welcome-badge { background:rgba(255,255,255,0.2); padding:8px 16px; border-radius:20px; font-size:13px; font-weight:600; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.kpi-card { background:#fff; border-radius:14px; padding:22px; border:1px solid var(--border); }
+.kpi-label { font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.kpi-value { font-size:26px; font-weight:800; margin-bottom:4px; }
+.kpi-change { font-size:12px; font-weight:600; }
+.kpi-up { color:var(--green); }
+.kpi-down { color:#E53935; }
+.dash-grid { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+.dash-card { background:#fff; border-radius:14px; padding:24px; border:1px solid var(--border); }
+.dash-card-title { font-size:15px; font-weight:700; margin-bottom:16px; }
+.chart-area { height:180px; display:flex; align-items:flex-end; gap:10px; }
+.chart-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.chart-bar-wrap { flex:1; width:100%; display:flex; align-items:flex-end; }
+.chart-bar-fill { width:100%; border-radius:4px 4px 0 0; background:var(--blue); transition:height 0.3s; }
+.chart-label { font-size:11px; color:var(--text-muted); }
+.recent-list { display:flex; flex-direction:column; gap:12px; }
+.recent-item { display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; background:var(--bg-gray); }
+.recent-icon { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.recent-info { flex:1; }
+.recent-name { font-size:13px; font-weight:600; }
+.recent-time { font-size:11px; color:var(--text-muted); }
+.recent-amount { font-size:13px; font-weight:700; color:var(--blue); }
+.quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.qa-btn { padding:14px; border-radius:10px; border:1.5px solid var(--border); background:#fff; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; transition:all 0.15s; }
+.qa-btn:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-light); }
+
+/* INQUIRY DATA TABLE */
+.inquiry-section { background:#fff; }
+.inquiry-table-wrap { overflow-x:auto; margin-top:24px; }
+.inquiry-table { width:100%; border-collapse:collapse; font-size:14px; }
+.inquiry-table th { background:var(--bg-gray); padding:12px 16px; text-align:left; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); border-bottom:2px solid var(--border); }
+.inquiry-table td { padding:14px 16px; border-bottom:1px solid var(--border); }
+.inquiry-table tr:last-child td { border-bottom:none; }
+.inquiry-table tr:hover td { background:var(--bg-gray); }
+.badge { font-size:11px; padding:3px 10px; border-radius:20px; font-weight:600; }
+.badge-new { background:#E8F2FF; color:var(--blue); }
+.badge-process { background:#FFF8E1; color:#F57F17; }
+.badge-done { background:#E6F7EE; color:var(--green); }
+.empty-state { text-align:center; padding:60px 20px; color:var(--text-muted); }
+.empty-state .icon { font-size:48px; margin-bottom:12px; }
+.empty-state p { font-size:15px; }
+
+/* INDUSTRY */
+.industry-section { background:var(--bg-gray); }
+.industry-tabs { display:flex; gap:6px; margin:36px 0 28px; flex-wrap:wrap; }
+.ind-tab { padding:9px 18px; border-radius:8px; border:1.5px solid var(--border); background:#fff; font-size:14px; font-weight:600; color:var(--text-muted); cursor:pointer; transition:all 0.15s; }
+.ind-tab.active,.ind-tab:hover { background:var(--blue); color:#fff; border-color:var(--blue); }
+.industry-content { display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center; background:#fff; border-radius:18px; padding:40px; box-shadow:0 4px 24px rgba(0,0,0,0.05); }
+.industry-text h3 { font-size:24px; font-weight:800; margin-bottom:12px; }
+.industry-text p { font-size:15px; color:var(--text-muted); line-height:1.7; margin-bottom:24px; }
+.ind-points { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.ind-points li { display:flex; align-items:flex-start; gap:10px; font-size:14px; }
+.ind-points li::before { content:'✓'; width:20px; height:20px; background:#E6F7EE; color:var(--green); font-weight:700; font-size:12px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.ind-link { display:inline-flex; align-items:center; gap:6px; color:var(--blue); font-weight:600; font-size:14px; text-decoration:none; margin-top:20px; }
+.industry-image { background:linear-gradient(135deg,var(--blue-light),#EAF9F1); border-radius:14px; height:280px; display:flex; align-items:center; justify-content:center; font-size:80px; }
+
+/* FEATURES */
+.features-section { background:#fff; }
+.features-tabs { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:40px; flex-wrap:wrap; }
+.feat-tab { padding:12px 24px; font-size:14px; font-weight:600; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.feat-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+.features-content { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.features-text h3 { font-size:26px; font-weight:800; margin-bottom:14px; }
+.features-text p { font-size:15px; color:var(--text-muted); line-height:1.7; margin-bottom:24px; }
+.feat-points { display:flex; flex-direction:column; gap:14px; }
+.feat-point { display:flex; gap:14px; align-items:flex-start; }
+.feat-icon { width:36px; height:36px; background:var(--blue-light); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.feat-point-text strong { display:block; font-size:14px; font-weight:700; margin-bottom:3px; }
+.feat-point-text span { font-size:13px; color:var(--text-muted); }
+.features-visual { background:var(--bg-gray); border-radius:16px; padding:24px; min-height:320px; }
+.mock-card { background:#fff; border-radius:12px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-bottom:12px; }
+.mock-card-row { display:flex; justify-content:space-between; align-items:center; }
+.mock-label { font-size:12px; color:var(--text-muted); }
+.mock-badge { font-size:11px; padding:3px 8px; border-radius:5px; font-weight:600; }
+.badge-green { background:#E6F7EE; color:var(--green); }
+.badge-blue { background:var(--blue-light); color:var(--blue); }
+.mock-progress { height:6px; background:#eee; border-radius:3px; margin-top:10px; }
+.mock-progress-fill { height:100%; border-radius:3px; background:var(--blue); }
+
+/* ADV */
+.adv-section { background:var(--bg-gray); }
+.adv-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; margin-top:48px; }
+.adv-card { background:#fff; border-radius:14px; padding:28px 24px; border:1px solid var(--border); transition:box-shadow 0.15s; }
+.adv-card:hover { box-shadow:0 8px 30px rgba(0,80,200,0.10); }
+.adv-icon { width:50px; height:50px; border-radius:12px; background:var(--blue-light); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:16px; }
+.adv-card h4 { font-size:16px; font-weight:700; margin-bottom:8px; }
+.adv-card p { font-size:14px; color:var(--text-muted); line-height:1.6; }
+
+/* TESTIMONIALS */
+.testi-section { background:#fff; }
+.testi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:48px; }
+.testi-card { background:var(--bg-gray); border-radius:14px; padding:28px; border:1px solid var(--border); }
+.testi-stars { color:#F5A623; font-size:14px; margin-bottom:14px; }
+.testi-text { font-size:14px; color:var(--text); line-height:1.7; margin-bottom:20px; font-style:italic; }
+.testi-author { display:flex; align-items:center; gap:10px; }
+.testi-avatar { width:38px; height:38px; border-radius:50%; background:var(--blue); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:#fff; }
+.testi-name { font-size:13px; font-weight:700; }
+.testi-company { font-size:12px; color:var(--text-muted); }
+
+/* PRICING */
+.pricing-section { background:var(--bg-gray); }
+.pricing-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; max-width:800px; margin-top:40px; }
+.price-card { background:#fff; border-radius:18px; padding:36px; border:1.5px solid var(--border); position:relative; }
+.price-card.featured { border-color:var(--blue); }
+.price-badge-top { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--blue); color:#fff; font-size:12px; font-weight:700; padding:4px 14px; border-radius:20px; }
+.price-plan { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.price-amount { font-size:34px; font-weight:800; margin-bottom:4px; }
+.price-amount span { font-size:14px; font-weight:500; color:var(--text-muted); }
+.price-note { font-size:12px; color:var(--text-muted); margin-bottom:28px; }
+.price-features { list-style:none; display:flex; flex-direction:column; gap:12px; margin-bottom:28px; }
+.price-features li { font-size:14px; display:flex; gap:9px; align-items:flex-start; }
+.price-features li::before { content:'✓'; color:var(--green); font-weight:700; flex-shrink:0; }
+.btn-price { width:100%; padding:13px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; transition:all 0.15s; text-align:center; display:block; text-decoration:none; border:none; }
+.btn-price-outline { border:1.5px solid var(--blue) !important; color:var(--blue); background:none; }
+.btn-price-outline:hover { background:var(--blue-light); }
+.btn-price-solid { background:var(--blue); color:#fff; }
+.btn-price-solid:hover { background:var(--blue-dark); }
+
+/* CTA */
+.cta-banner { background:linear-gradient(135deg,#0052CC 0%,#0070E0 100%); padding:72px 5%; }
+.cta-inner { max-width:700px; margin:auto; text-align:center; }
+.cta-inner h2 { font-size:36px; font-weight:800; color:#fff; margin-bottom:14px; letter-spacing:-0.5px; }
+.cta-inner p { font-size:17px; color:rgba(255,255,255,0.85); line-height:1.7; margin-bottom:36px; }
+.cta-buttons { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.btn-cta-white { background:#fff; color:var(--blue); border:none; padding:14px 30px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; text-decoration:none; }
+.btn-cta-ghost { background:transparent; color:#fff; border:2px solid rgba(255,255,255,0.5); padding:14px 30px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; text-decoration:none; }
+
+/* CONTACT FORM */
+.contact-section { background:var(--bg-gray); }
+.contact-grid { display:grid; grid-template-columns:1fr 1.5fr; gap:60px; margin-top:48px; align-items:flex-start; }
+.contact-info h3 { font-size:22px; font-weight:800; margin-bottom:16px; }
+.contact-info p { font-size:15px; color:var(--text-muted); line-height:1.7; margin-bottom:28px; }
+.contact-items { display:flex; flex-direction:column; gap:16px; }
+.contact-item { display:flex; gap:14px; align-items:flex-start; }
+.contact-item-icon { width:42px; height:42px; border-radius:10px; background:var(--blue-light); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.contact-item-text strong { display:block; font-size:14px; font-weight:700; margin-bottom:3px; }
+.contact-item-text span { font-size:13px; color:var(--text-muted); }
+.contact-form-box { background:#fff; border-radius:18px; padding:36px; border:1px solid var(--border); }
+.contact-form-box h3 { font-size:20px; font-weight:800; margin-bottom:24px; }
+
+/* FAQ */
+.faq-section { background:#fff; }
+.faq-list { margin-top:40px; border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.faq-item { border-bottom:1px solid var(--border); }
+.faq-item:last-child { border-bottom:none; }
+.faq-q { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; cursor:pointer; font-size:15px; font-weight:600; background:#fff; gap:16px; }
+.faq-q:hover { background:var(--bg-gray); }
+.faq-q .icon { font-size:20px; color:var(--blue); flex-shrink:0; }
+.faq-a { padding:0 24px 20px; font-size:14px; color:var(--text-muted); line-height:1.7; display:none; }
+
+/* FOOTER */
+footer { background:#0F172A; padding:64px 5% 32px; }
+.footer-inner { max-width:1200px; margin:auto; }
+.footer-top { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px; }
+.footer-brand p { font-size:14px; color:#94A3B8; line-height:1.7; margin-top:14px; max-width:280px; }
+.footer-logo { font-size:22px; font-weight:800; color:#fff; }
+.footer-col h5 { font-size:13px; font-weight:700; color:#fff; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-col ul li a { font-size:14px; color:#94A3B8; text-decoration:none; }
+.footer-col ul li a:hover { color:#fff; }
+.footer-bottom { border-top:1px solid #1E293B; padding-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+.footer-bottom p { font-size:13px; color:#64748B; }
+
+/* TOAST */
+.toast { position:fixed; bottom:24px; right:24px; background:#1A1A2E; color:#fff; padding:14px 20px; border-radius:12px; font-size:14px; font-weight:600; z-index:9999; transform:translateY(100px); opacity:0; transition:all 0.3s; display:flex; align-items:center; gap:10px; }
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { border-left:4px solid var(--green); }
+.toast.error { border-left:4px solid #E53935; }
+
+@media(max-width:768px){
+  .hero-inner,.industry-content,.features-content,.contact-grid { grid-template-columns:1fr; }
+  .hero-visual,.industry-image { display:none; }
+  .hero h1 { font-size:28px; }
+  .kpi-grid { grid-template-columns:1fr 1fr; }
+  .dash-grid { grid-template-columns:1fr; }
+  .footer-top { grid-template-columns:1fr 1fr; }
+  .nav-links { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-title">Selamat Datang di EQUIP</div>
+    <div class="modal-subtitle">Masuk atau daftar untuk mengakses semua fitur</div>
+    <div class="modal-tabs">
+      <div class="modal-tab active" onclick="switchAuthTab('login')">Masuk</div>
+      <div class="modal-tab" onclick="switchAuthTab('register')">Daftar</div>
+    </div>
+    <div id="alertBox" class="alert"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="email@perusahaan.com">
+        <div class="form-error" id="loginEmailErr">Email tidak valid</div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="Password Anda">
+        <div class="form-error" id="loginPassErr">Password minimal 6 karakter</div>
+      </div>
+      <button class="btn-full" onclick="doLogin()">Masuk ke Dashboard</button>
+      <div class="modal-footer">Belum punya akun? <a onclick="switchAuthTab('register')">Daftar sekarang</a></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display:none">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nama Depan</label>
+          <input type="text" id="regFirst" placeholder="Budi">
+        </div>
+        <div class="form-group">
+          <label>Nama Belakang</label>
+          <input type="text" id="regLast" placeholder="Santoso">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Bisnis</label>
+        <input type="email" id="regEmail" placeholder="email@perusahaan.com">
+        <div class="form-error" id="regEmailErr">Email sudah terdaftar atau tidak valid</div>
+      </div>
+      <div class="form-group">
+        <label>Nama Perusahaan</label>
+        <input type="text" id="regCompany" placeholder="PT Maju Bersama">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>No. Telepon</label>
+          <input type="tel" id="regPhone" placeholder="08123456789">
+        </div>
+        <div class="form-group">
+          <label>Industri</label>
+          <select id="regIndustry">
+            <option value="">Pilih industri</option>
+            <option>Manufaktur</option>
+            <option>Trading & Distribusi</option>
+            <option>Food & Beverage</option>
+            <option>Retail</option>
+            <option>Konstruksi</option>
+            <option>Jasa / Layanan</option>
+            <option>Lainnya</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPass" placeholder="Minimal 6 karakter">
+        <div class="form-error" id="regPassErr">Password minimal 6 karakter</div>
+      </div>
+      <button class="btn-full" onclick="doRegister()">Buat Akun Gratis</button>
+      <div class="modal-footer">Sudah punya akun? <a onclick="switchAuthTab('login')">Masuk di sini</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-box" style="max-width:520px">
+    <button class="modal-close" onclick="closeContactModal()">×</button>
+    <div class="modal-title">Tanya Produk & Harga</div>
+    <div class="modal-subtitle">Tim kami akan menghubungi Anda dalam 1x24 jam</div>
+    <div id="contactAlert" class="alert"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Nama Lengkap</label><input type="text" id="cName" placeholder="Nama Anda"></div>
+      <div class="form-group"><label>No. Telepon</label><input type="tel" id="cPhone" placeholder="08xx"></div>
+    </div>
+    <div class="form-group"><label>Email</label><input type="email" id="cEmail" placeholder="email@perusahaan.com"></div>
+    <div class="form-group"><label>Perusahaan</label><input type="text" id="cCompany" placeholder="PT Nama Perusahaan"></div>
+    <div class="form-group">
+      <label>Produk yang Diminati</label>
+      <select id="cProduct">
+        <option value="">Pilih produk</option>
+        <option>ERP (Enterprise Resource Planning)</option>
+        <option>Accounting Software</option>
+        <option>Inventory Management</option>
+        <option>CRM & Sales</option>
+        <option>HRM & Payroll</option>
+        <option>Point of Sales</option>
+        <option>Semua Modul (Full Suite)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Pesan</label>
+      <textarea id="cMessage" rows="3" placeholder="Ceritakan kebutuhan bisnis Anda..."></textarea>
+    </div>
+    <button class="btn-full" onclick="submitInquiry()">Kirim Pertanyaan</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo" onclick="showHome()">EQUIP<span>ERP</span></a>
+    <div class="nav-links">
+      <a href="#produk">Produk</a>
+      <a href="#industri">Industri</a>
+      <a href="#harga">Harga</a>
+      <a href="#kontak">Kontak</a>
+    </div>
+    <div class="nav-cta" id="navGuest">
+      <button class="btn-outline" onclick="openModal('login')">Masuk</button>
+      <button class="btn-primary-nav" onclick="openModal('register')">Coba Gratis</button>
+    </div>
+    <div class="nav-user" id="navUser">
+      <div class="nav-avatar" id="navAvatar">U</div>
+      <span class="nav-username" id="navUsername">User</span>
+      <button class="btn-outline" onclick="showDashboard()">Dashboard</button>
+      <button class="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+</nav>
+
+<!-- DASHBOARD PAGE -->
+<div class="dashboard-page" id="dashboardPage">
+  <div class="dash-page-inner">
+    <div class="dash-welcome">
+      <div>
+        <h2 id="dashWelcomeName">Selamat datang! 👋</h2>
+        <p id="dashWelcomeCompany">Dashboard EQUIP ERP — Semua data bisnis Anda dalam satu tempat</p>
+      </div>
+      <div class="dash-welcome-badge" id="dashDate"></div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Penjualan</div>
+        <div class="kpi-value" id="kpiSales">Rp 2,4M</div>
+        <div class="kpi-change kpi-up">↑ 18.2% vs bulan lalu</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Stok Produk</div>
+        <div class="kpi-value" id="kpiStock">1.248</div>
+        <div class="kpi-change kpi-up">↑ 32 item masuk</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Karyawan Aktif</div>
+        <div class="kpi-value" id="kpiEmployee">342</div>
+        <div class="kpi-change kpi-up">↑ 5 rekrutmen baru</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Purchase Order</div>
+        <div class="kpi-value" id="kpiPO">87</div>
+        <div class="kpi-change kpi-down">↓ 3 menunggu</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">📊 Pendapatan Bulanan (Rp Juta)</div>
+        <div class="chart-area" id="revenueChart"></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">⚡ Aksi Cepat</div>
+        <div class="quick-actions">
+          <button class="qa-btn" onclick="showToast('Fitur Buat Invoice segera tersedia!','success')">🧾 Buat Invoice</button>
+          <button class="qa-btn" onclick="showToast('Fitur Tambah Produk segera tersedia!','success')">📦 Tambah Produk</button>
+          <button class="qa-btn" onclick="showToast('Fitur Tambah Karyawan segera tersedia!','success')">👤 Tambah Karyawan</button>
+          <button class="qa-btn" onclick="showToast('Laporan diunduh!','success')">📋 Unduh Laporan</button>
+        </div>
+        <div style="margin-top:20px">
+          <div class="dash-card-title">🔔 Aktivitas Terbaru</div>
+          <div class="recent-list" id="recentList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inquiry Table in Dashboard -->
+    <div class="dash-card">
+      <div class="dash-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+        📩 Data Inquiry Masuk
+        <button class="btn-outline" style="font-size:12px;padding:5px 12px;" onclick="clearInquiries()">Hapus Semua</button>
+      </div>
+      <div class="inquiry-table-wrap" id="dashInquiryTable"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage">
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">✦ Software Bisnis #1 di Indonesia</div>
+      <h1>Operasional Terkendali dengan <span>Software Bisnis</span> Terintegrasi</h1>
+      <p>Kelola seluruh operasional bisnis hanya dalam satu sistem yang terintegrasi — dari keuangan, inventaris, SDM, hingga penjualan.</p>
+      <div class="hero-buttons">
+        <button class="btn-hero-primary" onclick="openContactModal()">📥 Download Skema Harga</button>
+        <button class="btn-hero-secondary" onclick="openContactModal()">💬 Tanya Produk</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="dashboard-mock">
+        <div class="dash-header">
+          <div class="dash-dot" style="background:#FF5F56"></div>
+          <div class="dash-dot" style="background:#FFBD2E"></div>
+          <div class="dash-dot" style="background:#27C93F"></div>
+          <span class="dash-title">Dashboard EQUIP ERP</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat"><div class="dash-stat-label">Total Penjualan</div><div class="dash-stat-value">Rp 2,4M</div><div class="dash-stat-change">↑ 18% bulan ini</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Stok Produk</div><div class="dash-stat-value">1.248</div><div class="dash-stat-change" style="color:#0066CC">Real-time</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Karyawan Aktif</div><div class="dash-stat-value">342</div><div class="dash-stat-change">↑ 5 baru</div></div>
+          <div class="dash-stat"><div class="dash-stat-label">Purchase Order</div><div class="dash-stat-value">87</div><div class="dash-stat-change" style="color:#0066CC">Otomatis</div></div>
+        </div>
+        <div class="dash-bar-wrap">
+          <div class="dash-bar-title">Pendapatan per Bulan</div>
+          <div class="dash-bars">
+            <div class="dash-bar" style="height:40%"></div><div class="dash-bar" style="height:55%"></div>
+            <div class="dash-bar" style="height:48%"></div><div class="dash-bar" style="height:70%"></div>
+            <div class="dash-bar" style="height:62%"></div><div class="dash-bar" style="height:80%"></div>
+            <div class="dash-bar" style="height:90%"></div><div class="dash-bar" style="height:100%;opacity:1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUSTED -->
+<div class="trusted">
+  <div class="trusted-inner">
+    <p>Dipercaya oleh 1.000+ perusahaan di Indonesia</p>
+    <div class="logo-grid">
+      <span class="logo-item">GS SHOP</span><span class="logo-item">K3MART</span>
+      <span class="logo-item">ALLFRESH</span><span class="logo-item">HYPERNET</span>
+      <span class="logo-item">MECAYA</span><span class="logo-item">MFORCE</span>
+      <span class="logo-item">NANAKAM</span><span class="logo-item">FOXBUNNY</span>
+    </div>
+  </div>
+</div>
+
+<!-- INDUSTRY -->
+<section class="section industry-section" id="industri">
+  <div class="section-inner">
+    <div class="section-label">Solusi per Industri</div>
+    <h2 class="section-title">Solusi Terintegrasi untuk Setiap Industri</h2>
+    <p class="section-subtitle">Nikmati kemudahan kelola bisnis dengan EQUIP, sistem terpadu yang membantu Anda bekerja lebih efektif.</p>
+    <div class="industry-tabs">
+      <button class="ind-tab active" onclick="switchIndustry(this,'erp')">🏢 ERP</button>
+      <button class="ind-tab" onclick="switchIndustry(this,'manufacture')">🏭 Manufacture</button>
+      <button class="ind-tab" onclick="switchIndustry(this,'trading')">📦 Trading</button>
+      <button class="ind-tab" onclick="switchIndustry(this,'fnb')">🍽 F&B</button>
+      <button class="ind-tab" onclick="switchIndustry(this,'retail')">🛒 Retail</button>
+      <button class="ind-tab" onclick="switchIndustry(this,'construction')">🏗 Konstruksi</button>
+      <button class="ind-tab" onclick="switchIndustry(this,'hris')">👥 HRIS</button>
+    </div>
+    <div class="industry-content">
+      <div class="industry-text">
+        <h3 id="indTitle">Kontrol Penuh Operasi Bisnis dengan ERP EQUIP</h3>
+        <p id="indDesc">EQUIP ERP memberikan solusi lengkap untuk kelola keuangan, inventaris, hingga SDM agar bisnis berjalan lebih efisien dan optimal.</p>
+        <ul class="ind-points" id="indPoints">
+          <li>Manajemen keuangan & akuntansi otomatis</li>
+          <li>Pantau inventaris secara real-time</li>
+          <li>Integrasi seluruh divisi bisnis</li>
+          <li>Laporan & analitik bisnis komprehensif</li>
+        </ul>
+        <a href="#" class="ind-link">Pelajari Selengkapnya →</a>
+      </div>
+      <div class="industry-image" id="indEmoji">🏢</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-section" id="produk">
+  <div class="section-inner">
+    <div class="section-label">Fitur Unggulan</div>
+    <h2 class="section-title">Solusi Terpadu untuk Operasional Tanpa Batas</h2>
+    <p class="section-subtitle">Kelola seluruh operasi dengan mudah untuk efisiensi optimal dan perkembangan berkelanjutan.</p>
+    <div class="features-tabs">
+      <button class="feat-tab active" onclick="switchFeature(this,'accounting')">Accounting</button>
+      <button class="feat-tab" onclick="switchFeature(this,'sales')">Sales</button>
+      <button class="feat-tab" onclick="switchFeature(this,'inventory')">Inventory</button>
+      <button class="feat-tab" onclick="switchFeature(this,'purchasing')">Purchasing</button>
+      <button class="feat-tab" onclick="switchFeature(this,'hrm')">HRM</button>
+    </div>
+    <div class="features-content">
+      <div class="features-text">
+        <h3 id="featTitle">Kelola Arus Kas dan Laporan Bisnis dengan Sistem Otomatis</h3>
+        <p id="featDesc">Pantau dan kelola keuangan bisnis dengan sistem akuntansi terintegrasi dan laporan real-time akurat.</p>
+        <div class="feat-points" id="featPoints">
+          <div class="feat-point"><div class="feat-icon">⚡</div><div class="feat-point-text"><strong>Transaksi Tercatat Otomatis</strong><span>Semua transaksi langsung masuk ke sistem secara otomatis.</span></div></div>
+          <div class="feat-point"><div class="feat-icon">📊</div><div class="feat-point-text"><strong>Laporan Keuangan Akurat</strong><span>Neraca hingga arus kas dibuat otomatis dan transparan.</span></div></div>
+          <div class="feat-point"><div class="feat-icon">📡</div><div class="feat-point-text"><strong>Monitoring Real-Time</strong><span>Pantau kondisi keuangan kapan saja via dashboard.</span></div></div>
+        </div>
+      </div>
+      <div class="features-visual">
+        <div class="mock-card">
+          <div class="mock-card-row"><span class="mock-label">Pendapatan Bersih</span><span class="mock-badge badge-green">+18.2%</span></div>
+          <div style="font-size:22px;font-weight:800;margin:6px 0;">Rp 2.480.500.000</div>
+          <div class="mock-progress"><div class="mock-progress-fill" style="width:78%"></div></div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-row"><span class="mock-label">Pengeluaran</span><span class="mock-badge badge-blue">Terkendali</span></div>
+          <div style="font-size:22px;font-weight:800;margin:6px 0;">Rp 980.200.000</div>
+          <div class="mock-progress"><div class="mock-progress-fill" style="width:42%;background:#00A651"></div></div>
+        </div>
+        <div class="mock-card">
+          <div class="mock-card-row"><span class="mock-label">Piutang</span><span class="mock-badge" style="background:#FFF3E0;color:#E65100;">3 tagihan</span></div>
+          <div style="font-size:22px;font-weight:800;margin:6px 0;">Rp 145.000.000</div>
+          <div class="mock-progress"><div class="mock-progress-fill" style="width:25%;background:#FF9800"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+<section class="section adv-section">
+  <div class="section-inner">
+    <div class="section-label">Keunggulan Kami</div>
+    <h2 class="section-title">Keunggulan dalam Setiap Implementasi</h2>
+    <div class="adv-grid">
+      <div class="adv-card"><div class="adv-icon">🎯</div><h4>All-in-One Solution</h4><p>Kelola seluruh proses bisnis di satu platform terpadu, memaksimalkan efisiensi optimal.</p></div>
+      <div class="adv-card"><div class="adv-icon">🏆</div><h4>Best Business Practices</h4><p>Kami menerapkan praktik terbaik dan terus berinovasi agar implementasi sistem maksimal.</p></div>
+      <div class="adv-card"><div class="adv-icon">👨‍💼</div><h4>Professional Experts</h4><p>Tim ahli bisnis dan teknologi dari berbagai industri siap memberikan dukungan penuh.</p></div>
+      <div class="adv-card"><div class="adv-icon">⚙️</div><h4>Customizable</h4><p>Solusi dapat dikonfigurasi sesuai jenis, struktur, dan tujuan bisnis Anda.</p></div>
+      <div class="adv-card"><div class="adv-icon">📈</div><h4>Business Intelligence</h4><p>Insight menyeluruh ke seluruh proses bisnis dalam satu layar untuk keputusan tepat.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testi-section">
+  <div class="section-inner">
+    <div class="section-label">Testimoni</div>
+    <h2 class="section-title">Apa Kata Perusahaan yang Memilih EQUIP</h2>
+    <div class="testi-grid">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"Kami sangat puas. Alur kerja lebih efisien, tugas yang dulu berjam-jam kini jauh lebih cepat. Tim support sangat responsif."</p><div class="testi-author"><div class="testi-avatar">MN</div><div><div class="testi-name">Maulina Noor Z.</div><div class="testi-company">Indotex Bangkit Sejahtera</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"Sangat membantu! Sistem otomatis meningkatkan efisiensi dan membantu kerja tim lebih terstruktur dan terarah."</p><div class="testi-author"><div class="testi-avatar" style="background:#00A651">KC</div><div><div class="testi-name">Admin</div><div class="testi-company">Klinik Citra Sehat 99</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"Modul ERP sangat lengkap dan bisa dipersonalisasi. Fiturnya efektif membantu pencatatan database bisnis dengan akurat."</p><div class="testi-author"><div class="testi-avatar" style="background:#7B1FA2">DA</div><div><div class="testi-name">Dony Aptuyudianto</div><div class="testi-company">Enam Sembilan Benih</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">"EQUIP membantu kami mengelola data pelanggan dan proses penjualan secara terintegrasi. Keputusan bisnis lebih tepat."</p><div class="testi-author"><div class="testi-avatar" style="background:#E65100">PA</div><div><div class="testi-name">Tim Manajemen</div><div class="testi-company">PT Arka Isotrans</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section pricing-section" id="harga">
+  <div class="section-inner">
+    <div class="section-label">Harga</div>
+    <h2 class="section-title">Harga Terjangkau, Fitur Lengkap</h2>
+    <div class="pricing-cards">
+      <div class="price-card">
+        <div class="price-plan">Paket Bulanan</div>
+        <div class="price-amount">Rp 165.000 <span>/ user / bulan</span></div>
+        <div class="price-note">Minimal 3 user · Berlangganan 3 bulan</div>
+        <ul class="price-features">
+          <li>Semua modul ERP terintegrasi</li><li>Akuntansi & laporan keuangan</li>
+          <li>Manajemen inventaris</li><li>CRM & manajemen penjualan</li>
+          <li>HRM & penggajian</li><li>Support teknis responsif</li>
+        </ul>
+        <button class="btn-price btn-price-outline" onclick="openModal('register')">Daftar Sekarang</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge-top">Paling Hemat</div>
+        <div class="price-plan">Paket Tahunan</div>
+        <div class="price-amount">Rp 150.000 <span>/ user / bulan</span></div>
+        <div class="price-note">Bayar 10 bulan + Gratis 2 bulan</div>
+        <ul class="price-features">
+          <li>Semua modul ERP terintegrasi</li><li>Akuntansi & laporan keuangan</li>
+          <li>Manajemen inventaris</li><li>CRM & manajemen penjualan</li>
+          <li>HRM & penggajian</li><li>Support prioritas 24/7</li>
+          <li>Onboarding & training gratis</li>
+        </ul>
+        <button class="btn-price btn-price-solid" onclick="openModal('register')">Daftar Sekarang</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM SECTION -->
+<section class="section contact-section" id="kontak">
+  <div class="section-inner">
+    <div class="section-label">Hubungi Kami</div>
+    <h2 class="section-title">Konsultasi Gratis Bersama Tim EQUIP</h2>
+    <p class="section-subtitle">Ada pertanyaan? Tim kami siap membantu Anda menemukan solusi terbaik untuk bisnis.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Kami Siap Membantu</h3>
+        <p>Hubungi kami melalui berbagai saluran atau isi form di sebelah kanan dan tim kami akan segera merespons.</p>
+        <div class="contact-items">
+          <div class="contact-item"><div class="contact-item-icon">📞</div><div class="contact-item-text"><strong>Telepon</strong><span>+62 21 5089 0505</span></div></div>
+          <div class="contact-item"><div class="contact-item-icon">💬</div><div class="contact-item-text"><strong>WhatsApp</strong><span>+62 811 1775 117</span></div></div>
+          <div class="contact-item"><div class="contact-item-icon">✉️</div><div class="contact-item-text"><strong>Email</strong><span>halo@equiperp.com</span></div></div>
+          <div class="contact-item"><div class="contact-item-icon">📍</div><div class="contact-item-text"><strong>Kantor</strong><span>Jl. Balikpapan Raya No. 9A-C, Jakarta Pusat 10160</span></div></div>
+        </div>
+      </div>
+      <div class="contact-form-box">
+        <h3>Kirim Pertanyaan Anda</h3>
+        <div id="inlineContactAlert" class="alert"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="icName" placeholder="Nama Anda"></div>
+          <div class="form-group"><label>No. Telepon</label><input type="tel" id="icPhone" placeholder="08xx"></div>
+        </div>
+        <div class="form-group"><label>Email</label><input type="email" id="icEmail" placeholder="email@perusahaan.com"></div>
+        <div class="form-group"><label>Perusahaan</label><input type="text" id="icCompany" placeholder="PT Nama Perusahaan"></div>
+        <div class="form-group">
+          <label>Produk yang Diminati</label>
+          <select id="icProduct">
+            <option value="">Pilih produk</option>
+            <option>ERP (Enterprise Resource Planning)</option>
+            <option>Accounting Software</option>
+            <option>Inventory Management</option>
+            <option>CRM & Sales</option>
+            <option>HRM & Payroll</option>
+            <option>Point of Sales</option>
+            <option>Semua Modul (Full Suite)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Pesan</label><textarea id="icMessage" rows="3" placeholder="Ceritakan kebutuhan bisnis Anda..."></textarea></div>
+        <button class="btn-full" onclick="submitInlineInquiry()">Kirim Pertanyaan</button>
+      </div>
+    </div>
+
+    <!-- Inquiry Data Table -->
+    <div style="margin-top:48px">
+      <h3 style="font-size:20px;font-weight:800;margin-bottom:6px;">📋 Data Inquiry Tersimpan</h3>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px;">Semua pertanyaan yang masuk tersimpan di database lokal</p>
+      <div id="inquiryTablePublic"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section">
+  <div class="section-inner">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Pertanyaan yang Sering Ditanyakan</h2>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Apa itu Aplikasi Bisnis EQUIP?<span class="icon">+</span></div><div class="faq-a">EQUIP ERP adalah sistem yang dirancang untuk membantu bisnis mengelola semua aspek operasional dengan mudah — dari laporan keuangan, inventaris, database pelanggan hingga penjualan dalam satu tempat terpusat berbasis cloud.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Apakah sistem EQUIP cocok untuk bisnis saya?<span class="icon">+</span></div><div class="faq-a">Ya, EQUIP sangat cocok untuk berbagai jenis industri dan ideal untuk bisnis skala menengah hingga enterprise. Sistem dapat dikustomisasi untuk beradaptasi dengan kebutuhan dan pertumbuhan bisnis Anda yang kompleks.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Berapa lama implementasi Software Bisnis EQUIP?<span class="icon">+</span></div><div class="faq-a">Proses implementasi dirancang agar cepat dan hanya membutuhkan waktu hitungan hari, memungkinkan bisnis segera merasakan manfaat penuh dari sistem ERP yang otomatis.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Apa keuntungan menggunakan Software Bisnis EQUIP?<span class="icon">+</span></div><div class="faq-a">Dapatkan solusi ERP all-in-one yang mengintegrasikan seluruh operasional, mulai dari Finance hingga HRM, dalam satu platform. Ini menyederhanakan proses bisnis yang kompleks dan memastikan keakuratan serta keamanan data.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div class="cta-inner">
+    <h2>Optimalkan Bisnis Anda Bersama EQUIP ERP</h2>
+    <p>Bergabunglah dengan ribuan perusahaan yang telah mempercayakan pengelolaan bisnis mereka kepada EQUIP.</p>
+    <div class="cta-buttons">
+      <button class="btn-cta-white" onclick="openModal('register')">🎯 Coba Gratis Sekarang</button>
+      <button class="btn-cta-ghost" onclick="openContactModal()">📋 Tanya Skema Harga</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">EQUIPERP</div>
+        <p>EQUIP adalah rangkaian perangkat lunak bisnis yang mencakup Akuntansi, CRM, Pembelian, Inventaris, dan masih banyak lagi, dirancang untuk berbagai industri.</p>
+      </div>
+      <div class="footer-col"><h5>Produk</h5><ul><li><a href="#">ERP</a></li><li><a href="#">Akuntansi</a></li><li><a href="#">CRM</a></li><li><a href="#">Inventory</a></li><li><a href="#">HRM</a></li></ul></div>
+      <div class="footer-col"><h5>Industri</h5><ul><li><a href="#">Food & Beverage</a></li><li><a href="#">Retail</a></li><li><a href="#">Trading</a></li><li><a href="#">Manufaktur</a></li><li><a href="#">Konstruksi</a></li></ul></div>
+      <div class="footer-col"><h5>Perusahaan</h5><ul><li><a href="#">Tentang Kami</a></li><li><a href="#">Kontak</a></li><li><a href="#">Blog</a></li><li><a href="#">Karir</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 EQUIP ERP | Aplikasi Manajemen Bisnis Terbaik dan Terlengkap</p>
+      <p>🇮🇩 Indonesia</p>
+    </div>
+  </div>
+</footer>
+</div><!-- end homePage -->
+
+<script>
+// ===================== DATABASE (localStorage) =====================
+const DB = {
+  getUsers: () => JSON.parse(localStorage.getItem('equip_users') || '[]'),
+  saveUsers: (u) => localStorage.setItem('equip_users', JSON.stringify(u)),
+  getSession: () => JSON.parse(localStorage.getItem('equip_session') || 'null'),
+  saveSession: (s) => localStorage.setItem('equip_session', JSON.stringify(s)),
+  clearSession: () => localStorage.removeItem('equip_session'),
+  getInquiries: () => JSON.parse(localStorage.getItem('equip_inquiries') || '[]'),
+  saveInquiries: (i) => localStorage.setItem('equip_inquiries', JSON.stringify(i)),
+};
+
+// ===================== AUTH =====================
+function openModal(tab) { document.getElementById('authModal').classList.add('active'); switchAuthTab(tab||'login'); }
+function closeModal() { document.getElementById('authModal').classList.remove('active'); clearAlert(); }
+function openContactModal() { document.getElementById('contactModal').classList.add('active'); }
+function closeContactModal() { document.getElementById('contactModal').classList.remove('active'); }
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  document.getElementById('loginForm').style.display = tab==='login'?'block':'none';
+  document.getElementById('registerForm').style.display = tab==='register'?'block':'none';
+  clearAlert();
+}
+
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.className = 'alert alert-'+type;
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearAlert() {
+  ['alertBox','contactAlert','inlineContactAlert'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.style.display='none'; el.textContent=''; }
+  });
+}
+
+function doRegister() {
+  const first = document.getElementById('regFirst').value.trim();
+  const last = document.getElementById('regLast').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const company = document.getElementById('regCompany').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const industry = document.getElementById('regIndustry').value;
+  const pass = document.getElementById('regPass').value;
+
+  if(!first||!email||!company||!pass) { showAlert('alertBox','Harap isi semua kolom wajib.','error'); return; }
+  if(pass.length < 6) { showAlert('alertBox','Password minimal 6 karakter.','error'); return; }
+
+  const users = DB.getUsers();
+  if(users.find(u => u.email === email)) { showAlert('alertBox','Email sudah terdaftar. Silakan masuk.','error'); return; }
+
+  const user = { id: Date.now(), firstName:first, lastName:last, email, company, phone, industry, pass, createdAt: new Date().toISOString() };
+  users.push(user);
+  DB.saveUsers(users);
+  DB.saveSession(user);
+  closeModal();
+  updateNavState(user);
+  showToast('Akun berhasil dibuat! Selamat datang, '+first+'!','success');
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if(!email||!pass) { showAlert('alertBox','Harap isi email dan password.','error'); return; }
+
+  const users = DB.getUsers();
+  const user = users.find(u => u.email===email && u.pass===pass);
+  if(!user) { showAlert('alertBox','Email atau password salah.','error'); return; }
+
+  DB.saveSession(user);
+  closeModal();
+  updateNavState(user);
+  showToast('Selamat datang kembali, '+user.firstName+'!','success');
+}
+
+function doLogout() {
+  DB.clearSession();
+  updateNavState(null);
+  showHome();
+  showToast('Anda telah keluar dari akun.','success');
+}
+
+function updateNavState(user) {
+  const guestEl = document.getElementById('navGuest');
+  const userEl = document.getElementById('navUser');
+  if(user) {
+    guestEl.style.display = 'none';
+    userEl.style.display = 'flex';
+    document.getElementById('navAvatar').textContent = user.firstName[0].toUpperCase();
+    document.getElementById('navUsername').textContent = user.firstName+' '+user.lastName;
+  } else {
+    guestEl.style.display = 'flex';
+    userEl.style.display = 'none';
+  }
+}
+
+// ===================== PAGES =====================
+function showHome() {
+  document.getElementById('homePage').style.display = 'block';
+  document.getElementById('dashboardPage').classList.remove('active');
+}
+
+function showDashboard() {
+  const user = DB.getSession();
+  if(!user) { openModal('login'); return; }
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('dashboardPage').classList.add('active');
+  renderDashboard(user);
+  window.scrollTo(0,0);
+}
+
+function renderDashboard(user) {
+  document.getElementById('dashWelcomeName').textContent = 'Selamat datang, '+user.firstName+' '+user.lastName+' 👋';
+  document.getElementById('dashWelcomeCompany').textContent = user.company + ' — Dashboard EQUIP ERP';
+  const now = new Date();
+  document.getElementById('dashDate').textContent = now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  // Revenue Chart
+  const months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu'];
+  const vals = [320,480,410,620,550,710,820,940];
+  const maxV = Math.max(...vals);
+  document.getElementById('revenueChart').innerHTML = months.map((m,i) =>
+    `<div class="chart-col">
+      <div class="chart-bar-wrap"><div class="chart-bar-fill" style="height:${Math.round(vals[i]/maxV*100)}%;background:${i===7?'#00A651':'#0066CC'}"></div></div>
+      <div class="chart-label">${m}</div>
+    </div>`).join('');
+
+  // Recent Activity
+  const activities = [
+    {icon:'🧾',name:'Invoice #INV-2024-089 dibuat',time:'2 menit lalu',amount:'Rp 45.500.000'},
+    {icon:'📦',name:'Stok Laptop ASUS masuk 15 unit',time:'18 menit lalu',amount:'+15 unit'},
+    {icon:'👤',name:'Karyawan baru onboarding',time:'1 jam lalu',amount:'Divisi IT'},
+    {icon:'💰',name:'Pembayaran PO #PO-441 diterima',time:'3 jam lalu',amount:'Rp 128.000.000'},
+  ];
+  document.getElementById('recentList').innerHTML = activities.map(a =>
+    `<div class="recent-item">
+      <div class="recent-icon" style="background:var(--blue-light)">${a.icon}</div>
+      <div class="recent-info"><div class="recent-name">${a.name}</div><div class="recent-time">${a.time}</div></div>
+      <div class="recent-amount">${a.amount}</div>
+    </div>`).join('');
+
+  renderInquiryTable('dashInquiryTable');
+}
+
+// ===================== INQUIRY =====================
+function submitInquiry() { submitInquiryFrom('c','contactAlert', function(){ closeContactModal(); }); }
+function submitInlineInquiry() { submitInquiryFrom('ic','inlineContactAlert', function(){ renderInquiryTable('inquiryTablePublic'); }); }
+
+function submitInquiryFrom(prefix, alertId, cb) {
+  const name = document.getElementById(prefix+'Name').value.trim();
+  const phone = document.getElementById(prefix+'Phone').value.trim();
+  const email = document.getElementById(prefix+'Email').value.trim();
+  const company = document.getElementById(prefix+'Company').value.trim();
+  const product = document.getElementById(prefix+'Product').value;
+  const message = document.getElementById(prefix+'Message').value.trim();
+
+  if(!name||!email||!company) { showAlert(alertId,'Harap isi nama, email, dan perusahaan.','error'); return; }
+
+  const inquiry = { id: Date.now(), name, phone, email, company, product, message, status:'Baru', createdAt: new Date().toISOString() };
+  const inquiries = DB.getInquiries();
+  inquiries.unshift(inquiry);
+  DB.saveInquiries(inquiries);
+
+  showAlert(alertId,'Pertanyaan berhasil dikirim! Tim kami akan segera menghubungi Anda.','success');
+  [prefix+'Name',prefix+'Phone',prefix+'Email',prefix+'Company',prefix+'Message'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById(prefix+'Product').selectedIndex = 0;
+  showToast('Inquiry tersimpan di database!','success');
+  if(cb) setTimeout(cb, 1500);
+}
+
+function renderInquiryTable(containerId) {
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const inquiries = DB.getInquiries();
+  if(inquiries.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>Belum ada inquiry yang masuk</p></div>`;
+    return;
+  }
+  el.innerHTML = `<table class="inquiry-table">
+    <thead><tr><th>#</th><th>Nama</th><th>Perusahaan</th><th>Email</th><th>Produk</th><th>Waktu</th><th>Status</th></tr></thead>
+    <tbody>${inquiries.map((inq,i) => `
+      <tr>
+        <td style="color:var(--text-muted);font-size:12px">${i+1}</td>
+        <td><strong>${inq.name}</strong>${inq.phone?'<br><span style="font-size:11px;color:var(--text-muted)">'+inq.phone+'</span>':''}</td>
+        <td>${inq.company}</td>
+        <td style="font-size:13px">${inq.email}</td>
+        <td style="font-size:13px">${inq.product||'—'}</td>
+        <td style="font-size:12px;color:var(--text-muted)">${new Date(inq.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+        <td><span class="badge badge-new">${inq.status}</span></td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function clearInquiries() {
+  if(!confirm('Hapus semua data inquiry?')) return;
+  DB.saveInquiries([]);
+  renderInquiryTable('dashInquiryTable');
+  renderInquiryTable('inquiryTablePublic');
+  showToast('Data inquiry dihapus.','success');
+}
+
+// ===================== TOAST =====================
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = (type==='success'?'✓ ':'✕ ')+msg;
+  t.className = 'toast show '+(type||'');
+  setTimeout(() => t.className='toast', 3500);
+}
+
+// ===================== TABS =====================
+const industries = {
+  erp:{title:'Kontrol Penuh Operasi Bisnis dengan ERP EQUIP',desc:'EQUIP ERP memberikan solusi lengkap untuk kelola keuangan, inventaris, hingga SDM agar bisnis berjalan lebih efisien.',points:['Manajemen keuangan & akuntansi otomatis','Pantau inventaris secara real-time','Integrasi seluruh divisi bisnis','Laporan & analitik bisnis komprehensif'],emoji:'🏢'},
+  manufacture:{title:'Tingkatkan Efisiensi Produksi dan Pengelolaan Anggaran',desc:'Optimalkan seluruh proses manufaktur dengan sistem terpadu yang memastikan kontrol biaya dan efisiensi kerja maksimal.',points:['Perencanaan & penjadwalan produksi','Kontrol biaya bahan baku','Manajemen Bill of Materials (BOM)','Monitoring kualitas produksi real-time'],emoji:'🏭'},
+  trading:{title:'Sinkronkan Proses Penjualan, Stok, dan Pengiriman',desc:'Sederhanakan pengelolaan penjualan, persediaan, dan logistik untuk meningkatkan produktivitas.',points:['Manajemen multi-gudang & multi-cabang','Otomasi purchase order & sales order','Tracking pengiriman real-time','Analitik penjualan & margin profit'],emoji:'📦'},
+  fnb:{title:'Buat Operasional Restoran Multi-Cabang Lebih Efisien',desc:'Kelola seluruh proses pemesanan restoran dengan mudah, dari dine-in hingga delivery online.',points:['Sistem POS terintegrasi','Manajemen menu & resep','Integrasi platform delivery online','Laporan penjualan per cabang'],emoji:'🍽️'},
+  retail:{title:'Permudah Manajemen Toko dan Transaksi Harian',desc:'Optimalkan manajemen multi-outlet dengan pengelolaan inventaris, promo, dan pembayaran terintegrasi.',points:['POS cepat & akurat','Manajemen stok multi-toko','Program loyalitas & diskon otomatis','Laporan penjualan harian instan'],emoji:'🛒'},
+  construction:{title:'Kendalikan Anggaran dan Progres Proyek Konstruksi',desc:'Integrasikan manajemen biaya, waktu, dan material agar operasional proyek berjalan lancar.',points:['Manajemen anggaran proyek','Tracking progres & milestone','Manajemen subkontraktor','Laporan biaya aktual vs rencana'],emoji:'🏗️'},
+  hris:{title:'Kelola Semua Proses HR dari Rekrutmen hingga Payroll',desc:'Integrasikan proses absensi, penggajian, dan evaluasi kinerja dalam satu platform.',points:['Rekrutmen & onboarding otomatis','Absensi & cuti terintegrasi','Penggajian sesuai regulasi Indonesia','Evaluasi kinerja karyawan real-time'],emoji:'👥'},
+};
+const features = {
+  accounting:{title:'Kelola Arus Kas dan Laporan Bisnis dengan Sistem Otomatis',desc:'Pantau dan kelola keuangan bisnis dengan sistem akuntansi terintegrasi dan laporan real-time akurat.',points:[['⚡','Transaksi Tercatat Otomatis','Semua transaksi langsung masuk ke sistem secara otomatis.'],['📊','Laporan Keuangan Akurat','Neraca hingga arus kas dibuat otomatis dan transparan.'],['📡','Monitoring Real-Time','Pantau kondisi keuangan kapan saja via dashboard.']]},
+  sales:{title:'Automasi Manajemen Prospek untuk Konversi yang Optimal',desc:'Kelola prospek secara menyeluruh. Automasi alur kerja penjualan untuk meningkatkan peluang konversi.',points:[['🎯','Integrasi Data Penjualan','Semua prospek dan transaksi tersentralisasi otomatis.'],['🔄','Manajemen Pipeline','Setiap tahap dari lead hingga closing dicatat otomatis.'],['📈','Laporan Real-Time','Dashboard interaktif menampilkan data penjualan terbaru.']]},
+  inventory:{title:'Kontrol Pergerakan Stok dan Gudang Lebih Mudah',desc:'Pantau semua stok dan persediaan secara real-time agar operasional bisnis tetap lancar.',points:[['📦','Pencatatan Stok Otomatis','Setiap pergerakan stok berjalan otomatis dan akurat.'],['🔍','Persediaan Real-Time','Stok selalu terpantau, mencegah kekurangan atau penumpukan.'],['🔗','Data Terpadu','Data tersentralisasi untuk memudahkan pelacakan barang.']]},
+  purchasing:{title:'Automasi Pembelian untuk Efisiensi dan Kendali Biaya',desc:'Automasi seluruh proses pembelian agar pengadaan lebih cepat dan biaya tetap terkendali.',points:[['⚙️','Automasi Pembelian','Setiap tahap dari permintaan hingga persetujuan berjalan otomatis.'],['💰','Pengawasan Anggaran','Pengeluaran selalu terpantau untuk mengendalikan biaya.'],['🤝','Manajemen Vendor','Data dan hubungan dengan pemasok tersimpan rapi.']]},
+  hrm:{title:'Optimalkan Pengelolaan HR dan Produktivitas Tim',desc:'Pantau absensi, payroll, dan performa karyawan secara otomatis untuk HR yang terstruktur.',points:[['👤','Rekrutmen & Onboarding','Setiap langkah rekrutmen dijalankan secara otomatis.'],['💳','Absensi & Payroll','Cuti, lembur, dan penggajian diproses otomatis.'],['📊','Evaluasi Kinerja','Pemantauan performa karyawan dilakukan secara real-time.']]},
+};
+
+function switchIndustry(btn, key) {
+  document.querySelectorAll('.ind-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const d = industries[key];
+  document.getElementById('indTitle').textContent = d.title;
+  document.getElementById('indDesc').textContent = d.desc;
+  document.getElementById('indEmoji').textContent = d.emoji;
+  document.getElementById('indPoints').innerHTML = d.points.map(p=>`<li>${p}</li>`).join('');
+}
+function switchFeature(btn, key) {
+  document.querySelectorAll('.feat-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const d = features[key];
+  document.getElementById('featTitle').textContent = d.title;
+  document.getElementById('featDesc').textContent = d.desc;
+  document.getElementById('featPoints').innerHTML = d.points.map(([icon,title,desc])=>`
+    <div class="feat-point"><div class="feat-icon">${icon}</div>
+    <div class="feat-point-text"><strong>${title}</strong><span>${desc}</span></div></div>`).join('');
+}
+function toggleFaq(el) {
+  const a = el.nextElementSibling;
+  const icon = el.querySelector('.icon');
+  const isOpen = a.style.display==='block';
+  document.querySelectorAll('.faq-a').forEach(x=>x.style.display='none');
+  document.querySelectorAll('.faq-q .icon').forEach(x=>x.textContent='+');
+  if(!isOpen){ a.style.display='block'; icon.textContent='−'; }
+}
+
+// ===================== INIT =====================
+window.addEventListener('DOMContentLoaded', () => {
+  const session = DB.getSession();
+  if(session) updateNavState(session);
+  renderInquiryTable('inquiryTablePublic');
+});
+</script>
+</body>
+</html>
