@@ -20,9 +20,11 @@ document.getElementById("go").onclick=async()=>{
   info("Alamat halaman: "+location.href);
   if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")) add(false,"Alamat tidak berakhir dengan '/' — buka dengan tanda / di akhir");
   // 1. file Python
-  const files=["index.html","qt-shim.js","qt-worker.js","py/server.py","py/orderflow.py","py/zapi.py","py/universe.py","py/qt_bridge.py"];
   const src={};
-  for(const f of files){try{const r=await fetch(f,{cache:"no-store"});add(r.ok,`${f} → HTTP ${r.status}`);if(r.ok&&f.startsWith("py/"))src[f.slice(3)]=await r.text();}catch(e){add(false,f,e)}}
+  for(const f of ["index.html","qt-shim.js","qt-worker.js","qt-data.js"]){try{const r=await fetch(f,{cache:"no-store"});add(r.ok,`${f} → HTTP ${r.status}`)}catch(e){add(false,f,e)}}
+  for(const f of ["server.py","orderflow.py","zapi.py","universe.py","qt_bridge.py"]){let ok=false;
+    for(const p of ["py/"+f,f]){try{const r=await fetch(p,{cache:"no-store"});if(r.ok){src[f]=await r.text();add(true,`${p} → ditemukan`);ok=true;break}}catch(e){}}
+    if(!ok)add(false,`${f} → TIDAK ditemukan (dicari di py/ dan di folder ini)`)}
   // 2. data
   let found=0;const bases=["data/","../../data/"];
   for(const b of bases){let n=0;for(const s of["IHSG","BBCA","BBRI","TLKM"]){try{const r=await fetch(b+s+".JK.csv",{cache:"no-store"});if(r.ok)n++}catch(e){}}

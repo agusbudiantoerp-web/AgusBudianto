@@ -8,14 +8,42 @@
   document.addEventListener("DOMContentLoaded", () => document.body.appendChild(ov));
   const setMsg = (m, err) => { const el = document.getElementById("qt-ov-msg"); if (el) { el.textContent = m; if (err) el.style.color = "#ff4d5e"; } };
 
+
+  function banner(i) {
+    const R = i.report || {}, ok = i.src === "CSV";
+    const box = document.createElement("div");
+    box.style.cssText = "position:fixed;left:10px;bottom:10px;z-index:9999;max-width:min(560px,calc(100vw - 20px));padding:10px 34px 10px 12px;border-radius:8px;font:12px/1.5 'Segoe UI',system-ui,sans-serif;box-shadow:0 4px 16px #0008;" +
+      (ok ? "background:#0f2a1c;border:1px solid #1f6b43;color:#bff0d3" : "background:#2b1216;border:1px solid #8a2a36;color:#ffd0d6");
+    const L = [];
+    if (ok) {
+      L.push("<b>Data CSV dimuat</b>: " + i.idx + " saham IDX" + (i.glob ? " + " + i.glob + " aset global" : "") + " · " + i.n + " bar · " + i.d0 + " → " + i.d1);
+      if (i.dropped && i.dropped.length) L.push("Dilewati (riwayat jauh lebih pendek): " + i.dropped.join(", "));
+      if (R.missingCount) L.push("Tidak ditemukan " + R.missingCount + " berkas LQ45 (mis. " + (R.missingSample || []).slice(0, 4).join(", ") + ")");
+    } else {
+      L.push("<b>Memakai data SIMULASI (bukan data pasar).</b>");
+      L.push(R.count ? "Ada " + R.count + " berkas CSV terbaca, tetapi tidak dapat dipakai:" : "Tidak ada berkas CSV yang ditemukan.");
+      (i.log || []).slice(-3).forEach((x) => L.push("• " + String(x).replace(/</g, "&lt;")));
+      L.push("Dicari di: " + [R.bases && R.bases.term, R.bases && R.bases.root].filter(Boolean).join(" dan "));
+      if (R.api) Object.keys(R.api).forEach((k) => L.push("Daftar GitHub (" + k + "): " + (R.api[k].err ? "gagal, " + R.api[k].err : R.api[k].n + " berkas .csv")));
+      if (R.missingSample && R.missingSample.length) L.push("Contoh nama yang dicari: " + R.missingSample.slice(0, 3).join(", "));
+      L.push("Nama berkas harus seperti <b>BBCA.JK.csv</b> (kolom Date,Close,Volume).");
+    }
+    box.innerHTML = L.join("<br>");
+    const x = document.createElement("button");
+    x.textContent = "✕"; x.setAttribute("aria-label", "Tutup");
+    x.style.cssText = "position:absolute;top:4px;right:6px;background:none;border:0;color:inherit;font-size:14px;cursor:pointer";
+    x.onclick = () => box.remove(); box.appendChild(x);
+    document.body.appendChild(box);
+    if (ok) setTimeout(() => box.remove(), 15000);
+  }
+
   const worker = new Worker("qt-worker.js");
   const pending = new Map(); let seq = 0, up = false;
   worker.onmessage = (e) => {
     const d = e.data;
     if (d.type === "status") setMsg(d.msg);
     else if (d.type === "ready") {
-      up = true; ov.remove();
-      if (d.info.src !== "CSV") console.warn("Folder data/ kosong: terminal memakai data SIMULASI.");
+      up = true; ov.remove(); banner(d.info);
     } else if (d.type === "fatal") setMsg("Gagal memuat mesin Python:\n" + d.msg + "\n\nJalankan halaman diagnosa.html di folder yang sama untuk melihat tahap yang gagal.", true);
     else if (d.type === "res") { const p = pending.get(d.id); if (p) { pending.delete(d.id); p(d); } }
   };
