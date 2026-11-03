@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quant Terminal</title>
+<script>window.QT_TOKEN='__QT_TOKEN__'</script>
+<style>
+:root{--bg:#070d1a;--pn:#0c1427;--bd:#1b2a4a;--tx:#d6e0f5;--mu:#7384a8;--up:#22d273;--dn:#ff4d5e;--ac:#3b9cff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:12px/1.4 "Segoe UI",system-ui,sans-serif}
+header{display:flex;gap:14px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+h1{font-size:16px;margin:0 12px 0 0;letter-spacing:.12em}h1 b{color:var(--ac)}
+label{color:var(--mu);display:flex;gap:6px;align-items:center}
+input,select{background:var(--pn);color:var(--tx);border:1px solid var(--bd);border-radius:4px;padding:5px 7px;width:70px}select{width:80px}
+button{background:var(--ac);color:#04101f;border:0;border-radius:4px;padding:6px 14px;font-weight:700;cursor:pointer}
+#msg{color:var(--mu);margin-left:auto}
+main{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;padding:10px 16px}
+.p{background:var(--pn);border:1px solid var(--bd);border-radius:6px;padding:10px;min-width:0}
+.p h2{margin:0 0 8px;font-size:12px;font-weight:600}
+#kpi{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.k small{color:var(--mu)}.k div{font-size:19px;font-weight:700;margin-top:2px}
+canvas{width:100%;display:block}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th{color:var(--mu);font-weight:500;text-align:right;padding:3px 4px;border-bottom:1px solid var(--bd)}td{padding:3px 4px;text-align:right}
+th:first-child,td:first-child{text-align:left}.up{color:var(--up)}.dn{color:var(--dn)}
+.c8{grid-column:span 8}.c4{grid-column:span 4}.c5{grid-column:span 5}.c3{grid-column:span 3}
+@media(max-width:1000px){.c8,.c4,.c5,.c3{grid-column:1/-1}}
+</style></head><body>
+<header><h1><b>Q</b> QUANT TERMINAL</h1>
+<label>Aset <select id="asset" style="width:100px" onchange="pick()"></select></label>
+<label>Strategi <select id="strat" style="width:140px" onchange="lab(1);run()"><option value="sma">SMA crossover</option><option value="brk">Breakout + volume</option><option value="rsi">Mean-reversion RSI</option><option value="bb">Mean-reversion Bollinger</option><option value="macd">MACD crossover</option><option value="obv">Volume (OBV + tren)</option></select></label>
+<label><span id="l1">SMA cepat</span> <input id="fast" type="number" step="any" value="20"></label>
+<label><span id="l2">SMA lambat</span> <input id="slow" type="number" step="any" value="60"></label>
+<label id="vml" style="display:none">Volume × <input id="vm" type="number" step=".1" value="1.5"></label>
+<label><input type="checkbox" id="rules" checked style="width:auto"> Lot &amp; tick IDX</label>
+<label>Stop % <input id="stop" type="number" step=".5" value="3"></label>
+<label>Mode <select id="mode" style="width:100px"><option value="ls">Long/Short</option><option value="lo">Long only</option></select></label>
+<label>Fee %/sisi <input id="fee" type="number" step=".05" value="0.05"></label>
+<label>Filter tren SMA <input id="tf" type="number" value="0" style="width:60px" title="0 = tanpa filter. Mis. 200: posisi long hanya dibuka/dipegang saat harga di atas SMA 200 (short: di bawahnya)"></label>
+<label>Modal <input id="cap" type="number" value="100000" style="width:110px"></label>
+<button onclick="run()">Jalankan backtest</button> <a href="#cmp" style="color:var(--ac)">Bandingkan strategi ↓</a> &nbsp; <a href="#zapi" style="color:var(--ac)">Data Zapi ↓</a> &nbsp; <a href="#flow" style="color:var(--ac)">Order flow ↓</a> &nbsp; <a href="#xp" style="color:var(--ac)">Eksperimen &amp; ekspor ↓</a><span id="msg"></span></header>
+<main>
+<section id="kpi"></section>
+<div class="p c8"><h2>Equity curve &amp; drawdown <span style="color:var(--ac)">— strategi</span> <span class="up">— buy &amp; hold</span></h2><canvas id="eq" style="height:330px"></canvas></div>
+<div class="p c4"><h2>Market monitor &amp; sinyal (grup aset terpilih)</h2><table id="mon"></table></div>
+<div class="p c5"><h2>Return bulanan (%)</h2><canvas id="mo" style="height:150px"></canvas></div>
+<div class="p c3"><h2>Metrik risiko</h2><table id="risk"></table></div>
+<div class="p c4"><h2>Distribusi P&amp;L harian (%)</h2><canvas id="hist" style="height:150px"></canvas></div>
+<div class="p c4"><h2 id="opth">Optimisasi parameter — Sharpe</h2><canvas id="opt" style="height:220px"></canvas></div>
+<div class="p c4"><h2>Matriks korelasi</h2><canvas id="cor" style="height:220px"></canvas></div>
+<div class="p c4"><h2>Trade log (terbaru)</h2><table id="log"></table></div>
+<div class="p" id="cmp" style="grid-column:1/-1"><h2>Bandingkan semua strategi pada satu saham &nbsp; Filter tren SMA <input id="ctf" type="number" value="200" style="width:60px" title="Varian dengan filter: long hanya saat harga di atas SMA ini. Isi 0 untuk menonaktifkan varian filter"> &nbsp; <label style="display:inline-flex"><input type="checkbox" id="cmw" style="width:auto"> walk-forward (lebih jujur, lebih lambat)</label> &nbsp; <button onclick="cmpRun()">Bandingkan</button> &nbsp; <span id="cmmsg" style="color:var(--mu);font-weight:400">aset, fee &amp; stop dari bar atas; tiap strategi memakai parameter default, dijalankan tanpa dan dengan filter tren</span></h2>
+<div id="cmkpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px"></div>
+<div id="cmleg" style="margin-top:8px"></div><canvas id="cmeq" style="height:240px;margin:6px 0"></canvas>
+<div style="overflow-x:auto"><table id="cmtb"></table></div>
+<small style="color:var(--mu)">Semua baris dinilai pada periode dan biaya yang sama; grafik menampilkan 5 teratas menurut Sharpe. Kolom "Lulus" menghitung 4 patokan kasar: return &gt; buy &amp; hold, Sharpe &gt; 0,5, profit factor &gt; 1,3, trade ≥ 30 (●=lulus, ○=tidak). <b>Memilih pemenang dari 12 kandidat pada data yang sama berisiko overfitting</b> — centang walk-forward dan ulangi di saham lain sebelum percaya. Klik "muat" untuk memindahkan strategi itu ke bar atas.</small></div>
+<div class="p" id="zapi" style="grid-column:1/-1"><h2>Sumber data riil — Zapi (zapi.ink) &nbsp; <span id="zst" style="font-weight:400"></span></h2>
+<div id="zkpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px"></div>
+<div style="margin-top:10px"><button onclick="zTest()">Uji koneksi (≈1 request)</button> &nbsp; <button onclick="zSync('backfill')">Unduh riwayat harian LQ45</button> &nbsp; <button onclick="zSync('daily')">Perbarui harian</button> &nbsp; Saham tambahan <input id="zex" placeholder="mis. GOTO, BUKA" style="width:150px"> &nbsp; <span id="zmsg" style="color:var(--mu)"></span></div>
+<div id="zlog" style="margin-top:8px;color:var(--mu)"></div>
+<small style="color:var(--mu)"><b>Cara memakai:</b> (1) buat file <b>zapi_key.txt</b> di folder aplikasi berisi API key Anda, lalu restart server (key hanya dibaca server dan tidak pernah dikirim ke browser — jangan menempelkannya ke chat/forum); (2) <b>Uji koneksi</b>; (3) <b>Unduh riwayat</b> sekali untuk mengganti data simulasi dengan data harian riil (halaman memuat ulang sendiri); (4) <b>Perbarui harian</b> tiap hari bursa (hanya 1 request/hari). Paket gratis Zapi 600 request/bulan: hitungan di sini hanya perkiraan lokal, hitungan resmi ada di dashboard Zapi. Zapi adalah agregator pihak ketiga yang mengambil data dari sumber lain (bukan feed resmi bursa), harga tidak disesuaikan aksi korporasi (split/dividen), dan syarat penggunaannya perlu Anda baca sendiri. Bukan saran investasi.</small></div>
+<div class="p" id="flow" style="grid-column:1/-1"><h2>Order flow — order book, tape &amp; broker summary &nbsp; Saham <select id="fsym" style="width:90px" onchange="FRESET()"></select> Lot besar ≥ <input id="fbig" type="number" value="300" style="width:60px"> kecil ≤ <input id="fsm" type="number" value="20" style="width:50px"> Jendela <input id="fwin" type="number" value="300" style="width:55px"> dtk &nbsp; Sumber <select id="fsel" style="width:150px" onchange="FSEL()"><option value="auto">Lokal (file/simulasi)</option><option value="zapi">Zapi (memakai kuota)</option></select> <select id="fint" style="width:80px" title="Interval auto-segarkan (hanya mode Zapi)"><option value="30">30 dtk</option><option value="60" selected>60 dtk</option><option value="120">120 dtk</option><option value="300">300 dtk</option></select> &nbsp; <button onclick="flowPoll()">Segarkan</button> <button onclick="FB=1;flowPoll()" title="Mode Zapi: +1 request (di-cache 5 menit)">Muat broker</button> <button id="fbtn" onclick="flowToggle()">Mulai live</button> &nbsp; <span id="fsrc" style="font-weight:400"></span></h2>
+<div id="fwarn" style="margin-bottom:8px"></div>
+<div id="fread" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px"></div>
+<div id="fpat" style="margin:8px 0;color:var(--tx)"></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+<div><small style="color:var(--mu)">Order book (merah = jual/ask, hijau = beli/bid, ★ = dinding besar)</small><canvas id="fbook" style="height:330px"></canvas></div>
+<div><small style="color:var(--mu)">Cumulative volume delta, lot (jendela terakhir): semua / besar / kecil</small><canvas id="fcvd" style="height:330px"></canvas></div>
+<div style="max-height:350px;overflow:auto"><small style="color:var(--mu)">Tape (◆ = lot besar)</small><table id="ftape"></table></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:10px"><div><table id="fgrp"></table></div><div><table id="fbrk"></table></div></div>
+<small style="color:var(--mu)"><b>Baca dengan hati-hati:</b> order book bersifat anonim, jadi alat ini tidak bisa mengetahui siapa yang bertransaksi. "Besar/kecil" hanyalah ambang lot yang Anda tentukan; sisi beli/jual berasal dari sisi agresor. Dinding di buku bisa dibatalkan kapan saja, dan hasilnya heuristik jangka sangat pendek yang tidak menjamin arah harga. Data riil memerlukan file feed dari sumber Anda sendiri (lihat <b>orderflow/README.txt</b>); tanpa itu panel memakai SIMULASI. Bukan saran investasi.</small></div>
+<div class="p" style="grid-column:1/-1"><h2>Backtest universe — satu strategi atas semua saham &nbsp; <button onclick="uni()">Jalankan semua saham</button> &nbsp; <label style="display:inline-flex"><input type="checkbox" id="ulq" checked style="width:auto"> hanya LQ45 (grup IDX)</label> &nbsp; <span id="umsg" style="color:var(--mu);font-weight:400">memakai strategi &amp; parameter di bar atas</span></h2>
+<div id="ukpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px"></div>
+<canvas id="ueq" style="height:220px;margin:10px 0"></canvas><div style="overflow-x:auto;max-height:340px"><table id="utb"></table></div></div>
+<div class="p" style="grid-column:1/-1"><h2>Walk-forward — optimasi di training, uji di periode berikutnya (aset terpilih) &nbsp; Training <input id="wtr" type="number" value="252" style="width:60px"> Test <input id="wte" type="number" value="63" style="width:55px"> bar &nbsp; <label style="display:inline-flex"><input type="checkbox" id="wan" style="width:auto"> anchored</label> &nbsp; <label style="display:inline-flex"><input type="checkbox" id="wst" style="width:auto"> optimasi stop-loss juga</label> &nbsp; <button onclick="wf()">Jalankan walk-forward</button> &nbsp; <span id="wmsg" style="color:var(--mu);font-weight:400">parameter cepat/lambat di bar atas diabaikan; dioptimasi otomatis per fold</span></h2>
+<div id="wkpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px"></div>
+<small style="color:var(--mu)">Efisiensi WF = Sharpe OOS ÷ rata-rata Sharpe in-sample. Mendekati 1 = hasil bertahan di luar sampel; di bawah ~0,5 atau negatif = indikasi overfitting. Garis putus-putus = batas fold.</small>
+<canvas id="weq" style="height:240px;margin:8px 0"></canvas><div style="overflow-x:auto;max-height:300px"><table id="wtb"></table></div></div>
+<div class="p" style="grid-column:1/-1"><h2>Portofolio satu rekening — modal bersama, batas jumlah posisi &nbsp; Maks posisi <input id="pk" type="number" value="10" style="width:55px"> Maks/sektor <input id="psm" type="number" value="0" title="0 = tanpa batas (hanya grup IDX)" style="width:50px"> Prioritas <select id="prk" style="width:130px"><option value="liq">Likuiditas</option><option value="mom">Momentum 3 bulan</option><option value="rsi">RSI terendah</option></select> &nbsp; <label style="display:inline-flex"><input type="checkbox" id="plq" checked style="width:auto"> hanya LQ45 (IDX)</label> &nbsp; <button onclick="port()">Jalankan portofolio</button> &nbsp; <span id="pmsg" style="color:var(--mu);font-weight:400">long-only; tiap posisi = ekuitas ÷ maks posisi; strategi &amp; parameter dari bar atas</span></h2>
+<div id="pkpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px"></div>
+<canvas id="peq" style="height:260px;margin:8px 0"></canvas>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px"><div><table id="psn"></table></div><div style="max-height:300px;overflow:auto"><table id="pct"></table></div><div><table id="psec"></table></div></div>
+<h2 style="margin:16px 0 8px">Walk-forward portofolio — parameter &amp; maks posisi (5/10/20) dioptimasi per fold &nbsp; <button onclick="pwf()">Jalankan walk-forward portofolio</button> &nbsp; <span id="pwmsg" style="color:var(--mu);font-weight:400">memakai jendela Training/Test dari panel walk-forward di atas</span></h2>
+<div id="pwkpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px"></div>
+<canvas id="pweq" style="height:240px;margin:8px 0"></canvas><div style="overflow-x:auto;max-height:300px"><table id="pwtb"></table></div></div>
+<div class="p" style="grid-column:1/-1"><h2>Walk-forward multi-saham — stabilitas parameter &nbsp; <label style="display:inline-flex"><input type="checkbox" id="mlq" checked style="width:auto"> hanya LQ45 (IDX)</label> &nbsp; <button onclick="mwf()">Jalankan walk-forward multi-saham</button> &nbsp; <span id="mwmsg" style="color:var(--mu);font-weight:400">memakai jendela &amp; opsi stop dari panel walk-forward; sekitar 5–60 detik</span></h2>
+<div id="mwkpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px"></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:10px"><div><small style="color:var(--mu)" id="mwcap">Frekuensi pemilihan parameter di semua fold &amp; saham</small><canvas id="mwh" style="height:210px"></canvas><table id="mwtp"></table></div>
+<div style="max-height:330px;overflow:auto"><table id="mwtb"></table></div></div>
+<small style="color:var(--mu)">Parameter stabil = pilihan sering sama antar fold dan antar saham (pangsa kombinasi terpopuler tinggi, pergantian antar-fold rendah) dan Sharpe OOS mendekati IS. Heatmap yang tersebar rata menandakan optimasi hanya mengejar noise.</small></div>
+<div class="p" style="grid-column:1/-1"><h2>Uji ketahanan — Monte Carlo &amp; perturbasi parameter &nbsp; Objek <select id="mct" style="width:130px"><option value="asset">Aset terpilih</option><option value="port">Portofolio</option></select> Simulasi <input id="mcn" type="number" value="2000" style="width:65px"> &nbsp; <button onclick="mc()">Jalankan uji ketahanan</button> &nbsp; <span id="mcmsg" style="color:var(--mu);font-weight:400">memakai strategi &amp; parameter di bar atas (portofolio: K, prioritas, LQ45 dari panel portofolio)</span></h2>
+<div id="mckpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px"></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:10px">
+<div><small style="color:var(--mu)">① Max drawdown — urutan trade diacak</small><canvas id="mc1" style="height:150px"></canvas></div>
+<div><small style="color:var(--mu)">② Return akhir — bootstrap trade (dengan pengembalian)</small><canvas id="mc2" style="height:150px"></canvas></div>
+<div><small style="color:var(--mu)">③ Return akhir — 20% trade dibuang acak</small><canvas id="mc3" style="height:150px"></canvas></div>
+<div><small style="color:var(--mu)">④ Sharpe — parameter diperturbasi ±25% (stop ±30%)</small><canvas id="mc4" style="height:150px"></canvas></div></div>
+<small style="color:var(--mu)">Garis kuning = hasil asli. ①–③ bekerja pada level trade (drawdown intra-trade tidak terhitung); mengacak urutan tidak mengubah return akhir, hanya jalurnya. Persentil ke-5 return bootstrap di bawah 0, atau hanya sebagian kecil parameter tetangga yang profit, menandakan edge rapuh. Hasil dengan trade sedikit (&lt; ~30) kurang meyakinkan secara statistik.</small></div>
+<div class="p" style="grid-column:1/-1"><h2>Uji stres — skenario historis &amp; guncangan sintetis &nbsp; Objek <select id="stt" style="width:130px"><option value="asset">Aset terpilih</option><option value="port">Portofolio</option></select> Jendela kustom <input id="ssf" type="date" style="width:130px"> – <input id="sst" type="date" style="width:130px"> &nbsp; <button onclick="stress()">Jalankan uji stres</button> &nbsp; <span id="smsg" style="color:var(--mu);font-weight:400">memakai strategi &amp; parameter di bar atas</span></h2>
+<div id="skpi" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px"></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-top:10px"><div style="overflow-x:auto"><table id="shist"></table></div><div style="overflow-x:auto"><table id="sshk"></table></div></div>
+<div id="sleg" style="margin-top:8px"></div><canvas id="seq" style="height:240px;margin:6px 0"></canvas>
+<small style="color:var(--mu)">Jendela historis memakai tanggal perkiraan di <b>universe.py</b> (STRESS_WINDOWS); yang di luar rentang data ditandai. Guncangan sintetis dijatuhkan saat eksposur strategi tertinggi (garis putus-putus), harga turun permanen dan sinyal dihitung ulang; di IDX, guncangan lebih besar dari batas ARB membuat penjualan tertunda. Selisih bisa positif untuk skenario volatilitas karena strategi bereaksi berbeda.</small></div>
+<div class="p" id="xp" style="grid-column:1/-1"><h2>Eksperimen &amp; ekspor &nbsp; <button onclick="saveExp()">Simpan eksperimen</button> &nbsp; <select id="exs" style="width:190px"><option value="eq">CSV: equity curve</option><option value="trades">CSV: trade log lengkap</option><option value="uni">CSV: backtest universe</option><option value="wf">CSV: walk-forward aset</option><option value="pwf">CSV: walk-forward portofolio</option><option value="port">CSV: equity portofolio</option><option value="compare">CSV: perbandingan strategi</option><option value="mc">CSV: ringkasan Monte Carlo</option><option value="stress">CSV: uji stres</option><option value="mwf">CSV: walk-forward multi-saham</option><option value="scr">CSV: screener</option><option value="exp">CSV: eksperimen tersimpan</option></select> <button onclick="exportCSV()">Unduh CSV</button> <button onclick="report()">Laporan HTML</button> &nbsp; <button onclick="expJSON()" style="background:#243556;color:var(--tx)">Cadangkan (JSON)</button> <label style="display:inline-flex">Impor <input type="file" accept=".json" onchange="impExp(this)" style="width:170px"></label> <span id="xmsg" style="color:var(--mu);font-weight:400"></span></h2>
+<small style="color:var(--mu)">Eksperimen disimpan di file <b>experiments.json</b> di folder aplikasi (maks 30) dan dicadangkan di browser, beserta kurva equity ternormalisasi 100. Hasil walk-forward / portofolio ikut tersimpan hanya jika dijalankan dengan konfigurasi yang sama persis seperti saat menyimpan.</small>
+<div id="xleg" style="margin-top:6px"></div><canvas id="xeq" style="height:230px;margin:6px 0"></canvas><div style="overflow-x:auto"><table id="xtb"></table></div></div>
+<div class="p" style="grid-column:1/-1"><h2>Screener — grup aset terpilih &nbsp; <label style="display:inline-flex"><input type="checkbox" id="fq" style="width:auto" onchange="scr()"> hanya LQ45</label> &nbsp; <label style="display:inline-flex"><input type="checkbox" id="fb" style="width:auto" onchange="scr()"> breakout + volume</label> &nbsp; <label style="display:inline-flex"><input type="checkbox" id="fu" style="width:auto" onchange="scr()"> uptrend (harga &gt; SMA50 &gt; SMA200)</label> <small style="color:var(--mu)">· klik header untuk mengurutkan</small></h2><div style="overflow-x:auto;max-height:340px"><table id="scr"></table></div></div>
+</main>
+<script>
+const $=s=>document.getElementById(s),f2=(n,d=2)=>n==null?'—':n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const cl=v=>v>=0?'up':'dn',pc=v=>v==null?'—':f2(v*100)+'%';
+function cv(id){const c=$(id),r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=r.height*d;const x=c.getContext('2d');x.scale(d,d);x.font='10px Segoe UI';return[x,r.width,r.height]}
+function line(x,d,X,Y,W,H,mn,mx,col){x.beginPath();d.forEach((v,i)=>{const px=X+i/(d.length-1)*W,py=Y+H-(v-mn)/(mx-mn||1)*H;i?x.lineTo(px,py):x.moveTo(px,py)});x.strokeStyle=col;x.lineWidth=1.5;x.stroke()}
+function heat(id,M,rl,cl_,col,fmt){const[x,w,h]=cv(id),L=44,T=16,cw=(w-L)/cl_.length,ch=(h-T)/rl.length;x.textAlign='center';x.textBaseline='middle';
+ cl_.forEach((c,j)=>{x.fillStyle='#7384a8';x.fillText(c,L+j*cw+cw/2,8)});
+ rl.forEach((r,i)=>{x.fillStyle='#7384a8';x.textAlign='right';x.fillText(r,L-6,T+i*ch+ch/2);x.textAlign='center';
+  cl_.forEach((_,j)=>{const v=M[i][j];x.fillStyle=v==null?'#0f1a33':col(v);x.fillRect(L+j*cw+1,T+i*ch+1,cw-2,ch-2);if(v!=null){x.fillStyle='#fff';x.fillText(fmt(v),L+j*cw+cw/2,T+i*ch+ch/2)}})})}
+const rg=(v,s)=>{const a=Math.min(1,Math.abs(v)/s);return v>=0?`rgba(34,210,115,${.2+.7*a})`:`rgba(255,77,94,${.2+.7*a})`};
+function qs(){return new URLSearchParams({asset:$('asset').value||'NQ',fast:$('fast').value,slow:$('slow').value,stop:$('stop').value,cap:$('cap').value,mode:$('mode').value,fee:$('fee').value,strat:$('strat').value,vm:$('vm').value,rules:$('rules').checked?1:0,lq:$('ulq').checked?1:0,smax:$('psm').value||0,tf:$('tf').value||0})}
+let UR=[],uk='sharpe',ud=-1,UC='$';
+async function uni(){
+ $('umsg').textContent='menghitung semua saham…';
+ const d=await (await fetch('/api/universe?'+qs())).json();
+ if(d.error){$('umsg').textContent=d.error;return}
+ LAST.uni=d;UR=d.rows;UC=d.ccy;const ps=d.ps,pb=d.pb;
+ $('ukpi').innerHTML=[['Jumlah saham',d.n,''],['Saham profit',pc(d.prof),''],['Kalahkan B&H',pc(d.beat),''],['Median Sharpe',f2(d.med),''],
+  ['Return portofolio EW',pc(ps.ret),cl(ps.ret)],['Sharpe EW',f2(ps.sharpe),''],['Max DD EW',pc(-ps.mdd),'dn'],['Return B&H EW',pc(pb.ret),cl(pb.ret)],
+  ['Total trade',d.trades,''],['Hari tertunda ARA/ARB',d.dl,'']].map(k=>`<div class="k" style="background:#0a1122;border:1px solid var(--bd);border-radius:5px;padding:7px"><small>${k[0]}</small><div class="${k[2]}" style="font-size:16px">${k[1]}</div></div>`).join('');
+ const[x,w,h]=cv('ueq'),L=60,W=w-L-8,H=h-24,S=[[d.port,'#3b9cff','Strategi (bobot sama)'],[d.bport,'#22d273','Buy & hold (bobot sama)']];if(d.bench)S.push([d.bench,'#8a96b3','IHSG']);
+ const all=S.flatMap(z=>z[0]),mn=Math.min(...all),mx=Math.max(...all);
+ for(let i=0;i<=4;i++){const v=mn+(mx-mn)*i/4,y=8+H-(v-mn)/(mx-mn)*H;x.strokeStyle='#14213d';x.beginPath();x.moveTo(L,y);x.lineTo(w,y);x.stroke();x.fillStyle='#7384a8';x.textAlign='right';x.fillText(UC+f2(v,0),L-6,y+3)}
+ S.forEach(z=>line(x,z[0],L,8,W,H,mn,mx,z[1]));x.textAlign='left';S.forEach((z,i)=>{x.fillStyle=z[1];x.fillText('— '+z[2],L+8+i*170,16)});
+ $('umsg').textContent=`${d.n} saham · data ${d.src}`;utb();
+}
+function utb(){const H=[['s','Simbol'],['lq','LQ45'],['ret','Return'],['bh','B&H'],['sharpe','Sharpe'],['mdd','Max DD'],['n','Trade'],['win','Win'],['pf','PF'],['expo','Exposure'],['dl','Tertunda']];
+ const R=[...UR].sort((a,b)=>ud*((a[uk]??-1e18)-(b[uk]??-1e18)));
+ $('utb').innerHTML='<tr>'+H.map(h=>`<th style="cursor:pointer" onclick="uk='${h[0]}';ud=-ud;utb()">${h[1]}</th>`).join('')+'</tr>'+R.map(r=>`<tr><td>${r.s}</td><td>${r.lq?'✓':''}</td><td class="${cl(r.ret)}">${pc(r.ret)}</td><td class="${cl(r.bh)}">${pc(r.bh)}</td><td>${f2(r.sharpe)}</td><td class="dn">${pc(-r.mdd)}</td><td>${r.n}</td><td>${pc(r.win)}</td><td>${f2(r.pf)}</td><td>${pc(r.expo)}</td><td>${r.dl}</td></tr>`).join('')}
+function kp(id,A){$(id).innerHTML=A.map(k=>`<div class="k" style="background:#0a1122;border:1px solid var(--bd);border-radius:5px;padding:7px"><small>${k[0]}</small><div class="${k[2]||''}" style="font-size:16px">${k[1]}</div></div>`).join('')}
+function lines(id,S,dates,o={}){
+ const[x,w,h]=cv(id),L=60,W=w-L-8,bh=o.bars?h*.2:0,H=h-24-bh,n=S[0][0].length,all=S.flatMap(z=>z[0]),mn=Math.min(...all),mx=Math.max(...all),C=o.c||'';
+ for(let i=0;i<=4;i++){const v=mn+(mx-mn)*i/4,y=8+H-(v-mn)/(mx-mn)*H;x.strokeStyle='#14213d';x.beginPath();x.moveTo(L,y);x.lineTo(w,y);x.stroke();x.fillStyle='#7384a8';x.textAlign='right';x.fillText(C+f2(v,0),L-6,y+3)}
+ S.forEach(z=>line(x,z[0],L,8,W,H,mn,mx,z[1]));
+ (o.vl||[]).forEach(i=>{const px=L+i/(n-1)*W;x.strokeStyle='#2a3b63';x.setLineDash([3,3]);x.beginPath();x.moveTo(px,8);x.lineTo(px,8+H);x.stroke();x.setLineDash([])});
+ if(o.bars){const m=Math.max(...o.bars,1),by=h-18;x.fillStyle='rgba(59,156,255,.45)';o.bars.forEach((b,i)=>x.fillRect(L+i/(n-1)*W,by-b/m*bh,Math.max(1,W/n),b/m*bh));x.fillStyle='#7384a8';x.textAlign='right';x.fillText('posisi',L-6,by-4)}
+ if(o.leg!==false){x.textAlign='left';S.forEach((z,i)=>{x.fillStyle=z[1];x.fillText('— '+z[2],L+8+i*190,16)})}
+ x.fillStyle='#7384a8';x.textAlign='center';[0,.25,.5,.75,1].forEach(t=>x.fillText(dates[Math.min(n-1,Math.round(t*(n-1)))],L+t*W,h-3))}
+async function wf(){
+ $('wmsg').textContent='mengoptimasi tiap fold…';const q=qs(),key=q.toString();q.set('train',$('wtr').value);q.set('test',$('wte').value);q.set('anch',$('wan').checked?1:0);q.set('ostop',$('wst').checked?1:0);
+ const d=await (await fetch('/api/walkforward?'+q)).json();if(d.error){$('wmsg').textContent=d.error;return}
+ d.key=key;LAST.wf=d;const so=d.so,sb=d.sb;
+ kp('wkpi',[['Sharpe OOS',f2(so.sharpe),''],['Sharpe IS (rata² fold)',f2(d.mean_is),''],['Efisiensi WF',d.eff==null?'—':f2(d.eff),''],['Sharpe terbaik seluruh data',f2(d.full.sh),''],
+  ['Return OOS',pc(so.ret),cl(so.ret)],['Return B&H (periode sama)',pc(sb.ret),cl(sb.ret)],['Max DD OOS',pc(-so.mdd),'dn'],['Fold profit',pc(d.pos),''],['Parameter unik',d.distinct+' dari '+d.folds.length+' fold','']]);
+ lines('weq',[[d.eq,'#3b9cff','Out-of-sample (tersambung)'],[d.bh,'#22d273','Buy & hold']],d.dates,{vl:d.vl,c:d.ccy});
+ tbl('wtb',['#','Training','Test',d.gl[0],d.gl[1],'Stop %','Sharpe IS','Sharpe OOS','Return OOS','Trade'],d.folds.map((f,i)=>[[i+1],[f.tr0.slice(2)+' → '+f.tr1.slice(2)],[f.te0.slice(2)+' → '+f.te1.slice(2)],[f.a],[f.b],[f.st==0?'tanpa':f.st],[f2(f.isS)],[f2(f.oosS),cl(f.oosS)],[pc(f.oosR),cl(f.oosR)],[f.n]]));
+ $('wmsg').textContent=`${$('asset').value||'NQ'} · ${d.folds.length} fold · data ${d.src}`}
+async function port(){
+ $('pmsg').textContent='menghitung…';const q=qs(),key=q.toString();q.set('k',$('pk').value);q.set('rank',$('prk').value);q.set('lq',$('plq').checked?1:0);
+ const d=await (await fetch('/api/portfolio?'+q)).json();if(d.error){$('pmsg').textContent=d.error;return}
+ d.key=key;LAST.port=d;const s=d.st,b=d.sb;
+ kp('pkpi',[['Return',pc(s.ret),cl(s.ret)],['CAGR',pc(s.cagr),cl(s.cagr)],['Sharpe',f2(s.sharpe),''],['Sortino',f2(s.sortino),''],['Max DD',pc(-s.mdd),'dn'],['Return B&H bobot sama',pc(b.ret),cl(b.ret)],
+  ['Total trade',s.n,''],['Win rate',pc(s.win),''],['Profit factor',f2(s.pf),''],['Rata² posisi',f2(s.avgpos,1)+' / '+d.k,''],['Turnover tahunan',f2(s.turn,1)+'×',''],['Hari tertunda ARA/ARB',s.dl,'']]);
+ const S=[[d.eq,'#3b9cff','Portofolio satu rekening'],[d.bh,'#22d273','B&H bobot sama']];if(d.bench)S.push([d.bench,'#8a96b3','IHSG']);
+ lines('peq',S,d.dates,{bars:d.npos,c:d.ccy});
+ tbl('psn',['Maks posisi','Return','Sharpe','Max DD','Trade'],d.sens.map(r=>{const c=r.k==d.k?'up':'';return[[r.k+(r.k==d.k?' ◀':''),c],[pc(r.ret),cl(r.ret)],[f2(r.sharpe)],[pc(-r.mdd),'dn'],[r.n]]}));
+ tbl('pct',['Kontributor P&L','P&L','Trade'],d.top.map(r=>[[r.s],[f2(r.pnl,0),cl(r.pnl)],[r.n]]).concat(d.bot.map(r=>[[r.s],[f2(r.pnl,0),cl(r.pnl)],[r.n]])));
+ if(!d.sectors.length)$('psec').innerHTML='<tr><th>Sektor</th></tr><tr><td style="color:var(--mu)">hanya tersedia untuk grup IDX</td></tr>';else tbl('psec',['Sektor','Rata² posisi','P&L','Trade'],d.sectors.map(r=>[[r.sector],[f2(r.avg,2)+(d.smax&&r.avg>=d.smax*.9?' ▲':'')],[f2(r.pnl,0),cl(r.pnl)],[r.n]]));
+ $('pmsg').textContent=`${d.nsym} saham${d.smax?' · maks '+d.smax+'/sektor':''} · data ${d.src}`}
+
+const LAST={},PAL=['#3b9cff','#22d273','#ffb020','#ff4d5e','#b46bff','#2ee6d6','#ff7ac6','#9ad04a'],SN={sma:'SMA',brk:'Breakout',rsi:'RSI',bb:'Bollinger',macd:'MACD',obv:'Volume OBV'};
+const mwsum=d=>[['Jumlah saham',d.n,''],['Total fold',d.nf,''],['Median Sharpe OOS',f2(d.medOOS),cl(d.medOOS)],['Median Sharpe IS',f2(d.medIS),''],['Saham Sharpe OOS > 0',pc(d.pos),''],['Kalahkan B&H (OOS)',pc(d.beat),''],['Median efisiensi WF',d.medEff==null?'—':f2(d.medEff),''],['Pergantian parameter antar-fold',pc(d.chg),''],['Kombinasi terpopuler (pangsa)',pc(d.modal),'']];
+async function mwf(){
+ $('mwmsg').textContent='menjalankan walk-forward tiap saham…';const q=qs();q.set('train',$('wtr').value);q.set('test',$('wte').value);q.set('anch',$('wan').checked?1:0);q.set('ostop',$('wst').checked?1:0);q.set('lq',$('mlq').checked?1:0);
+ const d=await (await fetch('/api/mwf?'+q)).json();if(d.error){$('mwmsg').textContent=d.error;return}
+ LAST.mwf=d;kp('mwkpi',mwsum(d));const mx=Math.max(...d.counts.flat(),1);
+ $('mwcap').textContent=`Frekuensi pemilihan parameter (baris: ${d.gl[0]}, kolom: ${d.gl[1]})`;
+ heat('mwh',d.counts,d.fs,d.ss,v=>`rgba(59,156,255,${.12+.85*v/mx})`,v=>v||'');
+ tbl('mwtp',['Kombinasi terpopuler','Dipilih','Pangsa'],d.top.map(t=>[[t.a+' / '+t.b],[t.n],[pc(t.share)]]).concat(d.ostop?d.stops.map(([s,c])=>[['Stop '+(s==0?'tanpa':s+'%')],[c],[pc(c/d.nf)]]):[]));
+ tbl('mwtb',['Simbol','Sharpe IS','Sharpe OOS','Efisiensi','Return OOS','B&H','Param unik','Pergantian'],[...d.rows].sort((a,b)=>b.oosS-a.oosS).map(r=>[[r.s],[f2(r.isS)],[f2(r.oosS),cl(r.oosS)],[r.eff==null?'—':f2(r.eff)],[pc(r.oosR),cl(r.oosR)],[pc(r.bhR),cl(r.bhR)],[r.uniq],[pc(r.chg)]]));
+ $('mwmsg').textContent=`${d.n} saham · ${d.nf} fold · data ${d.src}`}
+async function stress(){
+ $('smsg').textContent='menghitung…';const q=qs();q.set('target',$('stt').value);q.set('k',$('pk').value);q.set('rank',$('prk').value);q.set('lq',$('plq').checked?1:0);q.set('sf',$('ssf').value||'');q.set('st',$('sst').value||'');
+ const d=await (await fetch('/api/stress?'+q)).json();if(d.error){$('smsg').textContent=d.error;return}
+ LAST.stress=d;const b=d.base;
+ kp('skpi',[['Return dasar',pc(b.ret),cl(b.ret)],['Max DD dasar',pc(-b.mdd),'dn'],['Hari terburuk dasar',pc(b.worst),'dn'],['Jumlah trade',b.n,''],['Waktu guncangan sintetis',d.t0,'']]);
+ tbl('shist',['Skenario historis','Periode','Bar','Return','Max DD','Hari terburuk','B&H','Eksposur'],d.hist.map(r=>r.covered?[[r.name+(r.partial?' (sebagian)':'')],[r.d0.slice(2)+' → '+r.d1.slice(2)],[r.bars],[pc(r.ret),cl(r.ret)],[pc(-r.mdd),'dn'],[pc(r.worst),'dn'],[pc(r.bh),cl(r.bh)],[pc(r.expo)]]:[[r.name],[r.d0.slice(2)+' → '+r.d1.slice(2)],['di luar data'],[''],[''],[''],[''],['']]));
+ tbl('sshk',['Guncangan sintetis','Return','Δ vs dasar','Max DD','Hari terburuk','Tertunda ARA/ARB'],d.shocks.map(s=>[[s.name],[pc(s.ret),cl(s.ret)],[pc(s.delta),cl(s.delta)],[pc(-s.mdd),'dn'],[pc(s.worst),'dn'],[s.dl]]));
+ const S=[[d.eq,'#8a96b3','Dasar']].concat(d.shocks.map((s,i)=>[s.eq,PAL[i%8],s.name]));
+ $('sleg').innerHTML=S.map(z=>`<span style="color:${z[1]};margin-right:14px">— ${z[2]}</span>`).join('');
+ lines('seq',S,d.dates,{leg:false,vl:[Math.max(0,d.dates.indexOf(d.t0))]});
+ $('smsg').textContent=`${d.target=='port'?'portofolio':'aset'} · indeks equity (awal = 100) · data ${d.src}`}
+let CMR=[],cmk='sharpe',cmd=-1;
+async function cmpRun(){
+ $('cmmsg').textContent='membandingkan…';const q=qs();q.set('ftf',$('ctf').value||0);q.set('wfm',$('cmw').checked?1:0);q.set('train',$('wtr').value);q.set('test',$('wte').value);
+ const d=await (await fetch('/api/compare?'+q)).json();if(d.error){$('cmmsg').textContent=d.error;return}
+ LAST.cmp=d;CMR=d.rows;const nm=r=>r.name+(r.tf?' +SMA'+r.tf:''),bs=[...d.rows].sort((a,b)=>b.sharpe-a.sharpe),best=bs[0];
+ kp('cmkpi',[['Aset',d.asset,''],['Periode',d.dates[0]+' → '+d.dates[d.dates.length-1],''],['Return buy & hold',pc(d.bs.ret),cl(d.bs.ret)],['Sharpe tertinggi',nm(best),''],['Nilai Sharpe itu',f2(best.sharpe),cl(best.sharpe)],
+  ['Mengalahkan B&H',d.rows.filter(r=>r.ret>d.bs.ret).length+' dari '+d.rows.length,''],['Strategi profit',d.rows.filter(r=>r.ret>0).length+' dari '+d.rows.length,'']]);
+ const S=[[d.bh,'#8a96b3','Buy & hold']].concat(bs.slice(0,5).map((r,i)=>[r.eq,PAL[i%8],nm(r)]));
+ $('cmleg').innerHTML=S.map(z=>`<span style="color:${z[1]};margin-right:14px">— ${z[2]}</span>`).join('');lines('cmeq',S,d.dates,{leg:false});
+ cmt();$('cmmsg').textContent=`${d.asset} · ${d.wf?'walk-forward (OOS)':'parameter default'} · data ${d.src}`}
+function cmt(){const d=LAST.cmp;if(!d)return;const H=[['name','Strategi'],['tf','Filter'],['params','Parameter'],['ret','Return'],['cagr','CAGR'],['sharpe','Sharpe'],['mdd','Max DD'],['pf','Profit factor'],['win','Win rate'],['n','Trade'],['score','Lulus']];
+ const R=[...CMR].sort((a,b)=>cmd*(((a[cmk]??-1e18)>(b[cmk]??-1e18))?1:((a[cmk]??-1e18)<(b[cmk]??-1e18))?-1:0)),B=d.bs;
+ $('cmtb').innerHTML='<tr>'+H.map(h=>`<th style="cursor:pointer" onclick="cmk='${h[0]}';cmd=-cmd;cmt()">${h[1]}</th>`).join('')+'<th></th></tr>'+
+  `<tr style="color:var(--mu)"><td>Buy &amp; hold</td><td>—</td><td>—</td><td class="${cl(B.ret)}">${pc(B.ret)}</td><td>${pc(B.cagr)}</td><td>${f2(B.sharpe)}</td><td class="dn">${pc(-B.mdd)}</td><td>—</td><td>—</td><td>—</td><td></td><td></td></tr>`+
+  R.map(r=>`<tr><td>${r.name}</td><td>${r.tf?'SMA '+r.tf:'—'}</td><td>${r.params}</td><td class="${cl(r.ret)}">${pc(r.ret)}</td><td>${pc(r.cagr)}</td><td class="${cl(r.sharpe)}">${f2(r.sharpe)}</td><td class="dn">${pc(-r.mdd)}</td><td>${f2(r.pf)}</td><td>${pc(r.win)}</td><td>${r.n}</td><td title="Return>B&H · Sharpe>0,5 · PF>1,3 · Trade≥30">${r.score}/4 ${r.crit.map(x=>x?'●':'○').join('')}</td><td><a href="#" style="color:var(--ac)" onclick="loadCmp('${r.key}',${r.tf});return false">muat</a></td></tr>`).join('')}
+function loadCmp(k,tf){$('strat').value=k;lab(1);$('tf').value=tf;run();window.scrollTo(0,0)}
+let FT=null;
+function flowSyms(){const a=(G.IDX||[]).filter(s=>s!='IHSG'),cur=$('fsym').value;$('fsym').innerHTML=a.map(s=>`<option>${s}</option>`).join('');$('fsym').value=a.includes(cur)?cur:(a.includes('BBCA')?'BBCA':a[0])}
+function FRESET(){if(FT)flowPoll()}
+let FB=0;
+const sfetch=(u,o={})=>fetch(u,{...o,headers:{...(o.headers||{}),'X-QT-Token':window.QT_TOKEN||''}});
+function flowStop(){if(FT){clearInterval(FT);FT=null}$('fbtn').textContent='Mulai live'}
+function FSEL(){flowStop();FB=0;$('fwarn').innerHTML=$('fsel').value=='zapi'?'<div style="background:#2a2412;border:1px solid #5c4a22;border-radius:5px;padding:6px 10px;color:#ffd98a">Mode Zapi memakai kuota API: ≈4 request pada segarkan pertama, lalu ≈2 per segarkan. Klik <b>Segarkan</b> untuk satu kali, atau <b>Mulai live</b> untuk auto-segarkan dengan interval pilihan Anda.</div>':''}
+function flowToggle(){if(FT){flowStop();return}
+ const z=$('fsel').value=='zapi',ms=z?Math.max(30,+$('fint').value||60)*1000:2000;
+ if(z&&!confirm(`Auto-segarkan Zapi tiap ${ms/1000} dtk memakai ≈2 request per putaran (≈${Math.round(7200/(ms/1000))} request/jam). Kuota gratis hanya 600/bulan. Lanjutkan?`))return;
+ $('fbtn').textContent='Berhenti';flowPoll();FT=setInterval(flowPoll,ms)}
+function drawBook(b,walls){if(!b.bids.length&&!b.asks.length){const[x]=cv('fbook');x.fillStyle='#7384a8';x.fillText('Order book kosong (pasar tutup?)',10,20);return}
+ const[x,w,h]=cv('fbook'),n=Math.max(b.bids.length,b.asks.length),rh=(h-24)/(2*n),mx=Math.max(...b.bids.map(r=>r[1]),...b.asks.map(r=>r[1]),1),W=new Set(walls.map(k=>k.side+k.price)),bw=r=>r[1]/mx*(w-150);
+ x.textBaseline='middle';x.textAlign='left';
+ [...b.asks].reverse().forEach((r,i)=>{const y=6+i*rh,l=bw(r);x.fillStyle='rgba(255,77,94,.6)';x.fillRect(64,y+1,l,rh-2);x.fillStyle='#d6e0f5';x.fillText(f2(r[0],0),4,y+rh/2);x.fillText(f2(r[1],0)+(W.has('A'+r[0])?' ★':''),68+l,y+rh/2)});
+ const y0=6+n*rh+12;x.fillStyle='#7384a8';x.fillText('— spread —',64,y0-6);
+ b.bids.forEach((r,i)=>{const y=y0+i*rh,l=bw(r);x.fillStyle='rgba(34,210,115,.6)';x.fillRect(64,y+1,l,rh-2);x.fillStyle='#d6e0f5';x.fillText(f2(r[0],0),4,y+rh/2);x.fillText(f2(r[1],0)+(W.has('B'+r[0])?' ★':''),68+l,y+rh/2)})}
+async function flowPoll(){
+ const z=$('fsel').value=='zapi',q=new URLSearchParams({sym:$('fsym').value||'BBCA',big:$('fbig').value,small:$('fsm').value,win:$('fwin').value});
+ if(z){q.set('src','zapi');q.set('brk',FB)}
+ let d;try{const r=await (z?sfetch:fetch)('/api/orderflow?'+q);if(r.status==403){flowStop();$('fsrc').innerHTML='<span style="color:var(--dn)">token ditolak — buka terminal lewat http://localhost:8000 (bukan file index.html) lalu muat ulang</span>';return}d=await r.json()}catch(e){$('fsrc').textContent='server tidak terjangkau';return}
+ if(d.error){if(z)flowStop();$('fsrc').innerHTML=`<span style="color:var(--dn)">${d.error}</span>`;return}
+ const sim=d.src=='SIMULASI',cc=d.label=='BELI'?'up':d.label=='JUAL'?'dn':'',S=d.stats,net=k=>S[k].buy-S[k].sell;
+ $('fsrc').innerHTML=sim?'<span style="color:var(--dn)">● SIMULASI — bukan data pasar</span>':d.src=='ZAPI'?`<span style="color:var(--up)">● ZAPI (Pluang)</span> <span style="color:var(--mu)">transaksi terakhir ${d.last_trade||'—'} · kuota lokal ${d.quota.used}/${d.quota.budget}</span>`:`<span style="color:var(--up)">● FILE</span> <span style="color:var(--mu)">diperbarui ${f2(d.age,0)} dtk lalu</span>`;
+ const WB=m=>`<div style="background:#2a2412;border:1px solid #5c4a22;border-radius:5px;padding:6px 10px;margin-top:4px;color:#ffd98a">${m}</div>`;
+ $('fwarn').innerHTML=sim?'<div style="background:#2a1220;border:1px solid #5c2236;border-radius:5px;padding:6px 10px;color:#ffb3bd">Data order flow ini <b>disimulasikan</b> untuk mendemonstrasikan alat; pola akumulasi/distribusi di sini acak ('+d.phase+') dan tidak mencerminkan saham sungguhan. Untuk data riil, sediakan file feed (lihat orderflow/README.txt).</div>':(d.src=='ZAPI'?(WB('Data lewat agregator pihak ketiga: bisa tertunda belasan detik atau lebih dan tidak setara feed resmi bursa.')+(d.market_open?'':WB('Pasar kemungkinan tutup (perkiraan jam, belum memuat hari libur) — menampilkan sesi terakhir, transaksi terakhir '+(d.last_trade||'—')+'.'))+(d.gap?WB('Kemungkinan ada celah data: interval segarkan terlalu jarang dibanding laju transaksi.'):'')):(d.age>30?WB('File feed tidak diperbarui lebih dari 30 detik — data mungkin basi.'):''));
+ kp('fread',[['Kecenderungan (heuristik)',d.label,cc],['Skor (−1…+1)',f2(d.score),cl(d.score)],['Imbalance buku (berbobot)',pc(d.wimb),cl(d.wimb)],['Aliran lot besar (net)',f2(net('big'),0)+' lot',cl(net('big'))],['Aliran lot kecil (net)',f2(net('small'),0)+' lot',cl(net('small'))],
+  ['Semua transaksi (net)',f2(net('big')+net('mid')+net('small'),0)+' lot',cl(net('big')+net('mid')+net('small'))],['Spread / harga tengah',f2(d.spread,0)+' / '+f2(d.mid,0),''],['VWAP jendela',d.vwap==null?'—':f2(d.vwap,0),''],['Transaksi dalam jendela',d.n+(d.unk?' (+'+d.unk+' tak terklasifikasi)':''),'']]);
+ $('fpat').innerHTML=`<b>Pola:</b> ${d.pattern}<br><span style="color:var(--mu)">Keyakinan: ${d.conf}${d.walls.length?' · dinding: '+d.walls.map(k=>(k.side=='B'?'bid ':'ask ')+f2(k.price,0)+' ('+f2(k.lots,0)+' lot, '+f2(k.x,1)+'× median)').join(', '):''}</span>`;
+ drawBook(d.book,d.walls);
+ if(d.cvd.all.length>1)lines('fcvd',[[d.cvd.all,'#3b9cff','Semua'],[d.cvd.big,'#ffb020','Besar'],[d.cvd.small,'#8a96b3','Kecil']],d.cvd.t,{});else{cv('fcvd')}
+ tbl('ftape',['Waktu','Harga','Lot','Sisi'],d.tape.map(t=>[[t.t],[f2(t.price,0)],[(t.big?'◆ ':'')+f2(t.lots,0)],[t.side=='B'?'BELI':t.side=='S'?'JUAL':'?',t.side=='B'?'up':t.side=='S'?'dn':'']]));
+ const b=d.brk;
+ if(b){tbl('fgrp',['Kelompok broker'+(sim?' (kode simulasi)':b.mapped?'':' (belum dipetakan)')+(b.partial?' — hanya 10 broker net teratas per sisi; klasifikasi lokal/asing versi Pluang':''),'Beli (lot)','Jual (lot)','Net (lot)'],b.groups.map(g=>[[g.g],[f2(g.buy,0)],[f2(g.sell,0)],[f2(g.net,0),cl(g.net)]]));
+  const R=Math.max(b.buyers.length,b.sellers.length);tbl('fbrk',['Net beli teratas','Net lot','Net jual teratas','Net lot'],Array.from({length:R},(_,i)=>[[b.buyers[i]?b.buyers[i].b+' ('+b.buyers[i].g+')':''],[b.buyers[i]?f2(b.buyers[i].net,0):'','up'],[b.sellers[i]?b.sellers[i].b+' ('+b.sellers[i].g+')':''],[b.sellers[i]?f2(b.sellers[i].net,0):'','dn']]).concat([[['Konsentrasi 5 pembeli teratas'],[b.conc==null?'—':pc(b.conc)],[''],['']]]))}
+ else{$('fgrp').innerHTML=`<tr><td style="color:var(--mu)">${d.src=='ZAPI'?'Klik <b>Muat broker</b> untuk mengambil broker summary (1 request tambahan).':'Broker summary tidak tersedia (tulis orderflow/live/&lt;SIMBOL&gt;_broker.csv).'}</td></tr>`;$('fbrk').innerHTML=''}
+}
+let ZT=null,ZRUN=false;
+async function zStatus(){let d;try{d=await (await fetch('/api/zapi/status')).json()}catch(e){$('zmsg').textContent='server tidak terjangkau';return}
+ if(!d||!d.sync)return;
+ const S=d.sync;
+ $('zst').innerHTML=d.key?`<span style="color:var(--up)">● API key terdeteksi ${d.hint}</span>`:'<span style="color:var(--dn)">○ API key belum diisi</span> <span style="color:var(--mu);font-weight:400">— buat file zapi_key.txt di folder aplikasi (isi: key Anda saja), lalu restart server</span>';
+ kp('zkpi',[['Kuota lokal terpakai (perkiraan)',d.used+' / '+d.budget,d.used>=d.budget*.9?'dn':''],['Bulan',d.month,''],['Sumber data terminal',d.src=='CSV'?'CSV (data riil)':'SIMULASI',d.src=='CSV'?'up':'dn'],['Berkas saham di data/',d.n_files,''],['Biaya unduh riwayat',d.cost_backfill+' request',''],['Biaya pembaruan harian',d.cost_daily+' request','']]);
+ $('zlog').innerHTML=(S.running?`Berjalan (${S.mode==='backfill'?'unduh riwayat':'pembaruan harian'}): ${S.done}/${S.total} · ${S.current}`:S.finished?`${S.message}`:'')+(S.errors&&S.errors.length?'<br><span style="color:var(--dn)">'+S.errors.join('<br>')+'</span>':'')+(d.dropped&&d.dropped.length?'<br>Dilewati saat dimuat (riwayat jauh lebih pendek dari yang lain): '+d.dropped.join(', '):'');
+ if(S.running){ZRUN=true;if(!ZT)ZT=setInterval(zStatus,1500)}else{if(ZT){clearInterval(ZT);ZT=null}if(ZRUN){ZRUN=false;if(S.written>0){$('zmsg').textContent='data diperbarui — memuat ulang halaman…';setTimeout(()=>location.reload(),1500)}}}}
+async function zAct(path,body,ask){if(ask&&!confirm(ask))return;$('zmsg').textContent='…';let r,d;
+ try{r=await sfetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body||{})});if(r.status==403){$('zmsg').textContent='token ditolak — buka terminal lewat http://localhost:8000 (bukan file index.html) lalu muat ulang';return}d=await r.json()}catch(e){$('zmsg').textContent='gagal menghubungi server';return}
+ $('zmsg').textContent=d.error?d.error:(d.foreign!==undefined?`koneksi OK — ${d.foreign} broker asing, ${d.local} lokal; kuota ${d.used}/${d.budget}`:'sinkronisasi dimulai');zStatus()}
+const zTest=()=>zAct('/api/zapi/test',{});
+const zSync=m=>zAct('/api/zapi/sync',{mode:m,extra:$('zex').value},m=='backfill'?'Mengunduh riwayat harian ±3 tahun untuk LQ45 + saham tambahan: ≈1 request per saham (≈45 dari kuota gratis 600/bulan); berkas yang masih segar dilewati. Lanjutkan?':'Memperbarui data harian lewat stock-summary: 1 request per hari bursa yang tertinggal (maks 31). Lanjutkan?');
+function pctl(a,p){const s=[...a].sort((x,y)=>x-y);return s[Math.min(s.length-1,Math.max(0,Math.round(p/100*(s.length-1))))]}
+function hist(id,arr,base,fmt,col){const[x,w,h]=cv(id),B=24,mn=Math.min(...arr,base),mx=Math.max(...arr,base),bw=(w-12)/B,bins=Array(B).fill(0);arr.forEach(v=>bins[Math.min(B-1,Math.floor((v-mn)/(mx-mn||1)*B))]++);const top=Math.max(...bins);
+ x.globalAlpha=.8;bins.forEach((c,i)=>{x.fillStyle=col;x.fillRect(6+i*bw+1,h-22-c/top*(h-40),bw-2,c/top*(h-40))});x.globalAlpha=1;
+ const bx=6+(base-mn)/(mx-mn||1)*(w-12);x.strokeStyle='#ffb020';x.lineWidth=2;x.beginPath();x.moveTo(bx,16);x.lineTo(bx,h-22);x.stroke();x.lineWidth=1;
+ x.fillStyle='#7384a8';x.textAlign='left';x.fillText(fmt(mn),6,h-8);x.textAlign='right';x.fillText(fmt(mx),w-6,h-8);x.textAlign='center';x.fillText('P5 '+fmt(pctl(arr,5))+' · P50 '+fmt(pctl(arr,50))+' · P95 '+fmt(pctl(arr,95)),w/2,11)}
+function mcsum(d){const b=d.base,P=pctl,fr=(a,f)=>a.filter(f).length/a.length;return[
+ ['Return asli (level trade)',pc(b.ret),cl(b.ret)],['Max DD asli (level trade)',pc(-b.mdd),'dn'],['Max DD urutan acak P95',pc(-P(d.dd,95)),'dn'],['P(Max DD > asli)',pc(fr(d.dd,v=>v>b.mdd+1e-12)),''],
+ ['Return bootstrap P5',pc(P(d.boot,5)),cl(P(d.boot,5))],['Return bootstrap median',pc(P(d.boot,50)),cl(P(d.boot,50))],['P(rugi) bootstrap',pc(fr(d.boot,v=>v<=0)),''],
+ ['Return buang 20% trade P5',pc(P(d.drop,5)),cl(P(d.drop,5))],['P(rugi) buang 20% trade',pc(fr(d.drop,v=>v<=0)),''],
+ ['Parameter tetangga profit',pc(fr(d.psh,v=>v>0)),''],['Sharpe tetangga median',f2(P(d.psh,50)),''],['Sharpe tetangga P5',f2(P(d.psh,5)),''],['Jumlah trade',b.n,'']]}
+async function mc(){
+ $('mcmsg').textContent='mensimulasikan…';const q=qs();q.set('target',$('mct').value);q.set('n',$('mcn').value);q.set('k',$('pk').value);q.set('rank',$('prk').value);q.set('lq',$('plq').checked?1:0);
+ const d=await (await fetch('/api/montecarlo?'+q)).json();if(d.error){$('mcmsg').textContent=d.error;return}
+ LAST.mc=d;kp('mckpi',mcsum(d));hist('mc1',d.dd,d.base.mdd,pc,'#ff4d5e');hist('mc2',d.boot,d.base.ret,pc,'#3b9cff');hist('mc3',d.drop,d.base.ret,pc,'#8a96b3');hist('mc4',d.psh,d.base.sharpe,f2,'#22d273');
+ $('mcmsg').textContent=`${d.N} simulasi · ${d.base.n} trade · ${d.target=='port'?'portofolio (P&L aditif)':'aset (compounding)'} · data ${d.src}`}
+function dl(name,text,type,bom){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([(bom===false?'':'\ufeff')+text],{type:type||'text/csv'}));a.download=name;a.click()}
+function csv(rows){return rows.map(r=>r.map(v=>{v=v==null?'':String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',')).join('\n')}
+let XC=[];
+const EXPS=()=>XC;
+function SAVE(a){XC=a;try{localStorage.setItem('qt_exp',JSON.stringify(a))}catch(e){}
+ fetch('/api/exps',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)}).then(r=>r.json()).then(j=>{$('xmsg').textContent=($('xmsg').textContent||'')+' · tersimpan di server: experiments.json ('+j.n+')'}).catch(()=>{$('xmsg').textContent=($('xmsg').textContent||'')+' · server tidak terjangkau — hanya tersimpan di browser'});return true}
+async function loadExps(){let s=[],l=[];try{s=await (await fetch('/api/exps')).json();if(!Array.isArray(s))s=[]}catch(e){}
+ try{l=JSON.parse(localStorage.getItem('qt_exp')||'[]')}catch(e){}
+ const ids=new Set(s.map(e=>e.id)),m=s.concat(l.filter(e=>!ids.has(e.id)));XC=m;if(m.length>s.length)SAVE(m);renderExps()}
+const EX={eq:['equity',L=>L.run&&[['date','strategy','buy_hold']].concat(L.run.dates.map((x,i)=>[x,L.run.eq[i],L.run.bh[i]]))],
+ trades:['trades',L=>L.run&&[['entry_date','exit_date','dir','qty_lot_or_unit','entry','exit','pnl','r_multiple']].concat(L.run.all.map(t=>[t.d0,t.date,t.dir,t.qty,t.p0,t.p1,t.pnl,t.r]))],
+ uni:['universe',L=>L.uni&&[['symbol','lq45','return','buy_hold','sharpe','max_dd','trades','win_rate','profit_factor','exposure','delayed_days']].concat(L.uni.rows.map(r=>[r.s,r.lq,r.ret,r.bh,r.sharpe,r.mdd,r.n,r.win,r.pf,r.expo,r.dl]))],
+ wf:['walkforward',L=>L.wf&&[['fold','train_from','train_to','test_from','test_to','param1','param2','stop_pct','sharpe_is','sharpe_oos','return_oos','trades']].concat(L.wf.folds.map((f,i)=>[i+1,f.tr0,f.tr1,f.te0,f.te1,f.a,f.b,f.st,f.isS,f.oosS,f.oosR,f.n]))],
+ pwf:['walkforward_portfolio',L=>L.pwf&&[['fold','train_from','train_to','test_from','test_to','param1','param2','max_positions','stop_pct','sharpe_is','sharpe_oos','return_oos','trades']].concat(L.pwf.folds.map((f,i)=>[i+1,f.tr0,f.tr1,f.te0,f.te1,f.a,f.b,f.K,f.st,f.isS,f.oosS,f.oosR,f.n]))],
+ port:['portfolio',L=>L.port&&[['date','portfolio','buy_hold_equal_weight','open_positions']].concat(L.port.dates.map((x,i)=>[x,L.port.eq[i],L.port.bh[i],L.port.npos[i]]))],
+ mc:['montecarlo',L=>L.mc&&[['metric','value']].concat(mcsum(L.mc).map(r=>[r[0],r[1]]))],
+ compare:['strategy_comparison',L=>L.cmp&&[['strategy','trend_filter_sma','params','return','cagr','sharpe','sortino','max_dd','profit_factor','win_rate','trades','criteria_passed']].concat(L.cmp.rows.map(r=>[r.name,r.tf,r.params,r.ret,r.cagr,r.sharpe,r.sortino,r.mdd,r.pf,r.win,r.n,r.score]))],
+ mwf:['walkforward_multi',L=>L.mwf&&[['symbol','lq45','sharpe_is','sharpe_oos','efficiency','return_oos','buy_hold','unique_params','param_change_rate']].concat(L.mwf.rows.map(r=>[r.s,r.lq,r.isS,r.oosS,r.eff,r.oosR,r.bhR,r.uniq,r.chg]))],
+ stress:['stress',L=>L.stress&&[['type','scenario','from','to','return','max_dd','worst_day','buy_hold','exposure','delta_vs_base','delayed_days']].concat(L.stress.hist.map(r=>['historical',r.name,r.d0,r.d1,r.covered?r.ret:'',r.covered?r.mdd:'',r.covered?r.worst:'',r.covered?r.bh:'',r.covered?r.expo:'','',''])).concat(L.stress.shocks.map(s=>['synthetic',s.name,L.stress.t0,'',s.ret,s.mdd,s.worst,'','',s.delta,s.dl]))],
+ scr:['screener',L=>L.run&&[['symbol','lq45','last','ret_1m','ret_3m','rsi14','vs_high_52w','volume_ratio','avg_value_20d','uptrend','breakout']].concat(L.run.screen.map(r=>[r.s,r.lq,r.last,r.m1,r.m3,r.rsi,r.h52,r.vr,r.val,r.up,r.brk]))],
+ exp:['experiments',L=>EXPS().length&&[['name','saved','asset','strategy','param1','param2','vol_mult','stop_pct','fee_pct','capital','mode','idx_rules','return','cagr','sharpe','sortino','max_dd','profit_factor','win_rate','trades','wf_sharpe_oos','wf_efficiency','port_return','port_sharpe','port_max_dd','port_k']].concat(EXPS().map(e=>[e.name,e.t,e.cfg.asset,e.cfg.strat,e.cfg.fast,e.cfg.slow,e.cfg.vm,e.cfg.stop,e.cfg.fee,e.cfg.cap,e.cfg.mode,e.cfg.rules,e.m.ret,e.m.cagr,e.m.sharpe,e.m.sortino,e.m.mdd,e.m.pf,e.m.win,e.m.n,e.wf&&e.wf.sh,e.wf&&e.wf.eff,e.pt&&e.pt.ret,e.pt&&e.pt.sharpe,e.pt&&e.pt.mdd,e.pt&&e.pt.k]))]};
+function exportCSV(){const k=$('exs').value,r=EX[k][1](LAST);if(!r){$('xmsg').textContent='Belum ada hasil untuk diekspor — jalankan dulu panel terkait.';return}
+ dl(`quant_${EX[k][0]}_${new Date().toISOString().slice(0,10)}.csv`,csv(r));$('xmsg').textContent=`diunduh: ${EX[k][0]} (${r.length-1} baris)`}
+function cfg(){return{asset:$('asset').value,strat:$('strat').value,fast:+$('fast').value,slow:+$('slow').value,vm:+$('vm').value,stop:+$('stop').value,fee:+$('fee').value,cap:+$('cap').value,mode:$('mode').value,rules:$('rules').checked,smax:+$('psm').value,tf:+$('tf').value}}
+function saveExp(){const L=LAST;if(!L.run){$('xmsg').textContent='Jalankan backtest dulu.';return}
+ const key=qs().toString(),d=L.run,s=d.stats,c=cfg(),e={id:Date.now(),t:new Date().toLocaleString('id-ID'),cfg:c,ccy:d.ccy,m:{ret:s.ret,cagr:s.cagr,sharpe:s.sharpe,sortino:s.sortino,mdd:s.mdd,pf:s.pf,win:s.win,n:s.n},eq:d.eq.map(v=>+(v/c.cap*100).toFixed(2)),dates:[d.dates[0],d.dates[d.dates.length-1]]};
+ if(L.wf&&L.wf.key==key)e.wf={sh:L.wf.so.sharpe,eff:L.wf.eff,ret:L.wf.so.ret};
+ if(L.port&&L.port.key==key)e.pt={ret:L.port.st.ret,sharpe:L.port.st.sharpe,mdd:L.port.st.mdd,k:L.port.k};
+ e.name=`${c.asset} ${SN[c.strat]} ${c.fast}/${c.slow} stop ${c.stop}%`+(c.mode=='lo'?' LO':'')+(c.tf?' +SMA'+c.tf:'');
+ const a=EXPS();a.push(e);while(a.length>30)a.shift();if(SAVE(a)){$('xmsg').textContent='tersimpan: '+e.name+(e.wf?' + WF':'')+(e.pt?' + portofolio':'');renderExps()}}
+function loadExp(id){const e=EXPS().find(x=>x.id==id);if(!e)return;const c=e.cfg;$('asset').value=c.asset;$('strat').value=c.strat;lab(0);$('fast').value=c.fast;$('slow').value=c.slow;$('vm').value=c.vm;$('stop').value=c.stop;$('fee').value=c.fee;$('cap').value=c.cap;$('mode').value=c.mode;$('rules').checked=c.rules;$('psm').value=c.smax||0;$('tf').value=c.tf||0;run()}
+function delExp(id){SAVE(EXPS().filter(x=>x.id!=id));renderExps()}
+function expJSON(){const a=EXPS();if(!a.length){$('xmsg').textContent='Belum ada eksperimen tersimpan.';return}dl('quant_eksperimen.json',JSON.stringify(a),'application/json',false)}
+function impExp(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const a=JSON.parse(r.result);if(!Array.isArray(a)||a.some(e=>!e.cfg||!e.m||!Array.isArray(e.eq)))throw 0;const have=new Set(EXPS().map(e=>e.id)),m=EXPS().concat(a.filter(e=>!have.has(e.id)));while(m.length>30)m.shift();if(SAVE(m)){renderExps();$('xmsg').textContent=`diimpor ${a.length} eksperimen`}}catch(e){$('xmsg').textContent='File JSON tidak valid.'}};r.readAsText(f)}
+function renderExps(){const a=EXPS();$('xleg').innerHTML=a.map((e,i)=>`<span style="color:${PAL[i%8]};margin-right:14px">— ${e.name}</span>`).join('');
+ if(a.length){const S=a.map((e,i)=>[e.eq,PAL[i%8],e.name]),n=Math.max(...S.map(z=>z[0].length));lines('xeq',S.filter(z=>z[0].length==n),(LAST.run?LAST.run.dates:Array(n).fill('')),{leg:false})}else{const[x]=cv('xeq')}
+ tbl('xtb',['Nama','Disimpan','Return','Sharpe','Max DD','Trade','WF Sharpe OOS','Efisiensi WF','Portofolio Sharpe','Aksi'],a.map(e=>[[e.name],[e.t],[pc(e.m.ret),cl(e.m.ret)],[f2(e.m.sharpe)],[pc(-e.m.mdd),'dn'],[e.m.n],[e.wf?f2(e.wf.sh):'—'],[e.wf&&e.wf.eff!=null?f2(e.wf.eff):'—'],[e.pt?f2(e.pt.sharpe)+' (K='+e.pt.k+')':'—'],[`<a href="#" style="color:var(--ac)" onclick="loadExp(${e.id});return false">muat</a> · <a href="#" style="color:var(--dn)" onclick="delExp(${e.id});return false">hapus</a>`]]))}
+async function pwf(){
+ $('pwmsg').textContent='mengoptimasi parameter × K per fold… (bisa 10–30 detik)';const q=qs(),key=q.toString();q.set('train',$('wtr').value);q.set('test',$('wte').value);q.set('anch',$('wan').checked?1:0);q.set('ostop',$('wst').checked?1:0);q.set('k',$('pk').value);q.set('rank',$('prk').value);q.set('lq',$('plq').checked?1:0);
+ const d=await (await fetch('/api/pwf?'+q)).json();if(d.error){$('pwmsg').textContent=d.error;return}
+ d.key=key;LAST.pwf=d;const so=d.so,sb=d.sb;
+ kp('pwkpi',[['Sharpe OOS',f2(so.sharpe),''],['Sharpe IS (rata² fold)',f2(d.mean_is),''],['Efisiensi WF',d.eff==null?'—':f2(d.eff),''],['Sharpe terbaik seluruh data',f2(d.full.sh),''],['Return OOS',pc(so.ret),cl(so.ret)],['Return B&H bobot sama',pc(sb.ret),cl(sb.ret)],['Max DD OOS',pc(-so.mdd),'dn'],['Fold profit',pc(d.pos),''],['Konfigurasi unik',d.distinct+' dari '+d.folds.length+' fold','']]);
+ lines('pweq',[[d.eq,'#3b9cff','Portofolio OOS (tersambung)'],[d.bh,'#22d273','B&H bobot sama']],d.dates,{vl:d.vl,c:d.ccy});
+ tbl('pwtb',['#','Training','Test',d.gl[0],d.gl[1],'Maks posisi','Stop %','Sharpe IS','Sharpe OOS','Return OOS','Trade'],d.folds.map((f,i)=>[[i+1],[f.tr0.slice(2)+' → '+f.tr1.slice(2)],[f.te0.slice(2)+' → '+f.te1.slice(2)],[f.a],[f.b],[f.K],[f.st==0?'tanpa':f.st],[f2(f.isS)],[f2(f.oosS),cl(f.oosS)],[pc(f.oosR),cl(f.oosR)],[f.n]]));
+ $('pwmsg').textContent=`${d.nsym} saham · ${d.folds.length} fold · data ${d.src}`}
+function svg(S,w=720,h=200){const all=S.flatMap(z=>z[0]),mn=Math.min(...all),mx=Math.max(...all);
+ const P=S.map(z=>{const d=z[0],st=Math.max(1,Math.floor(d.length/300)),a=d.filter((_,i)=>i%st==0||i==d.length-1);return `<polyline fill="none" stroke="${z[1]}" stroke-width="1.5" points="${a.map((v,i)=>`${(60+i/(a.length-1)*(w-66)).toFixed(1)},${(h-14-(v-mn)/(mx-mn||1)*(h-26)).toFixed(1)}`).join(' ')}"/>`}).join('');
+ return `<svg viewBox="0 0 ${w} ${h}" width="100%"><text x="2" y="12" font-size="10" fill="#555">${f2(mx,0)}</text><text x="2" y="${h-14}" font-size="10" fill="#555">${f2(mn,0)}</text>${P}</svg><div class="lg">${S.map(z=>`<span style="color:${z[1]}">— ${z[2]}</span>`).join(' &nbsp; ')}</div>`}
+const tb=(h,r)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map(a=>`<tr>${a.map(x=>`<td>${x}</td>`).join('')}</tr>`).join('')}</table>`;
+function report(){const L=LAST;if(!L.run&&!L.uni&&!L.wf&&!L.port&&!L.pwf&&!L.mc&&!L.stress&&!L.mwf&&!L.cmp){$('xmsg').textContent='Belum ada hasil — jalankan backtest atau panel lain dulu.';return}
+ const c=cfg(),src=(L.run||L.uni||L.wf||L.port||L.pwf||L.mc||L.stress||L.mwf||L.cmp).src,m=(o,k)=>o[k],kv=o=>tb(['Metrik','Nilai'],o);let h='';
+ h+=`<h2>Konfigurasi</h2>`+kv([['Aset (panel aset)',c.asset],['Strategi',SN[c.strat]],['Parameter',`${c.fast} / ${c.slow}`+(c.strat=='brk'?` · volume × ${c.vm}`:'')],['Stop-loss',c.stop+'%'],['Fee per sisi',c.fee+'%'],['Modal',f2(c.cap,0)],['Mode',c.mode=='lo'?'Long only':'Long/Short'],['Aturan IDX (lot, tick, ARA/ARB)',c.rules?'aktif':'nonaktif'],['Sumber data',src]]);
+ if(L.run){const d=L.run,s=d.stats,b=d.base;h+=`<h2>Backtest ${d.asset}</h2>`+kv([['Return',pc(s.ret)],['CAGR',pc(s.cagr)],['Sharpe',f2(s.sharpe)],['Sortino',f2(s.sortino)],['Max drawdown',pc(-s.mdd)],['Profit factor',f2(s.pf)],['Win rate',pc(s.win)],['Jumlah trade',s.n],['Expectancy',d.ccy+f2(s.exp,0)],['Return buy & hold',pc(b.ret)]])+svg([[d.eq,'#1769d6','Strategi'],[d.bh,'#1a9d52','Buy & hold']])+tb(['Entry','Exit','Arah','Qty','Harga masuk','Harga keluar','P&L'],d.trades.map(t=>[t.d0,t.date,t.dir,f2(t.qty,d.rules?0:2),f2(t.p0,d.ccy=='Rp'?0:2),f2(t.p1,d.ccy=='Rp'?0:2),f2(t.pnl,0)]))}
+ if(L.uni){const d=L.uni;h+=`<h2>Backtest universe (${d.n} saham)</h2>`+kv([['Saham profit',pc(d.prof)],['Kalahkan buy & hold',pc(d.beat)],['Median Sharpe',f2(d.med)],['Return portofolio bobot sama',pc(d.ps.ret)],['Sharpe bobot sama',f2(d.ps.sharpe)],['Max DD bobot sama',pc(-d.ps.mdd)],['Return B&H bobot sama',pc(d.pb.ret)]])+svg([[d.port,'#1769d6','Strategi (bobot sama)'],[d.bport,'#1a9d52','Buy & hold (bobot sama)']])+tb(['Simbol','Return','B&H','Sharpe','Max DD','Trade','Win','Tertunda ARA/ARB'],[...d.rows].sort((a,b)=>b.sharpe-a.sharpe).map(r=>[r.s,pc(r.ret),pc(r.bh),f2(r.sharpe),pc(-r.mdd),r.n,pc(r.win),r.dl]))}
+ const wfs=(t,d,K)=>`<h2>${t}</h2>`+kv([['Sharpe out-of-sample',f2(d.so.sharpe)],['Sharpe in-sample (rata² fold)',f2(d.mean_is)],['Efisiensi WF',d.eff==null?'—':f2(d.eff)],['Sharpe terbaik seluruh data (in-sample)',f2(d.full.sh)],['Return OOS',pc(d.so.ret)],['Return B&H periode sama',pc(d.sb.ret)],['Max DD OOS',pc(-d.so.mdd)],['Fold profit',pc(d.pos)]])+svg([[d.eq,'#1769d6','Out-of-sample'],[d.bh,'#1a9d52','Buy & hold']])+tb(['#','Training','Test','Param 1','Param 2'].concat(K?['Maks posisi']:[]).concat(['Stop %','Sharpe IS','Sharpe OOS','Return OOS']),d.folds.map((f,i)=>[i+1,f.tr0+' → '+f.tr1,f.te0+' → '+f.te1,f.a,f.b].concat(K?[f.K]:[]).concat([f.st==0?'tanpa':f.st,f2(f.isS),f2(f.oosS),pc(f.oosR)])));
+ if(L.wf)h+=wfs('Walk-forward aset',L.wf,0);
+ if(L.port){const d=L.port,s=d.st;h+=`<h2>Portofolio satu rekening (maks ${d.k} posisi, ${d.nsym} saham)</h2>`+kv([['Return',pc(s.ret)],['CAGR',pc(s.cagr)],['Sharpe',f2(s.sharpe)],['Max drawdown',pc(-s.mdd)],['Return B&H bobot sama',pc(d.sb.ret)],['Jumlah trade',s.n],['Rata-rata posisi terisi',f2(s.avgpos,1)],['Turnover tahunan',f2(s.turn,1)+'×'],['Hari tertunda ARA/ARB',s.dl]])+svg([[d.eq,'#1769d6','Portofolio'],[d.bh,'#1a9d52','B&H bobot sama']].concat(d.bench?[[d.bench,'#888','IHSG']]:[]))+tb(['Maks posisi','Return','Sharpe','Max DD','Trade'],d.sens.map(r=>[r.k,pc(r.ret),f2(r.sharpe),pc(-r.mdd),r.n]))+(d.sectors&&d.sectors.length?tb(['Sektor'+(d.smax?' (batas '+d.smax+')':''),'Rata² posisi','P&L','Trade'],d.sectors.map(r=>[r.sector,f2(r.avg,2),f2(r.pnl,0),r.n])):'')}
+ if(L.pwf)h+=wfs('Walk-forward portofolio',L.pwf,1);
+if(L.cmp){const d=L.cmp,bs=[...d.rows].sort((a,b)=>b.sharpe-a.sharpe);h+=`<h2>Perbandingan strategi — ${d.asset} (${d.wf?'walk-forward OOS':'parameter default'}, ${d.dates[0]} → ${d.dates[d.dates.length-1]})</h2>`+tb(['Strategi','Filter','Parameter','Return','CAGR','Sharpe','Max DD','Profit factor','Win rate','Trade','Lulus (dari 4)'],[['Buy & hold','—','—',pc(d.bs.ret),pc(d.bs.cagr),f2(d.bs.sharpe),pc(-d.bs.mdd),'—','—','—','—']].concat(bs.map(r=>[r.name,r.tf?'SMA '+r.tf:'—',r.params,pc(r.ret),pc(r.cagr),f2(r.sharpe),pc(-r.mdd),f2(r.pf),pc(r.win),r.n,r.score])))+svg([[d.bh,'#888','Buy & hold']].concat(bs.slice(0,5).map((r,i)=>[r.eq,PAL[i%8],r.name+(r.tf?' +SMA'+r.tf:'')])))+`<p style="font-size:12px">Memilih pemenang dari banyak kandidat pada data yang sama berisiko overfitting; verifikasi dengan walk-forward dan saham lain.</p>`}
+ if(L.stress){const d=L.stress;h+=`<h2>Uji stres (${d.target=='port'?'portofolio':'aset'})</h2>`+tb(['Skenario historis','Periode','Return','Max DD','Hari terburuk','B&H','Eksposur'],d.hist.map(r=>r.covered?[r.name+(r.partial?' (sebagian)':''),r.d0+' → '+r.d1,pc(r.ret),pc(-r.mdd),pc(r.worst),pc(r.bh),pc(r.expo)]:[r.name,r.d0+' → '+r.d1,'di luar data','','','','']))+tb(['Guncangan sintetis (jatuh '+d.t0+')','Return','Δ vs dasar','Max DD','Hari terburuk','Tertunda ARA/ARB'],d.shocks.map(s=>[s.name,pc(s.ret),pc(s.delta),pc(-s.mdd),pc(s.worst),s.dl]))+svg([[d.eq,'#555','Dasar']].concat(d.shocks.map((s,i)=>[s.eq,PAL[i%8],s.name])))}
+ if(L.mwf){const d=L.mwf;h+=`<h2>Walk-forward multi-saham (${d.n} saham, ${d.nf} fold)</h2>`+kv(mwsum(d).map(r=>[r[0],r[1]]))+tb(['Kombinasi','Dipilih','Pangsa'],d.top.map(t=>[t.a+' / '+t.b,t.n,pc(t.share)]))+tb(['Simbol','Sharpe IS','Sharpe OOS','Efisiensi','Return OOS','B&H','Param unik','Pergantian'],[...d.rows].sort((a,b)=>b.oosS-a.oosS).map(r=>[r.s,f2(r.isS),f2(r.oosS),r.eff==null?'—':f2(r.eff),pc(r.oosR),pc(r.bhR),r.uniq,pc(r.chg)]))}
+ if(L.mc)h+=`<h2>Uji ketahanan (Monte Carlo, ${L.mc.N} simulasi, ${L.mc.target=='port'?'portofolio':'aset'})</h2>`+kv(mcsum(L.mc).map(r=>[r[0],r[1]]))+`<p style="font-size:12px">Level trade: drawdown intra-trade tidak terhitung. Persentil ke-5 return bootstrap &lt; 0 atau sedikit parameter tetangga yang profit menandakan edge rapuh.</p>`;
+ h+=`<h2>Catatan &amp; keterbatasan</h2><ul><li>${src=='simulasi'?'<b>Data adalah SIMULASI</b> — angka tidak mencerminkan pasar sesungguhnya.':'Data dari file CSV pengguna.'}</li><li>Eksekusi di harga close; tanpa slippage, likuiditas, suspensi, atau aksi korporasi.</li><li>Hasil backtest tidak menjamin kinerja masa depan. Dokumen ini alat riset, bukan saran investasi.</li></ul>`;
+ const css='body{font:13px/1.5 Segoe UI,system-ui,sans-serif;max-width:860px;margin:24px auto;padding:0 16px;color:#1a2233}h1{font-size:20px}h2{font-size:15px;margin:26px 0 8px;border-bottom:1px solid #d8deea;padding-bottom:4px}table{border-collapse:collapse;margin:8px 0;font-size:12px}th,td{border:1px solid #d8deea;padding:3px 8px;text-align:right}th:first-child,td:first-child{text-align:left}th{background:#f2f5fa}.lg{font-size:12px;margin-bottom:6px}';
+ dl(`quant_laporan_${new Date().toISOString().slice(0,10)}.html`,`<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Laporan Quant Terminal</title><style>${css}</style></head><body><h1>Laporan Quant Terminal</h1><div>Dibuat ${new Date().toLocaleString('id-ID')}</div>${h}</body></html>`,'text/html',false);$('xmsg').textContent='laporan HTML diunduh'}
+function tbl(id,head,rows){$(id).innerHTML='<tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>`<td class="${c[1]||''}">${c[0]}</td>`).join('')+'</tr>').join('')}
+async function run(){
+ $('msg').textContent='menghitung…';
+ const q=new URLSearchParams({asset:$('asset').value||'NQ',fast:$('fast').value,slow:$('slow').value,stop:$('stop').value,cap:$('cap').value,mode:$('mode').value,fee:$('fee').value,strat:$('strat').value,vm:$('vm').value,rules:$('rules').checked?1:0});
+ const d=await (await fetch('/api/data?'+q)).json();
+ if(d.error){$('msg').textContent=d.error;return}
+ d.key=qs().toString();LAST.run=d;
+ G=d.groups;if(!$('asset').options.length){$('asset').innerHTML=Object.entries(G).filter(e=>e[1].length).map(([g,l])=>`<optgroup label="${g=='IDX'?'IDX (Rupiah)':'Global (USD)'}">`+l.map(s=>`<option>${s}</option>`).join('')+'</optgroup>').join('');$('asset').value=d.asset;flowSyms()}
+ const C=d.ccy,dec=C=='Rp'?0:2;
+ const s=d.stats,b=d.base,cap=+$('cap').value,n=d.eq.length,dp=d.eq[n-1]-d.eq[n-2];
+ $('kpi').innerHTML=[['Equity',C+f2(d.eq[n-1],0),''],['P&L harian',(dp>=0?'+':'-')+C+f2(Math.abs(dp),0),cl(dp)],['Total return',pc(s.ret),cl(s.ret)],['CAGR',pc(s.cagr),cl(s.cagr)],
+ ['Max drawdown',pc(-s.mdd),'dn'],['Sharpe',f2(s.sharpe),''],['Sortino',f2(s.sortino),''],['Profit factor',f2(s.pf),''],['Win rate',pc(s.win),''],
+ ['Total trades',s.n,''],['Avg R:R',f2(s.rr),''],['Expectancy',C+f2(s.exp,0),cl(s.exp)],['Exposure',pc(s.expo),'']].concat(d.rules?[['Hari tertunda ARA/ARB',s.dl,'']]:[]).map(k=>`<div class="p k"><small>${k[0]}</small><div class="${k[2]}">${k[1]}</div></div>`).join('');
+ // equity + drawdown
+ {const[x,w,h]=cv('eq'),L=56,W=w-L-8,eh=h*.68,mn=Math.min(...d.eq,...d.bh),mx=Math.max(...d.eq,...d.bh);
+  for(let i=0;i<=4;i++){const v=mn+(mx-mn)*i/4,y=eh-(v-mn)/(mx-mn)*(eh-8);x.strokeStyle='#14213d';x.beginPath();x.moveTo(L,y);x.lineTo(w,y);x.stroke();x.fillStyle='#7384a8';x.textAlign='right';x.fillText(C+f2(v,0),L-6,y+3)}
+  line(x,d.bh,L,8,W,eh-8,mn,mx,'#22d273');line(x,d.eq,L,8,W,eh-8,mn,mx,'#3b9cff');
+  let pk=0;const dd=d.eq.map(v=>(pk=Math.max(pk,v),(v-pk)/pk*100)),m=Math.min(...dd,-1),y0=eh+14,dh=h-y0-16;
+  x.beginPath();x.moveTo(L,y0);dd.forEach((v,i)=>x.lineTo(L+i/(n-1)*W,y0+v/m*dh));x.lineTo(L+W,y0);x.fillStyle='rgba(255,77,94,.55)';x.fill();
+  x.fillStyle='#7384a8';x.textAlign='right';x.fillText(f2(m,1)+'%',L-6,y0+dh);x.fillText('0%',L-6,y0+8);
+  x.textAlign='center';[0,.25,.5,.75,1].forEach(t=>x.fillText(d.dates[Math.min(n-1,Math.round(t*(n-1)))],L+t*W,h-3))}
+ // monitor
+ tbl('mon',['Simbol','Last','Chg%','Hi(5d)','Lo(5d)','Sinyal'],d.monitor.map(m=>[[m.s],[f2(m.last,m.s=='IHSG'?2:dec)],[f2(m.pct)+'%',cl(m.pct)],[f2(m.hi,m.s=='IHSG'?2:dec)],[f2(m.lo,m.s=='IHSG'?2:dec)],[m.sig,m.sig=='LONG'?'up':m.sig=='SHORT'?'dn':'']]));
+ // monthly
+ {const ys=[...new Set(Object.keys(d.month).map(k=>k.split('-')[0]))],mm=['J','F','M','A','M','J','J','A','S','O','N','D'];
+  heat('mo',ys.map(y=>mm.map((_,i)=>d.month[y+'-'+(i+1)]??null)),ys,mm,v=>rg(v,8),v=>f2(v,1))}
+ // risk
+ tbl('risk',['Metrik','B&H','Strategi'],[['Sharpe','sharpe'],['Sortino','sortino']].map(([t,k])=>[[t],[f2(b[k])],[f2(s[k]),'up']]).concat([[['Max DD'],[pc(b.mdd)],[pc(s.mdd),'dn']],[['CAGR'],[pc(b.cagr)],[pc(s.cagr)]],[['Calmar'],[f2(b.calmar)],[f2(s.calmar)]],[['Profit factor'],['—'],[f2(s.pf)]],[['Win rate'],['—'],[pc(s.win)]]]));
+ // histogram
+ {const[x,w,h]=cv('hist'),r=d.rets,mx=Math.max(...r.map(Math.abs)),B=31,bins=Array(B).fill(0);r.forEach(v=>bins[Math.min(B-1,Math.floor((v+mx)/(2*mx)*B))]++);
+  const top=Math.max(...bins),bw=(w-10)/B;bins.forEach((c,i)=>{const v=-mx+(i+.5)*2*mx/B;x.fillStyle=v>=0?'#22d273':'#ff4d5e';const bh=c/top*(h-22);x.fillRect(5+i*bw+1,h-16-bh,bw-2,bh)});
+  x.fillStyle='#7384a8';x.textAlign='center';[-mx,0,mx].forEach((v,i)=>x.fillText(f2(v,1)+'%',5+i*(w-10)/2,h-3))}
+ // optimisasi & korelasi
+ heat('opt',d.grid,d.fs,d.ss,v=>rg(v,1.5),v=>f2(v));
+ heat('cor',d.corr,d.syms,d.syms,v=>rg(v,1),v=>f2(v,1));
+ tbl('log',['Tanggal','Arah',C=='Rp'&&d.rules?'Lot':'Qty','Entry','Exit','P&L','R'],d.trades.map(t=>[[t.date.slice(5)],[t.dir,t.dir=='Long'?'up':'dn'],[f2(t.qty,C=='Rp'&&d.rules?0:2)],[f2(t.p0,dec)],[f2(t.p1,dec)],[(t.pnl>=0?'+':'')+f2(t.pnl,0),cl(t.pnl)],[f2(t.r,1)+'R',cl(t.r)]]));
+ $('opth').textContent=`Optimisasi — Sharpe (baris: ${d.gl[0]}, kolom: ${d.gl[1]})`;SC=d.screen;scr(d.ccy);
+ $('msg').textContent=`${d.asset} · ${n} bar harian · data ${d.src}`;
+}
+let G={},SC=[],sk='m3',sd=-1,CC='$';
+const SP={sma:['SMA cepat','SMA lambat',20,60],brk:['Breakout N','Exit M',20,10],rsi:['RSI periode','Oversold <',14,30],bb:['Periode','Std ×',20,2],macd:['EMA cepat','EMA lambat',12,26],obv:['OBV SMA','Tren SMA',20,50]};
+function lab(reset){const k=$('strat').value,p=SP[k];$('l1').textContent=p[0];$('l2').textContent=p[1];$('vml').style.display=k=='brk'?'flex':'none';if(reset){$('fast').value=p[2];$('slow').value=p[3]}}
+function scr(c){if(c)CC=c;const idx=CC=='Rp',R=SC.filter(r=>(!$('fq').checked||r.lq)&&(!$('fb').checked||r.brk)&&(!$('fu').checked||r.up)).sort((a,b)=>sd*((a[sk]??-1e18)-(b[sk]??-1e18)));
+ const H=[['s','Simbol'],['lq','LQ45'],['last','Last'],['m1','1M'],['m3','3M'],['rsi','RSI14'],['h52','vs High 52w'],['vr','Vol ×20d'],['val',idx?'Nilai/hari (Rp M)':'Nilai/hari ($ jt)'],['up','Uptrend'],['brk','Breakout']];
+ $('scr').innerHTML='<tr>'+H.map(h=>`<th style="cursor:pointer" onclick="sk='${h[0]}';sd=-sd;scr()">${h[1]}</th>`).join('')+'</tr>'+R.map(r=>`<tr><td>${r.s}</td><td>${r.lq?'✓':''}</td><td>${f2(r.last,idx?0:2)}</td><td class="${cl(r.m1)}">${pc(r.m1)}</td><td class="${cl(r.m3)}">${pc(r.m3)}</td><td class="${r.rsi>70?'dn':r.rsi<30?'up':''}">${f2(r.rsi,0)}</td><td>${pc(r.h52)}</td><td class="${r.vr>=1.5?'up':''}">${r.vr==null?'—':f2(r.vr)}</td><td>${r.val==null?'—':f2(r.val/(idx?1e9:1e6),0)}</td><td class="up">${r.up?'●':''}</td><td class="up">${r.brk?'▲':''}</td></tr>`).join('')}
+function pick(){const i=G.IDX.includes($('asset').value);$('cap').value=i?100000000:100000;$('fee').value=i?0.2:0.05;$('mode').value=i?'lo':'ls';$('rules').checked=i;run()}
+addEventListener('resize',()=>{run();renderExps()});run().then(loadExps);zStatus();
+</script></body></html>
