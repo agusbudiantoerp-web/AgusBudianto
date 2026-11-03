@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diagnosa Quant Terminal</title>
+<style>
+body{margin:0;padding:20px;background:#070d1a;color:#d6e0f5;font:14px/1.6 "Segoe UI",system-ui,sans-serif}
+h1{font-size:18px;margin:0 0 12px} .r{padding:6px 10px;border:1px solid #1b2a4a;border-radius:6px;margin:6px 0;background:#0c1427}
+.ok{color:#2ecc71}.bad{color:#ff4d5e}.mu{color:#7384a8} pre{white-space:pre-wrap;word-break:break-word;margin:6px 0 0;font-size:12px;color:#ffb3ba}
+button{background:#3b9cff;color:#06101f;border:0;border-radius:6px;padding:8px 14px;font-weight:600;cursor:pointer}
+</style></head><body>
+<h1>Diagnosa Quant Terminal</h1>
+<p class="mu">Halaman ini menguji tiap tahap pemuatan. Kirim screenshot hasilnya (terutama baris merah).</p>
+<button id="go">Jalankan diagnosa</button>
+<div id="out"></div>
+<script>
+const out=document.getElementById("out");
+const add=(ok,t,detail)=>{const d=document.createElement("div");d.className="r";d.innerHTML=`<span class="${ok?'ok':'bad'}">${ok?'✔':'✘'}</span> ${t}`+(detail?`<pre>${String(detail).replace(/</g,'&lt;')}</pre>`:'');out.appendChild(d);return d};
+const info=t=>{const d=document.createElement("div");d.className="r mu";d.textContent=t;out.appendChild(d)};
+document.getElementById("go").onclick=async()=>{
+  out.innerHTML="";
+  info("Alamat halaman: "+location.href);
+  if(!location.pathname.endsWith("/")&&!location.pathname.endsWith(".html")) add(false,"Alamat tidak berakhir dengan '/' — buka dengan tanda / di akhir");
+  // 1. file Python
+  const files=["index.html","qt-shim.js","qt-worker.js","py/server.py","py/orderflow.py","py/zapi.py","py/universe.py","py/qt_bridge.py"];
+  const src={};
+  for(const f of files){try{const r=await fetch(f,{cache:"no-store"});add(r.ok,`${f} → HTTP ${r.status}`);if(r.ok&&f.startsWith("py/"))src[f.slice(3)]=await r.text();}catch(e){add(false,f,e)}}
+  // 2. data
+  let found=0;const bases=["data/","../../data/"];
+  for(const b of bases){let n=0;for(const s of["IHSG","BBCA","BBRI","TLKM"]){try{const r=await fetch(b+s+".JK.csv",{cache:"no-store"});if(r.ok)n++}catch(e){}}
+    add(n>0,`Data CSV di "${b}" → ${n} dari 4 berkas contoh ditemukan`+(n?"":" (tidak ada di lokasi ini)"));found+=n}
+  if(!found) info("Tidak ada CSV ditemukan: terminal tetap jalan tetapi memakai data SIMULASI.");
+  // 3. Pyodide
+  let py;const t0=performance.now();
+  try{await new Promise((res,rej)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";s.onload=res;s.onerror=()=>rej(new Error("gagal memuat pyodide.js dari cdn.jsdelivr.net (diblokir jaringan/ekstensi?)"));document.head.appendChild(s)});
+    py=await loadPyodide();add(true,`Pyodide dimuat (${((performance.now()-t0)/1000).toFixed(1)} dtk), Python ${py.runPython("import sys;sys.version.split()[0]")}`)}
+  catch(e){add(false,"Pyodide gagal dimuat",e&&e.stack||e);return}
+  // 4. impor modul
+  try{py.FS.mkdirTree("/py");py.FS.mkdirTree("/data");for(const k in src)py.FS.writeFile("/py/"+k,src[k]);
+    py.runPython("import sys;sys.path.insert(0,'/py')");
+    for(const m of["universe","zapi","orderflow","server","qt_bridge"]){try{py.runPython("import "+m);add(true,"import "+m)}catch(e){add(false,"import "+m+" GAGAL",e.message);return}}
+  }catch(e){add(false,"Persiapan modul gagal",e.message);return}
+  // 5. panggil API
+  try{const r=py.runPython("qt_bridge.handle('/api/data','asset=BBCA&strat=sma&fast=20&slow=60&stop=3&fee=0.2&cap=100000000&mode=lo&rules=1')").toJs();
+    const d=JSON.parse(r[1]);add(r[0]==200&&!d.error,`Panggil /api/data → status ${r[0]}, sumber data: ${d.src||'-'}`,d.error||"")}
+  catch(e){add(false,"Panggilan API gagal",e.message)}
+  info("Selesai. Jika semua ✔, terminal seharusnya jalan di index.html.");
+};
+</script></body></html>
