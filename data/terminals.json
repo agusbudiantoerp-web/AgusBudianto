@@ -1,5 +1,5 @@
 [
   {"nama":"Quant Terminal","deskripsi":"Terminal riset kuantitatif: backtest, walk-forward, portofolio, Monte Carlo, dan stress test saham IDX. Python berjalan penuh di browser Anda (tanpa server). Data harian dari file CSV (bukan kuotasi pasar real-time).","url":"https://agusbudiantoerp-web.github.io/AgusBudianto/projects/quant-terminal/index.html"},
   {"nama":"IDX Terminal","deskripsi":"Pemantau emiten bursa Indonesia: harga, sektor dan grup konglomerasi, berita, serta kepemilikan dan broker summary. Data berupa snapshot yang diperbarui berkala.","url":"https://agusbudiantoerp-web.github.io/AgusBudianto/Projects/idx-terminal/index.html"},
-  {"nama":"PE/VC Investment Engine","deskripsi":"DCF, LBO, cap table VC, Monte Carlo, dan memo investasi dari workbook Excel.","url":""}
+  {"nama":"PE/VC Investment Engine","deskripsi":"DCF, LBO, cap table VC, Monte Carlo, dan memo investasi dari workbook Excel. Workbook contoh berisi data ilustratif; hasil adalah alat bantu keputusan, bukan rekomendasi investasi.","url":"https://pevc-agusbudianto.streamlit.app/"}
 ]
