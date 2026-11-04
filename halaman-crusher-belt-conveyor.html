@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crusher &amp; Belt Conveyor Tambang – Desain dan Perawatan</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceeed;--ink:#1c2a2e;--mut:#56666b;--pan:#f8f9f8;--line:#c9d0d1;--st:#3b4a52;--or:#d1501a;--ok:#2f7d4f;--wa:#b7791f;--ba:#b3402a;--hl:#fde7d8}
+@media(prefers-color-scheme:dark){:root{--bg:#161d20;--ink:#e6ecec;--mut:#9fb0b4;--pan:#1e282c;--line:#34444a;--st:#8fa4ac;--or:#f08a55;--ok:#5cc08a;--wa:#e0a63d;--ba:#e8806a;--hl:#3a2a20}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Barlow,"Segoe UI",Arial,sans-serif}
+h1,h2,h3,nav a,button,.btn,th,label,summary{font-family:"Barlow Condensed","Arial Narrow",Arial,sans-serif}
+header{background:var(--st);color:#fff;padding:30px 20px 24px}
+header div,main{max-width:1100px;margin:auto}
+h1{font-size:clamp(34px,6vw,58px);line-height:1;margin:0 0 10px;letter-spacing:.01em}
+header p{max-width:62ch;margin:0;color:#dfe7e9;font-size:19px}
+nav{position:sticky;top:0;z-index:5;background:var(--pan);border-bottom:1px solid var(--line);display:flex;gap:2px;overflow-x:auto;padding:0 12px}
+nav a{padding:12px 14px;color:var(--mut);text-decoration:none;font-weight:600;font-size:18px;white-space:nowrap;border-bottom:3px solid transparent}
+nav a.on,nav a:hover{color:var(--ink);border-color:var(--or)}
+main{padding:0 20px}section{padding:36px 0 8px;scroll-margin-top:50px}
+h2{font-size:34px;margin:0 0 4px}h3{font-size:22px;margin:20px 0 6px}
+.lead{color:var(--mut);max-width:68ch}
+.card{background:var(--pan);border:1px solid var(--line);border-radius:5px;padding:16px;margin:14px 0}
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+@media(max-width:820px){.two{grid-template-columns:1fr}}
+svg{width:100%;height:auto;background:var(--pan);border:1px solid var(--line);border-radius:5px}
+svg .p{fill:var(--st);stroke:var(--ink);stroke-width:1.5;cursor:pointer;transition:fill .15s}
+svg .p:hover,svg .p.sel{fill:var(--or)}svg text{fill:var(--ink);font:600 12px Barlow,Arial,sans-serif;pointer-events:none}
+svg .ln{stroke:var(--ink);stroke-width:2;fill:none}
+.info h3{margin-top:0;color:var(--or)}.info dt{font:700 15px "Barlow Condensed",Arial;color:var(--mut);margin-top:8px}.info dd{margin:0}
+.f{font-family:"Cambria Math","STIX Two Math",Georgia,serif;background:var(--bg);padding:7px 12px;border-left:3px solid var(--or);margin:8px 0;overflow-x:auto;white-space:nowrap}
+label{display:flex;justify-content:space-between;font-size:16px;font-weight:600;margin-top:9px}
+input[type=range]{width:100%;accent-color:var(--or)}
+input.n,select{padding:4px 6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:3px;font:inherit;width:100%}
+.big{font:700 44px "Barlow Condensed",Arial;line-height:1.1}
+.bd{display:inline-block;padding:2px 10px;border-radius:3px;color:#fff;font:700 15px "Barlow Condensed",Arial}
+.ok{background:var(--ok)}.wa{background:var(--wa)}.ba{background:var(--ba)}
+table{border-collapse:collapse;width:100%;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:5px 9px;text-align:left}th{background:var(--st);color:#fff;font-size:16px}
+details{background:var(--pan);border:1px solid var(--line);border-radius:5px;padding:11px 15px;margin:9px 0}
+summary{cursor:pointer;font-weight:700;font-size:19px}
+.btn{background:var(--or);color:#fff;padding:11px 20px;border-radius:4px;text-decoration:none;display:inline-block;font-weight:700;font-size:20px}
+a:focus-visible,summary:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--wa);outline-offset:2px}
+.note{font-size:14px;color:var(--mut);border-left:3px solid var(--wa);padding-left:10px}
+footer{padding:30px 20px;color:var(--mut);text-align:center;font-size:14px}
+</style></head><body>
+<header><div><h1>Crusher &amp; Belt Conveyor Tambang</h1><p>Klik bagian mesin untuk melihat fungsi dan mode kerusakannya. Hitung desain, lalu susun jadwal perawatan berbasis hour meter.</p></div></header>
+<nav><a href="#crusher" class="on">Crusher</a><a href="#conveyor">Conveyor</a><a href="#planner">Maintenance planner</a><a href="#kasus">Studi kasus</a><a href="#unduh">Unduh Excel</a></nav>
+<main>
+<section id="crusher">
+<h2>Jaw crusher: bagian dan part</h2>
+<p class="lead">Klik tiap komponen pada skema untuk keterangannya.</p>
+<div class="two"><svg id="jaw" viewBox="0 0 520 320" role="img" aria-label="Skema jaw crusher">
+<polygon class="p" data-k="fixed" points="150,40 185,40 225,230 190,230"/>
+<polygon class="p" data-k="swing" points="290,40 255,40 235,230 270,230"/>
+<rect class="p" data-k="cheek" x="195" y="30" width="55" height="10"/>
+<line class="ln" x1="272" y1="60" x2="330" y2="150"/>
+<circle class="p" data-k="ecc" cx="335" cy="155" r="14"/>
+<circle class="p" data-k="fly" cx="420" cy="155" r="48"/>
+<line class="ln" x1="349" y1="155" x2="372" y2="155"/>
+<polygon class="p" data-k="toggle" points="262,232 345,262 345,274 262,244"/>
+<rect class="p" data-k="wedge" x="348" y="255" width="40" height="26"/>
+<polyline class="ln" points="388,268 470,268"/><rect class="p" data-k="spring" x="430" y="256" width="36" height="24"/>
+<text x="120" y="30">Fixed jaw</text><text x="298" y="36">Swing jaw</text><text x="185" y="22">Cheek plate</text><text x="318" y="190">Eccentric</text><text x="392" y="98">Flywheel</text><text x="264" y="296">Toggle plate</text><text x="345" y="300">Wedge (CSS)</text><text x="420" y="248">Tension rod</text><text x="80" y="290" style="font-weight:400">Umpan masuk dari atas</text>
+</svg>
+<div class="card info" id="jinfo"></div></div>
+<h3>Teori dan rumus</h3>
+<div class="g"><div class="card"><b>Tipe crusher</b><br>Jaw: primer, umpan keras. Gyratory: primer kapasitas besar. Cone: sekunder/tersier. Impact (HSI/VSI): material tidak terlalu abrasif. Roll: material lunak/lengket.</div>
+<div class="card"><b>Tahapan</b><br>Primer 1.000 → 150–250 mm, sekunder → 40–80 mm, tersier → 10–25 mm. Rasio reduksi per tahap ± 3–8.</div></div>
+<div class="f">Rasio reduksi RR = F80 / P80</div>
+<div class="f">Bond: W = 10 Wi (1/√P80 − 1/√F80)  [kWh/t, P80 dan F80 dalam µm]</div>
+<div class="f">Jaw (Taggart): T = 0,6 · L · S  [short tph, L dan S dalam inci]</div>
+<div class="f">Umur liner (ton) = massa liner boleh aus / laju aus (g/t)</div>
+<h3>Kalkulator desain crusher</h3>
+<div class="card two" style="grid-template-columns:1fr 1fr"><div id="cc"></div><div>
+<div>Daya motor minimum</div><div class="big" id="cp">–</div>
+<table><tr><td>Rasio reduksi</td><td id="crr"></td></tr><tr><td>Energi Bond</td><td id="cw"></td></tr><tr><td>Kapasitas jaw (Taggart)</td><td id="ccap"></td></tr><tr><td>Utilisasi</td><td><span id="cut" class="bd"></span></td></tr><tr><td>Umur liner</td><td id="cl"></td></tr></table>
+<p class="note">Taggart bersifat konservatif; pakai data kapasitas vendor untuk keputusan akhir.</p></div></div>
+</section>
+
+<section id="conveyor">
+<h2>Belt conveyor: bagian dan part</h2>
+<div class="two"><svg id="cv" viewBox="0 0 620 250" role="img" aria-label="Skema belt conveyor">
+<line class="ln" x1="60" y1="128" x2="540" y2="68"/><line class="ln" x1="60" y1="172" x2="540" y2="112"/>
+<circle class="p" data-k="tail" cx="60" cy="150" r="22"/><circle class="p" data-k="head" cx="540" cy="90" r="22"/>
+<circle class="p" data-k="snub" cx="480" cy="140" r="11"/>
+<rect class="p" data-k="drive" x="565" y="55" width="40" height="30"/>
+<rect class="p" data-k="skirt" x="100" y="108" width="70" height="14"/>
+<polygon class="p" data-k="scraper" points="520,118 534,122 526,134"/>
+<g class="p" data-k="carry" style="fill:none;stroke:none"><circle class="p" data-k="carry" cx="230" cy="112" r="8"/><circle class="p" data-k="carry" cx="300" cy="103" r="8"/><circle class="p" data-k="carry" cx="370" cy="95" r="8"/><circle class="p" data-k="carry" cx="440" cy="86" r="8"/></g>
+<circle class="p" data-k="ret" cx="250" cy="154" r="8"/><circle class="p" data-k="ret" cx="350" cy="142" r="8"/>
+<rect class="p" data-k="takeup" x="300" y="195" width="46" height="30"/><line class="ln" x1="323" y1="157" x2="323" y2="195" stroke-dasharray="4 3"/>
+<line class="ln" x1="60" y1="100" x2="60" y2="60" style="stroke-width:4"/>
+<text x="30" y="56">Beban masuk</text><text x="40" y="196">Tail pulley</text><text x="500" y="46">Head pulley</text><text x="568" y="100">Drive</text><text x="102" y="102">Skirt</text><text x="500" y="160">Snub</text><text x="506" y="146" style="font-weight:400"> </text><text x="182" y="132" style="font-weight:400">Carrying idler</text><text x="200" y="184" style="font-weight:400">Return idler</text><text x="300" y="240">Take-up</text><text x="458" y="132">Scraper</text>
+</svg><div class="card info" id="cinfo"></div></div>
+<h3>Rumus desain</h3>
+<div class="f">Q = 3600 · A · v · ρ  [t/jam]   A = k (0,9B − 0,05)²</div>
+<div class="f">Fu = C f L g [qRO + qRU + (2qB + qG)] + qG H g   |   Daya = Fu v / η</div>
+<div class="f">T1 = Fu · e^(μφ) / (e^(μφ) − 1)   |   Rating belt (N/mm) = T1 / (B·1000) × SF</div>
+<div class="card two" style="grid-template-columns:1fr 1fr"><div id="vc"></div><div>
+<div>Kapasitas</div><div class="big" id="vq">–</div>
+<table><tr><td>Daya motor (+15%)</td><td id="vp"></td></tr><tr><td>Tegangan T1</td><td id="vt"></td></tr><tr><td>Rating belt perlu</td><td id="vr"></td></tr><tr><td>Pilihan awal</td><td id="vb"></td></tr></table>
+<p class="note">Faktor k (penampang), massa roller, dan C adalah asumsi awal; ganti dengan data vendor (CEMA/ISO 5048).</p></div></div>
+</section>
+
+<section id="planner">
+<h2>Maintenance planner</h2>
+<p class="lead">Isi hour meter dan jam jalan per hari. Jatuh tempo dihitung otomatis.</p>
+<div class="card"><label style="max-width:300px">Jam jalan per hari <input class="n" type="number" id="hpd" value="16" min="1" max="24" style="width:80px"></label>
+<table id="pt"><thead><tr><th>Unit</th><th>Tugas PM</th><th>Interval (jam)</th><th>HM terakhir PM</th><th>HM sekarang</th><th>Sisa jam</th><th>Jatuh tempo</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+<h3>Strategi perawatan</h3>
+<div class="g"><div class="card"><b>Preventif</b><br>Berbasis jam/tonase: grease, torque baut, ganti liner terjadwal.</div><div class="card"><b>Prediktif</b><br>Getaran, termografi, analisis oli, ukur ketebalan liner dan belt.</div><div class="card"><b>Korektif terencana</b><br>Idler berisik diganti saat shutdown mingguan, bukan menunggu macet.</div></div>
+<div class="f">MTBF = jam operasi / jumlah kerusakan  |  MTTR = downtime / jumlah kerusakan  |  Availability = MTBF / (MTBF + MTTR)</div>
+</section>
+
+<section id="kasus">
+<h2>Studi kasus pola kegagalan</h2>
+<p class="note">Skenario ilustratif berdasarkan pola kegagalan umum di industri; bukan insiden perusahaan tertentu.</p>
+<details><summary>1. Belt keluar jalur dan tepi robek (conveyor)</summary><p><b>Gejala:</b> tepi belt tergores struktur, tumpahan di sepanjang jalur.<br><b>Akar masalah:</b> idler tidak sejajar, carryback menumpuk di return roller sehingga belt miring.<br><b>Tindakan:</b> pasang scraper sekunder, tracking idler, rutin bersihkan return idler, inspeksi alignment tiap 250 jam.</p></details>
+<details><summary>2. Toggle plate patah (jaw crusher)</summary><p><b>Gejala:</b> swing jaw tidak bergerak, crusher berhenti mendadak.<br><b>Akar masalah:</b> tramp iron atau bongkahan tidak terremuk memicu overload; toggle plate memang dirancang sebagai komponen pengaman.<br><b>Tindakan:</b> magnet dan metal detector di umpan, cadangan toggle plate di gudang, batasi ukuran umpan sesuai gape.</p></details>
+<details><summary>3. Liner aus lebih cepat dari rencana</summary><p><b>Gejala:</b> jaw plate harus diganti jauh sebelum jadwal; ukuran produk membesar.<br><b>Akar masalah:</b> CSS terlalu kecil, umpan terlalu banyak halus (tidak di-scalp), laju aus tidak dilacak per tonase.<br><b>Tindakan:</b> grizzly/scalper, atur CSS, hitung umur liner dengan g/t aktual (sheet Crusher_Desain), balik liner saat aus tidak merata.</p></details>
+<details><summary>4. Bearing eccentric panas dan akhirnya macet</summary><p><b>Gejala:</b> suhu bearing naik bertahap berhari-hari, getaran meningkat.<br><b>Akar masalah:</b> pelumasan kurang atau kontaminasi, tren suhu tidak dipantau.<br><b>Tindakan:</b> grease terjadwal, sensor suhu dengan alarm tren, analisis oli, ganti bearing saat shutdown terencana.</p></details>
+</section>
+
+<section id="unduh"><h2>Unduh Excel</h2>
+<p>Workbook berisi rumus hidup: desain crusher, desain conveyor, maintenance planner, KPI reliabilitas, dan daftar part.</p>
+<a class="btn" href="Crusher_Conveyor_Planner.xlsx" download>Unduh Crusher_Conveyor_Planner.xlsx</a>
+<p class="note">Simpan file HTML dan Excel dalam satu folder agar tombol berfungsi. Interval PM dan rumus adalah titik awal; sesuaikan dengan manual OEM dan data site.</p></section>
+</main><footer>Edukasi dan pra-desain. Keputusan akhir mengikuti data OEM dan tinjauan engineer berkompeten.</footer>
+<script>
+const $=i=>document.getElementById(i),R=Math.PI/180;
+const D={
+fixed:['Fixed jaw plate','Permukaan remuk tetap yang menahan batuan.','Aus, retak, baut kendor.','Tiap 250 jam; ganti saat gigi aus ±70–80%.'],
+swing:['Swing jaw plate','Permukaan remuk bergerak yang menekan batuan ke fixed jaw.','Aus tidak merata, retak.','Tiap 250 jam; balik atau ganti.'],
+cheek:['Cheek plate','Pelindung dinding sisi ruang remuk.','Aus, lepas.','Tiap 250 jam.'],
+ecc:['Eccentric shaft & bearing','Poros eksentrik menggerakkan swing jaw lewat pitman.','Panas, getaran, seal bocor.','Pantau suhu dan getaran tiap shift.'],
+fly:['Flywheel','Menyimpan energi putar untuk menopang langkah remuk.','Baut kendor, retak.','Tiap 500 jam.'],
+toggle:['Toggle plate','Meneruskan gaya remuk sekaligus pengaman overload.','Patah akibat tramp iron atau overload.','Tiap 250 jam; simpan cadangan.'],
+wedge:['Wedge / shim CSS','Mengatur closed side setting (ukuran produk).','Slip, aus, setting berubah.','Cek CSS tiap 250 jam.'],
+spring:['Tension rod & spring','Menjaga toggle plate tetap menempel pada dudukan.','Pegas lemah, rod patah.','Tiap 500 jam.'],
+tail:['Tail pulley','Pulley ujung kembali belt; sering ada take-up.','Bearing panas, material menumpuk.','Tiap 500 jam.'],
+head:['Head pulley + lagging','Pulley penggerak; lagging menambah gesekan.','Lagging aus, belt slip.','Tiap 500 jam; ganti saat alur hilang.'],
+snub:['Snub pulley','Menambah sudut lilit pada head pulley.','Bearing aus, material menempel.','Tiap 500 jam.'],
+drive:['Drive (motor, gearbox, coupling)','Menghasilkan torsi penggerak belt.','Oli kotor, panas, coupling aus.','Oli tiap 2.000 jam; cek harian suhu/suara.'],
+skirt:['Skirt rubber & impact bed','Menahan tumpahan dan meredam beban jatuh di loading.','Aus, celah, karet retak.','Tiap 250 jam.'],
+scraper:['Scraper (primary/secondary)','Membersihkan carryback dari belt.','Bilah aus, tekanan kurang.','Tiap 250 jam.'],
+carry:['Carrying idler','Menumpu belt bermuatan.','Bearing macet, shell aus, berisik.','Tiap 250 jam; ganti saat tidak berputar.'],
+ret:['Return idler','Menumpu belt kembali.','Penumpukan material, macet.','Tiap 500 jam.'],
+takeup:['Take-up (gravity/screw)','Menjaga tegangan belt agar tidak slip.','Kabel/hoist aus, macet.','Tiap 500 jam.']};
+function wire(svg,box){const show=k=>{const d=D[k];$(box).innerHTML=`<h3>${d[0]}</h3><dl><dt>Fungsi</dt><dd>${d[1]}</dd><dt>Mode kerusakan</dt><dd>${d[2]}</dd><dt>Inspeksi / penggantian</dt><dd>${d[3]}</dd></dl>`;$(svg).querySelectorAll('.p').forEach(e=>e.classList.toggle('sel',e.dataset.k==k))};
+ $(svg).querySelectorAll('.p').forEach(e=>{e.setAttribute('tabindex',0);e.setAttribute('role','button');e.setAttribute('aria-label',D[e.dataset.k][0]);e.onclick=()=>show(e.dataset.k);e.onkeydown=ev=>{if(ev.key=='Enter')show(e.dataset.k)}});show(svg=='jaw'?'toggle':'scraper')}
+wire('jaw','jinfo');wire('cv','cinfo');
+function ctl(el,defs,fn){el.innerHTML=defs.map(d=>`<label>${d[1]}<b id="${el.id}v${d[0]}"></b></label><input type="range" id="${el.id}${d[0]}" min="${d[2]}" max="${d[3]}" step="${d[4]}" value="${d[5]}">`).join('');
+ const u=()=>{const v={};defs.forEach(d=>{v[d[0]]=+$(el.id+d[0]).value;$(el.id+'v'+d[0]).textContent=v[d[0]]});fn(v)};el.querySelectorAll('input').forEach(i=>i.oninput=u);u()}
+ctl($('cc'),[['F','F80 umpan (mm)',100,1000,10,300],['P','P80 produk (mm)',10,300,5,75],['Wi','Work index Wi (kWh/t)',5,25,.5,14],['T','Throughput (t/jam)',20,800,10,150],['L','Panjang rahang L (mm)',500,1800,50,1200],['S','CSS (mm)',40,300,5,150],['m','Massa liner boleh aus (kg)',100,1500,50,500],['g','Laju aus (g/t)',1,30,.5,4]],v=>{
+ const rr=v.F/v.P,w=10*v.Wi*(1/Math.sqrt(v.P*1000)-1/Math.sqrt(v.F*1000)),pw=Math.max(0,w)*v.T/.9,cap=.6*(v.L/25.4)*(v.S/25.4)*.9072,ut=v.T/cap,lt=v.m*1000/v.g;
+ $('cp').textContent=pw.toFixed(0)+' kW';$('crr').textContent=rr.toFixed(1)+(rr>8?' (terlalu besar, pakai 2 tahap)':'');$('cw').textContent=w.toFixed(2)+' kWh/t';$('ccap').textContent=cap.toFixed(0)+' t/jam';
+ $('cut').className='bd '+(ut<=.85?'ok':ut<=1?'wa':'ba');$('cut').textContent=(ut*100).toFixed(0)+'% '+(ut<=.85?'OK':'ketat');$('cl').textContent=(lt/1000).toFixed(0)+' kt = '+(lt/v.T).toFixed(0)+' jam'});
+ctl($('vc'),[['B','Lebar belt B (m)',.5,2.4,.05,1.2],['v','Kecepatan v (m/s)',1,6,.1,3],['r','Berat isi ρ (t/m³)',.8,2.4,.1,1.6],['k','Faktor penampang k',.1,.22,.01,.17],['L','Panjang L (m)',50,2000,10,300],['H','Tinggi angkat H (m)',-30,100,1,15],['qB','Massa belt qB (kg/m)',8,60,1,20],['qR','Massa roller qRO+qRU (kg/m)',10,60,1,24],['C','Faktor C',1,2,.05,1.25]],v=>{
+ const A=v.k*Math.pow(.9*v.B-.05,2),Q=3600*A*v.v*v.r,qG=Q*1000/(3600*v.v),Fu=v.C*.022*v.L*9.81*(v.qR+2*v.qB+qG)+qG*v.H*9.81,P=Fu*v.v/1000/.92*1.15,e=Math.exp(.35*210*R),T1=Fu*e/(e-1),rt=T1/(v.B*1000)*8;
+ $('vq').textContent=Q.toFixed(0)+' t/jam';$('vp').textContent=Math.max(0,P).toFixed(0)+' kW';$('vt').textContent=(T1/1000).toFixed(0)+' kN';$('vr').textContent=rt.toFixed(0)+' N/mm';$('vb').textContent=rt<=400?'EP400':rt<=630?'EP630':rt<=800?'EP800':'Steel cord ST1000+'});
+const PL=[['Jaw Crusher','Grease bearing & cek oli',250,12000],['Jaw Crusher','Torque baut liner, cek CSS & toggle',500,11800],['Jaw Crusher','Ganti jaw plate',800,11500],['Jaw Crusher','Inspeksi bearing eccentric',2000,10500],['Cone Crusher','Cek mantle/concave, lube oil',500,11900],['Conveyor CV-01','Cek tracking, idler, skirt, scraper',250,12050],['Conveyor CV-01','Oli gearbox, coupling, brake',2000,10400],['Conveyor CV-01','Ganti idler rusak, cek splice',1000,11300]];
+const tb=document.querySelector('#pt tbody');tb.innerHTML=PL.map((r,i)=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><input class="n" type="number" id="l${i}" value="${r[3]}" aria-label="HM terakhir PM"></td><td><input class="n" type="number" id="h${i}" value="12120" aria-label="HM sekarang"></td><td id="s${i}"></td><td id="d${i}"></td><td id="t${i}"></td></tr>`).join('');
+function plan(){const hp=+$('hpd').value||1;PL.forEach((r,i)=>{const rem=+$('l'+i).value+r[2]-+$('h'+i).value,days=rem/hp,d=new Date(Date.now()+Math.round(days)*864e5);
+ $('s'+i).textContent=rem;$('d'+i).textContent=d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});const t=$('t'+i);t.innerHTML=`<span class="bd ${rem<=0?'ba':days<=7?'wa':days<=30?'wa':'ok'}">${rem<=0?'LEWAT':days<=7?'SEGERA':days<=30?'BULAN INI':'OK'}</span>`})}
+document.querySelectorAll('#planner input').forEach(i=>i.oninput=plan);plan();
+const L=[...document.querySelectorAll('nav a')],S=L.map(a=>$(a.hash.slice(1)));
+addEventListener('scroll',()=>{let k=0;S.forEach((s,i)=>{if(s.getBoundingClientRect().top<120)k=i});L.forEach((a,i)=>a.classList.toggle('on',i==k))},{passive:true});
+</script></body></html>
