@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Desain Perkerasan Jalan Hauling Tambang</title>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e8e7e4;--ink:#231f1a;--mut:#5d584f;--pan:#f6f5f3;--line:#cbc7c0;--bl:#2d5a78;--ye:#d9a300;--ok:#2f7d4f;--wa:#b7791f;--ba:#b3402a;--l1:#b98c4a;--l2:#8a9096;--l3:#6b6256;--l4:#4a3b2a}
+@media(prefers-color-scheme:dark){:root{--bg:#171614;--ink:#ebe8e2;--mut:#a39d92;--pan:#211f1c;--line:#3a3732;--bl:#6fb0d6;--ye:#f0b429;--ok:#5cc08a;--wa:#e0a63d;--ba:#e8806a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Source Sans 3","Segoe UI",Arial,sans-serif}
+h1,h2,h3,label,th,.big,.bd,summary,button,.k b{font-family:"Saira Condensed","Arial Narrow",Arial,sans-serif}
+.w{max-width:1180px;margin:auto;padding:22px 18px}
+h1{font-size:clamp(32px,5.5vw,52px);line-height:1.02;margin:0 0 6px;letter-spacing:.01em}
+.by{color:var(--bl);font-weight:600;margin:0 0 8px}.lead{color:var(--mut);max-width:72ch;margin:0 0 16px}
+.main{display:grid;grid-template-columns:minmax(300px,1fr) 1.25fr;gap:16px;align-items:start}
+@media(max-width:900px){.main{grid-template-columns:1fr}}
+.card{background:var(--pan);border:1px solid var(--line);border-radius:5px;padding:16px;margin-bottom:14px}
+h2{font-size:25px;margin:0 0 6px}h3{font-size:19px;margin:14px 0 4px;color:var(--bl)}
+label{display:flex;justify-content:space-between;font-size:16px;font-weight:600;margin-top:10px;letter-spacing:.01em}label b{color:var(--bl)}
+select,input[type=number]{width:100%;padding:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px;font:inherit}
+input[type=range]{width:100%;accent-color:var(--bl)}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.k div{background:var(--bg);padding:8px 10px;border-radius:4px;font-size:13px;color:var(--mut)}.k b{display:block;font-size:24px;color:var(--ink);line-height:1.15}
+.big{font-size:56px;line-height:1;font-weight:700}
+.bd{display:inline-block;padding:2px 10px;border-radius:3px;color:#fff;font-weight:700;font-size:15px}.ok{background:var(--ok)}.wa{background:var(--wa)}.ba{background:var(--ba)}
+svg{width:100%;height:auto;background:var(--bg);border-radius:4px}svg text{fill:var(--ink);font:600 12px "Source Sans 3",Arial}
+.f{font-family:"Cambria Math",Georgia,serif;background:var(--bg);padding:7px 12px;border-left:3px solid var(--ye);margin:8px 0;overflow-x:auto;white-space:nowrap}
+table{border-collapse:collapse;width:100%;font-size:14px;display:block;overflow-x:auto}th,td{border:1px solid var(--line);padding:4px 9px;text-align:left}th{background:var(--l4);color:#fff}
+.note{font-size:13.5px;color:var(--mut);border-left:3px solid var(--wa);padding-left:10px}
+details{background:var(--pan);border:1px solid var(--line);border-radius:5px;padding:10px 15px;margin:9px 0}summary{cursor:pointer;font-weight:700;font-size:19px}
+button,.btn{background:var(--bl);color:var(--bg);border:0;padding:9px 16px;border-radius:4px;font-weight:700;font-size:17px;cursor:pointer;text-decoration:none;display:inline-block}button.s{background:transparent;color:var(--ink);border:1px solid var(--line)}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--ye);outline-offset:2px}
+footer{text-align:center;color:var(--mut);font-size:14px;padding:8px 0 26px}
+@media print{button,.btn{display:none}body{background:#fff}}
+</style></head><body><div class="w">
+<h1>Desain Perkerasan Jalan Hauling Tambang</h1>
+<p class="by">Dibuat oleh Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.</p>
+<p class="lead">Dari ADT Volvo, HD785/777 sampai kelas 500 ton. Pilih unit dan kekuatan tanah dasar; tebal tiap lapis, armada, dan lalu lintas untuk target tonase dihitung langsung (metode CBR cover curve, USACE / Kaufman &amp; Ault).</p>
+<div class="main">
+<div><div class="card"><h2>Unit dan tanah dasar</h2><div id="c1"></div></div>
+<div class="card"><h2>Target produksi dan komoditas</h2><div id="c2"></div></div></div>
+<div>
+<div class="card"><h2>Penampang perkerasan</h2>
+<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><div><div style="font-size:14px;color:var(--mut)">Tebal total</div><div class="big" id="tt">–</div></div><span class="bd" id="st"></span></div>
+<svg id="sec" viewBox="0 0 640 330" role="img" aria-label="Penampang lapisan perkerasan"></svg><div class="k" id="k1"></div></div>
+<div class="card"><h2>Lalu lintas dan armada</h2><div class="k" id="k2"></div><p class="note" id="nt"></p></div>
+<div class="card"><h2>Tebal cover vs CBR tanah dasar</h2><svg id="ch" viewBox="0 0 640 260" role="img" aria-label="Kurva tebal cover terhadap CBR"></svg>
+<div style="font-size:13px;color:var(--mut)">Garis tebal = unit terpilih; garis tipis = unit lain. Titik = CBR sekarang.</div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="Desain_Perkerasan_Jalan_Tambang.xlsx" download>Unduh Excel</a><button class="s" onclick="print()">Cetak / PDF</button></div>
+</div></div>
+<h2 style="margin-top:24px">Teori, rumus, dan acuan</h2>
+<details open><summary>Rumus desain</summary>
+<div class="f">t = √[ P / (8,1 · CBR) − A / π ]  (inci; P = beban roda lb, A = luas kontak in²)</div>
+<div class="f">A = P / tekanan ban  ·  P = GVW × 67% (sumbu belakang) / pembagi roda</div>
+<div class="f">Tebal lapis: surface = max(min, cover di atas base) · base = max(min, cover di atas subbase − surface) · subbase = max(min, cover total − surface − base)</div>
+<div class="f">Trip/tahun = tonase / payload efektif  ·  payload efektif = min(payload nominal, volume bak × berat isi × faktor isi)</div>
+<div class="f">Armada = trip/tahun ÷ (hari × jam efektif × 60 / siklus)</div>
+<p>Tebal cover dihitung untuk tiap lapis dengan CBR masing-masing, lalu dikalikan faktor lalu lintas (SF). Berat isi lepas komoditas menentukan apakah unit terbatas oleh berat (OB, nikel, emas) atau volume bak (batubara).</p></details>
+<details><summary>Acuan SNI dan standar Amerika</summary><table><tr><th>Standar</th><th>Kegunaan</th></tr>
+<tr><td>SNI 1744:2012 / ASTM D1883</td><td>Uji CBR laboratorium (rendaman)</td></tr>
+<tr><td>SNI 1743:2008 / ASTM D1557</td><td>Pemadatan tanah (Proctor modified)</td></tr>
+<tr><td>SNI 2828:2011</td><td>Kepadatan lapangan konus pasir</td></tr>
+<tr><td>SNI 1968:1990</td><td>Analisis saringan agregat</td></tr>
+<tr><td>Spesifikasi Umum Bina Marga</td><td>Lapis fondasi agregat Kelas A (CBR ≥ 90%), Kelas B (≥ 60%)</td></tr>
+<tr><td>Kepmen ESDM 1827 K/30/MEM/2018</td><td>Geometri dan keselamatan jalan angkut</td></tr>
+<tr><td>Kaufman &amp; Ault 1977 (FHWA); USACE; Tannant &amp; Regensburg 2001</td><td>Metode CBR cover curve dan pedoman jalan angkut tambang</td></tr>
+<tr><td>ASTM D2487 (USCS), ASTM D6951 (DCP)</td><td>Klasifikasi tanah dan CBR lapangan</td></tr></table>
+<p class="note">MDP 2017 / AASHTO 1993 (ESAL) tidak dipakai sebagai penentu: beban sumbu truk off-highway jauh melampaui rentang kalibrasinya. Verifikasi nomor dan edisi standar pada dokumen asli.</p></details>
+<details><summary>CBR tipikal tanah dasar</summary><table><tr><th>Tanah (USCS)</th><th>CBR %</th><th>Catatan</th></tr><tr><td>GW/GP kerikil</td><td>30–80</td><td>sangat baik</td></tr><tr><td>SW/SP pasir</td><td>10–40</td><td>baik, rawan erosi</td></tr><tr><td>SC/GC berlempung</td><td>8–20</td><td>butuh drainase</td></tr><tr><td>ML lanau / CL lempung</td><td>3–15</td><td>turun saat jenuh</td></tr><tr><td>CH lempung plastis</td><td>1–5</td><td>kembang-susut, stabilisasi</td></tr><tr><td>OH organik/gambut</td><td>&lt;3</td><td>ganti material atau geotekstil</td></tr><tr><td>Batuan lapuk / saprolit</td><td>10–30</td><td>tergantung derajat lapuk</td></tr></table></details>
+<details><summary>Praktik desain jalan hauling</summary><p>Wearing course: agregat bergradasi, CBR tinggi, sedikit fines plastis (PI ± 4–12) agar terikat. Kemiringan melintang 2–4%, parit samping, drainase tidak boleh membuat air menggenang di badan jalan. Tanggul pengaman ≥ ¾ diameter ban terbesar. Grade umumnya ≤ 8–10% (maksimum 12%). Lebar 2 lajur ≈ 3,5 × lebar unit (verifikasi Kepmen 1827). Perawatan: grader dan penyiraman untuk menekan debu dan rolling resistance.</p></details>
+<p class="note"><b>Batasan:</b> berat, volume, dan tekanan ban unit adalah data indikatif; ganti dengan data pabrikan. Faktor lalu lintas (SF) adalah penilaian rekayasa, bukan nilai standar. Desain final wajib ditinjau engineer geoteknik berkompeten.</p>
+</div><footer>Dibuat oleh Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.</footer>
+<script>
+const $=i=>document.getElementById(i);
+const T=[['Volvo A40G (ADT)',39,31.4,4,70,24],['Volvo A60H (ADT)',55,46,4,75,34],['Komatsu HD785-7',91,71,2,100,60],['Cat 777G',90.7,66.4,2,100,60],['Cat 785D',136,113,2,105,78],['Cat 789D',181,136,2,110,105],['Cat 793F',227,157,2,110,130],['Cat 797F',363,260,2,115,220],['BelAZ 75710 (450 t)',450,360,2,118,300],['Kelas 500 t (indikatif)',500,400,2,120,330]];
+const CM=[['Overburden',50,1.8],['Batubara',30,.9],['Nikel laterit',15,1.6],['Bijih emas',5,1.9]];
+const S={u:3,cs:5,cb:30,ca:80,auto:1,sf:1.2,ms:.2,mb:.25,mu:.3,M:50,d:340,h:16,y:5,dist:3,vl:22,ve:32,fx:6,pk:1.3,fill:.95,m0:50,m1:30,m2:15,m3:5};
+function ctl(el,items){el.innerHTML=items.map(it=>it[0]=='sel'?`<label for="${it[1]}">${it[2]}</label><select id="${it[1]}">${it[3].map((o,i)=>`<option value="${i}"${i==S[it[1]]?' selected':''}>${o}</option>`).join('')}</select>`:it[0]=='chk'?`<label><span>${it[2]}</span><input type="checkbox" id="${it[1]}" ${S[it[1]]?'checked':''}></label>`:`<label for="r${it[1]}">${it[2]}<b id="v${it[1]}"></b></label><input type="range" id="r${it[1]}" min="${it[3]}" max="${it[4]}" step="${it[5]}" value="${S[it[1]]}">`).join('');
+ el.querySelectorAll('select').forEach(e=>e.onchange=()=>{S[e.id]=+e.value;run()});el.querySelectorAll('input[type=range]').forEach(e=>e.oninput=()=>{S[e.id.slice(1)]=+e.value;run()});el.querySelectorAll('input[type=checkbox]').forEach(e=>e.onchange=()=>{S[e.id]=e.checked?1:0;run()})}
+ctl($('c1'),[['sel','u','Unit rencana',T.map(t=>t[0]+' – '+t[1]+' t')],['r','cs','CBR tanah dasar (%)',1,40,.5],['r','cb','CBR subbase (%)',10,80,1],['r','ca','CBR base (%)',40,120,1],['chk','auto','Faktor lalu lintas otomatis'],['r','sf','SF manual',1,1.6,.05]]);
+ctl($('c2'),[['r','M','Target produksi (juta t/tahun)',5,100,5],['r','d','Hari operasi per tahun',250,365,5],['r','h','Jam efektif truk per hari',8,22,1],['r','y','Umur desain (tahun)',1,15,1],['r','dist','Jarak angkut satu arah (km)',.5,15,.5],['r','vl','Kecepatan isi (km/jam)',10,40,1],['r','ve','Kecepatan kosong (km/jam)',15,50,1],['r','fx','Waktu muat + spot + dump (menit)',2,15,.5],['r','m0','Porsi Overburden (%)',0,100,5],['r','m1','Porsi Batubara (%)',0,100,5],['r','m2','Porsi Nikel laterit (%)',0,100,5],['r','m3','Porsi Bijih emas (%)',0,100,5]]);
+const tc=(P,A,c,sf)=>sf*Math.sqrt(Math.max(0,P/(8.1*c)-A/Math.PI))*.0254;
+const wh=u=>{const t=T[u],g=t[1]+t[2],P=g*.67*1000*2.20462/t[3];return{g,P,A:P/t[4]}};
+function run(){const t=T[S.u],w=wh(S.u),sh=[S.m0,S.m1,S.m2,S.m3],ts=sh.reduce((a,b)=>a+b,0)||1;
+ let trips=0,ton=0,rows=[];CM.forEach((c,i)=>{const pe=Math.min(t[1],t[5]*S.fill*c[2]),tn=S.M*1e6*sh[i]/ts,tr=tn/pe;trips+=tr;ton+=tn;rows.push([c[0],pe,tr])});
+ const pl=Math.max(...rows.map(r=>r[1])),perDay=trips/S.d,cyc=S.fx+S.dist/S.vl*60+S.dist/S.ve*60,tpt=S.d*S.h*60/cyc,fleet=Math.ceil(trips/tpt),peak=perDay/S.h*S.pk,life=trips*S.y;
+ const auto=life<1e5?1:life<1e6?1.1:life<5e6?1.2:1.3,SF=S.auto?auto:S.sf;
+ const c1=tc(w.P,w.A,S.cs,SF),c2=tc(w.P,w.A,S.cb,SF),c3=tc(w.P,w.A,S.ca,SF);
+ const su=Math.max(S.ms,c3),ba=Math.max(S.mb,c2-su),sb=Math.max(S.mu,c1-su-ba),tot=su+ba+sb;
+ for(const k of ['cs','cb','ca','sf','M','d','h','y','dist','vl','ve','fx','m0','m1','m2','m3'])if($('v'+k))$('v'+k).textContent=S[k];
+ $('tt').textContent=tot.toFixed(2)+' m';$('st').className='bd '+(sb<=.6?'ok':sb<=1.2?'wa':'ba');$('st').textContent=sb<=.6?'Subbase wajar':sb<=1.2?'Subbase tebal – lapis bertahap':'Perbaiki tanah dasar / geosintetik';
+ const sc=Math.min(60,215/tot),y0=62;let y=y0,s='';const L=[['Wearing course',su,'var(--l1)'],['Base',ba,'var(--l2)'],['Subbase',sb,'var(--l3)']];
+ const cw=Math.min(180,40+w.A/20);s+=`<rect x="${320-cw/2}" y="30" width="${cw}" height="14" rx="3" fill="var(--ink)"/><text x="${320+cw/2+8}" y="42">Beban roda ${(w.P/2.20462/1000).toFixed(0)} t</text>`;
+ L.forEach(l=>{const h=l[1]*sc;s+=`<rect x="120" y="${y}" width="400" height="${h}" fill="${l[2]}"/><text x="130" y="${y+h/2+4}" style="fill:#fff">${l[0]} · ${(l[1]*100).toFixed(0)} cm (CBR ${l[0][0]=='W'?'≥ '+S.ca:l[0][0]=='B'?S.ca:S.cb})</text>`;y+=h});
+ s+=`<rect x="120" y="${y}" width="400" height="${Math.min(40,325-y)}" fill="var(--l4)"/><text x="130" y="${y+22}" style="fill:#fff">Tanah dasar · CBR ${S.cs}%</text>`;$('sec').innerHTML=s;
+ $('k1').innerHTML=[['Beban roda P',(w.P/1000).toFixed(0)+' klb'],['Luas kontak A',w.A.toFixed(0)+' in²'],['GVW',w.g.toFixed(0)+' t'],['Faktor lalu lintas',SF.toFixed(2)+(S.auto?' (otomatis)':'')],['Surface',(su*100).toFixed(0)+' cm'],['Base',(ba*100).toFixed(0)+' cm'],['Subbase',(sb*100).toFixed(0)+' cm']].map(a=>`<div>${a[0]}<b>${a[1]}</b></div>`).join('');
+ $('k2').innerHTML=[['Trip muat / hari',perDay.toFixed(0)],['Per jam puncak (1 arah)',peak.toFixed(0)],['Siklus truk',cyc.toFixed(1)+' mnt'],['Armada diperlukan',fleet+' unit'],['Payload desain',pl.toFixed(0)+' t'],['Lintasan muat / umur',(life/1e6).toFixed(2)+' juta']].map(a=>`<div>${a[0]}<b>${a[1]}</b></div>`).join('');
+ $('nt').textContent=rows.map(r=>r[0]+': '+r[1].toFixed(0)+' t/trip').join(' · ')+'. Payload di bawah nominal berarti unit terbatas volume bak.';
+ const W=640,H=260,l=46,b=28,mx=40,ymax=Math.max(1,...T.map((x,i)=>{const q=wh(i);return tc(q.P,q.A,1,SF)}).map(v=>Math.min(v,6)))*1.05,X=c=>l+(W-l-10)*(c-1)/(mx-1),Y=v=>10+(H-10-b)*(1-Math.min(v,ymax)/ymax);
+ let g=`<line x1="${l}" y1="${Y(0)}" x2="${W-10}" y2="${Y(0)}" stroke="var(--line)"/>`;[1,5,10,20,30,40].forEach(c=>g+=`<text x="${X(c)}" y="${H-10}" text-anchor="middle">${c}</text>`);[0,1,2,3,4,5].filter(v=>v<ymax).forEach(v=>g+=`<text x="4" y="${Y(v)+4}">${v} m</text>`);
+ T.forEach((x,i)=>{const q=wh(i);let p=[];for(let c=1;c<=mx;c+=1)p.push(X(c)+','+Y(tc(q.P,q.A,c,SF)));g+=`<polyline fill="none" stroke="${i==S.u?'var(--bl)':'var(--line)'}" stroke-width="${i==S.u?3.5:1.5}" points="${p.join(' ')}"/>`});
+ g+=`<circle cx="${X(S.cs)}" cy="${Y(c1)}" r="6" fill="var(--ye)" stroke="var(--ink)"/><text x="${W/2}" y="${H-0}" text-anchor="middle" style="font-size:11px">CBR tanah dasar (%)</text>`;$('ch').innerHTML=g}
+run();
+</script><style>.home-pill{position:fixed;right:14px;bottom:14px;z-index:9999;background:#1f2a2e;color:#fff;font:600 14px/1 system-ui,Arial,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}.home-pill:hover{background:#000}.home-pill:focus-visible{outline:3px solid #f0b429;outline-offset:2px}@media print{.home-pill{display:none}}</style><a class="home-pill" href="../">&larr; Beranda</a>
+</body></html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Geoteknik Tambang – Lereng, Open Pit, Underground, Hauling Kepmen 1827</title>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e8ecee;--ink:#11252b;--mut:#51666d;--pan:#f7f9fa;--line:#c5d0d4;--teal:#1f5560;--rock:#6d8790;--soil:#b08a4a;--ok:#2f7d4f;--warn:#b7791f;--bad:#b3402a}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1b1f;--ink:#e3ecee;--mut:#9db2b8;--pan:#16272c;--line:#2c4249;--teal:#5fb3c2;--rock:#4b6670;--soil:#c9a15e;--ok:#5cc08a;--warn:#e0a63d;--bad:#e8806a}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 "Source Serif 4",Georgia,serif}
+h1,h2,h3,nav a,button,label,th{font-family:"Familjen Grotesk","Segoe UI",Arial,sans-serif}
+.wrap{display:grid;grid-template-columns:220px 1fr;max-width:1200px;margin:auto;gap:28px;padding:20px}
+nav{position:sticky;top:16px;align-self:start;display:flex;flex-direction:column;gap:4px}
+nav b{font-size:18px;margin-bottom:8px;line-height:1.2}
+nav a{padding:8px 12px;border-left:3px solid var(--line);color:var(--mut);text-decoration:none;font-weight:500}
+nav a.on,nav a:hover{border-color:var(--teal);color:var(--ink);background:var(--pan)}
+section{margin-bottom:56px;scroll-margin-top:16px}
+h1{font-size:clamp(30px,5vw,50px);line-height:1.08;margin:0 0 10px;letter-spacing:-.02em}
+h2{font-size:28px;margin:0 0 6px}h3{font-size:19px;margin:22px 0 6px}
+p{max-width:70ch}.lead{color:var(--mut);font-size:19px}
+.card{background:var(--pan);border:1px solid var(--line);border-radius:6px;padding:18px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.f{font-family:"Cambria Math","STIX Two Math",Georgia,serif;background:var(--bg);padding:8px 12px;border-left:3px solid var(--teal);margin:8px 0;overflow-x:auto;white-space:nowrap}
+label{display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-top:10px}
+input[type=range]{width:100%;accent-color:var(--teal)}
+input[type=number],select{width:100%;padding:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:4px;font:inherit}
+button,.btn{background:var(--teal);color:var(--bg);border:0;padding:9px 16px;border-radius:4px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;font-size:15px}
+button.s{background:transparent;color:var(--ink);border:1px solid var(--line);padding:5px 10px;font-weight:500;margin:2px}
+button.s:hover,button:focus-visible,.btn:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+.out{font:700 40px "Familjen Grotesk",sans-serif}
+.badge{display:inline-block;padding:3px 10px;border-radius:3px;font:700 14px "Familjen Grotesk",sans-serif;color:#fff}
+.ok{background:var(--ok)}.wa{background:var(--warn)}.ba{background:var(--bad)}
+svg{width:100%;height:auto;background:var(--pan);border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:15px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left}th{background:var(--teal);color:var(--bg)}
+details{background:var(--pan);border:1px solid var(--line);border-radius:6px;padding:12px 16px;margin:10px 0}
+summary{cursor:pointer;font:700 17px "Familjen Grotesk",sans-serif}
+.note{font-size:14px;color:var(--mut);border-left:3px solid var(--warn);padding-left:10px}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}nav{position:static;flex-direction:row;flex-wrap:wrap}nav b{width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style></head><body>
+<div class="wrap">
+<nav aria-label="Modul"><b>Geoteknik Tambang</b>
+<a href="#lereng" class="on">Lereng &amp; open pit</a><a href="#tanah">Stabilitas tanah</a><a href="#ug">Underground</a><a href="#hauling">Jalan hauling</a><a href="#soal">Contoh soal</a><a href="#kasus">Studi kasus</a><a href="#unduh">Unduh Excel</a></nav>
+<main>
+<section id="lereng">
+<h1>Geser sudutnya, lihat kapan lereng runtuh.</h1>
+<p class="lead">Simulator longsoran bidang untuk highwall open pit. Ubah geometri dan kuat geser; faktor keamanan (FK) dibandingkan dengan kriteria Kepmen ESDM 1827 K/30/MEM/2018.</p>
+<div class="card grid" style="grid-template-columns:minmax(260px,1fr) 1.5fr">
+<div id="pc"></div><div><svg id="sv" viewBox="0 0 600 340" role="img" aria-label="Penampang lereng dan bidang gelincir"></svg>
+<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div><div style="font-size:14px">Faktor keamanan</div><div class="out" id="fs">–</div></div><span id="st" class="badge"></span><span id="adv" style="font-size:15px"></span></div></div></div>
+<h3>Teori singkat</h3>
+<p>Open pit dirancang per tingkat: <b>lereng tunggal</b> (jenjang), <b>antar-ramp</b>, dan <b>keseluruhan</b>. Longsoran umum: bidang (planar), baji (wedge), guling (toppling), busur (circular, pada tanah/batuan lapuk). Data dasar: pemetaan struktur, bor geoteknik, uji lab (UCS, triaksial, geser langsung), muka air tanah, dan pemantauan (prisma, radar, ekstensometer).</p>
+<div class="f">FK = Σ gaya penahan / Σ gaya penggerak</div>
+<div class="f">Mohr–Coulomb: τ = c + σ′ tan φ</div>
+<div class="f">Planar: FK = [cA + (W cos ψp − U) tan φ] / (W sin ψp), A = H / sin ψp, W = ½γH²(cot ψp − cot ψf)</div>
+<div class="f">Hoek–Brown: σ1 = σ3 + σci (mb σ3/σci + s)^a &nbsp;|&nbsp; GSI → mb, s, a</div>
+<div class="f">RMR Bieniawski 1989 → SMR = RMR + (F1·F2·F3) + F4 &nbsp;|&nbsp; Probabilitas Longsor PoL = P(FK ≤ 1)</div>
+<h3>Kriteria penerimaan (Kepmen 1827)</h3>
+<table><tr><th>Jenis lereng</th><th>FK statis minimum</th><th>Catatan</th></tr>
+<tr><td>Lereng tunggal</td><td>≥ 1,1</td><td>dengan batas PoL sesuai keparahan</td></tr>
+<tr><td>Lereng keseluruhan</td><td>1,1 – 1,5</td><td>keparahan menengah umumnya dirujuk ≥ 1,3 (statis)</td></tr></table>
+<p class="note">Tabel disarikan dari rujukan sekunder (jurnal teknik pertambangan). Nilai FK dinamis, PoL, dan klasifikasi keparahan lengkap ada di Lampiran Kepmen 1827/2018; verifikasi pada dokumen asli sebelum dipakai sebagai dasar desain.</p>
+</section>
+
+<section id="tanah">
+<h2>Stabilitas lereng pada berbagai jenis tanah</h2>
+<p>Pilih jenis material. Parameter tipikal terisi otomatis; ubah sesuai hasil uji lab. Model lereng tak hingga untuk tanah residu, overburden, dan timbunan dangkal.</p>
+<div class="card grid" style="grid-template-columns:minmax(260px,1fr) 1fr"><div id="ic"></div><div>
+<div class="f">FK = [c′ + γ z cos²β (1−ru) tan φ′] / (γ z sin β cos β)</div>
+<div class="out" id="ifs">–</div><span id="ist" class="badge"></span>
+<p id="inote" style="font-size:15px"></p></div></div>
+<table><tr><th>Material</th><th>γ kN/m³</th><th>c′ kPa</th><th>φ′ °</th><th>Perilaku</th></tr>
+<tr><td>Lempung lunak</td><td>16</td><td>10</td><td>5</td><td>konsolidasi, longsor busur, jangan dibebani cepat</td></tr>
+<tr><td>Lempung kaku</td><td>19</td><td>30</td><td>18</td><td>kuat kering, turun drastis saat jenuh/residual</td></tr>
+<tr><td>Lanau</td><td>18</td><td>5</td><td>28</td><td>sensitif air, erosi, likuifaksi bila jenuh</td></tr>
+<tr><td>Pasir lepas / padat</td><td>17 / 19</td><td>0</td><td>30 / 36</td><td>stabil hingga β ≈ φ′; air pori menurunkan FK</td></tr>
+<tr><td>Batuan lapuk</td><td>21</td><td>25</td><td>30</td><td>kuat lemah, bidang kontak lapuk-segar jadi bidang gelincir</td></tr></table>
+<p class="note">Nilai tipikal literatur untuk latihan, bukan pengganti uji laboratorium. Untuk busur, gunakan metode Bishop/Janbu/Morgenstern–Price (Slide2, SLOPE/W) dan analisis probabilistik.</p>
+</section>
+
+<section id="ug">
+<h2>Geoteknik underground</h2>
+<p>Klasifikasi massa batuan menentukan penyangga. Isi rating RMR, parameter Q, dan data pilar; hasil langsung dihitung.</p>
+<div class="card grid"><div id="uc"></div><div>
+<div>RMR total</div><div class="out" id="rmr">–</div><div id="rcl"></div>
+<div style="margin-top:12px">Q = <b id="q">–</b> &nbsp; (RMR est. = 9 ln Q + 44 = <b id="rq">–</b>)</div>
+<div style="margin-top:12px">FK pilar (Obert–Duvall)</div><div class="out" id="pf">–</div><span id="pst" class="badge"></span></div></div>
+<div class="f">Q = (RQD/Jn)·(Jr/Ja)·(Jw/SRF) &nbsp;|&nbsp; De = span / ESR</div>
+<div class="f">σp = γH ((w+b)/w)² &nbsp;|&nbsp; σ_kekuatan = σ1 (0,778 + 0,222 w/h) &nbsp;|&nbsp; FK = σ_kekuatan / σp</div>
+<p>Metode penambangan bawah tanah (room-and-pillar, sublevel stoping, cut-and-fill, longwall, block caving) dipilih dari kekuatan massa batuan, geometri badan bijih, dan tegangan in-situ. Bahaya utama: rockburst, runtuhan atap, mud rush, subsidence.</p>
+</section>
+
+<section id="hauling">
+<h2>Jalan hauling mengikuti Kepmen 1827</h2>
+<p>Hitung lebar, tanggul pengaman, dan superelevasi dari spesifikasi unit terbesar.</p>
+<div class="card grid"><div id="hc"></div><div>
+<div>Lebar jalan minimum</div><div class="out" id="hw">–</div>
+<table><tr><td>Tanggul pengaman min (¾ D ban)</td><td id="hb"></td></tr><tr><td>Superelevasi e</td><td id="he"></td></tr><tr><td>Grade</td><td id="hg"></td></tr></table></div></div>
+<div class="f">Lebar = n·W + (n+1)·½W  (2 lajur = 3,5 W)</div>
+<div class="f">e = V² / (127 R) − f</div>
+<p>Praktik baik yang dirujuk pedoman: grade maksimum sekitar 12% (nyaman 8–10%), kemiringan melintang 2–4% untuk drainase, parit samping, tanggul pengaman setinggi minimal ¾ diameter ban terbesar, rambu, penerangan, jalur penyelamat (escape lane) di turunan panjang, dan perawatan permukaan (grader, penyiraman).</p>
+<p class="note">Angka geometri adalah praktik umum; cocokkan dengan Lampiran Kepmen 1827/2018 dan dokumen KTT/Rencana Reklamasi tambang Anda.</p>
+</section>
+
+<section id="soal">
+<h2>Contoh soal</h2>
+<details><summary>Soal 1 – Highwall planar</summary><p>H = 30 m, ψf = 60°, ψp = 35°, c = 20 kPa, φ = 30°, γ = 25 kN/m³, kering. Hitung FK dan tentukan apakah memenuhi 1,3.</p>
+<p><b>Jawab:</b> A = 52,3 m; W = 9.571 kN/m; penahan = 1.046 + 4.527 = 5.573; penggerak = 5.489; <b>FK ≈ 1,02</b>. Tidak memenuhi. Turunkan ψf atau lakukan dewatering/buttress (coba di simulator).</p></details>
+<details><summary>Soal 2 – Timbunan dangkal</summary><p>z = 3 m, β = 25°, c′ = 5 kPa, φ′ = 28°, γ = 18 kN/m³, ru = 0,3. FK?</p>
+<p><b>Jawab:</b> σ′ = 33,5 kPa → τ = 20,7 kPa; <b>FK ≈ 1,04</b>. Kritis; air pori yang tinggi menurunkan FK. Turunkan β atau drainase.</p></details>
+<details><summary>Soal 3 – Lebar jalan dan tanggul</summary><p>Truk lebar 6 m, 2 lajur, ban Ø3 m. Lebar jalan dan tinggi tanggul?</p>
+<p><b>Jawab:</b> 2·6 + 3·3 = 21 m (3,5 W); tanggul ≥ 0,75 × 3 = 2,25 m.</p></details>
+<details><summary>Soal 4 – Pilar</summary><p>H = 250 m, γ = 26 kN/m³, w = 12 m, h = 4 m, bukaan b = 6 m, σ1 = 30 MPa. FK pilar?</p>
+<p><b>Jawab:</b> σp = 14,6 MPa, kekuatan = 43,3 MPa, <b>FK ≈ 2,96</b>.</p></details>
+</section>
+
+<section id="kasus">
+<h2>Studi kasus kejadian dunia</h2>
+<details><summary>Bingham Canyon, Utah, 2013 – longsor tambang terbuka terbesar</summary><p>10 April 2013, lereng utara runtuh, ±55–65 juta m³. Tanpa korban karena radar dan prisma mendeteksi percepatan gerakan berminggu-minggu sebelumnya, peralatan dan pekerja dievakuasi. <b>Pelajaran:</b> pemantauan deformasi dan trigger action response plan (TARP) menyelamatkan nyawa.</p></details>
+<details><summary>Brumadinho, Brasil, 2019 – bendungan tailing</summary><p>25 Januari 2019, bendungan tailing metode upstream di Córrego do Feijão runtuh, ±270 korban jiwa. Likuifaksi pada tailing jenuh. <b>Pelajaran:</b> kontrol air pori, hindari desain upstream, tinjauan independen.</p></details>
+<details><summary>Grasberg (Big Gossan), Papua, 2013 – runtuhan bawah tanah</summary><p>14 Mei 2013, runtuhan fasilitas pelatihan bawah tanah menewaskan 28 pekerja. <b>Pelajaran:</b> evaluasi massa batuan, penyangga, dan zona lemah untuk fasilitas permanen.</p></details>
+<details><summary>Aberfan, Wales, 1966 – timbunan limbah batubara</summary><p>21 Oktober 1966, timbunan limbah batubara jenuh meluncur ke sekolah, 144 korban (116 anak). <b>Pelajaran:</b> timbunan di atas mata air, drainase, dan inspeksi berkala.</p></details>
+</section>
+
+<section id="unduh">
+<h2>Unduh Excel kalkulator</h2>
+<p>Workbook berisi rumus hidup: longsoran bidang, lereng tak hingga, preset tanah, hauling 1827, RMR/Q/pilar, dan jawaban contoh soal.</p>
+<a class="btn" href="Geoteknik_Tambang_Kepmen1827.xlsx" download>Unduh Geoteknik_Tambang_Kepmen1827.xlsx</a>
+<p class="note">Edukasi dan pra-desain. Desain final wajib ditinjau oleh Kepala Teknik Tambang / geoteknik berkompeten.</p>
+</section>
+</main></div>
+<script>
+const $=id=>document.getElementById(id),R=Math.PI/180;
+function ctl(el,defs,fn){el.innerHTML=defs.map(d=>`<label>${d[1]}<b id="${el.id}v${d[0]}"></b></label><input type="range" id="${el.id}${d[0]}" min="${d[2]}" max="${d[3]}" step="${d[4]}" value="${d[5]}">`).join('');
+ const upd=()=>{const v={};defs.forEach(d=>{v[d[0]]=+$(el.id+d[0]).value;$(el.id+'v'+d[0]).textContent=v[d[0]]});fn(v)};
+ el.querySelectorAll('input').forEach(i=>i.oninput=upd);upd();return{set(k,x){$(el.id+k).value=x;upd()}}}
+function badge(e,fs,lim){e.className='badge '+(fs>=lim?'ok':fs>=1.1?'wa':'ba');e.textContent=fs>=lim?'Memenuhi ≥ '+lim:fs>=1.1?'Di bawah '+lim:'Tidak aman'}
+ctl($('pc'),[['H','Tinggi lereng H (m)',10,120,1,30],['f','Sudut muka ψf (°)',30,85,1,60],['p','Sudut bidang gelincir ψp (°)',10,80,1,35],['c','Kohesi c (kPa)',0,150,1,20],['ph','Sudut gesek φ (°)',10,45,1,30],['g','Berat isi γ (kN/m³)',15,30,.5,25],['ru','Rasio air pori ru',0,.5,.05,0]],v=>{
+ const sv=$('sv');if(v.p>=v.f){$('fs').textContent='–';$('st').className='badge ba';$('st').textContent='ψp harus < ψf';$('adv').textContent='';return}
+ const A=v.H/Math.sin(v.p*R),W=.5*v.g*v.H*v.H*(1/Math.tan(v.p*R)-1/Math.tan(v.f*R));
+ const fs=(v.c*A+W*Math.cos(v.p*R)*(1-v.ru)*Math.tan(v.ph*R))/(W*Math.sin(v.p*R));
+ $('fs').textContent=fs.toFixed(2);badge($('st'),fs,1.3);$('adv').textContent=fs<1.3?'Landaikan ψf, kurangi ru, atau tambah buttress.':'';
+ const s=Math.min(4,260/v.H),tx=110,ty=290,cx=tx+v.H*s/Math.tan(v.f*R),px=tx+v.H*s/Math.tan(v.p*R),top=ty-v.H*s;
+ sv.innerHTML=`<polygon points="10,${ty} ${tx},${ty} ${cx},${top} 590,${top} 590,330 10,330" fill="var(--rock)"/><polygon points="${tx},${ty} ${cx},${top} ${px},${top}" fill="${fs>=1.3?'var(--ok)':fs>=1.1?'var(--warn)':'var(--bad)'}" opacity=".75"/><line x1="${tx}" y1="${ty}" x2="${px}" y2="${top}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 4"/><text x="${px+6}" y="${top-8}" fill="var(--ink)" font-size="14">bidang gelincir ψp=${v.p}°</text><text x="${cx+8}" y="${top+20}" fill="var(--ink)" font-size="14">H = ${v.H} m</text>`});
+const P={'Lempung lunak':[16,10,5],'Lempung kaku':[19,30,18],'Lanau':[18,5,28],'Pasir lepas':[17,0,30],'Pasir padat':[19,0,36],'Batuan lapuk':[21,25,30]};
+let ic=ctl($('ic'),[['z','Kedalaman bidang z (m)',1,10,.5,3],['b','Sudut lereng β (°)',5,60,1,25],['c','c′ (kPa)',0,60,1,5],['ph','φ′ (°)',0,45,1,28],['g','γ (kN/m³)',15,23,.5,18],['ru','ru',0,.6,.05,.3]],v=>{
+ const fs=(v.c+v.g*v.z*Math.pow(Math.cos(v.b*R),2)*(1-v.ru)*Math.tan(v.ph*R))/(v.g*v.z*Math.sin(v.b*R)*Math.cos(v.b*R));
+ $('ifs').textContent=fs.toFixed(2);badge($('ist'),fs,1.3);$('inote').textContent=v.c==0?'Tanpa kohesi: sudut kritis kering = φ′ = '+v.ph+'°; air pori menurunkannya.':'Kohesi menyumbang kuat geser; periksa kondisi jenuh dan residual.'});
+$('ic').insertAdjacentHTML('afterbegin',Object.keys(P).map(k=>`<button class="s" data-k="${k}">${k}</button>`).join(''));
+$('ic').querySelectorAll('button').forEach(b=>b.onclick=()=>{const[g,c,p]=P[b.dataset.k];ic.set('g',g);ic.set('c',c);ic.set('ph',p)});
+ctl($('uc'),[['a','RMR: UCS (0–15)',0,15,1,7],['b','RMR: RQD (0–20)',3,20,1,13],['d','RMR: spasi (5–20)',5,20,1,10],['e','RMR: kondisi (0–30)',0,30,1,20],['w','RMR: air (0–15)',0,15,1,10],['o','RMR: orientasi (−12–0)',-12,0,1,-5],['rq','RQD Q (%)',10,100,5,65],['jn','Jn',1,20,.5,9],['jr','Jr',.5,4,.5,1.5],['ja','Ja',.75,20,.25,1],['sr','SRF',1,20,.5,2.5],['H','Kedalaman pilar H (m)',50,800,10,250],['w2','Lebar pilar w (m)',4,30,1,12],['h','Tinggi pilar h (m)',2,10,.5,4]],v=>{
+ const r=v.a+v.b+v.d+v.e+v.w+v.o;$('rmr').textContent=r;$('rcl').textContent=r>80?'Kelas I sangat baik':r>60?'Kelas II baik':r>40?'Kelas III sedang':r>20?'Kelas IV buruk':'Kelas V sangat buruk';
+ const q=(v.rq/v.jn)*(v.jr/v.ja)*(1/v.sr);$('q').textContent=q.toFixed(2);$('rq').textContent=(9*Math.log(q)+44).toFixed(0);
+ const b=6,sp=26*v.H*Math.pow((v.w2+b)/v.w2,2),st=30000*(.778+.222*v.w2/v.h),fs=st/sp;$('pf').textContent=fs.toFixed(2);
+ $('pst').className='badge '+(fs>=2?'ok':fs>=1.6?'wa':'ba');$('pst').textContent=fs>=2?'Aman':fs>=1.6?'Batas minimum 1,6':'Tidak aman'});
+ctl($('hc'),[['W','Lebar unit W (m)',3,10,.1,6],['n','Jumlah lajur n',1,3,1,2],['D','Diameter ban D (m)',1,4,.1,3],['g','Grade (%)',0,18,.5,10],['R','Radius tikungan R (m)',20,200,5,60],['V','Kecepatan V (km/jam)',10,50,5,30]],v=>{
+ $('hw').textContent=(v.n*v.W+(v.n+1)*.5*v.W).toFixed(1)+' m';$('hb').textContent=(.75*v.D).toFixed(2)+' m';
+ const e=Math.max(0,v.V*v.V/(127*v.R)-.1);$('he').textContent=(e*100).toFixed(1)+'% '+(e>.1?'(terlalu tinggi, perbesar R)':'');
+ $('hg').textContent=v.g<=12?'OK (≤ 12%)':'Melebihi 12%'});
+const L=[...document.querySelectorAll('nav a')],S=L.map(a=>$(a.hash.slice(1)));
+addEventListener('scroll',()=>{let i=0;S.forEach((s,k)=>{if(s.getBoundingClientRect().top<200)i=k});L.forEach((a,k)=>a.classList.toggle('on',k==i))},{passive:true});
+</script><style>.home-pill{position:fixed;right:14px;bottom:14px;z-index:9999;background:#1f2a2e;color:#fff;font:600 14px/1 system-ui,Arial,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.3)}.home-pill:hover{background:#000}.home-pill:focus-visible{outline:3px solid #f0b429;outline-offset:2px}@media print{.home-pill{display:none}}</style><a class="home-pill" href="../">&larr; Beranda</a>
+</body></html>
