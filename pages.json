@@ -430,5 +430,37 @@
   "deskripsi": "Belajar PMBOK 7, Primavera P6, dan MS Project untuk menjadi project manager dari nol.",
   "href": "halaman-project-manager-jalanan.html",
   "kb": 149
+ },
+ {
+  "judul": "Desain Perkerasan Jalan Hauling Tambang",
+  "jenis": "Kalkulator",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Tebal lapis perkerasan, armada, dan lalu lintas jalan hauling dengan metode CBR cover curve.",
+  "href": "halaman-desain-perkerasan-jalan-hauling.html",
+  "kb": 15
+ },
+ {
+  "judul": "Kalkulator Match Factor: Loading & Hauling",
+  "jenis": "Kalkulator",
+  "kategori": "Alat & dashboard",
+  "deskripsi": "Menyeimbangkan alat muat dan angkut: match factor, jumlah truk optimum, dan produksi.",
+  "href": "halaman-kalkulator-match-factor.html",
+  "kb": 12
+ },
+ {
+  "judul": "Geoteknik Tambang: Lereng, Open Pit, Underground, Hauling",
+  "jenis": "Landing page",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Panduan geoteknik tambang dengan acuan Kepmen ESDM 1827, lengkap dengan contoh soal dan Excel.",
+  "href": "halaman-geoteknik-tambang.html",
+  "kb": 17
+ },
+ {
+  "judul": "Crusher & Belt Conveyor Tambang",
+  "jenis": "Landing page",
+  "kategori": "Tambang & biaya",
+  "deskripsi": "Fungsi bagian mesin, mode kerusakan, desain, dan perencana perawatan berbasis hour meter.",
+  "href": "halaman-crusher-belt-conveyor.html",
+  "kb": 20
  }
 ]
