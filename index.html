@@ -1,35 +1,400 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Agus Budianto – Konstruksi, Pertambangan, Keuangan &amp; Manajemen Proyek</title>
-<meta name="description" content="Kalkulator dan panduan teknis untuk konstruksi, pertambangan, keuangan, dan manajemen proyek oleh Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.">
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agus Budianto Ulil Absyor | Insinyur Sipil &amp; Pertambangan, Kontrol Biaya dan Produksi</title>
+<meta name="description" content="Insinyur sipil dengan 14+ tahun pengalaman di infrastruktur, tambang, dan produksi stone crusher. Kontrol biaya, project control, keuangan, dan AI agent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#eceae6;--ink:#1f2326;--mut:#58606a;--pan:#f8f7f5;--line:#cfcbc3;--ac:#2d5a78;--ye:#d9a300}
-@media(prefers-color-scheme:dark){:root{--bg:#15171a;--ink:#ebe9e4;--mut:#a2a8b0;--pan:#1e2124;--line:#363b40;--ac:#6fb0d6;--ye:#f0b429}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,"Segoe UI",Arial,sans-serif}
-.w{max-width:1060px;margin:auto;padding:36px 18px}
-h1{font-size:clamp(30px,5.5vw,48px);line-height:1.08;margin:0 0 8px}
-.by{color:var(--ac);font-weight:600;margin:0 0 10px}
-.lead{color:var(--mut);max-width:68ch;margin:0 0 26px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
-.card{display:flex;flex-direction:column;background:var(--pan);border:1px solid var(--line);border-top:4px solid var(--ye);border-radius:6px;padding:18px;color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.15)}
-.card:focus-visible{outline:3px solid var(--ye);outline-offset:2px}
-.tag{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ac)}
-.card h2{font-size:21px;margin:6px 0}
-.card p{color:var(--mut);font-size:15px;margin:0 0 14px;flex:1}
-.go{font-weight:700;color:var(--ac)}
-footer{margin-top:34px;color:var(--mut);font-size:14px;border-top:1px solid var(--line);padding-top:14px}
-</style></head><body><div class="w">
-<h1>Konstruksi, Pertambangan, Keuangan &amp; Manajemen Proyek</h1>
-<p class="by">Ir. Agus Budianto Ulil Absyor, S.T., M.M., M.LSCM., M.AIB.</p>
-<p class="lead">Kumpulan kalkulator interaktif dan panduan teknis untuk praktisi tambang dan proyek. Semua berjalan langsung di browser, tanpa instalasi.</p>
-<div class="grid">
-<a class="card" href="perkerasan-jalan/"><span class="tag">Hauling · Sipil</span><h2>Desain Perkerasan Jalan Hauling</h2><p>Tebal lapis perkerasan, armada, dan lalu lintas dengan metode CBR cover curve untuk unit ADT sampai kelas 500 ton.</p><span class="go">Buka kalkulator →</span></a>
-<a class="card" href="match-factor/"><span class="tag">Loading &amp; Hauling</span><h2>Kalkulator Match Factor</h2><p>Seimbangkan alat muat dan angkut: match factor, jumlah truk optimum, dan produksi.</p><span class="go">Buka kalkulator →</span></a>
-<a class="card" href="geoteknik/"><span class="tag">Geoteknik</span><h2>Geoteknik Tambang</h2><p>Lereng, open pit, underground, dan jalan hauling sesuai Kepmen ESDM 1827, lengkap dengan contoh soal.</p><span class="go">Buka panduan →</span></a>
-<a class="card" href="crusher-conveyor/"><span class="tag">Pengolahan</span><h2>Crusher &amp; Belt Conveyor</h2><p>Fungsi bagian mesin, mode kerusakan, desain, dan perencana perawatan berbasis hour meter.</p><span class="go">Buka panduan →</span></a>
-</div>
-<footer>© <span id="y"></span> Ir. Agus Budianto Ulil Absyor. Data unit bersifat indikatif; ganti dengan spesifikasi pabrikan dan tinjau oleh engineer berkompeten sebelum dipakai untuk keputusan desain.</footer>
-</div><script>document.getElementById('y').textContent=new Date().getFullYear()</script></body></html>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+  --bg:#e9ebec; --surface:#f7f8f8; --ink:#1d272d; --muted:#53626b; --line:#b9c2c7;
+  --accent:#8a5a00; --accent-bg:#e9b949; --steel:#2f5f78;
+  --head:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"Source Serif 4",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#161d21; --surface:#1e272c; --ink:#e6eaec; --muted:#a2b0b8; --line:#34434b;
+    --accent:#e9b949; --accent-bg:#e9b949; --steel:#7db4d1;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#161d21; --surface:#1e272c; --ink:#e6eaec; --muted:#a2b0b8; --line:#34434b;
+  --accent:#e9b949; --accent-bg:#e9b949; --steel:#7db4d1;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.65 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--steel);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.25rem}
+h1,h2,h3{font-family:var(--head);margin:0;line-height:1.05;letter-spacing:-.01em}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:56px}
+.brand{font:800 1rem var(--head);text-decoration:none}
+nav{display:flex;gap:1.1rem;overflow-x:auto;font:600 .9rem var(--head)}
+nav a{text-decoration:none;color:var(--muted);white-space:nowrap;padding:.25rem 0}
+nav a:hover{color:var(--ink)}
+.hero{padding:4.5rem 0 3rem;border-bottom:1px solid var(--line)}
+.hero h1{font-size:clamp(2.6rem,9vw,6.2rem);font-weight:900;font-stretch:75%;max-width:14ch}
+.hero p.lead{max-width:56ch;font-size:1.25rem;margin:1.5rem 0 0}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:2.5rem;border:1px solid var(--line);background:var(--surface)}
+.strip div{padding:1.1rem 1.25rem;border-right:1px solid var(--line)}
+.strip div:last-child{border-right:0}
+.strip b{display:block;font:800 2.2rem var(--head);font-stretch:80%;color:var(--accent)}
+.strip span{font-size:.95rem;color:var(--muted)}
+section{padding:3.5rem 0;border-bottom:1px solid var(--line)}
+h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;font-stretch:80%;margin-bottom:.5rem}
+.sub{color:var(--muted);max-width:60ch;margin:0 0 2rem}
+.areas{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.area{background:var(--surface);padding:1.5rem}
+.area h3{font-size:1.3rem;font-weight:800;margin-bottom:.5rem}
+.area p{margin:0 0 .75rem;font-size:1rem}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;padding:0;margin:0;list-style:none}
+.tags li{font:600 .8rem var(--head);border:1px solid var(--line);padding:.15rem .55rem;color:var(--muted)}
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:2rem;align-items:start}
+@media(max-width:780px){.calc{grid-template-columns:1fr}.strip div{border-right:0;border-bottom:1px solid var(--line)}}
+fieldset{border:0;padding:0;margin:0;display:grid;gap:.9rem}
+label{display:grid;gap:.25rem;font:600 .9rem var(--head)}
+input{font:500 1rem var(--head);padding:.6rem .7rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+.out{background:var(--surface);border:1px solid var(--line);padding:1.5rem}
+.big{font:900 clamp(2.4rem,6vw,3.6rem) var(--head);font-stretch:75%;line-height:1}
+.out dl{display:grid;grid-template-columns:1fr auto;gap:.4rem 1rem;margin:1.2rem 0 0;font-size:1rem}
+.out dt{color:var(--muted)} .out dd{margin:0;font:700 1rem var(--head);text-align:right}
+.bar{height:22px;background:var(--line);margin-top:1.2rem;position:relative}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--steel);transition:width .25s}
+.bar i.rev{background:var(--accent-bg);opacity:.9}
+.legend{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);margin-top:.3rem}
+.note{font-size:.85rem;color:var(--muted);margin-top:1rem}
+.tl{list-style:none;margin:0;padding:0;border-left:3px solid var(--accent-bg)}
+.tl li{padding:0 0 1.8rem 1.4rem;position:relative}
+.tl li::before{content:"";position:absolute;left:-9px;top:.55rem;width:15px;height:15px;background:var(--bg);border:3px solid var(--accent-bg)}
+.tl h3{font-size:1.2rem;font-weight:800}
+.tl .meta{font:600 .9rem var(--head);color:var(--muted);margin:.15rem 0 .5rem}
+.tl ul{margin:0;padding-left:1.1rem} .tl li li{padding:0;border:0} .tl li li::before{display:none}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2.5rem}
+.cols h3{font-size:1.25rem;font-weight:800;margin-bottom:.8rem}
+.cols ul{margin:0;padding-left:1.1rem} .cols li{margin-bottom:.5rem}
+.contact a.btn{display:inline-block;font:800 1rem var(--head);background:var(--accent-bg);color:#1d272d;padding:.8rem 1.4rem;text-decoration:none;margin:.4rem .6rem .4rem 0}
+.contact a.btn.alt{background:transparent;border:2px solid var(--ink);color:var(--ink)}
+footer{padding:2rem 0;color:var(--muted);font-size:.9rem}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{transition:none}}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.chips button{font:700 .9rem var(--head);padding:.4rem .9rem;border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem}
+.proj{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent-bg);padding:1.4rem;display:flex;flex-direction:column;gap:.7rem}
+.proj h3{font-size:1.3rem;font-weight:800}
+.proj .meta{font:600 .85rem var(--head);color:var(--muted)}
+.proj p{margin:0}.proj ul.res{margin:0;padding-left:1.1rem}.proj ul.res li{margin-bottom:.3rem}
+.proj .cav{font-size:.92rem;color:var(--muted);border-left:3px solid var(--line);padding-left:.8rem}
+.links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:auto;padding-top:.4rem}
+.links a{font:700 .85rem var(--head);border:2px solid var(--steel);color:var(--steel);padding:.3rem .7rem;text-decoration:none}
+.links a:hover{background:var(--steel);color:var(--bg)}
+fieldset.two{grid-template-columns:1fr 1fr}
+@media(max-width:480px){fieldset.two{grid-template-columns:1fr}}
+
+.hero{position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:48px 48px;opacity:.35;-webkit-mask-image:linear-gradient(#000,transparent 90%);mask-image:linear-gradient(#000,transparent 90%)}
+.hero .wrap{position:relative}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:2.5rem;align-items:center}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(2.6rem,7vw,5rem);max-width:12ch}
+.eyebrow{font:700 .85rem var(--head);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 1rem}
+.btns{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.8rem}
+.btns a{font:800 1rem var(--head);padding:.8rem 1.4rem;text-decoration:none;background:var(--accent-bg);color:#1d272d}
+.btns a.alt{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.panel{background:var(--surface);border:1px solid var(--line);box-shadow:8px 8px 0 var(--accent-bg)}
+.pbar{display:flex;gap:6px;padding:.6rem .8rem;border-bottom:1px solid var(--line)}
+.pbar i,.term-bar i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
+.panel pre{margin:0;padding:1.1rem;font:500 .92rem/1.85 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-x:auto}
+.k{color:var(--muted)}.hl{color:var(--accent)}
+.cur{display:inline-block;width:.6em;height:1em;background:var(--accent-bg);vertical-align:-.15em;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+main{counter-reset:s}
+section>.wrap>h2::before{counter-increment:s;content:"0" counter(s);display:block;font:700 .8rem var(--head);letter-spacing:.14em;color:var(--accent);margin-bottom:.5rem}
+nav a.navcta{background:var(--accent-bg);color:#1d272d;padding:.3rem .8rem;font-weight:800}
+.area,.proj{transition:transform .2s,box-shadow .2s,background .2s}
+.area:hover{background:var(--bg)}
+.proj:hover{transform:translateY(-3px);box-shadow:6px 6px 0 var(--line)}
+.term{border:1px solid var(--line);background:var(--surface);box-shadow:8px 8px 0 var(--steel)}
+.term-bar{display:flex;align-items:center;gap:.5rem;padding:.6rem .9rem;border-bottom:1px solid var(--line)}
+.term-bar .addr{flex:1;min-width:0;font:500 .8rem ui-monospace,Menlo,Consolas,monospace;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--bg);padding:.25rem .6rem;border:1px solid var(--line);margin-left:.4rem}
+.term-bar a{font:700 .8rem var(--head);color:var(--steel);white-space:nowrap}
+.term-body{min-height:300px}
+.term-body iframe{width:100%;height:min(78vh,760px);min-height:560px;border:0;display:block;background:#fff}
+.term-msg{padding:2.5rem 1.5rem;display:grid;gap:1rem;justify-items:start}
+.term-msg h3{font-size:1.6rem}.term-msg p{margin:0;max-width:56ch;color:var(--muted)}
+button.go{font:800 1rem var(--head);background:var(--accent-bg);color:#1d272d;border:0;padding:.8rem 1.4rem;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.cur{animation:none}.area,.proj{transition:none}.proj:hover{transform:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top">Agus Budianto Ulil Absyor</a>
+    <nav aria-label="Navigasi">
+      <a href="#keahlian">Keahlian</a><a href="#proyek">Proyek</a><a href="#pustaka">Pustaka</a><a href="#terminal">Terminal</a><a href="#demo">Kalkulator</a><a href="#pengalaman">Pengalaman</a><a href="#riset">Riset</a><a class="navcta" href="#kontak">Kontak</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<div class="hero"><div class="wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">Insinyur sipil &amp; pertambangan</p>
+      <h1>Dari fondasi crusher sampai arus kas.</h1>
+      <p class="lead">14+ tahun di jalan tol, fasilitas tambang, dan produksi andesit. Saya menggabungkan rekayasa lapangan dengan kontrol biaya, project control, analisis keuangan, dan otomasi berbasis AI agent.</p>
+      <div class="btns"><a href="#proyek">Lihat proyek</a><a class="alt" href="#terminal">Coba terminal</a></div>
+    </div>
+    <div class="panel" aria-label="Ringkasan profil">
+      <div class="pbar"><i></i><i></i><i></i></div>
+<pre><span class="k">$</span> profil --ringkas
+<span class="k">pengalaman</span>  14+ tahun
+<span class="k">produksi</span>    70.000 → 100.000 m³
+<span class="k">profit</span>      <span class="hl">hingga +50%</span>
+<span class="k">fokus</span>       cost control, project control,
+             produksi, keuangan, AI agent
+<span class="k">status</span>      terbuka untuk peran baru <span class="cur" aria-hidden="true"></span></pre>
+    </div>
+  </div>
+  <div class="strip" aria-label="Capaian utama">
+    <div><b>14+</b><span>tahun di konstruksi, tambang, dan produksi</span></div>
+    <div><b>100.000 m³</b><span>produksi crusher andesit, naik dari 70.000 m³</span></div>
+    <div><b>hingga 50%</b><span>peningkatan profit proyek</span></div>
+    <div><b>2 magister</b><span>Manajemen (3,91/4,00) dan Logistik, Supply Chain &amp; AI for Business (9,12/10)</span></div>
+  </div>
+</div></div>
+
+<section id="keahlian"><div class="wrap">
+  <h2>Bidang keahlian</h2>
+  <p class="sub">Enam bidang yang saling menopang: biaya dan jadwal dikendalikan dengan data, produksi dijalankan dengan disiplin teknik.</p>
+  <div class="areas">
+    <article class="area"><h3>Kontrol biaya &amp; estimasi</h3>
+      <p>Anggaran, cost breakdown structure, biaya per ton dan per km, budget vs aktual, analisis varians, dan proyeksi arus kas. Estimasi biaya jalan tol dan jembatan, serta tender.</p>
+      <ul class="tags"><li>Cost control</li><li>Cost estimation</li><li>Cash flow</li><li>Variance analysis</li></ul></article>
+    <article class="area"><h3>Project control</h3>
+      <p>Penjadwalan dan pengendalian proyek dengan Primavera P6 dan MS Project, method statement, dan koordinasi lintas fungsi dengan manajemen site.</p>
+      <ul class="tags"><li>Primavera P6</li><li>MS Project</li><li>Method statement</li><li>Google PM</li></ul></article>
+    <article class="area"><h3>Tambang &amp; produksi</h3>
+      <p>Operasi stone crusher andesit, PPIC, jadwal perawatan, forecasting alat, kontraktor hauling, dan monitoring PA, MA, UA, serta EU. Dasar geoteknik tambang terbuka dan kestabilan lereng.</p>
+      <ul class="tags"><li>PPIC</li><li>Crushing plant</li><li>Maintenance</li><li>Geoteknik</li></ul></article>
+    <article class="area"><h3>Keuangan &amp; saham</h3>
+      <p>Pemodelan keuangan di Excel, analisis risiko, dan pasar modal. Tesis magister tentang kebijakan pendanaan, profitabilitas, dan return saham sektor konstruksi di BEI.</p>
+      <ul class="tags"><li>Financial modelling</li><li>Value investing</li><li>Risk analysis</li><li>Capital markets</li></ul></article>
+    <article class="area"><h3>AI agent &amp; otomasi</h3>
+      <p>Memakai AI agent untuk membangun dashboard manajemen, mengotomasi laporan, dan membantu analisis biaya, produksi, dan keuangan. Dasar formal dari program AI for Business.</p>
+      <ul class="tags"><li>AI agent</li><li>Dashboard</li><li>Otomasi laporan</li><li>AI for Business</li></ul></article>
+    <article class="area"><h3>Rekayasa sipil</h3>
+      <p>Fondasi dan struktur, box girder, launching gantry, LRB, kontrol mutu beton dan tanah, serta uji lab DCP, sand cone, dan CBR. Perangkat: AutoCAD, Midas Civil, SketchUp.</p>
+      <ul class="tags"><li>Struktur</li><li>QC sipil</li><li>Midas Civil</li><li>AutoCAD</li></ul></article>
+  </div>
+</div></section>
+
+<section id="proyek"><div class="wrap">
+  <h2>Proyek</h2>
+  <p class="sub">Riset, aplikasi, dan alat hitung yang saya bangun. Pilih kategori untuk menyaring.</p>
+  <div class="chips" id="chips" role="group" aria-label="Filter kategori"></div>
+  <div class="projects" id="projects"></div>
+  <!-- TAMBAH PROYEK BARU: jalankan python tambah_proyek.py atau edit data/projects.json. -->
+</div></section>
+
+<section id="pustaka"><div class="wrap">
+  <h2>Pustaka halaman</h2>
+  <p class="sub">Kalkulator, dashboard, modul belajar, dan landing page yang saya susun untuk tambang, keuangan, dan project control. Setiap halaman berdiri sendiri dan bisa langsung dipakai.</p>
+  <div class="chips" id="pchips" role="group" aria-label="Filter kategori halaman"></div>
+  <div class="projects" id="pages"></div>
+</div></section>
+
+<section id="terminal"><div class="wrap">
+  <h2>Terminal interaktif</h2>
+  <p class="sub">Aplikasi analisis yang saya bangun dan jalankan langsung dari halaman ini. Pilih terminal, lalu klik Muat.</p>
+  <div class="chips" id="tabs" role="group" aria-label="Pilih terminal"></div>
+  <div class="term">
+    <div class="term-bar"><i></i><i></i><i></i><span class="addr" id="taddr">memuat daftar…</span><a id="tnew" href="#" target="_blank" rel="noopener" hidden>Buka di tab baru</a></div>
+    <div class="term-body" id="tbody"></div>
+  </div>
+  <p class="note">Hasil analisis bersifat ilustratif dan bukan saran investasi. Data berasal dari pihak ketiga, bukan feed resmi bursa.</p>
+</div></section>
+
+<section id="demo"><div class="wrap">
+  <h2>Kalkulator biaya dan margin hauling</h2>
+  <p class="sub">Versi web dari kalkulator_hauling.py dengan rumus yang sama. Angka awal hanya contoh, ganti dengan data kontrak Anda.</p>
+  <div class="calc">
+    <fieldset class="two">
+      <legend style="position:absolute;left:-9999px">Input hauling</legend>
+      <label>Harga fuel (Rp/liter)<input id="hf" type="number" min="0" value="20000" inputmode="decimal"></label>
+      <label>Muatan (ton)<input id="mt" type="number" min="0" value="30" inputmode="decimal"></label>
+      <label>Jarak satu arah (km)<input id="jk" type="number" min="0" value="50" inputmode="decimal"></label>
+      <label>Konsumsi fuel (liter/jam)<input id="fc" type="number" min="0" value="18" inputmode="decimal"></label>
+      <label>Waktu tempuh PP (jam)<input id="wp" type="number" min="0" value="4" inputmode="decimal"></label>
+      <label>Cost unit (Rp/jam)<input id="cu" type="number" min="0" value="270000" inputmode="decimal"></label>
+      <label>Harga kontrak (Rp/ton/km)<input id="hk" type="number" min="0" value="2200" inputmode="decimal"></label>
+      <label>Gaji driver (Rp/jam)<input id="sd" type="number" min="0" value="35000" inputmode="decimal"></label>
+      <label>Fix cost (% revenue)<input id="fx" type="number" min="0" max="99" value="12" inputmode="decimal"></label>
+    </fieldset>
+    <div class="out" aria-live="polite">
+      <div class="big" id="np">–</div>
+      <div>profit bersih (% dari pendapatan)</div>
+      <dl>
+        <dt>Fuel ratio</dt><dd id="fr">–</dd>
+        <dt>Pendapatan per ret</dt><dd id="rv">–</dd>
+        <dt>Biaya solar</dt><dd id="so">–</dd>
+        <dt>Biaya unit</dt><dd id="un">–</dd>
+        <dt>Biaya driver</dt><dd id="dr">–</dd>
+        <dt>Total biaya</dt><dd id="tc">–</dd>
+        <dt>Margin kotor</dt><dd id="mg">–</dd>
+        <dt>Profit kotor</dt><dd id="gp">–</dd>
+        <dt>Biaya per ton</dt><dd id="bt">–</dd>
+        <dt>Harga kontrak impas</dt><dd id="be">–</dd>
+      </dl>
+      <p class="note">Satuan per ret (pergi-pulang). Harga kontrak impas sudah memperhitungkan fix cost.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="pengalaman"><div class="wrap">
+  <h2>Pengalaman</h2>
+  <p class="sub">Dari kontrol mutu dan estimasi biaya, ke konstruksi tol layang, lalu memimpin produksi.</p>
+  <ol class="tl">
+    <li><h3>Production Head, Mining &amp; Stone Crusher</h3><div class="meta">PT Indo Global Traktor (Indomobil Group) · Okt 2020 – sekarang</div>
+      <ul><li>Memimpin estimasi biaya dan metode konstruksi fondasi serta struktur pendukung crusher.</li><li>Mengendalikan arus kas dan anggaran produksi crusher andesit.</li><li>Menyusun jadwal perawatan dan forecasting alat, serta ketersediaan suku cadang.</li><li>Menaikkan produksi dari 70.000 m³ menjadi 100.000 m³ dan profit proyek hingga 50%.</li></ul></li>
+    <li><h3>Technical Sales Engineer</h3><div class="meta">PT Indo Global Traktor · Apr 2019 – Sep 2020</div>
+      <ul><li>Mengembangkan klien baru, menegosiasikan tender dan kontrak, serta menyusun analisis biaya dan penjualan.</li></ul></li>
+    <li><h3>Launching Gantry &amp; Construction Engineer</h3><div class="meta">PT Bukaka Teknik Utama Tbk · Des 2016 – Mar 2019 · Tol Layang Jakarta–Cikampek II</div>
+      <ul><li>Menyusun method statement erection box girder baja dan rencana angkat tandem crane.</li><li>Menyusun SOP dan checklist operasi launching gantry; mengarahkan pemasangan dan QC sistem LRB.</li></ul></li>
+    <li><h3>Site Supervisor</h3><div class="meta">PT Panca Duta Prakarsa · Jul – Des 2016 · PLTU 3×7 MW Sintang</div></li>
+    <li><h3>Demolition Supervisor</h3><div class="meta">Kajima–Waskita JO · Mar 2015 – Mar 2016 · Akses Tol Cilincing–Jampea &amp; E2 Tanjung Priok</div></li>
+    <li><h3>Cost Estimator</h3><div class="meta">PT Mott MacDonald Indonesia · Sep 2014 – Mar 2015 · Tol Ngawi–Kertosono</div>
+      <ul><li>Menyusun analisis harga satuan, menghitung kuantitas jalan dan jembatan, dan memimpin verifikasi estimasi biaya.</li></ul></li>
+    <li><h3>Quality Control, Pekerjaan Sipil</h3><div class="meta">PT Waskita Karya (Persero) Tbk · Jul 2012 – Agu 2014 · Fasilitas Tambang Batubara Muara Teweh</div></li>
+  </ol>
+</div></section>
+
+<section id="riset"><div class="wrap">
+  <h2>Riset, pendidikan, dan sertifikasi</h2>
+  <div class="cols" style="margin-top:2rem">
+    <div><h3>Publikasi</h3><ul>
+      <li>Penerapan analisis Pareto dalam evaluasi kinerja crushing plant untuk mencapai target produksi andesit.</li>
+      <li>Evaluasi produksi penambangan batu andesit dengan metode AHP dan regresi linier berganda.</li>
+      <li>The effectiveness of funding policies, profitability, and company value on stock returns in construction-sector companies listed on the IDX, 2020–2024.</li></ul></div>
+    <div><h3>Pendidikan</h3><ul>
+      <li>Magister Manajemen, UNISSULA Semarang, 2025 (IPK 3,91/4,00)</li>
+      <li>Master in Logistic and Supply Chain Management and AI for Business, ENEB Business School Spain, 2025 (9,12/10)</li>
+      <li>Sarjana Teknik Sipil, Universitas Sultan Ageng Tirtayasa, 2011</li></ul></div>
+    <div><h3>Sertifikasi &amp; kursus</h3><ul>
+      <li>Pengawas Operasional Madya (POM) dan Pertama (POP), BNSP</li>
+      <li>Primavera P6, PII dan Bangun Energi</li>
+      <li>Financial Modelling for Value Investing, 2026</li>
+      <li>Maintenance Management for Heavy Mining Equipment, 2024</li>
+      <li>Open-Pit Mine Geotechnics dan Slope Stability</li>
+      <li>Finance and Accounting Manager Development Program, 2025</li></ul></div>
+  </div>
+</div></section>
+
+<section id="kontak" class="contact"><div class="wrap">
+  <h2>Mari berdiskusi</h2>
+  <p class="sub">Terbuka untuk peran kontrol biaya, project control, manajemen produksi tambang, dan analisis keuangan.</p>
+  <a class="btn" href="mailto:aulilabsyor@gmail.com">Kirim email</a>
+  <a class="btn alt" href="https://linkedin.com/in/agus-budianto-ulil-absyor-45724945" rel="noopener">Buka LinkedIn</a>
+</div></section>
+</main>
+<footer><div class="wrap">© 2026 Agus Budianto Ulil Absyor</div></footer>
+
+
+<script>
+(function(){
+  var P=[];
+  var box=document.getElementById("projects"),chips=document.getElementById("chips"),cur="Semua";
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e}
+  var cats=["Semua"];
+  function load(d){P=d;cats=["Semua"];P.forEach(function(p){(p.kategori||[]).forEach(function(c){if(cats.indexOf(c)<0)cats.push(c)})});draw()}
+  function draw(){
+    chips.textContent="";box.textContent="";
+    cats.forEach(function(c){var b=el("button","",c);b.type="button";b.setAttribute("aria-pressed",c===cur);b.onclick=function(){cur=c;draw()};chips.appendChild(b)});
+    P.filter(function(p){return cur==="Semua"||(p.kategori||[]).indexOf(cur)>=0}).forEach(function(p){
+      var a=el("article","proj");a.appendChild(el("h3","",p.judul));
+      if(p.konteks)a.appendChild(el("div","meta",p.konteks));
+      if(p.ringkas)a.appendChild(el("p","",p.ringkas));
+      if(p.hasil&&p.hasil.length){var u=el("ul","res");p.hasil.forEach(function(h){u.appendChild(el("li","",h))});a.appendChild(u)}
+      if(p.catatan)a.appendChild(el("p","cav",p.catatan));
+      if(p.tech&&p.tech.length){var t=el("ul","tags");p.tech.forEach(function(x){t.appendChild(el("li","",x))});a.appendChild(t)}
+      if(p.files&&p.files.length){var l=el("div","links");p.files.forEach(function(f){var k=el("a","",f.label);k.href=f.href;if(f.href.charAt(0)!=="#"){k.setAttribute("download","")}l.appendChild(k)});a.appendChild(l)}
+      box.appendChild(a)});
+  }
+  fetch("data/projects.json").then(function(r){return r.json()}).then(load).catch(function(){box.textContent="Data proyek belum dapat dimuat. Jika membuka dari berkas lokal, jalankan: python -m http.server 8000 lalu buka http://localhost:8000";});
+  var $=function(i){return document.getElementById(i)};
+  var rp=function(n){return isFinite(n)?"Rp "+Math.round(n).toLocaleString("id-ID"):"–"};
+  var pc=function(n){return isFinite(n)?(n*100).toFixed(1).replace(".",",")+"%":"–"};
+  function calc(){
+    var g=function(i){return +$(i).value||0};
+    var m=g("mt"),j=g("jk"),w=g("wp"),tk=m*j,fx=g("fx")/100;
+    if(tk<=0){["np","fr","rv","so","un","dr","tc","mg","gp","bt","be"].forEach(function(i){$(i).textContent="–"});return}
+    var fr=(g("fc")*w)/tk,rv=tk*g("hk"),so=fr*tk*g("hf"),un=g("cu")*w,dr=g("sd")*w,tc=so+un+dr,mg=rv-tc,gp=rv?mg/rv:0;
+    $("np").textContent=pc(gp-fx);$("fr").textContent=fr.toFixed(4).replace(".",",")+" L/ton/km";
+    $("rv").textContent=rp(rv);$("so").textContent=rp(so);$("un").textContent=rp(un);$("dr").textContent=rp(dr);
+    $("tc").textContent=rp(tc);$("mg").textContent=rp(mg);$("gp").textContent=pc(gp);$("bt").textContent=rp(tc/m)+"/ton";
+    $("be").textContent=fx<1?rp(tc/(1-fx)/tk)+"/ton/km":"–";
+  }
+  document.querySelectorAll("fieldset.two input").forEach(function(i){i.addEventListener("input",calc)});
+  calc();
+})();
+</script>
+<script>
+(function(){
+  var T=[],cur=0,box=document.getElementById("tbody"),tabs=document.getElementById("tabs"),addr=document.getElementById("taddr"),nw=document.getElementById("tnew");
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e}
+  function ok(u){return typeof u==="string"&&u.indexOf("https://")===0}
+  function load(t){
+    var f=document.createElement("iframe");
+    f.src=t.url+(t.url.indexOf("?")<0?"?":"&")+"embed=true";f.title=t.nama;f.loading="lazy";
+    f.setAttribute("allow","clipboard-write");
+    f.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-popups allow-downloads");
+    box.textContent="";box.appendChild(f);
+  }
+  function show(){
+    tabs.textContent="";
+    T.forEach(function(t,i){var b=el("button","",t.nama);b.type="button";b.setAttribute("aria-pressed",i===cur);b.onclick=function(){cur=i;show()};tabs.appendChild(b)});
+    var t=T[cur];if(!t)return;
+    var live=ok(t.url);addr.textContent=live?t.url:"belum diterbitkan";nw.hidden=!live;if(live)nw.href=t.url;
+    box.textContent="";
+    var m=el("div","term-msg");m.appendChild(el("h3","",t.nama));m.appendChild(el("p","",t.deskripsi||""));
+    if(live){
+      var b=el("button","go","Muat terminal");b.type="button";b.onclick=function(){load(t)};m.appendChild(b);
+      m.appendChild(el("p","","Data berupa snapshot yang diperbarui berkala saat bursa buka, bukan real-time."));
+    }else{m.appendChild(el("p","","Terminal ini sedang disiapkan dan akan tersedia di sini."))}
+    box.appendChild(m);
+  }
+  fetch("data/terminals.json").then(function(r){return r.json()}).then(function(d){T=d;show()}).catch(function(){addr.textContent="daftar terminal belum dapat dimuat"});
+})();
+</script>
+<script>
+(function(){
+  var L=[],cur="Semua",box=document.getElementById("pages"),chips=document.getElementById("pchips");
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x)e.textContent=x;return e}
+  function draw(){
+    var cats=["Semua"];L.forEach(function(p){if(cats.indexOf(p.kategori)<0)cats.push(p.kategori)});
+    chips.textContent="";box.textContent="";
+    cats.forEach(function(c){var b=el("button","",c);b.type="button";b.setAttribute("aria-pressed",c===cur);b.onclick=function(){cur=c;draw()};chips.appendChild(b)});
+    L.filter(function(p){return cur==="Semua"||p.kategori===cur}).forEach(function(p){
+      var a=el("article","proj");a.appendChild(el("h3","",p.judul));
+      a.appendChild(el("div","meta",p.jenis+" · "+p.kategori));
+      a.appendChild(el("p","",p.deskripsi));
+      var l=el("div","links"),k=el("a","","Buka halaman");k.href=p.href;l.appendChild(k);a.appendChild(l);box.appendChild(a)});
+  }
+  fetch("pages.json").then(function(r){return r.json()}).then(function(d){L=d;draw()}).catch(function(){box.textContent="Daftar halaman belum dapat dimuat."});
+})();
+</script>
+</body>
+</html>
