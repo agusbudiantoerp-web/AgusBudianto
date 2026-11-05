@@ -114,8 +114,9 @@ def analyze_equity(symbol: str, period: str = "5y") -> dict:
     sma200 = float(close.tail(200).mean()) if len(close) >= 200 else None
 
     delta = close.diff()
-    gain = delta.clip(lower=0).rolling(14).mean()
-    loss = -delta.clip(upper=0).rolling(14).mean()
+    # Wilder-style RSI smoothing (the conventional RSI 14 calculation).
+    gain = delta.clip(lower=0).ewm(alpha=1/14, min_periods=14, adjust=False).mean()
+    loss = -delta.clip(upper=0).ewm(alpha=1/14, min_periods=14, adjust=False).mean()
     rsi_series = 100 - (100 / (1 + gain / loss.replace(0, np.nan)))
     rsi_series = rsi_series.mask((loss == 0) & (gain > 0), 100)
     rsi_series = rsi_series.mask((loss == 0) & (gain == 0), 50)
@@ -212,7 +213,8 @@ def calculate_dcf(data: dict, years: int = 5, growth: float = 0.05, wacc: float 
             "pv_forecast": pv_sum, "terminal_value": terminal_value, "pv_terminal_value": terminal_pv,
             "enterprise_value": pv_sum + terminal_pv,
             "assumptions": {"years": years, "growth": growth, "wacc": wacc, "terminal_growth": terminal_growth},
-            "warning": "Estimasi enterprise value sederhana; bukan harga wajar per saham. Periksa satuan, mata uang, periode, net debt, jumlah saham, kualitas FCF, pajak dan kebutuhan modal."}
+            "currency": data.get("currency", "Unknown"),
+            "warning": "Estimasi enterprise value sederhana dalam satuan dan mata uang sumber FCF; bukan harga wajar per saham. Periksa satuan, mata uang, periode, net debt, jumlah saham, kualitas FCF, pajak dan kebutuhan modal."}
 
 
 def build_research_summary(data: dict) -> list[str]:
@@ -223,3 +225,37 @@ def build_research_summary(data: dict) -> list[str]:
         f"RSI 14: {data['rsi14']:.1f} ({data['rsi_signal']})." if data.get("rsi14") is not None else "RSI tidak tersedia.",
         f"Volatilitas tahunan historis: {data['annualized_volatility_pct']:.2f}%." if data.get("annualized_volatility_pct") is not None else "Volatilitas tidak tersedia."
     ]
+
+
+
+def dcf_sensitivity(data: dict, growth_rates=None, wacc_rates=None, years: int = 5, terminal_growth: float = 0.025) -> dict:
+    """Return a clearly labeled enterprise-value sensitivity matrix, not per-share value."""
+    growth_rates = list(growth_rates if growth_rates is not None else [0.00, 0.05, 0.10])
+    wacc_rates = list(wacc_rates if wacc_rates is not None else [0.10, 0.12, 0.14])
+    base = _number(data.get("ratios", {}).get("Free cash flow"))
+    if is_financial_institution(data):
+        return {"available": False, "reason": "Sensitivity DCF FCF tidak digunakan untuk perusahaan keuangan."}
+    if base is None or base <= 0:
+        return {"available": False, "reason": "Sensitivity DCF memerlukan FCF dasar positif."}
+    if not isinstance(years, int) or years < 1 or years > 20:
+        return {"available": False, "reason": "Periode proyeksi harus 1 sampai 20 tahun."}
+    if not growth_rates or not wacc_rates:
+        return {"available": False, "reason": "Daftar skenario growth dan WACC tidak boleh kosong."}
+    rows = []
+    for growth_rate in growth_rates:
+        g = _number(growth_rate)
+        if g is None or g <= -1:
+            return {"available": False, "reason": "Growth scenario harus lebih besar dari -100%."}
+        row = {"FCF growth": g}
+        for discount_rate in wacc_rates:
+            w = _number(discount_rate)
+            if w is None or w <= terminal_growth:
+                return {"available": False, "reason": "Setiap WACC harus lebih tinggi daripada terminal growth."}
+            pv = sum(base * ((1 + g) ** year) / ((1 + w) ** year) for year in range(1, years + 1))
+            terminal_fcf = base * ((1 + g) ** years)
+            terminal_value = terminal_fcf * (1 + terminal_growth) / (w - terminal_growth)
+            pv_terminal = terminal_value / ((1 + w) ** years)
+            row[f"WACC {w:.1%}"] = pv + pv_terminal
+        rows.append(row)
+    return {"available": True, "matrix": pd.DataFrame(rows), "currency": data.get("currency", "Unknown"),
+            "warning": "Seluruh angka adalah enterprise value indikatif dalam unit/mata uang FCF sumber, bukan nilai per saham."}
