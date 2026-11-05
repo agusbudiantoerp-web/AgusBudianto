@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("AI Equity Research Bot siap.\nGunakan /analyze ANTM atau /analyze AAPL.\nData Yahoo Finance; bukan rekomendasi investasi.")
+    await update.message.reply_text("AI Equity Research Bot siap untuk saham BEI.\nGunakan /analyze ANTM.\nData Yahoo Finance; bukan rekomendasi investasi.")
 
 async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
@@ -38,9 +38,12 @@ async def analyze(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await status.edit_text(f"Gagal menganalisis {symbol.upper()}: {exc}")
 
 def main():
-    if not TOKEN: raise RuntimeError("Set TELEGRAM_BOT_TOKEN environment variable before running the bot.")
+    if not TOKEN:
+        raise RuntimeError("Set TELEGRAM_BOT_TOKEN environment variable before running the bot.")
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("analyze", analyze))
     app.run_polling()
-if __name__ == "__main__": main()
+
+if __name__ == "__main__":
+    main()
