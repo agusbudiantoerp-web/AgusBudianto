@@ -32,6 +32,13 @@ def _number(value: Any):
         return None
 
 
+def is_financial_institution(data: dict) -> bool:
+    """Avoid industrial-company FCF DCF for banks, insurers and financial firms."""
+    identity = " ".join(str(data.get(k) or "") for k in ("sector", "industry", "company", "ticker")).lower()
+    terms = ("bank", "financial services", "financials", "insurance", "insurer", "capital markets", "credit services")
+    return any(term in identity for term in terms)
+
+
 def _statement_value(frame: pd.DataFrame, candidates: list[str]):
     """Read the newest available period for a matching Yahoo statement row."""
     if frame is None or frame.empty:
@@ -54,6 +61,15 @@ def _statement_value(frame: pd.DataFrame, candidates: list[str]):
                 if n is not None:
                     return n
     return None
+
+
+def _latest_period(frame: pd.DataFrame):
+    if frame is None or frame.empty:
+        return None
+    try:
+        return str(max(frame.columns, key=lambda c: pd.Timestamp(c)))
+    except (TypeError, ValueError):
+        return str(frame.columns[0])
 
 
 def _safe_info(ticker):
@@ -118,7 +134,6 @@ def analyze_equity(symbol: str, period: str = "5y") -> dict:
     capex = _statement_value(cashflow, ["Capital Expenditure", "Capital Expenditures"])
     free_cash_flow = _statement_value(cashflow, ["Free Cash Flow"])
     if free_cash_flow is None and operating_cash_flow is not None and capex is not None:
-        # Yahoo may represent capital expenditure as either a negative or positive number.
         free_cash_flow = operating_cash_flow - abs(capex)
 
     ratios = {
@@ -137,28 +152,45 @@ def analyze_equity(symbol: str, period: str = "5y") -> dict:
     date_column = "Date" if "Date" in history.columns else history.columns[0]
     history["Date"] = history[date_column].astype(str)
 
-    statement_columns = list(financials.columns) if not financials.empty else []
-    latest_financial_period = str(max(statement_columns, key=lambda c: pd.Timestamp(c))) if statement_columns else None
+    warnings = []
+    if not info.get("currency"):
+        warnings.append("Mata uang emiten tidak tersedia dari metadata.")
+    if financials.empty:
+        warnings.append("Laporan laba rugi tidak tersedia.")
+    if balance.empty:
+        warnings.append("Neraca tidak tersedia.")
+    if cashflow.empty:
+        warnings.append("Laporan arus kas tidak tersedia.")
+    if not financials.empty and not balance.empty and _latest_period(financials) != _latest_period(balance):
+        warnings.append("Periode laporan laba rugi dan neraca berbeda; jangan bandingkan angka tanpa penyesuaian.")
+    if not cashflow.empty and _latest_period(cashflow) != _latest_period(financials):
+        warnings.append("Periode arus kas dan laba rugi berbeda; periksa sebelum menghitung valuasi.")
     return {
         "ticker": ticker_symbol, "company": info.get("longName") or info.get("shortName") or ticker_symbol,
         "sector": info.get("sector") or "Not disclosed", "industry": info.get("industry") or "Not disclosed",
         "currency": info.get("currency") or "Unknown", "as_of": datetime.now(timezone.utc).isoformat(),
-        "latest_price_date": str(history["Date"].iloc[-1]), "latest_financial_period": latest_financial_period,
+        "latest_price_date": str(history["Date"].iloc[-1]), "latest_financial_period": _latest_period(financials),
+        "latest_balance_period": _latest_period(balance), "latest_cashflow_period": _latest_period(cashflow),
         "price": latest, "previous_close": previous, "change_pct": change_pct,
         "period_return_pct": total_return, "sma20": sma20, "sma50": sma50, "sma200": sma200,
         "rsi14": rsi, "annualized_volatility_pct": volatility, "trend": trend, "rsi_signal": rsi_signal,
         "ratios": ratios, "history": history[["Date", "Open", "High", "Low", "Close", "Volume"]],
         "data_source": "Yahoo Finance via yfinance",
-        "data_quality_note": "Periode laporan, mata uang, dan satuan setiap item fundamental perlu diverifikasi terhadap laporan emiten.",
+        "data_quality_warnings": warnings,
+        "data_quality_note": "Nilai fundamental disajikan sesuai data sumber; satuan dan periode wajib diverifikasi terhadap laporan emiten.",
         "disclaimer": "Data may be delayed, incomplete, restated, or unavailable. Not investment advice."
     }
 
 
 def calculate_dcf(data: dict, years: int = 5, growth: float = 0.05, wacc: float = 0.12, terminal_growth: float = 0.025) -> dict:
+    if is_financial_institution(data):
+        return {"available": False, "reason": "DCF berbasis FCF perusahaan non-keuangan tidak digunakan untuk bank/asuransi. Gunakan pendekatan P/B-ROE, residual income, atau dividend discount dengan asumsi khusus sektor."}
     ratios = data.get("ratios", {})
     fcf = _number(ratios.get("Free cash flow"))
     if fcf is None:
         return {"available": False, "reason": "Free cash flow tidak tersedia dari sumber data."}
+    if fcf <= 0:
+        return {"available": False, "reason": "FCF dasar nol atau negatif. DCF perpetuity standar tidak ditampilkan; lakukan normalisasi arus kas dan analisis skenario."}
     if not isinstance(years, int) or years < 1 or years > 20:
         return {"available": False, "reason": "Periode proyeksi harus 1 sampai 20 tahun."}
     if any(_number(x) is None for x in (growth, wacc, terminal_growth)):
@@ -180,7 +212,7 @@ def calculate_dcf(data: dict, years: int = 5, growth: float = 0.05, wacc: float 
             "pv_forecast": pv_sum, "terminal_value": terminal_value, "pv_terminal_value": terminal_pv,
             "enterprise_value": pv_sum + terminal_pv,
             "assumptions": {"years": years, "growth": growth, "wacc": wacc, "terminal_growth": terminal_growth},
-            "warning": "Estimasi sederhana berbasis FCF agregat; bukan valuasi lengkap per saham. Periksa satuan, mata uang, periode, net debt, jumlah saham, dan kualitas data."}
+            "warning": "Estimasi enterprise value sederhana; bukan harga wajar per saham. Periksa satuan, mata uang, periode, net debt, jumlah saham, kualitas FCF, pajak dan kebutuhan modal."}
 
 
 def build_research_summary(data: dict) -> list[str]:
