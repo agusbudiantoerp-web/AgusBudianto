@@ -14,7 +14,7 @@ class EngineTests(unittest.TestCase):
 
     def test_non_idx_exchange_rejected_in_v1(self):
         with self.assertRaises(ValueError):
-            normalize_ticker("AAPL")
+            normalize_ticker("AAPL.US")
 
     def test_empty_ticker_rejected(self):
         with self.assertRaises(ValueError):
