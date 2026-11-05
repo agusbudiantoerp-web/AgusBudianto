@@ -3,58 +3,92 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 import math
+import re
 import numpy as np
 import pandas as pd
 import yfinance as yf
 
+
 def normalize_ticker(symbol: str) -> str:
     s = (symbol or "").strip().upper().replace(" ", "")
-    if not s: raise ValueError("Masukkan kode saham.")
-    if "." not in s and s.isalnum(): s += ".JK"
-    return s
+    if not s:
+        raise ValueError("Masukkan kode saham.")
+    if s.endswith(".JK"):
+        code = s[:-3]
+    elif "." in s:
+        raise ValueError("V1 saat ini hanya mendukung ticker BEI dengan akhiran .JK.")
+    else:
+        code = s
+    if not re.fullmatch(r"[A-Z0-9]{3,6}", code):
+        raise ValueError("Format ticker BEI tidak valid. Contoh: ANTM atau ANTM.JK.")
+    return f"{code}.JK"
+
 
 def _number(value: Any):
     try:
         n = float(value)
         return n if math.isfinite(n) else None
-    except (TypeError, ValueError): return None
+    except (TypeError, ValueError):
+        return None
+
 
 def _statement_value(frame: pd.DataFrame, candidates: list[str]):
-    if frame is None or frame.empty: return None
+    """Read the newest available period for a matching Yahoo statement row."""
+    if frame is None or frame.empty:
+        return None
+    columns = list(frame.columns)
+    try:
+        columns = sorted(columns, key=lambda c: pd.Timestamp(c), reverse=True)
+    except (TypeError, ValueError):
+        pass
     for candidate in candidates:
-        for label in frame.index:
-            if str(label).lower() == candidate.lower():
-                row = frame.loc[label]
-                if isinstance(row, pd.Series):
-                    for value in row.values:
-                        n = _number(value)
-                        if n is not None: return n
-                else: return _number(row)
+        matches = [label for label in frame.index if str(label).strip().lower() == candidate.lower()]
+        if not matches:
+            continue
+        row = frame.loc[matches[0]]
+        if isinstance(row, pd.DataFrame):
+            row = row.iloc[0]
+        for column in columns:
+            if column in row.index:
+                n = _number(row[column])
+                if n is not None:
+                    return n
     return None
 
+
 def _safe_info(ticker):
-    try: return ticker.get_info() or {}
+    try:
+        return ticker.get_info() or {}
     except Exception:
-        try: return ticker.info or {}
-        except Exception: return {}
+        try:
+            return ticker.info or {}
+        except Exception:
+            return {}
+
 
 def _safe_statement(ticker, name):
     try:
         value = getattr(ticker, name)
         return value if isinstance(value, pd.DataFrame) else pd.DataFrame()
-    except Exception: return pd.DataFrame()
+    except Exception:
+        return pd.DataFrame()
+
 
 def analyze_equity(symbol: str, period: str = "5y") -> dict:
     ticker_symbol = normalize_ticker(symbol)
     ticker = yf.Ticker(ticker_symbol)
     info = _safe_info(ticker)
     hist = ticker.history(period=period, auto_adjust=True)
-    if hist is None or hist.empty:
+    if hist is None or hist.empty or "Close" not in hist:
         raise ValueError(f"Tidak ada data harga untuk {ticker_symbol}. Periksa ticker atau coba lagi nanti.")
+
     financials = _safe_statement(ticker, "financials")
     balance = _safe_statement(ticker, "balance_sheet")
     cashflow = _safe_statement(ticker, "cashflow")
     close = hist["Close"].dropna()
+    if close.empty:
+        raise ValueError(f"Data harga penutupan {ticker_symbol} tidak tersedia.")
+
     returns = close.pct_change().dropna()
     latest = float(close.iloc[-1])
     previous = float(close.iloc[-2]) if len(close) > 1 else latest
@@ -62,14 +96,18 @@ def analyze_equity(symbol: str, period: str = "5y") -> dict:
     sma20 = float(close.tail(20).mean()) if len(close) >= 20 else None
     sma50 = float(close.tail(50).mean()) if len(close) >= 50 else None
     sma200 = float(close.tail(200).mean()) if len(close) >= 200 else None
+
     delta = close.diff()
     gain = delta.clip(lower=0).rolling(14).mean()
     loss = -delta.clip(upper=0).rolling(14).mean()
-    rs = gain / loss.replace(0, np.nan)
-    rsi_series = 100 - (100 / (1 + rs))
+    rsi_series = 100 - (100 / (1 + gain / loss.replace(0, np.nan)))
+    rsi_series = rsi_series.mask((loss == 0) & (gain > 0), 100)
+    rsi_series = rsi_series.mask((loss == 0) & (gain == 0), 50)
     rsi = _number(rsi_series.iloc[-1]) if not rsi_series.empty else None
+
     volatility = _number(returns.std() * np.sqrt(252) * 100) if len(returns) > 1 else None
     total_return = ((latest / float(close.iloc[0])) - 1) * 100 if len(close) > 1 and close.iloc[0] else None
+
     revenue = _statement_value(financials, ["Total Revenue", "Operating Revenue"])
     net_income = _statement_value(financials, ["Net Income", "Net Income Common Stockholders"])
     operating_income = _statement_value(financials, ["Operating Income"])
@@ -80,37 +118,56 @@ def analyze_equity(symbol: str, period: str = "5y") -> dict:
     capex = _statement_value(cashflow, ["Capital Expenditure", "Capital Expenditures"])
     free_cash_flow = _statement_value(cashflow, ["Free Cash Flow"])
     if free_cash_flow is None and operating_cash_flow is not None and capex is not None:
-        free_cash_flow = operating_cash_flow + capex
+        # Yahoo may represent capital expenditure as either a negative or positive number.
+        free_cash_flow = operating_cash_flow - abs(capex)
+
     ratios = {
         "Revenue": revenue, "Net income": net_income, "Operating income": operating_income,
         "EBITDA": ebitda, "Market capitalization": _number(info.get("marketCap")),
         "Trailing P/E": _number(info.get("trailingPE")), "Price to book": _number(info.get("priceToBook")),
-        "ROE (%)": (_number(info.get("returnOnEquity")) or 0) * 100 if info.get("returnOnEquity") is not None else None,
+        "ROE (%)": _number(info.get("returnOnEquity")) * 100 if _number(info.get("returnOnEquity")) is not None else None,
         "Debt to equity": _number(info.get("debtToEquity")),
-        "Dividend yield (%)": (_number(info.get("dividendYield")) or 0) * 100 if info.get("dividendYield") is not None else None,
+        "Dividend yield (%)": _number(info.get("dividendYield")) * 100 if _number(info.get("dividendYield")) is not None else None,
         "Operating cash flow": operating_cash_flow, "Capital expenditure": capex,
         "Free cash flow": free_cash_flow, "Total debt": total_debt, "Cash and equivalents": cash,
     }
     trend = ("Bullish (SMA20 > SMA50)" if sma20 > sma50 else "Bearish (SMA20 < SMA50)") if sma20 is not None and sma50 is not None else "Insufficient history"
     rsi_signal = "Unavailable" if rsi is None else ("Potentially overbought" if rsi >= 70 else ("Potentially oversold" if rsi <= 30 else "Neutral range"))
     history = hist.reset_index()
-    history["Date"] = history["Date"].astype(str)
+    date_column = "Date" if "Date" in history.columns else history.columns[0]
+    history["Date"] = history[date_column].astype(str)
+
+    statement_columns = list(financials.columns) if not financials.empty else []
+    latest_financial_period = str(max(statement_columns, key=lambda c: pd.Timestamp(c))) if statement_columns else None
     return {
         "ticker": ticker_symbol, "company": info.get("longName") or info.get("shortName") or ticker_symbol,
         "sector": info.get("sector") or "Not disclosed", "industry": info.get("industry") or "Not disclosed",
         "currency": info.get("currency") or "Unknown", "as_of": datetime.now(timezone.utc).isoformat(),
+        "latest_price_date": str(history["Date"].iloc[-1]), "latest_financial_period": latest_financial_period,
         "price": latest, "previous_close": previous, "change_pct": change_pct,
         "period_return_pct": total_return, "sma20": sma20, "sma50": sma50, "sma200": sma200,
         "rsi14": rsi, "annualized_volatility_pct": volatility, "trend": trend, "rsi_signal": rsi_signal,
         "ratios": ratios, "history": history[["Date", "Open", "High", "Low", "Close", "Volume"]],
         "data_source": "Yahoo Finance via yfinance",
+        "data_quality_note": "Periode laporan, mata uang, dan satuan setiap item fundamental perlu diverifikasi terhadap laporan emiten.",
         "disclaimer": "Data may be delayed, incomplete, restated, or unavailable. Not investment advice."
     }
 
+
 def calculate_dcf(data: dict, years: int = 5, growth: float = 0.05, wacc: float = 0.12, terminal_growth: float = 0.025) -> dict:
-    fcf = data["ratios"].get("Free cash flow")
-    if fcf is None: return {"available": False, "reason": "Free cash flow tidak tersedia dari sumber data."}
-    if wacc <= terminal_growth: return {"available": False, "reason": "WACC harus lebih tinggi daripada terminal growth."}
+    ratios = data.get("ratios", {})
+    fcf = _number(ratios.get("Free cash flow"))
+    if fcf is None:
+        return {"available": False, "reason": "Free cash flow tidak tersedia dari sumber data."}
+    if not isinstance(years, int) or years < 1 or years > 20:
+        return {"available": False, "reason": "Periode proyeksi harus 1 sampai 20 tahun."}
+    if any(_number(x) is None for x in (growth, wacc, terminal_growth)):
+        return {"available": False, "reason": "Asumsi growth, WACC, dan terminal growth harus berupa angka valid."}
+    if growth <= -1 or terminal_growth <= -1 or wacc <= -1:
+        return {"available": False, "reason": "Asumsi tingkat pertumbuhan dan diskonto tidak boleh <= -100%."}
+    if wacc <= terminal_growth:
+        return {"available": False, "reason": "WACC harus lebih tinggi daripada terminal growth."}
+
     forecast, pv_sum = [], 0.0
     for year in range(1, years + 1):
         cash_flow = fcf * ((1 + growth) ** year)
@@ -123,7 +180,8 @@ def calculate_dcf(data: dict, years: int = 5, growth: float = 0.05, wacc: float 
             "pv_forecast": pv_sum, "terminal_value": terminal_value, "pv_terminal_value": terminal_pv,
             "enterprise_value": pv_sum + terminal_pv,
             "assumptions": {"years": years, "growth": growth, "wacc": wacc, "terminal_growth": terminal_growth},
-            "warning": "Estimasi sederhana berbasis FCF agregat yang tersedia; bukan valuasi lengkap per saham. Periksa satuan, mata uang, periode, dan kualitas data."}
+            "warning": "Estimasi sederhana berbasis FCF agregat; bukan valuasi lengkap per saham. Periksa satuan, mata uang, periode, net debt, jumlah saham, dan kualitas data."}
+
 
 def build_research_summary(data: dict) -> list[str]:
     return [
