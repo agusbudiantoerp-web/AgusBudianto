@@ -29,6 +29,13 @@ python bot.py
 ~~~
 Replace the example ID with your own numeric chat ID. Multiple IDs may be comma-separated. Bot refuses to start without an allowlist and denies all other chats.
 
+## Live data smoke test (manual)
+After installing dependencies, run:
+~~~powershell
+python validate_live.py
+~~~
+This checks whether Yahoo Finance returns data for ANTM, BBCA and PTBA, and prints the latest price/report periods, statement values, DCF availability and automatic data warnings. It does not prove the financial statement mapping is correct. Compare each period and unit with the issuer's audited report before using the values.
+
 ## Free deployment
 - Web: Streamlit Community Cloud; app root is this folder and entrypoint is app.py.
 - Telegram: local polling is for development; continuous free worker availability is not guaranteed.
