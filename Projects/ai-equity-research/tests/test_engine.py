@@ -6,8 +6,8 @@ class EngineTests(unittest.TestCase):
     def test_idx_ticker_suffix(self):
         self.assertEqual(normalize_ticker("antm"), "ANTM.JK")
 
-    def test_global_ticker_kept(self):
-        self.assertEqual(normalize_ticker("AAPL.US"), "AAPL.US")
+    def test_explicit_suffix_kept(self):
+        self.assertEqual(normalize_ticker("ANTM.JK"), "ANTM.JK")
 
     def test_empty_ticker_rejected(self):
         with self.assertRaises(ValueError):
