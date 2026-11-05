@@ -1,7 +1,7 @@
 import unittest
 from io import BytesIO
 import pandas as pd
-from engine import normalize_ticker, calculate_dcf, _statement_value, is_financial_institution
+from engine import normalize_ticker, calculate_dcf, dcf_sensitivity, _statement_value, is_financial_institution
 from reports import make_excel_report, make_pdf_report
 from security import parse_allowed_chat_ids, is_authorized_chat
 
@@ -20,6 +20,13 @@ class EngineTests(unittest.TestCase):
         self.assertTrue(result["available"]); self.assertGreater(result["enterprise_value"],0); self.assertIsInstance(result["forecast"],pd.DataFrame)
     def test_dcf_rejects_negative_fcf(self):
         result=calculate_dcf({"ratios":{"Free cash flow":-100}})
+        self.assertFalse(result["available"])
+    def test_dcf_sensitivity_returns_matrix(self):
+        result=dcf_sensitivity({"currency":"IDR","ratios":{"Free cash flow":100}})
+        self.assertTrue(result["available"])
+        self.assertEqual(result["matrix"].shape, (3, 4))
+    def test_dcf_sensitivity_rejects_wacc_below_terminal_growth(self):
+        result=dcf_sensitivity({"ratios":{"Free cash flow":100}}, wacc_rates=[0.02], terminal_growth=0.03)
         self.assertFalse(result["available"])
     def test_dcf_disabled_for_bank_ticker(self):
         result=calculate_dcf({"ticker":"BBCA.JK","company":"PT Bank Central Asia Tbk","sector":"Financial Services","ratios":{"Free cash flow":100}})
