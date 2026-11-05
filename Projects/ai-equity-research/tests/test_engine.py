@@ -1,7 +1,7 @@
 import unittest
 from io import BytesIO
 import pandas as pd
-from engine import normalize_ticker, calculate_dcf, _statement_value
+from engine import normalize_ticker, calculate_dcf, _statement_value, is_financial_institution
 from reports import make_excel_report, make_pdf_report
 from security import parse_allowed_chat_ids, is_authorized_chat
 
@@ -18,6 +18,15 @@ class EngineTests(unittest.TestCase):
     def test_dcf_calculates_positive_fcf(self):
         result=calculate_dcf({"ratios":{"Free cash flow":100}})
         self.assertTrue(result["available"]); self.assertGreater(result["enterprise_value"],0); self.assertIsInstance(result["forecast"],pd.DataFrame)
+    def test_dcf_rejects_negative_fcf(self):
+        result=calculate_dcf({"ratios":{"Free cash flow":-100}})
+        self.assertFalse(result["available"])
+    def test_dcf_disabled_for_bank_ticker(self):
+        result=calculate_dcf({"ticker":"BBCA.JK","company":"PT Bank Central Asia Tbk","sector":"Financial Services","ratios":{"Free cash flow":100}})
+        self.assertFalse(result["available"]); self.assertIn("bank",result["reason"].lower())
+    def test_financial_institution_detection(self):
+        self.assertTrue(is_financial_institution({"industry":"Banks - Regional"}))
+        self.assertFalse(is_financial_institution({"sector":"Basic Materials","industry":"Gold"}))
     def test_statement_uses_latest_period(self):
         frame=pd.DataFrame([[200,100]],index=["Total Revenue"],columns=[pd.Timestamp("2024-12-31"),pd.Timestamp("2025-12-31")])
         self.assertEqual(_statement_value(frame,["Total Revenue"]),100)
