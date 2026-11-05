@@ -32,6 +32,9 @@ if data:
     c[1].metric("Daily change", f"{data['change_pct']:.2f}%" if data.get("change_pct") is not None else "N/A")
     c[2].metric("Period return", f"{data['period_return_pct']:.2f}%" if data.get("period_return_pct") is not None else "N/A")
     c[3].metric("Annualized volatility", f"{data['annualized_volatility_pct']:.2f}%" if data.get("annualized_volatility_pct") is not None else "N/A")
+    st.caption(f"Harga terakhir: {data.get('latest_price_date','N/A')} · Laporan laba rugi: {data.get('latest_financial_period','N/A')} · Neraca: {data.get('latest_balance_period','N/A')} · Arus kas: {data.get('latest_cashflow_period','N/A')}")
+    for warning in data.get("data_quality_warnings", []): st.warning(warning)
+    st.info(data["data_quality_note"])
     tab1, tab2, tab3, tab4 = st.tabs(["Overview", "Fundamentals", "Technical", "Valuation"])
     with tab1:
         st.write(f"**Sector:** {data['sector']} · **Industry:** {data['industry']}")
@@ -49,8 +52,12 @@ if data:
             st.metric("Illustrative DCF enterprise value", f"{dcf['enterprise_value']:,.2f} {data['currency']}")
             st.dataframe(dcf["forecast"], use_container_width=True, hide_index=True)
             st.caption(dcf["warning"])
-        else: st.info(dcf.get("reason", "Run analysis first.") if dcf else "Run analysis first.")
+        else:
+            st.info(dcf.get("reason", "Run analysis first.") if dcf else "Run analysis first.")
+            if "bank" in (dcf.get("reason", "").lower() if dcf else ""):
+                st.write("Untuk bank, evaluasi P/B, ROE, pertumbuhan laba, kualitas aset, NPL, CAR, dan dividend discount/residual income; jangan gunakan DCF FCF generik.")
     col1, col2 = st.columns(2)
     col1.download_button("Download Excel report", make_excel_report(data, dcf), file_name=f"{data['ticker'].replace('.', '_')}_research.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True)
     col2.download_button("Download PDF report", make_pdf_report(data, dcf), file_name=f"{data['ticker'].replace('.', '_')}_research.pdf", mime="application/pdf", use_container_width=True)
-else: st.info("Masukkan ticker saham, atur asumsi, lalu klik Analyze stock.")
+else:
+    st.info("Masukkan ticker saham, atur asumsi, lalu klik Analyze stock.")
