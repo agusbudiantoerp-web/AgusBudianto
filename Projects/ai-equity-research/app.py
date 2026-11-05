@@ -1,5 +1,5 @@
 import streamlit as st
-from engine import analyze_equity, calculate_dcf, build_research_summary
+from engine import analyze_equity, calculate_dcf, dcf_sensitivity, build_research_summary
 from reports import make_excel_report, make_pdf_report
 
 st.set_page_config(page_title="AI Equity Research", page_icon="📊", layout="wide")
@@ -52,6 +52,13 @@ if data:
             st.metric("Illustrative DCF enterprise value", f"{dcf['enterprise_value']:,.2f} {data['currency']}")
             st.dataframe(dcf["forecast"], use_container_width=True, hide_index=True)
             st.caption(dcf["warning"])
+            sensitivity = dcf_sensitivity(result, years=years, terminal_growth=terminal_pct/100)
+            if sensitivity.get("available"):
+                st.subheader("DCF sensitivity · enterprise value")
+                st.caption(sensitivity["warning"])
+                st.dataframe(sensitivity["matrix"], use_container_width=True, hide_index=True)
+            else:
+                st.info(sensitivity.get("reason", "Sensitivity not available."))
         else:
             st.info(dcf.get("reason", "Run analysis first.") if dcf else "Run analysis first.")
             if "bank" in (dcf.get("reason", "").lower() if dcf else ""):
