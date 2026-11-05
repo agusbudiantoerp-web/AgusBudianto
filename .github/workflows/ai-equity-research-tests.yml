@@ -1,0 +1,35 @@
+name: AI Equity Research tests
+
+on:
+  push:
+    branches:
+      - feature/ai-equity-research-v1
+    paths:
+      - "Projects/ai-equity-research/**"
+      - ".github/workflows/ai-equity-research-tests.yml"
+  pull_request:
+    paths:
+      - "Projects/ai-equity-research/**"
+      - ".github/workflows/ai-equity-research-tests.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Projects/ai-equity-research
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: Projects/ai-equity-research/requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run unit tests
+        run: python -m pytest -q
